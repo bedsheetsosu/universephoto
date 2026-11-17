@@ -12,8 +12,18 @@ struct BrushPreset: Codable, Identifiable {
 }
 
 @MainActor final class Studio: ObservableObject {
-    @Published var layers = [ArtLayer(name: L("Sketch"))]
-    @Published var selectedLayer = 0
+    @Published var layers = Studio.startLayers(background: Studio.preferredBackground)
+    @Published var selectedLayer = Studio.preferredBackground == nil ? 0 : 1
+    /// Background of new documents (Preferences / new-document sheet): white by default, or transparent.
+    static var preferredBackground: CodableColor? { UserDefaults.standard.string(forKey: "documentBackground") == "transparent" ? nil : .white }
+    /// A filled "Background" layer under the first drawing layer (nil colour = transparent, one layer).
+    static func startLayers(background: CodableColor?) -> [ArtLayer] {
+        guard let background else { return [ArtLayer(name: L("Sketch"))] }
+        var bg = ArtLayer(name: L("Background"))
+        var fill = InkStroke(points: [InkPoint(x: 0, y: 0, pressure: 1)], color: background, width: 1); fill.kind = "fill"
+        bg.strokes = [fill]
+        return [bg, ArtLayer(name: L("Sketch"))]
+    }
     /// Further selected layers (Shift/⌘-click in the list); the active one is `selectedLayer`.
     @Published var selectedIDs: Set<UUID> = []
     @Published var groups: [LayerGroup] = []
@@ -195,9 +205,9 @@ struct BrushPreset: Codable, Identifiable {
     func apply(_ d: ArtDocument) { groups = d.groups ?? []; selectedIDs = []; width = d.width; height = d.height; documentName = d.title; layers = d.layers; frames = d.frames; fps = d.fps ?? 12; frameIndex = min(max(0,d.activeFrame ?? frames.firstIndex(of:d.layers) ?? 0), max(0, frames.count-1)); selectedLayer = min(selectedLayer, max(0, layers.count-1)); maskEditing = false; selection = nil }
     func syncTab() { if let i = tabs.firstIndex(where: { $0.id == tabID }) { tabs[i].document = document(); tabs[i].dirty = dirty; tabs[i].url = fileURL;tabs[i].undo = undoStack;tabs[i].redo = redoStack;tabs[i].saved = savedDocument } }
     func switchTab(_ id: UUID) { guard let tab = tabs.first(where: { $0.id == id }), id != tabID else { return }; stopPlayback(); syncTab(); tabID = id; apply(tab.document); fileURL = tab.url; dirty = tab.dirty; undoStack = tab.undo; redoStack = tab.redo; savedDocument = tab.saved ?? (tab.dirty ? nil : tab.document); fit() }
-    func newDocument(width: Int = 1200, height: Int = 800) {
-        stopPlayback(); syncTab(); tabID = UUID(); fileURL = nil; selectedLayer = 0; frameIndex = 0
-        apply(ArtDocument(title: L("Untitled"), width: width, height: height, layers: [ArtLayer(name: L("Sketch"))])); dirty = false; savedDocument = document(); undoStack = []; redoStack = []; tabs.append(OpenArtwork(id: tabID, document: document(), url: nil)); fit()
+    func newDocument(width: Int = 1200, height: Int = 800, background: CodableColor? = nil) {
+        stopPlayback(); syncTab(); tabID = UUID(); fileURL = nil; selectedLayer = background == nil ? 0 : 1; frameIndex = 0
+        apply(ArtDocument(title: L("Untitled"), width: width, height: height, layers: Self.startLayers(background: background))); dirty = false; savedDocument = document(); undoStack = []; redoStack = []; tabs.append(OpenArtwork(id: tabID, document: document(), url: nil)); fit()
     }
     func save(to url: URL? = nil) throws {
         guard let dest = url ?? fileURL else { throw StudioError.message("No save location was selected.") }
@@ -242,7 +252,7 @@ struct BrushPreset: Codable, Identifiable {
         guard let tab = tabs.first(where: { $0.id == id }) else { return }
         if tab.dirty { let a = NSAlert(); a.messageText = L("Close unsaved document?"); a.informativeText = tab.document.title; a.addButton(withTitle: L("Cancel")); a.addButton(withTitle: L("Discard")); guard a.runModal() == .alertSecondButtonReturn else { return } }
         if tabID == id { removeRecovery() }; tabs.removeAll { $0.id == id }
-        if id == tabID { if let next = tabs.first { let oldID = tabID; tabID = oldID; switchTab(next.id) } else { newDocument() } }
+        if id == tabID { if let next = tabs.first { let oldID = tabID; tabID = oldID; switchTab(next.id) } else { newDocument(background: Self.preferredBackground) } }
     }
     
 }

@@ -4,14 +4,15 @@ import XCTest
 final class UniversePhotoTests: XCTestCase {
     @MainActor func testLayerUndoRedoAndDuplicate() {
         let studio = Studio()
+        let start = studio.layers.count   // 1, or 2 with the white background (the default)
         studio.newLayer()
-        XCTAssertEqual(studio.layers.count, 2)
+        XCTAssertEqual(studio.layers.count, start + 1)
         studio.undo()
-        XCTAssertEqual(studio.layers.count, 1)
+        XCTAssertEqual(studio.layers.count, start)
         studio.redo()
-        XCTAssertEqual(studio.layers.count, 2)
+        XCTAssertEqual(studio.layers.count, start + 1)
         studio.duplicateLayer()
-        XCTAssertEqual(studio.layers.count, 3)
+        XCTAssertEqual(studio.layers.count, start + 2)
     }
 
     func testDocumentRoundTrip() throws {

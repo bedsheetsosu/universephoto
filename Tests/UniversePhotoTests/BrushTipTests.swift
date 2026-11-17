@@ -22,7 +22,9 @@ final class BrushTipTests: XCTestCase {
     func testEveryTipPaintsAlongTheStroke() throws {
         for tip in BrushTip.allCases {
             let img = try render(stroke(tip))
-            XCTAssertGreaterThan(a(img, 45, 40), 0.05, tip.rawValue)
+            // Spray and chalk are dots: look for ink near the line, not at one exact pixel.
+            let ink = (36...44).flatMap { y in (40...50).map { a(img, Double($0), Double(y)) } }.max() ?? 0
+            XCTAssertGreaterThan(ink, 0.05, tip.rawValue)
             XCTAssertEqual(a(img, 45, 5), 0, tip.rawValue)
         }
     }
