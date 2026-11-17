@@ -142,6 +142,8 @@ struct InspectorPanel: View {
                             if layer.mask != nil { Button { s.removeMask() } label: { Image(systemName: "trash") }.help(L("Remove mask")).accessibilityLabel(L("Remove mask")) }
                         }.buttonStyle(PhotoButtonStyle())
                         if s.maskEditing { Text(L("Mask active: black hides, white reveals.")).font(.system(size: 10)).foregroundStyle(theme.accent).lineSpacing(3) }
+                        Divider().overlay(theme.outline)
+                        LayerStyleEditor(style: layer.style ?? LayerStyle()) { new in s.mutateLayer("Layer style") { $0.style = new.isActive || new != LayerStyle() ? new : nil } }
                         Button { s.mergeDown() } label: { Label(L("Merge down"), systemImage: "square.3.layers.3d.down.right").frame(maxWidth: .infinity) }
                             .buttonStyle(PhotoButtonStyle()).disabled(s.selectedLayer == 0 || layer.locked)
                         Button { s.importPanel() } label: { Label(L("Import image as layer"), systemImage: "photo.badge.plus").frame(maxWidth: .infinity) }.buttonStyle(PhotoButtonStyle())

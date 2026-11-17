@@ -82,10 +82,11 @@ enum Renderer {
             }
             guard let image = layerImage else { continue }
             let clipsNext = layers.indices.contains(index + 1) && layers[index + 1].clipped
-            if clipping || clipsNext {
+            let styled = layer.style?.isActive == true
+            if clipping || clipsNext || styled {
                 guard let placedImage = placed(image, transform: layer.transform, width: width, height: height) else { continue }
                 if clipsNext && !clipping { base = placedImage }
-                var shown = placedImage
+                var shown = styled ? (applyStyle(layer.style!, to: placedImage) ?? placedImage) : placedImage
                 if clipping, let base, let ctx = context(width: width, height: height) {
                     drawImage(placedImage, in: ctx, rect: bounds)
                     ctx.setBlendMode(.destinationIn); drawImage(base, in: ctx, rect: bounds)
@@ -120,6 +121,45 @@ enum Renderer {
         guard let ctx = context(width: width, height: height) else { return nil }
         apply(transform, to: ctx, width: width, height: height)
         drawImage(image, in: ctx, rect: CGRect(x: 0, y: 0, width: width, height: height))
+        return ctx.makeImage()
+    }
+    /// Layer effects on a placed layer picture: glow and shadow below, outline around, overlay on top.
+    static func applyStyle(_ style: LayerStyle, to image: CGImage) -> CGImage? {
+        let w = image.width, h = image.height, r = CGRect(x: 0, y: 0, width: w, height: h)
+        guard let ctx = context(width: w, height: h) else { return nil }
+        // Only the shadow of a picture: draw it far off to the left, its shadow shifted back in.
+        func shadowOnly(color: CodableColor, opacity: Double, offset: CGSize, blur: Double) {
+            var c = color; c.alpha = max(0, min(1, opacity))
+            ctx.saveGState()
+            let far = Double(w) * 2 + blur * 4
+            // Shadow offsets live in device space (y up), the context draws y down.
+            ctx.setShadow(offset: CGSize(width: far + offset.width, height: -offset.height), blur: blur, color: c.cgColor)
+            drawImage(image, in: ctx, rect: r.offsetBy(dx: -far, dy: 0))
+            ctx.restoreGState()
+        }
+        if style.glow.on { shadowOnly(color: style.glow.color, opacity: style.glow.opacity, offset: .zero, blur: style.glow.size) }
+        if style.shadow.on {
+            let a = style.shadow.angle * .pi / 180
+            // Light comes from `angle` (0° = right, 90° = top); the shadow falls the other way.
+            shadowOnly(color: style.shadow.color, opacity: style.shadow.opacity,
+                       offset: CGSize(width: -cos(a) * style.shadow.distance, height: sin(a) * style.shadow.distance), blur: style.shadow.blur)
+        }
+        if style.outline.on, style.outline.width > 0 {
+            // Outside stroke: the alpha grown by the width, filled with the colour, under the picture.
+            let alpha = CIImage(cgImage: image).applyingFilter("CIMorphologyMaximum", parameters: [kCIInputRadiusKey: style.outline.width])
+            var c = style.outline.color; c.alpha = max(0, min(1, style.outline.opacity))
+            let fill = CIImage(color: CIColor(cgColor: c.cgColor)).cropped(to: CIImage(cgImage: image).extent)
+            let outline = fill.applyingFilter("CIBlendWithAlphaMask", parameters: [kCIInputBackgroundImageKey: CIImage(color: .clear).cropped(to: fill.extent), kCIInputMaskImageKey: alpha])
+            if let cg = filters.createCGImage(outline, from: fill.extent) { drawImage(cg, in: ctx, rect: r) }
+        }
+        drawImage(image, in: ctx, rect: r)
+        if style.overlay.on {
+            ctx.saveGState()
+            ctx.setBlendMode(.sourceAtop)
+            var c = style.overlay.color; c.alpha = max(0, min(1, style.overlay.opacity))
+            ctx.setFillColor(c.cgColor); ctx.fill(r)
+            ctx.restoreGState()
+        }
         return ctx.makeImage()
     }
     private static func renderLayer(_ layer: ArtLayer, width: Int, height: Int, preview: InkStroke?, base: CGImage? = nil) -> CGImage? {

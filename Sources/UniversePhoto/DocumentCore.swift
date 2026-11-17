@@ -84,8 +84,10 @@ struct ArtLayer: Codable, Identifiable, Equatable, Sendable {
     var mask: [InkStroke]? = nil
     /// Clipping mask: only shows where the nearest unclipped layer below has pixels.
     var clipped = false
+    /// Layer effects (drop shadow, outer glow, stroke, colour overlay); nil = none.
+    var style: LayerStyle? = nil
     init(name: String) { self.name = name }
-    enum CodingKeys: String, CodingKey { case id, name, visible, strokes, opacity, blend, locked, transform, adjustment, imageData, mask, clipped }
+    enum CodingKeys: String, CodingKey { case id, name, visible, strokes, opacity, blend, locked, transform, adjustment, imageData, mask, clipped, style }
     init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         id = try c.decodeIfPresent(UUID.self, forKey: .id) ?? UUID(); name = try c.decode(String.self, forKey: .name)
@@ -99,6 +101,7 @@ struct ArtLayer: Codable, Identifiable, Equatable, Sendable {
         imageData = try c.decodeIfPresent(Data.self, forKey: .imageData)
         mask = try c.decodeIfPresent([InkStroke].self, forKey: .mask)
         clipped = try c.decodeIfPresent(Bool.self, forKey: .clipped) ?? false
+        style = try c.decodeIfPresent(LayerStyle.self, forKey: .style)
     }
 }
 struct ArtDocument: Codable, Equatable, Sendable {
@@ -150,4 +153,25 @@ enum AdjustmentLook: String, CaseIterable, Identifiable {
         case .retro: a.saturation = 0.75; a.temperature = 0.3; a.contrast = 0.85; a.gamma = 1.1; a.grain = 0.25; a.vignette = 0.5
         }
     }
+}
+
+/// Photoshop-style layer effects. They follow the layer's pixels and stay editable.
+struct LayerStyle: Codable, Equatable, Sendable {
+    struct Shadow: Codable, Equatable, Sendable {
+        var on = false; var color = CodableColor(red: 0, green: 0, blue: 0, alpha: 1); var opacity = 0.6
+        var angle = 120.0      // degrees, light from the upper left like Photoshop
+        var distance = 8.0; var blur = 12.0
+    }
+    struct Glow: Codable, Equatable, Sendable {
+        var on = false; var color = CodableColor(red: 1, green: 0.95, blue: 0.6, alpha: 1); var opacity = 0.75; var size = 18.0
+    }
+    struct Outline: Codable, Equatable, Sendable {
+        var on = false; var color = CodableColor(red: 0, green: 0, blue: 0, alpha: 1); var opacity = 1.0; var width = 3.0
+    }
+    struct Overlay: Codable, Equatable, Sendable {
+        var on = false; var color = CodableColor(red: 1, green: 0.4, blue: 0.5, alpha: 1); var opacity = 1.0
+    }
+    var shadow = Shadow(); var glow = Glow(); var outline = Outline(); var overlay = Overlay()
+    var isActive: Bool { shadow.on || glow.on || outline.on || overlay.on }
+    var numbers: [Double] { [shadow.opacity, shadow.angle, shadow.distance, shadow.blur, glow.opacity, glow.size, outline.opacity, outline.width, overlay.opacity] }
 }
