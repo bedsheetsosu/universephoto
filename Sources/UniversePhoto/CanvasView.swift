@@ -52,7 +52,13 @@ struct ArtworkCanvas: NSViewRepresentable {
         if let active, s.layers.indices.contains(s.selectedLayer) { if s.maskEditing { var previewLayers = s.layers;previewLayers[s.selectedLayer].mask?.append(active);rendered = Renderer.render(layers:previewLayers,width:s.width,height:s.height,cache:layerCache) } else { rendered = Renderer.render(layers:s.layers,width:s.width,height:s.height,preview:active,previewLayer:s.selectedLayer,cache:layerCache) } } else { rendered = committedImage() }
         if let rendered { drawImage(rendered,in:ctx,rect:doc) }
         if grid { ctx.setStrokeColor(CGColor(gray:0.4,alpha:0.25)); ctx.setLineWidth(0.5 / max(geometry.scale,0.01)); for x in stride(from:0,through:s.width,by:50) { ctx.move(to:CGPoint(x:x,y:0)); ctx.addLine(to:CGPoint(x:x,y:s.height)) }; for y in stride(from:0,through:s.height,by:50) { ctx.move(to:CGPoint(x:0,y:y)); ctx.addLine(to:CGPoint(x:s.width,y:y)) }; ctx.strokePath() }
-        if let selection = s.selection { let path = selectionPath(selection); ctx.setLineWidth(1/max(geometry.scale,0.01)); ctx.setStrokeColor(CGColor(gray:1,alpha:1)); ctx.addPath(path); ctx.strokePath(); ctx.setStrokeColor(CGColor(gray:0,alpha:0.9)); ctx.setLineDash(phase:0,lengths:[5/max(geometry.scale,0.01),5/max(geometry.scale,0.01)]); ctx.addPath(path); ctx.strokePath(); ctx.setLineDash(phase:0,lengths:[]) }
+        if let selection = s.selection, let mask = selection.mask {
+            // Pixel selection: tint what is selected, dashed box around it.
+            ctx.saveGState(); ctx.translateBy(x:0,y:CGFloat(s.height)); ctx.scaleBy(x:1,y:-1)
+            ctx.clip(to:CGRect(x:0,y:0,width:mask.width,height:mask.height),mask:mask)
+            ctx.setFillColor(NSColor(PhotoTheme.mint).withAlphaComponent(0.28).cgColor); ctx.fill(CGRect(x:0,y:0,width:s.width,height:s.height)); ctx.restoreGState()
+            ctx.setLineWidth(1/max(geometry.scale,0.01)); ctx.setStrokeColor(CGColor(gray:0,alpha:0.9)); ctx.setLineDash(phase:0,lengths:[5/max(geometry.scale,0.01),5/max(geometry.scale,0.01)]); ctx.stroke(selection.bounds); ctx.setLineDash(phase:0,lengths:[])
+        } else if let selection = s.selection { let path = selectionPath(selection); ctx.setLineWidth(1/max(geometry.scale,0.01)); ctx.setStrokeColor(CGColor(gray:1,alpha:1)); ctx.addPath(path); ctx.strokePath(); ctx.setStrokeColor(CGColor(gray:0,alpha:0.9)); ctx.setLineDash(phase:0,lengths:[5/max(geometry.scale,0.01),5/max(geometry.scale,0.01)]); ctx.addPath(path); ctx.strokePath(); ctx.setLineDash(phase:0,lengths:[]) }
         if let hover = s.hoverPoint, s.tool == .brush || s.tool == .eraser { ctx.setStrokeColor(CGColor(gray:0.2,alpha:0.7)); ctx.setLineWidth(1/max(geometry.scale,0.01)); let r = s.brushSize/2; ctx.strokeEllipse(in:CGRect(x:hover.x-r,y:hover.y-r,width:r*2,height:r*2)) }
         ctx.restoreGState(); ctx.setStrokeColor(CGColor(gray:0.35,alpha:0.6)); ctx.setLineWidth(1/max(geometry.scale,0.01)); ctx.stroke(doc); ctx.restoreGState()
         if rulers { drawRulers() }
@@ -85,13 +91,19 @@ struct ArtworkCanvas: NSViewRepresentable {
         if s.tool == .pan { return }
         if s.tool == .eyedropper { if let image = committedImage() { s.color = Renderer.sample(image,at:doc) }; return }
         if [.rectangleSelection,.ellipseSelection,.lasso].contains(s.tool) { s.selection = CanvasSelection(points:[doc,doc],ellipse:s.tool == .ellipseSelection); return }
+        if s.tool == .wand {
+            let flags = NSEvent.modifierFlags
+            s.magicWand(at:doc,combine:flags.contains(.shift) ? .add : flags.contains(.option) ? .subtract : .replace); interactionBegan = false; needsDisplay = true; return
+        }
         guard s.canEdit else { return }
         if s.tool == .move { s.checkpoint("Move"); originalTransform = s.activeLayer?.transform; return }
         var c = s.color; c.alpha *= s.brushOpacity
         if s.maskEditing { c = s.eraser ? .white : CodableColor(red:0,green:0,blue:0,alpha:1) }
         let local = localPoint(doc)
         var stroke = InkStroke(points:[InkPoint(x:local.x,y:local.y,pressure:s.pressureEnabled ? pressure : 1,tiltX:tilt.x,tiltY:tilt.y,rotation:rotation)],color:c,width:s.brushSize,isEraser:s.eraser && !s.maskEditing)
-        if let selection = s.selection {
+        if let selection = s.selection, let maskData = selection.maskData {
+            stroke.selectionMask = maskData
+        } else if let selection = s.selection {
             // Persist the selection in layer coordinates. Sampling an ellipse before the inverse
             // transform preserves its true boundary on translated, rotated and scaled layers.
             let points: [CGPoint]
@@ -106,6 +118,11 @@ struct ArtworkCanvas: NSViewRepresentable {
             stroke.selectionEllipse = false
         }
         switch s.tool { case .rectangle:stroke.kind = "rectangle"; case .ellipse:stroke.kind = "ellipse"; case .line:stroke.kind = "line"; case .text:stroke.kind = "text";stroke.text = s.textContent;stroke.width = max(10,s.brushSize); case .fill:stroke.kind = "fill"; case .gradient:stroke.kind = "gradient";stroke.secondaryColor = s.secondaryColor; default:break }
+        if s.tool == .bucket {
+            guard var fill = s.bucketStroke(at:local,documentPoint:doc) else { interactionBegan = false; return }
+            fill.selectionPoints = stroke.selectionPoints; fill.selectionEllipse = stroke.selectionEllipse; fill.selectionMask = stroke.selectionMask
+            active = fill; finish(); return
+        }
         active = stroke; if s.tool == .text || s.tool == .fill { finish() }; needsDisplay = true
     }
     private func drag(at p:CGPoint,pressure:Double,tilt:CGPoint = .zero,rotation:Double = 0) {

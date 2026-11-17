@@ -88,6 +88,10 @@ struct BrushPreset: Codable, Identifiable {
         changed()
     }
     @Published var maskEditing = false
+    /// Paint bucket and magic wand: colour distance 0…255, connected pixels only, all layers.
+    @Published var tolerance = 32.0
+    @Published var contiguous = true
+    @Published var sampleMerged = false
     func undo() {
         stopPlayback(); guard let last = undoStack.popLast() else { return }
         redoStack.append(HistoryEntry(document: document(), label: last.label)); apply(last.document); changed()
@@ -152,7 +156,7 @@ struct BrushPreset: Codable, Identifiable {
         guard d.width * d.height <= 64_000_000, (d.fps ?? 12).isFinite, (1...120).contains(d.fps ?? 12), (d.activeFrame ?? 0) >= 0, (d.frames.isEmpty || (d.activeFrame ?? 0) < d.frames.count) else { throw StudioError.message("Invalid animation data or image dimensions.") }
         func valid(_ layer: ArtLayer) -> Bool {
             let t = layer.transform, a = layer.adjustment
-            return layer.opacity.isFinite && (0...1).contains(layer.opacity) && t.scale.isFinite && t.scale > 0 && t.scale <= 100 && t.x.isFinite && t.y.isFinite && t.rotation.isFinite && [a.brightness,a.contrast,a.saturation,a.exposure,a.blur].allSatisfy(\.isFinite) && layer.strokes.allSatisfy { stroke in stroke.width.isFinite && (0.1...10000).contains(stroke.width) && stroke.points.allSatisfy { $0.x.isFinite && $0.y.isFinite && $0.pressure.isFinite } }
+            return layer.opacity.isFinite && (0...1).contains(layer.opacity) && t.scale.isFinite && t.scale > 0 && t.scale <= 100 && t.x.isFinite && t.y.isFinite && t.rotation.isFinite && a.numbers.allSatisfy(\.isFinite) && layer.strokes.allSatisfy { stroke in stroke.width.isFinite && (0.1...10000).contains(stroke.width) && stroke.points.allSatisfy { $0.x.isFinite && $0.y.isFinite && $0.pressure.isFinite } }
         }
         guard d.layers.allSatisfy(valid), d.frames.allSatisfy({ !$0.isEmpty && $0.count <= 256 && $0.allSatisfy(valid) }) else { throw StudioError.message("Invalid layer data.") }
     }

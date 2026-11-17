@@ -4,7 +4,7 @@ import PackageDescription
 let package = Package(
     name: "UniversePhoto",
     defaultLocalization: "en",
-    platforms: [.macOS(.v14)],
+    platforms: [.macOS(.v15)],
     products: [.executable(name: "UniversePhoto", targets: ["UniversePhoto"])],
     targets: [
         .executableTarget(name: "UniversePhoto", resources: [.copy("Resources/Localizable.xcstrings")]),

@@ -13,10 +13,13 @@ struct PhotoTheme {
     /// (mint → deep indigo).
     private(set) var baseHue = 0.68
     private(set) var baseSat = 1.0
+    private(set) var accentHue = 0.475
+    private(set) var accentSat = 0.44
     init(isDark:Bool = true,accent:Color = PhotoTheme.mint) {
         self.isDark = isDark
         let c = NSColor(accent).usingColorSpace(.sRGB) ?? NSColor(PhotoTheme.mint)
         var h:CGFloat = 0,s:CGFloat = 0,b:CGFloat = 0,a:CGFloat = 0;c.getHue(&h,saturation:&s,brightness:&b,alpha:&a)
+        accentHue = Double(h); accentSat = Double(s)
         baseHue = (Double(h)+0.205).truncatingRemainder(dividingBy:1)
         baseSat = s < 0.12 ? 0.25 : 1
         if !isDark { self.accent = Color(red:c.redComponent*0.68,green:c.greenComponent*0.68,blue:c.blueComponent*0.68) } else { self.accent = accent }
@@ -49,7 +52,44 @@ extension EnvironmentValues { var photoTheme:PhotoTheme { get { self[PhotoThemeK
 enum PhotoMotion { static var select:Animation { NSWorkspace.shared.accessibilityDisplayShouldReduceMotion ? .easeInOut(duration:0.15) : .spring(response:0.29,dampingFraction:0.88) };static var panel:Animation { NSWorkspace.shared.accessibilityDisplayShouldReduceMotion ? .easeInOut(duration:0.2) : .spring(response:0.42,dampingFraction:0.9) } }
 struct PhotoAmbient:View {
     @Environment(\.photoTheme) private var theme
-    var body:some View { GeometryReader { g in ZStack { theme.background;RadialGradient(colors:[theme.accent.opacity(theme.isDark ? 0.13 : 0.10),.clear],center:.topLeading,startRadius:0,endRadius:g.size.width*0.65);RadialGradient(colors:[Color(red:0xC0/255.0,green:0x8B/255.0,blue:1).opacity(theme.isDark ? 0.12 : 0.09),.clear],center:.bottomTrailing,startRadius:0,endRadius:g.size.width*0.6) } }.allowsHitTesting(false) }
+    @AppStorage("photoFlow") private var flow = false
+    @AppStorage("photoFlowSpeed") private var speed = 1.0
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var clock = FlowClock()
+    var body:some View {
+        Group {
+            if flow && theme.isDark {
+                // Reduce Motion: same colours, standing still.
+                TimelineView(.animation(minimumInterval:1.0/30,paused:reduceMotion)) { ctx in
+                    let t = reduceMotion ? clock.phase : clock.advance(to:ctx.date,speed:speed)
+                    MeshGradient(width:3,height:3,points:Self.points(t),colors:Self.colors(t,theme))
+                }
+            } else { still }
+        }.allowsHitTesting(false)
+    }
+    private var still:some View { GeometryReader { g in ZStack { theme.background;RadialGradient(colors:[theme.accent.opacity(theme.isDark ? 0.13 : 0.10),.clear],center:.topLeading,startRadius:0,endRadius:g.size.width*0.65);RadialGradient(colors:[Color(red:0xC0/255.0,green:0x8B/255.0,blue:1).opacity(theme.isDark ? 0.12 : 0.09),.clear],center:.bottomTrailing,startRadius:0,endRadius:g.size.width*0.6) } } }
+    /// Time that only moves forward at the current speed (changing the speed never jumps).
+    final class FlowClock {
+        private var last:Date?
+        private(set) var phase = 0.0
+        func advance(to now:Date,speed:Double)->Double { if let last { phase += min(max(now.timeIntervalSince(last),0),0.25)*speed };last = now;return phase }
+    }
+    /// UniversePen's flowing mesh: inner and edge points wander, corners stay.
+    static func points(_ t:Double)->[SIMD2<Float>] {
+        func w(_ base:Double,_ amp:Double,_ f:Double,_ ph:Double)->Float { Float(base+amp*sin(t*f+ph)) }
+        return [[0,0],[w(0.5,0.3,0.9,0),0],[1,0],
+                [0,w(0.5,0.32,0.7,1.3)],[w(0.5,0.3,1.1,2.1),w(0.5,0.3,0.8,0.4)],[1,w(0.5,0.32,0.6,2.7)],
+                [0,1],[w(0.5,0.3,0.75,3.6),1],[1,1]]
+    }
+    static func colors(_ t:Double,_ theme:PhotoTheme)->[Color] {
+        let drift = 0.12*sin(t*0.35)
+        func hue(_ h:Double)->Double { ((h+drift).truncatingRemainder(dividingBy:1)+1).truncatingRemainder(dividingBy:1) }
+        func pulse(_ f:Double,_ ph:Double)->Double { 0.5+0.5*sin(t*f+ph) }
+        let s = max(theme.accentSat,0.35), base = theme.baseHue, a = theme.accentHue
+        return [Color(hue:hue(base),saturation:0.6,brightness:0.42+0.14*pulse(0.5,0)),Color(hue:hue(a+0.22),saturation:s*0.85,brightness:0.2+0.32*pulse(0.6,1)),Color(hue:hue(base+0.06),saturation:0.62,brightness:0.3),
+                Color(hue:hue(a),saturation:s,brightness:0.18+0.34*pulse(0.55,2.2)),Color(hue:hue(base-0.04),saturation:0.66,brightness:0.2+0.1*pulse(0.4,3)),Color(hue:hue(a+0.1),saturation:s*0.9,brightness:0.16+0.3*pulse(0.65,4.1)),
+                Color(hue:hue(base),saturation:0.7,brightness:0.1),Color(hue:hue(a-0.06),saturation:s*0.9,brightness:0.12+0.24*pulse(0.5,5)),Color(hue:hue(base+0.03),saturation:0.7,brightness:0.07)]
+    }
 }
 private struct PhotoSurface:ViewModifier {
     @Environment(\.photoTheme) var theme

@@ -12,7 +12,7 @@ Die lokale Entwicklungs-App wird ad hoc signiert. Eine notarierte öffentliche V
 
 ## Aus dem Quelltext bauen
 
-Benötigt werden macOS 14 oder neuer, Swift 6 und die macOS-Entwicklungswerkzeuge. Es werden keine externen Swift-Pakete, Konten oder API-Schlüssel benötigt.
+Benötigt werden macOS 15 oder neuer, Swift 6 und die macOS-Entwicklungswerkzeuge. Es werden keine externen Swift-Pakete, Konten oder API-Schlüssel benötigt.
 
 ```sh
 ./scripts/build-app.sh

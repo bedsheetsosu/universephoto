@@ -109,13 +109,22 @@ enum Renderer {
     }
     static func blendMode(_ blend: LayerBlend) -> CGBlendMode {
         switch blend { case .normal: .normal; case .multiply: .multiply; case .screen: .screen
-        case .overlay: .overlay; case .darken: .darken; case .lighten: .lighten }
+        case .overlay: .overlay; case .darken: .darken; case .lighten: .lighten
+        case .colorBurn: .colorBurn; case .linearBurn: .plusDarker; case .colorDodge: .colorDodge; case .linearDodge: .plusLighter
+        case .softLight: .softLight; case .hardLight: .hardLight; case .difference: .difference; case .exclusion: .exclusion
+        case .hue: .hue; case .saturation: .saturation; case .color: .color; case .luminosity: .luminosity }
     }
     static func drawStroke(_ stroke: InkStroke, in context: CGContext) {
         guard let first = stroke.points.first, first.x.isFinite, first.y.isFinite, stroke.width.isFinite, stroke.width > 0 else { return }
         context.saveGState()
         defer { context.restoreGState() }
-        if let points = stroke.selectionPoints, let start = points.first, points.count >= 2 {
+        if let maskData = stroke.selectionMask, let mask = PixelOps.decodeGray(maskData) {
+            // The context is flipped (y down); flip once for the mask, then flip back. The clip stays.
+            let h = CGFloat(mask.height)
+            context.translateBy(x: 0, y: h); context.scaleBy(x: 1, y: -1)
+            context.clip(to: CGRect(x: 0, y: 0, width: mask.width, height: mask.height), mask: mask)
+            context.scaleBy(x: 1, y: -1); context.translateBy(x: 0, y: -h)
+        } else if let points = stroke.selectionPoints, let start = points.first, points.count >= 2 {
             let path = CGMutablePath()
             if points.count == 2 {
                 let end = points[1]
@@ -142,6 +151,11 @@ enum Renderer {
         case "ellipse": context.strokeEllipse(in: rect)
         case "line": context.move(to: p); context.addLine(to: q); context.strokePath()
         case "fill": context.fill(context.boundingBoxOfClipPath)
+        case "bitmap":
+            if let data = stroke.imageData, let source = CGImageSourceCreateWithData(data as CFData, nil),
+               let image = CGImageSourceCreateImageAtIndex(source, 0, nil) {
+                drawImage(image, in: context, rect: CGRect(x: 0, y: 0, width: image.width, height: image.height))
+            }
         case "gradient":
             if let gradient = CGGradient(colorsSpace: CGColorSpace(name: CGColorSpace.sRGB),
                                          colors: [stroke.color.cgColor, (stroke.secondaryColor ?? .white).cgColor] as CFArray,
@@ -209,15 +223,53 @@ enum Renderer {
         let output = input.applyingFilter("CIBlendWithMask", parameters: [kCIInputBackgroundImageKey: transparent, kCIInputMaskImageKey: matte])
         return filters.createCGImage(output, from: input.extent)
     }
-    private static func adjusted(_ image: CGImage, adjustment: LayerAdjustment) -> CGImage? {
-        guard adjustment != LayerAdjustment() else { return image }
+    static func adjusted(_ image: CGImage, adjustment a: LayerAdjustment) -> CGImage? {
+        guard a != LayerAdjustment() else { return image }
         let input = CIImage(cgImage: image)
-        var output = input.applyingFilter("CIColorControls", parameters: [kCIInputBrightnessKey: adjustment.brightness,
-            kCIInputContrastKey: adjustment.contrast, kCIInputSaturationKey: adjustment.saturation])
-        if adjustment.exposure != 0 { output = output.applyingFilter("CIExposureAdjust", parameters: [kCIInputEVKey: adjustment.exposure]) }
-        if adjustment.inverted { output = output.applyingFilter("CIColorInvert") }
-        if adjustment.blur > 0 { output = output.clampedToExtent().applyingFilter("CIGaussianBlur", parameters: [kCIInputRadiusKey: adjustment.blur]).cropped(to: input.extent) }
-        return filters.createCGImage(output, from: input.extent)
+        let extent = input.extent
+        var output = input
+        if a.brightness != 0 || a.contrast != 1 || a.saturation != 1 {
+            output = output.applyingFilter("CIColorControls", parameters: [kCIInputBrightnessKey: a.brightness,
+                kCIInputContrastKey: a.contrast, kCIInputSaturationKey: a.saturation])
+        }
+        if a.exposure != 0 { output = output.applyingFilter("CIExposureAdjust", parameters: [kCIInputEVKey: a.exposure]) }
+        // Levels: input black/white points as a linear stretch, then gamma for the midtones.
+        if a.levelsBlack != 0 || a.levelsWhite != 1 {
+            let lo = min(a.levelsBlack, a.levelsWhite - 0.01), scale = 1 / max(0.01, a.levelsWhite - lo)
+            let v = CIVector(x: scale, y: 0, z: 0, w: 0)
+            output = output.applyingFilter("CIColorMatrix", parameters: ["inputRVector": v, "inputGVector": CIVector(x: 0, y: scale, z: 0, w: 0),
+                "inputBVector": CIVector(x: 0, y: 0, z: scale, w: 0), "inputBiasVector": CIVector(x: -lo * scale, y: -lo * scale, z: -lo * scale, w: 0)])
+                .applyingFilter("CIColorClamp")
+        }
+        if a.gamma != 1 { output = output.applyingFilter("CIGammaAdjust", parameters: ["inputPower": 1 / max(0.05, a.gamma)]) }
+        if a.hue != 0 { output = output.applyingFilter("CIHueAdjust", parameters: [kCIInputAngleKey: a.hue * .pi / 180]) }
+        if a.vibrance != 0 { output = output.applyingFilter("CIVibrance", parameters: ["inputAmount": a.vibrance]) }
+        if a.temperature != 0 || a.tint != 0 {
+            output = output.applyingFilter("CITemperatureAndTint", parameters: ["inputNeutral": CIVector(x: 6500, y: 0),
+                "inputTargetNeutral": CIVector(x: 6500 - a.temperature * 3000, y: a.tint * 100)])
+        }
+        if a.noiseReduction > 0 { output = output.applyingFilter("CINoiseReduction", parameters: ["inputNoiseLevel": a.noiseReduction * 0.1, "inputSharpness": 0.4]) }
+        if a.sharpen > 0 { output = output.applyingFilter("CISharpenLuminance", parameters: [kCIInputSharpnessKey: a.sharpen, kCIInputRadiusKey: 2.5]) }
+        if a.posterize >= 2 { output = output.applyingFilter("CIColorPosterize", parameters: ["inputLevels": a.posterize]) }
+        if a.pixelate >= 2 {
+            output = output.clampedToExtent().applyingFilter("CIPixellate", parameters: [kCIInputScaleKey: a.pixelate, kCIInputCenterKey: CIVector(x: 0, y: 0)]).cropped(to: extent)
+        }
+        if a.inverted { output = output.applyingFilter("CIColorInvert") }
+        if a.blur > 0 { output = output.clampedToExtent().applyingFilter("CIGaussianBlur", parameters: [kCIInputRadiusKey: a.blur]).cropped(to: extent) }
+        if a.vignette > 0 {
+            output = output.applyingFilter("CIVignetteEffect", parameters: [kCIInputCenterKey: CIVector(x: extent.midX, y: extent.midY),
+                kCIInputRadiusKey: max(extent.width, extent.height) * 0.62, kCIInputIntensityKey: a.vignette, "inputFalloff": 0.6])
+        }
+        if a.grain > 0, let noise = CIFilter(name: "CIRandomGenerator")?.outputImage {
+            // Monochrome grain, centred on grey, mixed in with soft light so it keeps the tones.
+            let grain = noise.applyingFilter("CIColorMatrix", parameters: ["inputRVector": CIVector(x: 0, y: 1, z: 0, w: 0), "inputGVector": CIVector(x: 0, y: 1, z: 0, w: 0),
+                "inputBVector": CIVector(x: 0, y: 1, z: 0, w: 0), "inputAVector": CIVector(x: 0, y: 0, z: 0, w: 0), "inputBiasVector": CIVector(x: 0, y: 0, z: 0, w: a.grain * 0.5)])
+                .cropped(to: extent)
+            output = grain.applyingFilter("CISoftLightBlendMode", parameters: [kCIInputBackgroundImageKey: output])
+            // Keep the layer's own transparency.
+            output = output.applyingFilter("CIBlendWithAlphaMask", parameters: [kCIInputBackgroundImageKey: CIImage(color: .clear).cropped(to: extent), kCIInputMaskImageKey: input])
+        }
+        return filters.createCGImage(output, from: extent)
     }
     static func png(_ image: CGImage) throws -> Data {
         let data = NSMutableData()

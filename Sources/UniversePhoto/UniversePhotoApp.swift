@@ -32,7 +32,9 @@ struct StudioCommands: Commands {
             Button(L("Increase opacity")) { studio.brushOpacity = min(1,studio.brushOpacity+0.1) }.keyboardShortcut(".",modifiers:[])
             Button(L("Decrease opacity")) { studio.brushOpacity = max(0.1,studio.brushOpacity-0.1) }.keyboardShortcut(",",modifiers:[])
             Button(L("Next color")) { studio.cycleColor() }.keyboardShortcut("x",modifiers:[])
+            Button(L("Select all")) { studio.selectAll() }.keyboardShortcut("a",modifiers:.command)
             Button(L("Deselect")) { studio.selection = nil }.keyboardShortcut("d",modifiers:.command)
+            Button(L("Invert selection")) { studio.invertSelection() }.keyboardShortcut("i",modifiers:[.command,.shift])
         }
         CommandMenu(L("Layers")) {
             Button(L("New layer")) { studio.newLayer() }.keyboardShortcut("n",modifiers:[.command,.shift])
@@ -40,6 +42,7 @@ struct StudioCommands: Commands {
             Button(L("Delete layer")) { studio.deleteLayer() }.keyboardShortcut(.delete,modifiers:[.command,.shift])
             Button(L("Visibility")) { studio.mutateLayer("Visibility") { $0.visible.toggle() } }.keyboardShortcut("h",modifiers:.option)
             Button(L("Merge down")) { studio.mergeDown() }.keyboardShortcut("e",modifiers:.command)
+            Button(L("Rasterize layer")) { studio.rasterizeLayer() }
         }
         CommandMenu(L("View")) {
             Button(L("Fit canvas")) { studio.fit() }.keyboardShortcut("0")

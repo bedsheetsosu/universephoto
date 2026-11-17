@@ -1,10 +1,10 @@
-# UniversePhoto™ 0.2
+# UniversePhoto™ 0.3
 
 Kostenlose, quelloffene macOS-Anwendung zum Zeichnen, zur Bildbearbeitung und für Frame-Animation. UniversePhoto läuft eigenständig und lokal; UniversePen ist optional. Dieser Entwicklungsstand liefert eine benutzbare Grundlage mit neuem UltraUI und klar begrenztem Funktionsumfang.
 
 ## Start
 
-Die gebaute App liegt nach dem Bauen unter `build/UniversePhoto.app`. Zum eigenen Bauen werden macOS 14 oder neuer und Swift 6 benötigt:
+Die gebaute App liegt nach dem Bauen unter `build/UniversePhoto.app`. Zum eigenen Bauen werden macOS 15 oder neuer und Swift 6 benötigt:
 
 ```sh
 ./scripts/build-app.sh
@@ -23,17 +23,18 @@ Details: [Installation](INSTALL.md), [Architektur](ARCHITECTURE.md), [Gestaltung
 
 ## Implementiert
 
-- **UltraUI:** schwebende Werkzeugpalette, Dokument-Tabs mit Änderungsanzeige, kontextbezogene Optionen, Inspector-Karten, Befehlssuche und Simple/Photo/Animate. Dunkler, heller und Systemmodus, fünf Akzentfarben sowie Deutsch/Englisch. Inspector und Timeline sind einblendbar und skalierbar; Werkzeugpositionen lassen sich über das Kontextmenü ändern.
-- **14 Werkzeuge:** Pinsel, Radierer, Pipette, Ebenenverschiebung, Rechteckauswahl, Ellipsenauswahl, Lasso, Flächenfüllung, Farbverlauf, Text, Rechteck, Ellipse, Linie und Handwerkzeug.
+- **UltraUI im UniversePen-Stil:** Mint-Akzent und Indigo-Hintergrund wie UniversePen (dieselben Akzent-Presets), optional fließender Mesh-Hintergrund mit einstellbarem Tempo (steht bei „Bewegung reduzieren“ still), schwebende Werkzeugpalette, Dokument-Tabs mit Änderungsanzeige, kontextbezogene Optionen, Inspector-Karten, Befehlssuche und Simple/Photo/Animate. Dunkler, heller und Systemmodus, fünf Akzentfarben sowie Deutsch/Englisch. Inspector und Timeline sind einblendbar und skalierbar; Werkzeugpositionen lassen sich über das Kontextmenü ändern.
+- **16 Werkzeuge:** Pinsel, Radierer, Pipette, Ebenenverschiebung, Rechteckauswahl, Ellipsenauswahl, Lasso, Zauberstab, Flächenfüllung, Farbeimer, Farbverlauf, Text, Rechteck, Ellipse, Linie und Handwerkzeug.
+- **Farbeimer und Zauberstab (0.3):** Toleranz 0–255, nur benachbarte oder alle ähnlichen Pixel, aktive Ebene oder alle Ebenen. Der Farbeimer legt seine Füllung als eigenen Bitmap-Strich ab (ein Undo-Schritt, Striche bleiben erhalten) und deckt Kantenpixel mit ab. Der Zauberstab erzeugt eine Pixelauswahl; ⇧ fügt hinzu, ⌥ zieht ab. Auswahl → Alles auswählen (⌘A), Auswahl umkehren (⇧⌘I). Ebenen → Ebene rastern.
 - **Zeichnen:** variabler Druckradius, Neigung und Stiftrotation bei vorhandenen Gerätedaten, Deckkraft, Glättung und JSON-Import/-Export eigener Pinselvorgaben. Der Radierer entfernt Alpha auf der aktiven Ebene.
 - **Leinwand:** transparenter Schachbretthintergrund, Pan, Zoom, Drehung, Spiegelansicht, Lineale, Raster und optionales 25-Pixel-Snapping. Anzeige und Eingabe verwenden dieselbe invertierbare Transformation.
-- **Ebenen:** Sichtbarkeit, Sperre, Reihenfolge, Duplizieren, Zusammenführen, Deckkraft, Transformation und sechs Mischmodi: Normal, Multiply, Screen, Overlay, Darken, Lighten. Bearbeitbare Ebenenmasken verwenden schwarze Striche zum Verbergen und weiße zum Wiederherstellen.
-- **Nichtdestruktive Korrekturen:** Helligkeit, Kontrast, Sättigung, Belichtung, Gauß-Weichzeichner und Invertieren. Schwarzweiß setzt die Sättigung auf null.
+- **Ebenen:** Sichtbarkeit, Sperre, Reihenfolge, Duplizieren, Zusammenführen, Rastern, Deckkraft, Transformation und 18 Mischmodi: Normal, Multiplizieren, Negativ multiplizieren, Ineinanderkopieren, Abdunkeln, Aufhellen, Farbig/Linear nachbelichten, Farbig/Linear abwedeln, Weiches/Hartes Licht, Differenz, Ausschluss, Farbton, Sättigung, Farbe, Luminanz. Bearbeitbare Ebenenmasken verwenden schwarze Striche zum Verbergen und weiße zum Wiederherstellen.
+- **Nichtdestruktive Korrekturen:** Helligkeit, Kontrast, Sättigung, Belichtung, Farbton, Dynamik, Farbtemperatur, Farbstich, Tonwerte (Schwarz-/Weißpunkt, Mitteltöne), Schärfen, Rauschreduzierung, Vignette, Filmkorn, Tontrennung, Verpixeln, Gauß-Weichzeichner und Invertieren, dazu sechs Looks (Film, Lebendig, Noir, Kühl, Warm, Retro) als Startwerte. Ältere Dokumente laden die neuen Werte neutral.
 - **Dokumente:** Undo/Redo, atomisches Speichern, eingebettete Bilddaten, Formatversion 2 mit aktivem Animationsframe sowie Laden alter Version-1-Projekte. Wiederherstellungskopien werden nach 1,5 Sekunden ohne weitere Bearbeitung geschrieben.
 - **Animation:** ganze Ebenenstapel als Frames, leere/duplizierte/gelöschte Frames, Vorschaubilder, Framewechsel, einstellbare FPS, Schleifenwiedergabe und vorheriger Frame als Onion Skin.
 - **Dateien:** PNG-, JPEG- und TIFF-Import als Ebene; PNG-/JPEG-/TIFF-Export; transparente PNG-Sequenz; GIF und H.264-MP4 ohne Ton.
 
-Die Flächenfüllung füllt die aktive Ebene beziehungsweise Auswahl; sie ist kein toleranzbasierter Farbeimer. Auswahlen begrenzen nachfolgende Zeichenoperationen. Sie verschieben oder kopieren keine vorhandenen Pixel. Text wird mit seinem Textinhalt im Dokument gespeichert; eine nachträgliche Textobjekt-Auswahl ist noch nicht vorhanden.
+Die Flächenfüllung füllt die aktive Ebene beziehungsweise Auswahl; der Farbeimer füllt nach Toleranz. Pixelauswahl und Farbeimer arbeiten in Dokumentkoordinaten: auf verschobenen, gedrehten oder skalierten Ebenen passen sie erst nach „Ebene rastern“ und Zurücksetzen der Transformation genau. Auswahlen begrenzen nachfolgende Zeichenoperationen. Sie verschieben oder kopieren keine vorhandenen Pixel. Text wird mit seinem Textinhalt im Dokument gespeichert; eine nachträgliche Textobjekt-Auswahl ist noch nicht vorhanden.
 
 ## UniversePen
 
@@ -65,13 +66,13 @@ Die vollständige Bridge-Tabelle steht in der Plugin-Dokumentation. Tastenkürze
 
 ## Grenzen und Nachweise
 
-Zuletzt bestanden 31 Swift-Tests. Sie prüfen unter anderem ältere Dokumente, echte Speicher-/Ladeoperationen, Undo/Redo, Masken, Mischmodi, Transformationen, Auswahl-Clips, Export und API-Protokoll. Der JavaScript-Test prüft die 31 Plugin-Aktionen und Vordergrundsperre. Diese Prüfungen ersetzen keine manuelle Interaktionsprüfung. Der reale API-Verbindungs- und Abonnementtest mit verbundenem iPad war erfolgreich; echte Pencil-Striche und iPad-Plugin-Auslösung wurden dabei noch nicht beobachtet.
+Zuletzt bestanden 47 Swift-Tests (davon 11 für Farbeimer, Zauberstab, Auswahlmasken, Looks und Mischmodi). Sie prüfen unter anderem ältere Dokumente, echte Speicher-/Ladeoperationen, Undo/Redo, Masken, Mischmodi, Transformationen, Auswahl-Clips, Export und API-Protokoll. Der JavaScript-Test prüft die 31 Plugin-Aktionen und Vordergrundsperre. Diese Prüfungen ersetzen keine manuelle Interaktionsprüfung. Der reale API-Verbindungs- und Abonnementtest mit verbundenem iPad war erfolgreich; echte Pencil-Striche und iPad-Plugin-Auslösung wurden dabei noch nicht beobachtet.
 
 Der Renderer verarbeitet 8-Bit-sRGB/RGBA über Core Graphics und Core Image mit einem Ebenencache. Der dokumentierte Benchmark ist keine FPS- oder Eingabelatenzmessung. Filter- und Maskenvorschauen können bei großen Dokumenten teuer werden; eine eigene Metal-Tile-Engine ist noch offen.
 
 PNG und TIFF erhalten Alpha, JPEG und MP4 werden über Weiß ausgegeben. Bildexporte sind flach und enthalten keine Ebenen; dafür das native Format behalten. Importbilder werden nach sRGB normalisiert und auf die Dokumentfläche abgebildet. TIFF-Mehrseitenbilder und animierte Importbilder werden ausdrücklich abgewiesen. GIF besitzt eine begrenzte Palette und gerundetes Frame-Timing. MP4 benötigt gerade Bildmaße; exportiert wird in Dokumentauflösung.
 
-Noch offen sind Ebenengruppen, Clipping-Masken, Pixeltransformation von Auswahlen, Zauberstab/Flood Fill, Stempel und Retuschewerkzeuge, Gradationskurven, CMYK/HDR, Audio, unabhängige Animationstracks, Keyframe-Interpolation, Cutout-Rigs, Lip-Sync, HEVC, PSD, OpenRaster, WebP und SVG. Vollständige Photoshop-/PSD-Kompatibilität wird nicht beansprucht. Sinnvolle nächste Schritte sind Audio/Timeline, Auswahl-Pixeloperationen und eine gekachelte Rasterengine.
+Noch offen sind Ebenengruppen, Clipping-Masken, Pixeltransformation von Auswahlen, Stempel und Retuschewerkzeuge, Gradationskurven, CMYK/HDR, Audio, unabhängige Animationstracks, Keyframe-Interpolation, Cutout-Rigs, Lip-Sync, HEVC, PSD, OpenRaster, WebP und SVG. Vollständige Photoshop-/PSD-Kompatibilität wird nicht beansprucht. Sinnvolle nächste Schritte sind Audio/Timeline, Auswahl-Pixeloperationen und eine gekachelte Rasterengine.
 
 ## Lizenz
 

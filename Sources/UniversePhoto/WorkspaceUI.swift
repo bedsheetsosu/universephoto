@@ -7,6 +7,8 @@ struct Workspace: View {
     @AppStorage("workspace") private var workspace = "Photo"
     @AppStorage("appearance") private var appearance = "dark"
     @AppStorage("photoAccent") private var accent = "mint"
+    @AppStorage("photoFlow") private var flow = false
+    @AppStorage("photoFlowSpeed") private var flowSpeed = 1.0
     @ObservedObject private var localization = Localization.shared
     @AppStorage("showInspector") private var showInspector = true
     @AppStorage("showTimeline") private var showTimeline = false
@@ -95,7 +97,12 @@ struct Workspace: View {
             Rectangle().fill(theme.outline).frame(width:1,height:17)
             if s.tool == .text { TextField(L("Text"),text:$s.textContent).textFieldStyle(.plain).padding(6).background(theme.card,in:RoundedRectangle(cornerRadius:6)).frame(width:120) }
             if g.size.width > 575 && [.brush,.eraser,.rectangle,.ellipse,.line,.text].contains(s.tool) { Text(L("Size")).foregroundStyle(theme.secondary);Slider(value:$s.brushSize,in:1...200).frame(width:65).controlSize(.mini).accessibilityLabel(L("Brush size"));Text("\(Int(s.brushSize))").monospacedDigit().frame(width:24,alignment:.leading) }
-            if g.size.width > 460 && ![.pan,.move,.rectangleSelection,.ellipseSelection,.lasso,.eyedropper].contains(s.tool) { Text(L("Opacity")).foregroundStyle(theme.secondary);Slider(value:$s.brushOpacity,in:0.05...1).frame(width:55).controlSize(.mini).accessibilityLabel(L("Brush opacity"));Text("\(Int(s.brushOpacity*100))%").monospacedDigit().frame(width:29) }
+            if g.size.width > 460 && ![.pan,.move,.rectangleSelection,.ellipseSelection,.lasso,.wand,.eyedropper].contains(s.tool) { Text(L("Opacity")).foregroundStyle(theme.secondary);Slider(value:$s.brushOpacity,in:0.05...1).frame(width:55).controlSize(.mini).accessibilityLabel(L("Brush opacity"));Text("\(Int(s.brushOpacity*100))%").monospacedDigit().frame(width:29) }
+            if [.bucket,.wand].contains(s.tool) {
+                Text(L("Tolerance")).foregroundStyle(theme.secondary);Slider(value:$s.tolerance,in:0...255).frame(width:70).controlSize(.mini).accessibilityLabel(L("Tolerance"));Text("\(Int(s.tolerance))").monospacedDigit().frame(width:26,alignment:.leading)
+                if g.size.width > 640 { Toggle(L("Contiguous"),isOn:$s.contiguous).toggleStyle(.checkbox).controlSize(.mini);Toggle(L("All layers"),isOn:$s.sampleMerged).toggleStyle(.checkbox).controlSize(.mini) }
+                if s.tool == .wand && g.size.width > 820 { Text(L("⇧ adds · ⌥ removes")).foregroundStyle(theme.secondary) }
+            }
             Spacer(minLength:2)
             iconButton("arrow.uturn.backward",L("Undo")) { s.undo() }.disabled(s.undoStack.isEmpty)
             iconButton("arrow.uturn.forward",L("Redo")) { s.redo() }.disabled(s.redoStack.isEmpty)
@@ -148,6 +155,8 @@ struct Workspace: View {
                 }.padding(8).frame(maxWidth:.infinity).background(appearance == mode ? theme.accentSoft : theme.card,in:RoundedRectangle(cornerRadius:12)).overlay(RoundedRectangle(cornerRadius:12).strokeBorder(appearance == mode ? theme.accent.opacity(0.6) : theme.outline,lineWidth:1)) }.buttonStyle(PhotoPress())
             } }
             HStack(spacing:12) { Text(L("Accent")).font(.system(size:10)).foregroundStyle(theme.secondary);Spacer();ForEach(PhotoTheme.accentKeys,id:\.self) { key in Button { withAnimation(PhotoMotion.select) { accent = key } } label: { Circle().fill(PhotoTheme.accent(key)).frame(width:25,height:25).overlay(Circle().strokeBorder(theme.text.opacity(accent == key ? 0.9 : 0.1),lineWidth:accent == key ? 2.5 : 1)).scaleEffect(accent == key ? 1.08 : 1) }.buttonStyle(PhotoPress()).help(L(key.capitalized)).accessibilityLabel(L(key.capitalized)) } }
+            Toggle(isOn:$flow.animation(PhotoMotion.panel)) { Text(L("Flowing background")).font(.system(size:11)) }.toggleStyle(.switch).controlSize(.mini).tint(tint)
+            if flow { HStack(spacing:10) { Text(L("Speed")).font(.system(size:10)).foregroundStyle(theme.secondary);Slider(value:$flowSpeed,in:0.25...2).controlSize(.mini).accessibilityLabel(L("Speed")) } }
         }.photoCard()
         HStack { Text(L("Language")).font(.system(size:10));Spacer();Picker("",selection:$localization.language) { Text(L("German")).tag("de");Text(L("English")).tag("en") }.labelsHidden().pickerStyle(.segmented).frame(width:180) }.photoCard()
         VStack(alignment:.leading,spacing:10) {

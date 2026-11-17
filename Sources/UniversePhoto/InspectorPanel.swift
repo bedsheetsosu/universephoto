@@ -104,7 +104,7 @@ struct InspectorPanel: View {
                         Text(L("Blend")).font(.system(size: 10)).foregroundStyle(theme.secondary)
                         Spacer()
                         Picker(L("Blend mode"), selection: Binding(get: { layer.blend }, set: { value in s.mutateLayer("Blend mode") { $0.blend = value } })) {
-                            ForEach(LayerBlend.allCases, id: \.self) { Text(L($0.rawValue.capitalized)).tag($0) }
+                            ForEach(LayerBlend.allCases, id: \.self) { Text(L($0.title)).tag($0) }
                         }.labelsHidden().font(.system(size: 10)).frame(maxWidth: 150).controlSize(.small)
                     }
                     valueSlider(L("Opacity"), value: layer.opacity, range: 0...1, suffix: "%", multiplier: 100) { v in s.mutateLayer("Opacity") { $0.opacity = v } }
@@ -223,6 +223,29 @@ struct InspectorPanel: View {
                     valueSlider(L("Saturation"), value: a.saturation, range: 0...2, suffix: "%", multiplier: 100) { v in s.mutateLayer("Saturation") { $0.adjustment.saturation = v } }
                     valueSlider(L("Exposure"), value: a.exposure, range: -4...4, suffix: " EV") { v in s.mutateLayer("Exposure") { $0.adjustment.exposure = v } }
                     valueSlider(L("Gaussian blur"), value: a.blur, range: 0...40, suffix: " px") { v in s.mutateLayer("Gaussian blur") { $0.adjustment.blur = v } }
+                    subheading(L("Color"))
+                    valueSlider(L("Hue"), value: a.hue, range: -180...180, suffix: "°") { v in s.mutateLayer("Hue") { $0.adjustment.hue = v } }
+                    valueSlider(L("Vibrance"), value: a.vibrance, range: -1...1, suffix: "", multiplier: 100) { v in s.mutateLayer("Vibrance") { $0.adjustment.vibrance = v } }
+                    valueSlider(L("Temperature"), value: a.temperature, range: -1...1, suffix: "", multiplier: 100) { v in s.mutateLayer("Temperature") { $0.adjustment.temperature = v } }
+                    valueSlider(L("Tint"), value: a.tint, range: -1...1, suffix: "", multiplier: 100) { v in s.mutateLayer("Tint") { $0.adjustment.tint = v } }
+                    subheading(L("Levels"))
+                    valueSlider(L("Black point"), value: a.levelsBlack, range: 0...0.9, suffix: "", multiplier: 255) { v in s.mutateLayer("Levels") { $0.adjustment.levelsBlack = v } }
+                    valueSlider(L("White point"), value: a.levelsWhite, range: 0.1...1, suffix: "", multiplier: 255) { v in s.mutateLayer("Levels") { $0.adjustment.levelsWhite = v } }
+                    valueSlider(L("Midtones"), value: a.gamma, range: 0.2...5, suffix: "", multiplier: 100) { v in s.mutateLayer("Levels") { $0.adjustment.gamma = v } }
+                    subheading(L("Detail"))
+                    valueSlider(L("Sharpen"), value: a.sharpen, range: 0...2, suffix: "%", multiplier: 100) { v in s.mutateLayer("Sharpen") { $0.adjustment.sharpen = v } }
+                    valueSlider(L("Noise reduction"), value: a.noiseReduction, range: 0...1, suffix: "%", multiplier: 100) { v in s.mutateLayer("Noise reduction") { $0.adjustment.noiseReduction = v } }
+                    subheading(L("Effects"))
+                    valueSlider(L("Vignette"), value: a.vignette, range: 0...2, suffix: "%", multiplier: 100) { v in s.mutateLayer("Vignette") { $0.adjustment.vignette = v } }
+                    valueSlider(L("Film grain"), value: a.grain, range: 0...1, suffix: "%", multiplier: 100) { v in s.mutateLayer("Film grain") { $0.adjustment.grain = v } }
+                    valueSlider(L("Posterize"), value: a.posterize, range: 0...32, suffix: "") { v in s.mutateLayer("Posterize") { $0.adjustment.posterize = v < 2 ? 0 : v.rounded() } }
+                    valueSlider(L("Pixelate"), value: a.pixelate, range: 0...64, suffix: " px") { v in s.mutateLayer("Pixelate") { $0.adjustment.pixelate = v < 2 ? 0 : v.rounded() } }
+                    subheading(L("Looks"))
+                    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 6) {
+                        ForEach(AdjustmentLook.allCases) { look in
+                            Button { s.mutateLayer("Look") { look.apply(to: &$0.adjustment) } } label: { Label(L(look.title), systemImage: look.symbol).frame(maxWidth: .infinity) }
+                        }
+                    }.buttonStyle(PhotoButtonStyle())
                     Toggle(L("Invert"), isOn: Binding(get: { a.inverted }, set: { v in s.mutateLayer("Invert") { $0.adjustment.inverted = v } })).toggleStyle(.switch).controlSize(.mini).font(.system(size: 11))
                     HStack {
                         Button { s.mutateLayer("Monochrome") { $0.adjustment.saturation = 0 } } label: { Label(L("Monochrome"), systemImage: "circle.lefthalf.filled") }
@@ -259,6 +282,9 @@ struct InspectorPanel: View {
             Text(label).font(.system(size: 10, weight: .medium)).foregroundStyle(theme.secondary)
             TextField("", value: Binding(get: { value }, set: set), format: .number.precision(.fractionLength(0...1))).textFieldStyle(.plain).font(.system(size: 11, design: .monospaced))
         }.padding(8).background(theme.deep.opacity(0.6), in: RoundedRectangle(cornerRadius: 7))
+    }
+    private func subheading(_ title: String) -> some View {
+        Text(title.uppercased()).font(.system(size: 9, weight: .bold)).tracking(0.8).foregroundStyle(theme.secondary).padding(.top, 4)
     }
     private func valueSlider(_ title: String, value: Double, range: ClosedRange<Double>, suffix: String, multiplier: Double = 1, set: @escaping @MainActor @Sendable (Double) -> Void) -> some View {
         VStack(spacing: 6) {

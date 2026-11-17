@@ -22,13 +22,51 @@ struct InkStroke: Codable, Equatable, Identifiable, Sendable {
     var secondaryColor: CodableColor? = nil
     var selectionPoints: [InkPoint]? = nil
     var selectionEllipse: Bool? = nil
+    /// Pixel content for kind "bitmap" (paint bucket, raster results): PNG in layer coordinates.
+    var imageData: Data? = nil
+    /// Selection as a pixel mask (magic wand, inverted selections): 8-bit gray PNG, white = selected.
+    var selectionMask: Data? = nil
 }
-enum LayerBlend: String, Codable, CaseIterable, Sendable { case normal, multiply, screen, overlay, darken, lighten }
+enum LayerBlend: String, Codable, CaseIterable, Sendable {
+    case normal, multiply, screen, overlay, darken, lighten
+    case colorBurn, linearBurn, colorDodge, linearDodge, softLight, hardLight, difference, exclusion, hue, saturation, color, luminosity
+    var title: String { switch self {
+    case .normal: "Normal"; case .multiply: "Multiply"; case .screen: "Screen"; case .overlay: "Overlay"; case .darken: "Darken"; case .lighten: "Lighten"
+    case .colorBurn: "Color burn"; case .linearBurn: "Linear burn"; case .colorDodge: "Color dodge"; case .linearDodge: "Linear dodge (add)"
+    case .softLight: "Soft light"; case .hardLight: "Hard light"; case .difference: "Difference"; case .exclusion: "Exclusion"
+    case .hue: "Hue"; case .saturation: "Saturation"; case .color: "Color"; case .luminosity: "Luminosity" } }
+}
 struct LayerTransform: Codable, Equatable, Sendable {
     var x = 0.0; var y = 0.0; var scale = 1.0; var rotation = 0.0
 }
 struct LayerAdjustment: Codable, Equatable, Sendable {
     var brightness = 0.0; var contrast = 1.0; var saturation = 1.0; var exposure = 0.0; var blur = 0.0; var inverted = false
+    // Added in 0.3; older documents decode them with neutral values.
+    var hue = 0.0              // degrees, −180…180
+    var vibrance = 0.0         // −1…1
+    var temperature = 0.0      // −1 (cooler) … 1 (warmer)
+    var tint = 0.0             // −1 (green) … 1 (magenta)
+    var levelsBlack = 0.0      // 0…0.9 input black point
+    var levelsWhite = 1.0      // 0.1…1 input white point
+    var gamma = 1.0            // 0.2…5 midtones
+    var sharpen = 0.0          // 0…2
+    var noiseReduction = 0.0   // 0…1
+    var vignette = 0.0         // 0…2
+    var posterize = 0.0        // 0 = off, else 2…32 levels
+    var pixelate = 0.0         // 0 = off, else block size in px
+    var grain = 0.0            // 0…1 film grain
+    init() {}
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        func v(_ k: CodingKeys, _ d: Double) throws -> Double { try c.decodeIfPresent(Double.self, forKey: k) ?? d }
+        brightness = try v(.brightness, 0); contrast = try v(.contrast, 1); saturation = try v(.saturation, 1)
+        exposure = try v(.exposure, 0); blur = try v(.blur, 0); inverted = try c.decodeIfPresent(Bool.self, forKey: .inverted) ?? false
+        hue = try v(.hue, 0); vibrance = try v(.vibrance, 0); temperature = try v(.temperature, 0); tint = try v(.tint, 0)
+        levelsBlack = try v(.levelsBlack, 0); levelsWhite = try v(.levelsWhite, 1); gamma = try v(.gamma, 1)
+        sharpen = try v(.sharpen, 0); noiseReduction = try v(.noiseReduction, 0); vignette = try v(.vignette, 0)
+        posterize = try v(.posterize, 0); pixelate = try v(.pixelate, 0); grain = try v(.grain, 0)
+    }
+    var numbers: [Double] { [brightness, contrast, saturation, exposure, blur, hue, vibrance, temperature, tint, levelsBlack, levelsWhite, gamma, sharpen, noiseReduction, vignette, posterize, pixelate, grain] }
 }
 struct ArtLayer: Codable, Identifiable, Equatable, Sendable {
     var id = UUID(); var name: String; var visible = true; var strokes: [InkStroke] = []
@@ -61,19 +99,45 @@ struct ArtDocument: Codable, Equatable, Sendable {
 extension JSONEncoder { static var pretty: JSONEncoder { let e = JSONEncoder(); e.outputFormatting = [.prettyPrinted, .sortedKeys]; return e } }
 
 enum Tool: String, CaseIterable, Identifiable {
-    case brush, eraser, eyedropper, move, rectangleSelection, ellipseSelection, lasso, fill, gradient, text, rectangle, ellipse, line, pan
+    case brush, eraser, eyedropper, move, rectangleSelection, ellipseSelection, lasso, wand, fill, bucket, gradient, text, rectangle, ellipse, line, pan
     var id: String { rawValue }
     var symbol: String { switch self {
-    case .brush: "paintbrush.pointed"; case .eraser: "eraser"; case .eyedropper: "eyedropper"; case .move: "move.3d"; case .rectangleSelection: "rectangle.dashed"; case .ellipseSelection: "circle.dashed"; case .lasso: "lasso"; case .fill: "drop.fill"; case .gradient: "rectangle.lefthalf.filled"; case .text: "textformat"; case .rectangle: "rectangle"; case .ellipse: "circle"; case .line: "line.diagonal"; case .pan: "hand.draw"
+    case .brush: "paintbrush.pointed"; case .eraser: "eraser"; case .eyedropper: "eyedropper"; case .move: "move.3d"; case .rectangleSelection: "rectangle.dashed"; case .ellipseSelection: "circle.dashed"; case .lasso: "lasso"; case .wand: "wand.and.stars"; case .fill: "drop.fill"; case .bucket: "paintbrush.pointed.fill"; case .gradient: "rectangle.lefthalf.filled"; case .text: "textformat"; case .rectangle: "rectangle"; case .ellipse: "circle"; case .line: "line.diagonal"; case .pan: "hand.draw"
     } }
-    var key: String { switch self { case .brush: "b"; case .eraser: "e"; case .eyedropper: "i"; case .move: "v"; case .rectangleSelection: "m"; case .ellipseSelection: "u"; case .lasso: "l"; case .fill: "g"; case .gradient: "d"; case .text: "t"; case .rectangle: "r"; case .ellipse: "c"; case .line: "n"; case .pan: "p" } }
+    var key: String { switch self { case .brush: "b"; case .eraser: "e"; case .eyedropper: "i"; case .move: "v"; case .rectangleSelection: "m"; case .ellipseSelection: "u"; case .lasso: "l"; case .wand: "w"; case .fill: "g"; case .bucket: "k"; case .gradient: "d"; case .text: "t"; case .rectangle: "r"; case .ellipse: "c"; case .line: "n"; case .pan: "p" } }
 
-    var english: String { switch self { case .brush: "Brush"; case .eraser: "Eraser"; case .eyedropper: "Eyedropper"; case .move: "Move"; case .rectangleSelection: "Rectangle selection"; case .ellipseSelection: "Ellipse selection"; case .lasso: "Lasso"; case .fill: "Fill layer"; case .gradient: "Gradient"; case .text: "Text"; case .rectangle: "Rectangle"; case .ellipse: "Ellipse"; case .line: "Line"; case .pan: "Hand" } }
+    var english: String { switch self { case .brush: "Brush"; case .eraser: "Eraser"; case .eyedropper: "Eyedropper"; case .move: "Move"; case .rectangleSelection: "Rectangle selection"; case .ellipseSelection: "Ellipse selection"; case .lasso: "Lasso"; case .wand: "Magic wand"; case .fill: "Fill layer"; case .bucket: "Paint bucket"; case .gradient: "Gradient"; case .text: "Text"; case .rectangle: "Rectangle"; case .ellipse: "Ellipse"; case .line: "Line"; case .pan: "Hand" } }
 }
-struct CanvasSelection: Equatable { var points: [CGPoint]; var ellipse = false; var bounds: CGRect { guard let p = points.first else { return .zero }; return points.dropFirst().reduce(CGRect(x:p.x,y:p.y,width:0,height:0)) { $0.union(CGRect(x:$1.x,y:$1.y,width:0,height:0)) } } }
+struct CanvasSelection: Equatable {
+    var points: [CGPoint]; var ellipse = false
+    /// Pixel selection (magic wand, inverse): DeviceGray, document size, white = selected.
+    var mask: CGImage? = nil
+    /// The mask as PNG, put on strokes drawn inside the selection.
+    var maskData: Data? = nil
+    static func == (a: CanvasSelection, b: CanvasSelection) -> Bool { a.points == b.points && a.ellipse == b.ellipse && a.mask === b.mask }
+    var bounds: CGRect { guard let p = points.first else { return .zero }; return points.dropFirst().reduce(CGRect(x:p.x,y:p.y,width:0,height:0)) { $0.union(CGRect(x:$1.x,y:$1.y,width:0,height:0)) } } }
 struct CanvasGeometry {
     var size: CGSize; var document: CGSize; var zoom: Double; var pan: CGSize; var rotation: Double; var mirrored: Bool
     var scale: Double { min((size.width - 72) / document.width, (size.height - 72) / document.height) * zoom }
     var transform: CGAffineTransform { CGAffineTransform(translationX: size.width/2 + pan.width, y: size.height/2 + pan.height).rotated(by: rotation * .pi / 180).scaledBy(x: mirrored ? -scale : scale, y: scale).translatedBy(x: -document.width/2, y: -document.height/2) }
     func toDocument(_ point: CGPoint) -> CGPoint { point.applying(transform.inverted()) }
+}
+
+/// One-click starting points for the adjustments (they only set values; everything stays editable).
+enum AdjustmentLook: String, CaseIterable, Identifiable {
+    case film, vivid, noir, cool, warm, retro
+    var id: String { rawValue }
+    var title: String { switch self { case .film: "Film"; case .vivid: "Vivid"; case .noir: "Noir"; case .cool: "Cool"; case .warm: "Warm"; case .retro: "Retro" } }
+    var symbol: String { switch self { case .film: "film"; case .vivid: "sparkles"; case .noir: "moon"; case .cool: "snowflake"; case .warm: "sun.max"; case .retro: "camera.filters" } }
+    func apply(to a: inout LayerAdjustment) {
+        a = LayerAdjustment()
+        switch self {
+        case .film: a.grain = 0.35; a.vignette = 0.6; a.temperature = 0.15; a.contrast = 1.08; a.levelsBlack = 0.03
+        case .vivid: a.vibrance = 0.6; a.contrast = 1.12; a.sharpen = 0.4
+        case .noir: a.saturation = 0; a.contrast = 1.35; a.vignette = 0.9; a.grain = 0.2
+        case .cool: a.temperature = -0.45; a.tint = -0.05; a.vibrance = 0.2
+        case .warm: a.temperature = 0.45; a.vibrance = 0.15; a.exposure = 0.1
+        case .retro: a.saturation = 0.75; a.temperature = 0.3; a.contrast = 0.85; a.gamma = 1.1; a.grain = 0.25; a.vignette = 0.5
+        }
+    }
 }
