@@ -238,7 +238,7 @@ enum Renderer {
                 context.drawLinearGradient(gradient, start: p, end: q, options: [.drawsBeforeStartLocation, .drawsAfterEndLocation])
             }
         case "text":
-            let font = CTFontCreateWithName("Helvetica" as CFString, max(6, stroke.width), nil)
+            let font = CTFontCreateWithName((stroke.fontName ?? "Helvetica") as CFString, max(6, stroke.width), nil)
             let attr: [NSAttributedString.Key: Any] = [NSAttributedString.Key(kCTFontAttributeName as String): font,
                 NSAttributedString.Key(kCTForegroundColorAttributeName as String): stroke.color.cgColor]
             let line = CTLineCreateWithAttributedString(NSAttributedString(string: stroke.text ?? "", attributes: attr))

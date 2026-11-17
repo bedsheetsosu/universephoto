@@ -48,6 +48,13 @@ struct StudioCommands: Commands {
             Button(L("Duplicate")) { studio.duplicateLayer() }
             Button(L("Layer via copy")) { studio.layerFromSelection(cut:false) }.keyboardShortcut("j")
             Button(L("Layer via cut")) { studio.layerFromSelection(cut:true) }.keyboardShortcut("j",modifiers:[.command,.shift])
+            Button(L("Free transform")) { studio.transformMode.toggle() }.keyboardShortcut("t",modifiers:.command)
+            Button(L("Reset transform")) { studio.resetTransform() }
+            Menu(L("Align to canvas")) {
+                Button(L("Left edges")) { studio.align(.left) };Button(L("Horizontal centers")) { studio.align(.centerX) };Button(L("Right edges")) { studio.align(.right) }
+                Divider()
+                Button(L("Top edges")) { studio.align(.top) };Button(L("Vertical centers")) { studio.align(.centerY) };Button(L("Bottom edges")) { studio.align(.bottom) }
+            }
             Button(L("Group layers")) { studio.groupSelected() }.keyboardShortcut("g",modifiers:.command)
             Button(L("Ungroup")) { studio.ungroup() }.keyboardShortcut("g",modifiers:[.command,.shift]).disabled(studio.activeLayer?.groupID == nil)
             Button(L("Clipping mask")) { studio.toggleClipping() }.keyboardShortcut("g",modifiers:[.command,.option]).disabled(studio.selectedLayer == 0)

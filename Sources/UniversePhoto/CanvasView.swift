@@ -18,6 +18,10 @@ struct ArtworkCanvas: NSViewRepresentable {
     private var start = CGPoint.zero; private var previous = CGPoint.zero
     private var originalTransform: LayerTransform?
     private var moveStart: [UUID: LayerTransform] = [:]
+    private enum TransformDrag { case move, scale, rotate }
+    private var transformDrag: TransformDrag?
+    private var transformStart = LayerTransform()
+    private var transformCentre = CGPoint.zero
     private var remoteActive = false; private var lastRemote = Date.distantPast
     private var interactionBegan = false
     private var lastRemoteScreen: CGPoint?
@@ -54,6 +58,13 @@ struct ArtworkCanvas: NSViewRepresentable {
         if let active, s.layers.indices.contains(s.selectedLayer) { if s.maskEditing { var previewLayers = s.composite(s.layers);previewLayers[s.selectedLayer].mask?.append(active);rendered = Renderer.render(layers:previewLayers,width:s.width,height:s.height,cache:layerCache) } else { rendered = Renderer.render(layers:s.composite(s.layers),width:s.width,height:s.height,preview:active,previewLayer:s.selectedLayer,cache:layerCache) } } else { rendered = committedImage() }
         if let rendered { drawImage(rendered,in:ctx,rect:doc) }
         if grid { ctx.setStrokeColor(CGColor(gray:0.4,alpha:0.25)); ctx.setLineWidth(0.5 / max(geometry.scale,0.01)); for x in stride(from:0,through:s.width,by:50) { ctx.move(to:CGPoint(x:x,y:0)); ctx.addLine(to:CGPoint(x:x,y:s.height)) }; for y in stride(from:0,through:s.height,by:50) { ctx.move(to:CGPoint(x:0,y:y)); ctx.addLine(to:CGPoint(x:s.width,y:y)) }; ctx.strokePath() }
+        if s.transformMode, let corners = s.transformCorners() {
+            let line = 1/max(geometry.scale,0.01), h = 4*line
+            ctx.setLineWidth(line); ctx.setStrokeColor(NSColor(PhotoTheme.mint).cgColor)
+            ctx.addLines(between:corners); ctx.closePath(); ctx.strokePath()
+            ctx.setFillColor(CGColor(gray:1,alpha:1))
+            for c in corners { let r = CGRect(x:c.x-h,y:c.y-h,width:2*h,height:2*h); ctx.fill(r); ctx.stroke(r) }
+        }
         if let selection = s.selection, let mask = selection.mask {
             // Pixel selection: tint what is selected, dashed box around it.
             ctx.saveGState(); ctx.translateBy(x:0,y:CGFloat(s.height)); ctx.scaleBy(x:1,y:-1)
@@ -94,6 +105,14 @@ struct ArtworkCanvas: NSViewRepresentable {
     private func pressure(_ e:NSEvent) -> Double { e.subtype == .tabletPoint ? max(0.05,Double(e.pressure)) : 1 }
     private func begin(at p:CGPoint,pressure:Double,tilt:CGPoint = .zero,rotation:Double = 0) {
         guard let s = studio,!s.isPlaying else { return }; interactionBegan = false; active = nil; originalTransform = nil; start = p; previous = p
+        if s.transformMode, s.canEdit, let corners = s.transformCorners() {
+            // Corners scale, inside moves, outside rotates – all around the content's centre.
+            let view = corners.map { $0.applying(geometry.transform) }
+            transformCentre = CGPoint(x:view.map(\.x).reduce(0,+)/4,y:view.map(\.y).reduce(0,+)/4)
+            let path = CGMutablePath(); path.addLines(between:view); path.closeSubpath()
+            transformDrag = view.contains { hypot($0.x-p.x,$0.y-p.y) < 11 } ? .scale : path.contains(p) ? .move : .rotate
+            transformStart = s.activeLayer?.transform ?? .init(); s.checkpoint("Transform"); interactionBegan = true; return
+        }
         let doc = documentPoint(p); guard CGRect(x:0,y:0,width:s.width,height:s.height).contains(doc) || s.tool == .pan else { return }
         interactionBegan = true
         if s.tool == .pan { return }
@@ -139,7 +158,7 @@ struct ArtworkCanvas: NSViewRepresentable {
         case .focus: stroke.kind = s.sharpenMode ? "sharpenBrush" : "blurBrush"; stroke.strength = s.toolStrength
         default: break
         }
-        switch s.tool { case .rectangle:stroke.kind = "rectangle"; case .ellipse:stroke.kind = "ellipse"; case .line:stroke.kind = "line"; case .text:stroke.kind = "text";stroke.text = s.textContent;stroke.width = max(10,s.brushSize); case .fill:stroke.kind = "fill"; case .gradient:stroke.kind = "gradient";stroke.secondaryColor = s.secondaryColor; default:break }
+        switch s.tool { case .rectangle:stroke.kind = "rectangle"; case .ellipse:stroke.kind = "ellipse"; case .line:stroke.kind = "line"; case .text:stroke.kind = "text";stroke.text = s.textContent;stroke.fontName = NSFontManager.shared.font(withFamily:s.fontFamily,traits:s.textBold ? .boldFontMask : [],weight:5,size:12)?.fontName;stroke.width = max(10,s.brushSize); case .fill:stroke.kind = "fill"; case .gradient:stroke.kind = "gradient";stroke.secondaryColor = s.secondaryColor; default:break }
         if s.tool == .bucket {
             guard var fill = s.bucketStroke(at:local,documentPoint:doc) else { interactionBegan = false; return }
             fill.selectionPoints = stroke.selectionPoints; fill.selectionEllipse = stroke.selectionEllipse; fill.selectionMask = stroke.selectionMask
@@ -150,6 +169,23 @@ struct ArtworkCanvas: NSViewRepresentable {
     private func drag(at p:CGPoint,pressure:Double,tilt:CGPoint = .zero,rotation:Double = 0) {
         guard let s = studio, interactionBegan else { return }
         if s.tool == .pan { s.pan.width += p.x-previous.x;s.pan.height += p.y-previous.y;previous = p;return }
+        if let mode = transformDrag {
+            var t = transformStart
+            switch mode {
+            case .move: let a = geometry.toDocument(start), b = geometry.toDocument(p); t.x += b.x-a.x; t.y += b.y-a.y
+            case .scale:
+                let factor = hypot(p.x-transformCentre.x,p.y-transformCentre.y) / max(1,hypot(start.x-transformCentre.x,start.y-transformCentre.y))
+                t = s.transformKeepingCentre(from:transformStart,scale:transformStart.scale*factor,rotation:transformStart.rotation)
+            case .rotate:
+                var deg = (atan2(p.y-transformCentre.y,p.x-transformCentre.x) - atan2(start.y-transformCentre.y,start.x-transformCentre.x)) * 180 / .pi
+                if s.mirrored { deg = -deg }
+                var angle = transformStart.rotation + deg
+                if NSEvent.modifierFlags.contains(.shift) { angle = (angle/15).rounded()*15 }
+                angle = (angle+540).truncatingRemainder(dividingBy:360)-180
+                t = s.transformKeepingCentre(from:transformStart,scale:transformStart.scale,rotation:angle)
+            }
+            s.layers[s.selectedLayer].transform = t; needsDisplay = true; return
+        }
         let doc = documentPoint(p)
         if var selection = s.selection, [.rectangleSelection,.ellipseSelection,.lasso].contains(s.tool) { if s.tool == .lasso { selection.points.append(doc) } else { selection.points = [documentPoint(start),doc] };s.selection = selection;return }
         if s.tool == .move, originalTransform != nil { let a = geometry.toDocument(start); s.move(moveStart,by:CGSize(width:doc.x-a.x,height:doc.y-a.y)); needsDisplay = true;return }
@@ -160,9 +196,10 @@ struct ArtworkCanvas: NSViewRepresentable {
         if stroke.kind == "smudge" { s.smudge(id:stroke.id,to:q) }
         active = stroke; needsDisplay = true
     }
-    private func finish() { guard let s = studio else { return }; if let stroke = active { s.add(stroke) }; if originalTransform != nil { s.changed() }; active = nil; originalTransform = nil; interactionBegan = false; needsDisplay = true }
+    private func finish() { guard let s = studio else { return }; if transformDrag != nil { transformDrag = nil; s.changed() }; if let stroke = active { s.add(stroke) }; if originalTransform != nil { s.changed() }; active = nil; originalTransform = nil; interactionBegan = false; needsDisplay = true }
     private func cancelInteraction() {
         if let s = studio, originalTransform != nil { s.move(moveStart,by:.zero) }
+        if let s = studio, transformDrag != nil, s.layers.indices.contains(s.selectedLayer) { s.layers[s.selectedLayer].transform = transformStart }; transformDrag = nil
         active = nil; originalTransform = nil; interactionBegan = false; needsDisplay = true
     }
     func remote(_ sample:PenSample) {
@@ -190,5 +227,5 @@ struct ArtworkCanvas: NSViewRepresentable {
     override func scrollWheel(with e:NSEvent) { guard let s = studio else { return }; if e.modifierFlags.contains(.command) { s.zoom = max(0.1,min(16,s.zoom * exp(e.scrollingDeltaY*0.01))) } else { s.pan.width -= e.scrollingDeltaX;s.pan.height -= e.scrollingDeltaY } }
     override func magnify(with e:NSEvent) { guard let s = studio else { return };s.zoom = max(0.1,min(16,s.zoom*(1+e.magnification))) }
     override func rotate(with e:NSEvent) { studio?.rotation += Double(e.rotation) }
-    override func keyDown(with e:NSEvent) { guard let s = studio else { return }; if e.keyCode == 53 { s.selection = nil;cancelInteraction();remoteActive = false;return };super.keyDown(with:e) }
+    override func keyDown(with e:NSEvent) { guard let s = studio else { return }; if e.keyCode == 53 { s.selection = nil;s.transformMode = false;cancelInteraction();remoteActive = false;return }; if e.keyCode == 36 && s.transformMode { s.transformMode = false; return };super.keyDown(with:e) }
 }

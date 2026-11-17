@@ -28,6 +28,8 @@ struct InkStroke: Codable, Equatable, Identifiable, Sendable {
     var selectionMask: Data? = nil
     /// Retouch brushes (dodge, burn, blur, sharpen, smudge): 0…1.
     var strength: Double? = nil
+    /// Text: PostScript font name (nil = Helvetica, as before 0.8).
+    var fontName: String? = nil
     /// Freehand kinds: the pressure brush and the retouch brushes (smoothed, every point kept).
     var isFreehand: Bool { kind == nil || ["dodge", "burn", "blurBrush", "sharpenBrush", "clone", "heal", "smudge"].contains(kind!) }
 }

@@ -96,6 +96,11 @@ struct Workspace: View {
             HStack(spacing:7) { Image(systemName:s.tool.symbol).foregroundStyle(tint);Text(L(s.tool.english)).fontWeight(.semibold) }.frame(minWidth:70,alignment:.leading)
             Rectangle().fill(theme.outline).frame(width:1,height:17)
             if s.tool == .text { TextField(L("Text"),text:$s.textContent).textFieldStyle(.plain).padding(6).background(theme.card,in:RoundedRectangle(cornerRadius:6)).frame(width:120) }
+            if s.tool == .text && g.size.width > 700 {
+                Picker(L("Font"),selection:$s.fontFamily) { ForEach(NSFontManager.shared.availableFontFamilies,id:\.self) { Text($0).tag($0) } }.labelsHidden().frame(width:130).controlSize(.mini)
+                Toggle(L("Bold"),isOn:$s.textBold).toggleStyle(.checkbox).controlSize(.mini)
+            }
+            if s.transformMode { Text(L("Corners scale · inside moves · outside rotates (⇧ 15°) · ↩ done")).foregroundStyle(tint).lineLimit(1) }
             if g.size.width > 575 && [.brush,.eraser,.rectangle,.ellipse,.line,.text,.clone,.heal,.smudge,.dodge,.focus].contains(s.tool) { Text(L("Size")).foregroundStyle(theme.secondary);Slider(value:$s.brushSize,in:1...200).frame(width:65).controlSize(.mini).accessibilityLabel(L("Brush size"));Text("\(Int(s.brushSize))").monospacedDigit().frame(width:24,alignment:.leading) }
             if g.size.width > 460 && ![.pan,.move,.rectangleSelection,.ellipseSelection,.lasso,.wand,.eyedropper,.clone,.heal,.smudge,.dodge,.focus].contains(s.tool) { Text(L("Opacity")).foregroundStyle(theme.secondary);Slider(value:$s.brushOpacity,in:0.05...1).frame(width:55).controlSize(.mini).accessibilityLabel(L("Brush opacity"));Text("\(Int(s.brushOpacity*100))%").monospacedDigit().frame(width:29) }
             if [.clone,.heal].contains(s.tool) {

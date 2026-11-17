@@ -17,6 +17,12 @@ struct BrushPreset: Codable, Identifiable {
     /// Further selected layers (Shift/⌘-click in the list); the active one is `selectedLayer`.
     @Published var selectedIDs: Set<UUID> = []
     @Published var groups: [LayerGroup] = []
+    /// Free transform (⌘T): handles around the active layer's content.
+    @Published var transformMode = false
+    var boundsCache: [String: CGRect] = [:]
+    /// Text tool: font family and weight.
+    @Published var fontFamily = "Helvetica"
+    @Published var textBold = false
     @Published var color = CodableColor.black
     @Published var secondaryColor = CodableColor.white
     @Published var brushSize = 12.0
