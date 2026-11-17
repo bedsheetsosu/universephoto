@@ -148,9 +148,20 @@ struct Workspace: View {
     private var resizeInspector:some View { Color.clear.frame(width:5).contentShape(Rectangle()).gesture(DragGesture().onChanged { value in inspectorWidth = min(420,max(232,inspectorWidth-value.translation.width*0.06)) }).onHover { if $0 { NSCursor.resizeLeftRight.push() } else { NSCursor.pop() } } }
     private var resizeTimeline:some View { Rectangle().fill(theme.outline).frame(height:4).gesture(DragGesture().onChanged { value in timelineHeight = min(320,max(130,timelineHeight-value.translation.height*0.06)) }) }
     private var canvasBadge:some View { HStack(spacing:8) { Text("\(s.width) × \(s.height)").monospacedDigit();Text("sRGB · RGBA").foregroundStyle(.secondary);if s.maskEditing { Text(L("MASK")).foregroundStyle(tint) } }.font(.system(size:9,weight:.medium)).padding(.horizontal,10).padding(.vertical,6).photoSurface(radius:12) }
+    /// "iPad · USB · 60 fps · 🔋 80 %" from UniversePen's status.
+    private func penDeviceLine(_ d:PenDeviceInfo)->some View {
+        HStack(spacing:6) {
+            Image(systemName:"ipad.landscape").foregroundStyle(tint)
+            Text(d.device ?? "iPad").lineLimit(1)
+            if let usb = d.usb { Text(usb ? L("USB") : L("Wi-Fi")).foregroundStyle(theme.secondary) }
+            if let fps = d.fps, fps > 0 { Text("\(Int(fps)) fps").monospacedDigit().foregroundStyle(theme.secondary) }
+            if let b = d.battery { Image(systemName:d.charging == true ? "battery.100.bolt" : b < 0.2 ? "battery.25" : "battery.75").foregroundStyle(b < 0.2 && d.charging != true ? .orange : theme.secondary);Text("\(Int(b*100)) %").monospacedDigit().foregroundStyle(theme.secondary) }
+        }.accessibilityElement(children:.combine)
+    }
     private var statusbar:some View { HStack(spacing:12) {
         Circle().fill(s.pen.connected ? Color.green : .secondary.opacity(0.4)).frame(width:5,height:5)
         Text(s.pen.status).lineLimit(1)
+        if let d = s.pen.device { penDeviceLine(d) }
         Spacer();Text(L("Scroll: pan · ⌘ scroll: zoom · Esc: deselect")).lineLimit(1).foregroundStyle(theme.secondary.opacity(0.8))
         Spacer();Button { grid.toggle() } label: { Image(systemName:"grid").foregroundStyle(grid ? tint : .secondary) }.buttonStyle(.plain).help(L("Grid"))
         Button { snap.toggle() } label: { Image(systemName:"dot.scope").foregroundStyle(snap ? tint : .secondary) }.buttonStyle(.plain).help(L("25 px snapping"))
@@ -175,6 +186,15 @@ struct Workspace: View {
         VStack(alignment:.leading,spacing:10) {
             HStack { Image(systemName:"pencil.tip.crop.circle").foregroundStyle(theme.accent);Text("UniversePen").font(.system(size:12,weight:.semibold,design:.rounded));Spacer();Toggle(L("API"),isOn:Binding(get:{s.apiEnabled},set:{s.apiEnabled = $0;s.pen.enable($0)})).labelsHidden().toggleStyle(.switch).controlSize(.small).accessibilityLabel(L("Use UniversePen Developer API")) }
             Text(s.pen.status).font(.caption).foregroundStyle(theme.secondary)
+            if let d = s.pen.device { penDeviceLine(d).font(.caption) }
+            if s.pen.connected {
+                HStack(spacing:8) {
+                    Button { s.pen.installShortcutBar() } label: { Label(L("iPad bar for UniversePhoto"),systemImage:"ipad.landscape") }.buttonStyle(PhotoButtonStyle())
+                    Button { s.pen.removeShortcutBar() } label: { Image(systemName:"trash") }.buttonStyle(PhotoButtonStyle()).help(L("Remove the iPad bar")).accessibilityLabel(L("Remove the iPad bar"))
+                }
+                Text(L("Adds a shortcut bar to UniversePen that shows on the iPad while UniversePhoto is in front: brush, eraser, eyedropper, clone, undo, redo, brush size, hand, fit.")).font(.system(size:10)).foregroundStyle(theme.secondary)
+                if let reply = s.pen.lastReply { Text(reply).font(.system(size:10,weight:.medium)).foregroundStyle(tint) }
+            }
             Text(L("Optional local pen input via 127.0.0.1:47800. Enable the API in UniversePen first.")).font(.system(size:10)).foregroundStyle(theme.secondary)
         }.photoCard()
         HStack { Button(L("Recovery")) { showPreferences = false;recoverySheet = true }.buttonStyle(PhotoButtonStyle());Spacer();Button(L("Done")) { showPreferences = false }.buttonStyle(PhotoButtonStyle(prominent:true)).keyboardShortcut(.defaultAction) }

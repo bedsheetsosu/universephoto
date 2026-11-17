@@ -50,11 +50,20 @@ enum PenProtocolError: Error, LocalizedError, Equatable, Sendable {
     }
 }
 
+/// What UniversePen reports about the iPad every second (status topic).
+struct PenDeviceInfo: Equatable, Sendable {
+    var connected: Bool
+    var device: String? = nil; var link: String? = nil; var usb: Bool? = nil
+    var fps: Double? = nil; var battery: Double? = nil; var charging: Bool? = nil
+}
+
 enum PenProtocolEvent: Equatable, Sendable {
     case hello(Int)
     case pen(PenSample)
-    case deviceStatus(Bool)
+    case deviceStatus(PenDeviceInfo)
     case subscribed
+    /// Answer to one of our own requests (id ≥ 2): nil = success, else the error text.
+    case reply(Int, String?)
     case ignored
 }
 
@@ -83,11 +92,13 @@ struct PenLineDecoder {
     private struct Subscription: Decodable { var topics: [String]? }
     private struct EventData: Decodable {
         var api: Int?; var connected: Bool?
+        var device: String?; var link: String?; var usb: Bool?; var fps: Double?; var ipadBattery: Double?; var ipadCharging: Bool?
         var phase: String?; var x: Double?; var y: Double?; var pressure: Double?
         var screenX: Double?; var screenY: Double?; var tiltX: Double?; var tiltY: Double?; var rotation: Double?; var timestamp: Double?
     }
     static func decode(_ line: Data) throws -> PenProtocolEvent {
         let envelope = try JSONDecoder().decode(Envelope.self, from: line)
+        if let id = envelope.id, id >= 2 { return .reply(id, envelope.error) }
         if let error = envelope.error { throw PenProtocolError.server(error) }
         if envelope.id == 1, envelope.result?.topics?.contains("input") == true { return .subscribed }
         guard let data = envelope.data else { return .ignored }
@@ -103,7 +114,9 @@ struct PenLineDecoder {
             return .pen(try PenSample(phase: phase, x: x, y: y, screenX: data.screenX, screenY: data.screenY,
                                   pressure: pressure, tiltX: data.tiltX, tiltY: data.tiltY,
                                   rotation: data.rotation, timestamp: data.timestamp).validated())
-        case "status": return .deviceStatus(data.connected ?? false)
+        case "status":
+            return .deviceStatus(PenDeviceInfo(connected: data.connected ?? false, device: data.device, link: data.link, usb: data.usb,
+                                               fps: data.fps.flatMap { $0.isFinite ? $0 : nil }, battery: data.ipadBattery.flatMap { $0.isFinite ? min(1, max(0, $0)) : nil }, charging: data.ipadCharging))
         default: return .ignored
         }
     }
@@ -122,6 +135,9 @@ struct PenLineDecoder {
     }
     @Published private(set) var connected = false
     @Published private(set) var deviceConnected = false
+    @Published private(set) var device: PenDeviceInfo?
+    /// Result of the last request we sent (shown under the UniversePen settings).
+    @Published private(set) var lastReply: String?
     @Published private(set) var enabled = false
     var onPen: ((PenSample) -> Void)?
     private var worker: PenConnectionWorker?
@@ -134,7 +150,7 @@ struct PenLineDecoder {
         if !enabled {
             onPen?(PenSample(phase: "cancel", x: 0, y: 0, pressure: 0))
             worker?.stop(); worker = nil
-            connected = false; deviceConnected = false; rawStatus = "Developer API off"; failure = nil
+            connected = false; deviceConnected = false; device = nil; rawStatus = "Developer API off"; failure = nil
             return
         }
         rawStatus = "Connecting to 127.0.0.1:47800…"; failure = nil
@@ -146,7 +162,10 @@ struct PenLineDecoder {
                 case .status(let status, let connected): self.rawStatus = status; self.failure = nil; self.connected = connected
                 case .failed(let reason): self.rawStatus = "Disconnected · retrying in 2 s"; self.failure = reason; self.connected = false
                 case .pen(let sample): self.onPen?(sample)
-                case .device(let available):
+                case .reply(let error): self.lastReply = error.map { LF("UniversePen: %@", $0) } ?? L("Done – UniversePen applied it.")
+                case .device(let info):
+                    let available = info.connected
+                    self.device = available ? info : nil
                     self.deviceConnected = available
                     if self.connected { self.rawStatus = available ? "UniversePen connected · iPad ready" : "API connected · no iPad"; self.failure = nil }
                 }
@@ -155,11 +174,31 @@ struct PenLineDecoder {
         self.worker = worker
         worker.start()
     }
+
+    /// Sends one developer API request (only while the API connection is up).
+    func send(_ method: String, _ params: [String: Any] = [:]) {
+        guard connected, let worker else { lastReply = L("UniversePen is not connected."); return }
+        lastReply = nil
+        worker.send(method: method, params: params)
+    }
+
+    static let bundleID = "local.universephoto"
+
+    /// A shortcut bar on the iPad that appears while UniversePhoto is in front (keys as in the app).
+    func installShortcutBar() {
+        func key(_ title: String, _ k: String, _ mods: [String] = []) -> [String: Any] { ["title": L(title), "key": k, "modifiers": mods] }
+        send("control.setAppProfile", ["bundleID": Self.bundleID, "name": "UniversePhoto", "buttons": [
+            key("Brush", "b"), key("Eraser", "e"), key("Eyedropper", "i"), key("Clone stamp", "s"),
+            key("Undo", "z", ["cmd"]), key("Redo", "z", ["cmd", "shift"]), key("Smaller", "["), key("Bigger", "]"),
+            key("Hand", "p"), key("Fit canvas", "0", ["cmd"]),
+        ]])
+    }
+    func removeShortcutBar() { send("control.removeAppProfile", ["bundleID": Self.bundleID]) }
     deinit { worker?.stop() }
 }
 
 private enum PenConnectionEvent: Sendable {
-    case status(String, Bool), failed(PenConnectionFailure), pen(PenSample), device(Bool)
+    case status(String, Bool), failed(PenConnectionFailure), pen(PenSample), device(PenDeviceInfo), reply(String?)
 }
 
 /// Typed diagnostics cross the queue boundary without formatting or localization.
@@ -198,6 +237,18 @@ private final class PenConnectionWorker: @unchecked Sendable {
     private var generation = 0
     private var active = false
     private var subscribed = false
+    private var nextID = 2
+    func send(method: String, params: [String: Any]) {
+        guard let body = try? JSONSerialization.data(withJSONObject: ["method": method, "params": params]) else { return }
+        queue.async {
+            guard self.active, self.subscribed, let connection = self.connection,
+                  var object = (try? JSONSerialization.jsonObject(with: body)) as? [String: Any] else { return }
+            object["id"] = self.nextID; self.nextID += 1
+            guard var line = try? JSONSerialization.data(withJSONObject: object) else { return }
+            line.append(10)
+            connection.send(content: line, completion: .contentProcessed { _ in })
+        }
+    }
     private var greeted = false
     private let deliver: @Sendable (PenConnectionEvent) -> Void
     init(deliver: @escaping @Sendable (PenConnectionEvent) -> Void) { self.deliver = deliver }
@@ -240,7 +291,7 @@ private final class PenConnectionWorker: @unchecked Sendable {
         let retryGeneration = generation
         connection?.cancel(); connection = nil; decoder.reset(); subscribed = false; greeted = false
         deliver(.failed(reason))
-        deliver(.device(false))
+        deliver(.device(PenDeviceInfo(connected: false)))
         // A cancel sample clears any unfinished remote stroke in the canvas.
         deliver(.pen(PenSample(phase: "cancel", x: 0, y: 0, pressure: 0)))
         queue.asyncAfter(deadline: .now() + 2) { [weak self] in
@@ -267,7 +318,8 @@ private final class PenConnectionWorker: @unchecked Sendable {
                             guard self.greeted else { continue }
                             self.subscribed = true; self.deliver(.status("UniversePen API connected", true))
                         case .pen(let sample): if self.subscribed { self.deliver(.pen(sample)) }
-                        case .deviceStatus(let connected): if self.subscribed { self.deliver(.device(connected)) }
+                        case .deviceStatus(let info): if self.subscribed { self.deliver(.device(info)) }
+                        case .reply(_, let error): self.deliver(.reply(error))
                         case .ignored: break
                         }
                     }

@@ -233,6 +233,18 @@ struct InspectorPanel: View {
                 valueSlider(L("Opacity"), value: s.brushOpacity, range: 0.05...1, suffix: "%", multiplier: 100) { s.brushOpacity = $0 }
                 valueSlider(L("Stabilization"), value: s.smoothing, range: 0...0.9, suffix: "%", multiplier: 100) { s.smoothing = $0 }
                 Toggle(L("Pressure controls size"), isOn: $s.pressureEnabled).toggleStyle(.switch).controlSize(.mini).font(.system(size: 11))
+                if s.pressureEnabled {
+                    Text(L("Pressure curve")).font(.system(size: 10)).foregroundStyle(theme.secondary)
+                    CurvesEditor(curves: ["rgb": s.pressureCurve], histogram: [], set: { c in s.pressureCurve = c?["rgb"] ?? ToneCurve.identity }, channels: ["rgb"])
+                        .frame(maxWidth: 220)
+                    HStack(spacing: 5) {
+                        ForEach([("Soft", [CurvePoint(x: 0, y: 0), CurvePoint(x: 0.35, y: 0.6), CurvePoint(x: 1, y: 1)]),
+                                 ("Linear", ToneCurve.identity),
+                                 ("Firm", [CurvePoint(x: 0, y: 0), CurvePoint(x: 0.6, y: 0.35), CurvePoint(x: 1, y: 1)])], id: \.0) { name, pts in
+                            Button(L(name)) { s.pressureCurve = pts }.buttonStyle(PhotoButtonStyle())
+                        }
+                    }
+                }
                 Text(L("Tilt and barrel rotation shape the tip when provided by the input device.")).font(.system(size: 10)).foregroundStyle(theme.secondary).lineSpacing(3)
             }.photoCard()
             VStack(alignment: .leading, spacing: 12) {

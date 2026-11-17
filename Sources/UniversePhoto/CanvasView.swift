@@ -131,7 +131,7 @@ struct ArtworkCanvas: NSViewRepresentable {
         var c = s.color; c.alpha *= s.brushOpacity
         if s.maskEditing { c = s.eraser ? .white : CodableColor(red:0,green:0,blue:0,alpha:1) }
         let local = localPoint(doc)
-        var stroke = InkStroke(points:[InkPoint(x:local.x,y:local.y,pressure:s.pressureEnabled ? pressure : 1,tiltX:tilt.x,tiltY:tilt.y,rotation:rotation)],color:c,width:s.brushSize,isEraser:s.eraser && !s.maskEditing)
+        var stroke = InkStroke(points:[InkPoint(x:local.x,y:local.y,pressure:s.mapPressure(pressure),tiltX:tilt.x,tiltY:tilt.y,rotation:rotation)],color:c,width:s.brushSize,isEraser:s.eraser && !s.maskEditing)
         if let selection = s.selection, let maskData = selection.maskData {
             stroke.selectionMask = maskData
         } else if let selection = s.selection {
@@ -190,7 +190,7 @@ struct ArtworkCanvas: NSViewRepresentable {
         if var selection = s.selection, [.rectangleSelection,.ellipseSelection,.lasso].contains(s.tool) { if s.tool == .lasso { selection.points.append(doc) } else { selection.points = [documentPoint(start),doc] };s.selection = selection;return }
         if s.tool == .move, originalTransform != nil { let a = geometry.toDocument(start); s.move(moveStart,by:CGSize(width:doc.x-a.x,height:doc.y-a.y)); needsDisplay = true;return }
         guard var stroke = active else { return }; let q = localPoint(doc)
-        var point = InkPoint(x:q.x,y:q.y,pressure:s.pressureEnabled ? pressure : 1,tiltX:tilt.x,tiltY:tilt.y,rotation:rotation)
+        var point = InkPoint(x:q.x,y:q.y,pressure:s.mapPressure(pressure),tiltX:tilt.x,tiltY:tilt.y,rotation:rotation)
         if stroke.isFreehand, let last = stroke.points.last { let factor = 1-s.smoothing*0.85;point.x = last.x+(point.x-last.x)*factor;point.y = last.y+(point.y-last.y)*factor; if hypot(point.x-last.x,point.y-last.y) < 0.15 { return } }
         if !stroke.isFreehand { stroke.points = [stroke.points[0],point] } else { stroke.points.append(point) }
         if stroke.kind == "smudge" { s.smudge(id:stroke.id,to:q) }

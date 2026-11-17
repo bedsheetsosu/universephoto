@@ -29,6 +29,13 @@ struct BrushPreset: Codable, Identifiable {
     @Published var brushOpacity = 1.0
     @Published var smoothing = 0.15
     @Published var pressureEnabled = true
+    /// Stylus pressure → stroke pressure (any tablet and the UniversePen Pencil). Kept per Mac.
+    @Published var pressureCurve: [CurvePoint] = Studio.loadPressureCurve() { didSet { Studio.savePressureCurve(pressureCurve) } }
+    func mapPressure(_ p: Double) -> Double { pressureEnabled ? max(0.02, ToneCurve.evaluate(pressureCurve, at: p)) : 1 }
+    static func loadPressureCurve() -> [CurvePoint] {
+        (UserDefaults.standard.data(forKey: "pressureCurve")).flatMap { try? JSONDecoder().decode([CurvePoint].self, from: $0) } ?? ToneCurve.identity
+    }
+    static func savePressureCurve(_ c: [CurvePoint]) { UserDefaults.standard.set(try? JSONEncoder().encode(c), forKey: "pressureCurve") }
     @Published var tool = Tool.brush
     @Published var frames: [[ArtLayer]] = []
     @Published var frameIndex = 0

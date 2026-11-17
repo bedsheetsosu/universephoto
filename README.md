@@ -1,4 +1,4 @@
-# UniversePhoto™ 0.9
+# UniversePhoto™ 0.10
 
 Kostenlose, quelloffene macOS-Anwendung zum Zeichnen, zur Bildbearbeitung und für Frame-Animation. UniversePhoto läuft eigenständig und lokal; UniversePen ist optional. Dieser Entwicklungsstand liefert eine benutzbare Grundlage mit neuem UltraUI und klar begrenztem Funktionsumfang.
 
@@ -52,6 +52,8 @@ Globale Bildschirmkoordinaten werden auf die tatsächliche, gezoomte und gedreht
 
 Die direkte API-Route gilt zunächst für das primäre iPad. Zusätzliche iPads verwenden im aktuellen UniversePen-Host denselben nativen Device-Identifier, liefern aber keine eigenen Developer-API-Pencil-Samples; für diesen gleichzeitigen Betrieb den direkten Adapter ausschalten und native Eingabe verwenden.
 
+**Seit 0.10:** Bei verbundener API zeigen Statusleiste und Einstellungen das iPad aus UniversePens Status (Name, USB/WLAN, Bildrate, Akku). Ein Knopf „iPad-Leiste für UniversePhoto“ legt – nur auf Klick – in UniversePen eine App-Kürzelleiste für `local.universephoto` an (Pinsel, Radierer, Pipette, Stempel, Rückgängig, Wiederholen, Pinselgröße, Hand, Einpassen), die auf dem iPad erscheint, solange UniversePhoto vorn ist; der Papierkorb daneben entfernt sie wieder. Antworten von UniversePen (auch Fehler wie „kein iPad“) werden angezeigt und trennen die Verbindung nicht. Im Pinsel-Tab gibt es eine eigene Druckkurve mit Vorlagen (Weich, Linear, Fest); sie gilt für den Pencil über die API und für jedes Grafiktablett. Der Gerätestatus ist per Test mit dem dokumentierten Format geprüft, live in UniversePhoto noch nicht gesehen.
+
 [UniversePhoto Bridge](UniversePhotoBridge/README.md) registriert 31 Aktionen für Shortcut-Leiste, Radialmenü und zuweisbare Gesten. Das Plugin prüft die Vordergrund-App und sendet dokumentierte Tastenkürzel. Es verändert keine Profile und besitzt keinen Netzwerk- oder Dateizugriff. Ein bidirektionaler Zustandskanal ist nicht implementiert.
 
 ## Wichtige Kürzel
@@ -74,7 +76,7 @@ Die vollständige Bridge-Tabelle steht in der Plugin-Dokumentation. Tastenkürze
 
 ## Grenzen und Nachweise
 
-Zuletzt bestanden 78 Swift-Tests (u. a. PSD hin und zurück und Lesbarkeit durch macOS, Transformieren, Ausrichten, Gruppen, Ebenenstile, Retusche, Farbeimer, Zauberstab, Auswahlmasken, Looks, Mischmodi, Schnittmasken, Kurven, Kopieren/Einfügen). Die Tests verwenden eine eigene Zwischenablage, nie die des Nutzers. Sie prüfen unter anderem ältere Dokumente, echte Speicher-/Ladeoperationen, Undo/Redo, Masken, Mischmodi, Transformationen, Auswahl-Clips, Export und API-Protokoll. Der JavaScript-Test prüft die 31 Plugin-Aktionen und Vordergrundsperre. Diese Prüfungen ersetzen keine manuelle Interaktionsprüfung. Der reale API-Verbindungs- und Abonnementtest mit verbundenem iPad war erfolgreich; echte Pencil-Striche und iPad-Plugin-Auslösung wurden dabei noch nicht beobachtet.
+Zuletzt bestanden 81 Swift-Tests (u. a. UniversePen-Status und -Antworten, Druckkurve, PSD hin und zurück und Lesbarkeit durch macOS, Transformieren, Ausrichten, Gruppen, Ebenenstile, Retusche, Farbeimer, Zauberstab, Auswahlmasken, Looks, Mischmodi, Schnittmasken, Kurven, Kopieren/Einfügen). Die Tests verwenden eine eigene Zwischenablage, nie die des Nutzers. Sie prüfen unter anderem ältere Dokumente, echte Speicher-/Ladeoperationen, Undo/Redo, Masken, Mischmodi, Transformationen, Auswahl-Clips, Export und API-Protokoll. Der JavaScript-Test prüft die 31 Plugin-Aktionen und Vordergrundsperre. Diese Prüfungen ersetzen keine manuelle Interaktionsprüfung. Der reale API-Verbindungs- und Abonnementtest mit verbundenem iPad war erfolgreich; echte Pencil-Striche und iPad-Plugin-Auslösung wurden dabei noch nicht beobachtet.
 
 Der Renderer verarbeitet 8-Bit-sRGB/RGBA über Core Graphics und Core Image mit einem Ebenencache. Der dokumentierte Benchmark ist keine FPS- oder Eingabelatenzmessung. Filter- und Maskenvorschauen können bei großen Dokumenten teuer werden; eine eigene Metal-Tile-Engine ist noch offen.
 

@@ -30,6 +30,6 @@ final class PenProtocolTests: XCTestCase {
         XCTAssertThrowsError(try PenLineDecoder.decode(Data(#"{"id":1,"error":"not enabled"}"#.utf8)))
         var decoder = PenLineDecoder()
         XCTAssertThrowsError(try decoder.append(Data(repeating: 65, count: PenLineDecoder.limit + 1)))
-        XCTAssertEqual(try decoder.append(Data("{\"event\":\"status\",\"data\":{\"connected\":false}}\n".utf8)), [.deviceStatus(false)])
+        XCTAssertEqual(try decoder.append(Data("{\"event\":\"status\",\"data\":{\"connected\":false}}\n".utf8)), [.deviceStatus(PenDeviceInfo(connected: false))])
     }
 }

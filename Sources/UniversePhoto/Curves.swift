@@ -78,6 +78,8 @@ struct CurvesEditor: View {
     var curves: [String: [CurvePoint]]
     var histogram: [Double]
     var set: ([String: [CurvePoint]]?) -> Void
+    /// Channels offered; one channel hides the picker (e.g. the pressure curve).
+    var channels: [String] = ToneCurve.channels
     @State private var channel = "rgb"
     @State private var dragging: Int?
 
@@ -87,7 +89,7 @@ struct CurvesEditor: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(spacing: 4) {
-                ForEach(ToneCurve.channels, id: \.self) { ch in
+                ForEach(channels.count > 1 ? channels : [], id: \.self) { ch in
                     Button { channel = ch } label: {
                         Text(ch == "rgb" ? "RGB" : L(ch.capitalized)).font(.system(size: 10, weight: .semibold))
                             .padding(.horizontal, 8).padding(.vertical, 4)

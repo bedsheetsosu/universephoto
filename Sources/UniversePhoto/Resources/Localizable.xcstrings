@@ -7290,6 +7290,258 @@
           }
         }
       }
+    },
+    "Pressure curve": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Druckkurve"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pressure curve"
+          }
+        }
+      }
+    },
+    "Done – UniversePen applied it.": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Erledigt – UniversePen hat es übernommen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Done – UniversePen applied it."
+          }
+        }
+      }
+    },
+    "UniversePen is not connected.": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "UniversePen ist nicht verbunden."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "UniversePen is not connected."
+          }
+        }
+      }
+    },
+    "UniversePen: %@": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "UniversePen: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "UniversePen: %@"
+          }
+        }
+      }
+    },
+    "Adds a shortcut bar to UniversePen that shows on the iPad while UniversePhoto is in front: brush, eraser, eyedropper, clone, undo, redo, brush size, hand, fit.": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Legt in UniversePen eine Kürzelleiste an, die auf dem iPad erscheint, solange UniversePhoto vorn ist: Pinsel, Radierer, Pipette, Stempel, Rückgängig, Wiederholen, Pinselgröße, Hand, Einpassen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Adds a shortcut bar to UniversePen that shows on the iPad while UniversePhoto is in front: brush, eraser, eyedropper, clone, undo, redo, brush size, hand, fit."
+          }
+        }
+      }
+    },
+    "Remove the iPad bar": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iPad-Leiste entfernen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove the iPad bar"
+          }
+        }
+      }
+    },
+    "USB": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "USB"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "USB"
+          }
+        }
+      }
+    },
+    "Wi-Fi": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WLAN"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wi-Fi"
+          }
+        }
+      }
+    },
+    "iPad bar for UniversePhoto": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iPad-Leiste für UniversePhoto"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iPad bar for UniversePhoto"
+          }
+        }
+      }
+    },
+    "Soft": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Weich"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Soft"
+          }
+        }
+      }
+    },
+    "Linear": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Linear"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Linear"
+          }
+        }
+      }
+    },
+    "Firm": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fest"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Firm"
+          }
+        }
+      }
+    },
+    "Smaller": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kleiner"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Smaller"
+          }
+        }
+      }
+    },
+    "Bigger": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Größer"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bigger"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
