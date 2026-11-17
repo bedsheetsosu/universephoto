@@ -4,7 +4,7 @@ Verbindliche Referenz ist das öffentliche Repository [bedsheetsosu/universepen]
 
 ## Nachprüfbare Referenzen
 
-Alle folgenden Referenzen gehören zum Quellbaum `/Users/biene/Documents/Untitled Project/Tafel/`. Zeilenangaben beziehen sich auf den während dieser Überarbeitung gelesenen Stand vom 17. November 2026.
+Alle folgenden Referenzen gehören zum UniversePen-Quellbaum (github.com/bedsheetsosu/universepen). Zeilenangaben beziehen sich auf den während dieser Überarbeitung gelesenen Stand vom 17. November 2026.
 
 | Prinzip | Beleg im tatsächlichen Quelltext | Übertragung auf UniversePhoto |
 |---|---|---|
