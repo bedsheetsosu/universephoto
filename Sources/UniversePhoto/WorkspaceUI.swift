@@ -96,8 +96,16 @@ struct Workspace: View {
             HStack(spacing:7) { Image(systemName:s.tool.symbol).foregroundStyle(tint);Text(L(s.tool.english)).fontWeight(.semibold) }.frame(minWidth:70,alignment:.leading)
             Rectangle().fill(theme.outline).frame(width:1,height:17)
             if s.tool == .text { TextField(L("Text"),text:$s.textContent).textFieldStyle(.plain).padding(6).background(theme.card,in:RoundedRectangle(cornerRadius:6)).frame(width:120) }
-            if g.size.width > 575 && [.brush,.eraser,.rectangle,.ellipse,.line,.text].contains(s.tool) { Text(L("Size")).foregroundStyle(theme.secondary);Slider(value:$s.brushSize,in:1...200).frame(width:65).controlSize(.mini).accessibilityLabel(L("Brush size"));Text("\(Int(s.brushSize))").monospacedDigit().frame(width:24,alignment:.leading) }
-            if g.size.width > 460 && ![.pan,.move,.rectangleSelection,.ellipseSelection,.lasso,.wand,.eyedropper].contains(s.tool) { Text(L("Opacity")).foregroundStyle(theme.secondary);Slider(value:$s.brushOpacity,in:0.05...1).frame(width:55).controlSize(.mini).accessibilityLabel(L("Brush opacity"));Text("\(Int(s.brushOpacity*100))%").monospacedDigit().frame(width:29) }
+            if g.size.width > 575 && [.brush,.eraser,.rectangle,.ellipse,.line,.text,.clone,.heal,.smudge,.dodge,.focus].contains(s.tool) { Text(L("Size")).foregroundStyle(theme.secondary);Slider(value:$s.brushSize,in:1...200).frame(width:65).controlSize(.mini).accessibilityLabel(L("Brush size"));Text("\(Int(s.brushSize))").monospacedDigit().frame(width:24,alignment:.leading) }
+            if g.size.width > 460 && ![.pan,.move,.rectangleSelection,.ellipseSelection,.lasso,.wand,.eyedropper,.clone,.heal,.smudge,.dodge,.focus].contains(s.tool) { Text(L("Opacity")).foregroundStyle(theme.secondary);Slider(value:$s.brushOpacity,in:0.05...1).frame(width:55).controlSize(.mini).accessibilityLabel(L("Brush opacity"));Text("\(Int(s.brushOpacity*100))%").monospacedDigit().frame(width:29) }
+            if [.clone,.heal].contains(s.tool) {
+                Toggle(L("Aligned"),isOn:$s.cloneAligned).toggleStyle(.checkbox).controlSize(.mini)
+                Toggle(L("All layers"),isOn:$s.sampleMerged).toggleStyle(.checkbox).controlSize(.mini)
+                if g.size.width > 760 { Text(s.cloneSource == nil ? L("⌥-click sets the source") : L("Source set · ⌥-click to change")).foregroundStyle(theme.secondary) }
+            }
+            if s.tool == .dodge { Picker(L("Mode"),selection:$s.burnMode) { Text(L("Dodge")).tag(false);Text(L("Burn")).tag(true) }.pickerStyle(.segmented).labelsHidden().frame(width:120).controlSize(.mini) }
+            if s.tool == .focus { Picker(L("Mode"),selection:$s.sharpenMode) { Text(L("Blur")).tag(false);Text(L("Sharpen")).tag(true) }.pickerStyle(.segmented).labelsHidden().frame(width:130).controlSize(.mini) }
+            if [.smudge,.dodge,.focus].contains(s.tool) { Text(L("Strength")).foregroundStyle(theme.secondary);Slider(value:$s.toolStrength,in:0.05...1).frame(width:60).controlSize(.mini).accessibilityLabel(L("Strength"));Text("\(Int(s.toolStrength*100))%").monospacedDigit().frame(width:30) }
             if [.bucket,.wand].contains(s.tool) {
                 Text(L("Tolerance")).foregroundStyle(theme.secondary);Slider(value:$s.tolerance,in:0...255).frame(width:70).controlSize(.mini).accessibilityLabel(L("Tolerance"));Text("\(Int(s.tolerance))").monospacedDigit().frame(width:26,alignment:.leading)
                 if g.size.width > 640 { Toggle(L("Contiguous"),isOn:$s.contiguous).toggleStyle(.checkbox).controlSize(.mini);Toggle(L("All layers"),isOn:$s.sampleMerged).toggleStyle(.checkbox).controlSize(.mini) }

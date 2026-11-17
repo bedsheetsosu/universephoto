@@ -59,7 +59,13 @@ struct ArtworkCanvas: NSViewRepresentable {
             ctx.setFillColor(NSColor(PhotoTheme.mint).withAlphaComponent(0.28).cgColor); ctx.fill(CGRect(x:0,y:0,width:s.width,height:s.height)); ctx.restoreGState()
             ctx.setLineWidth(1/max(geometry.scale,0.01)); ctx.setStrokeColor(CGColor(gray:0,alpha:0.9)); ctx.setLineDash(phase:0,lengths:[5/max(geometry.scale,0.01),5/max(geometry.scale,0.01)]); ctx.stroke(selection.bounds); ctx.setLineDash(phase:0,lengths:[])
         } else if let selection = s.selection { let path = selectionPath(selection); ctx.setLineWidth(1/max(geometry.scale,0.01)); ctx.setStrokeColor(CGColor(gray:1,alpha:1)); ctx.addPath(path); ctx.strokePath(); ctx.setStrokeColor(CGColor(gray:0,alpha:0.9)); ctx.setLineDash(phase:0,lengths:[5/max(geometry.scale,0.01),5/max(geometry.scale,0.01)]); ctx.addPath(path); ctx.strokePath(); ctx.setLineDash(phase:0,lengths:[]) }
-        if let hover = s.hoverPoint, s.tool == .brush || s.tool == .eraser { ctx.setStrokeColor(CGColor(gray:0.2,alpha:0.7)); ctx.setLineWidth(1/max(geometry.scale,0.01)); let r = s.brushSize/2; ctx.strokeEllipse(in:CGRect(x:hover.x-r,y:hover.y-r,width:r*2,height:r*2)) }
+        if let hover = s.hoverPoint, [.clone,.heal].contains(s.tool), let source = s.cloneSourceMarker(for:hover) {
+            // Where the stamp copies from: a ring with a cross.
+            let r = s.brushSize/2, line = 1/max(geometry.scale,0.01)
+            ctx.setLineWidth(line); ctx.setStrokeColor(CGColor(gray:1,alpha:0.9)); ctx.strokeEllipse(in:CGRect(x:source.x-r,y:source.y-r,width:r*2,height:r*2))
+            ctx.move(to:CGPoint(x:source.x-6*line,y:source.y)); ctx.addLine(to:CGPoint(x:source.x+6*line,y:source.y)); ctx.move(to:CGPoint(x:source.x,y:source.y-6*line)); ctx.addLine(to:CGPoint(x:source.x,y:source.y+6*line)); ctx.strokePath()
+        }
+        if let hover = s.hoverPoint, [.brush,.eraser,.clone,.heal,.smudge,.dodge,.focus].contains(s.tool) { ctx.setStrokeColor(CGColor(gray:0.2,alpha:0.7)); ctx.setLineWidth(1/max(geometry.scale,0.01)); let r = s.brushSize/2; ctx.strokeEllipse(in:CGRect(x:hover.x-r,y:hover.y-r,width:r*2,height:r*2)) }
         ctx.restoreGState(); ctx.setStrokeColor(CGColor(gray:0.35,alpha:0.6)); ctx.setLineWidth(1/max(geometry.scale,0.01)); ctx.stroke(doc); ctx.restoreGState()
         if rulers { drawRulers() }
     }
@@ -121,6 +127,16 @@ struct ArtworkCanvas: NSViewRepresentable {
             stroke.selectionPoints = points.map { let p = localPoint($0); return InkPoint(x:p.x,y:p.y,pressure:1) }
             stroke.selectionEllipse = false
         }
+        switch s.tool {
+        case .clone, .heal:
+            if NSEvent.modifierFlags.contains(.option) { s.setCloneSource(doc); interactionBegan = false; needsDisplay = true; return }
+            stroke.kind = s.tool == .clone ? "clone" : "heal"
+            guard s.beginClone(id:stroke.id,at:doc) else { interactionBegan = false; return }
+        case .smudge: stroke.kind = "smudge"; stroke.strength = s.toolStrength; s.beginSmudge(id:stroke.id,at:local)
+        case .dodge: stroke.kind = s.burnMode ? "burn" : "dodge"; stroke.strength = s.toolStrength
+        case .focus: stroke.kind = s.sharpenMode ? "sharpenBrush" : "blurBrush"; stroke.strength = s.toolStrength
+        default: break
+        }
         switch s.tool { case .rectangle:stroke.kind = "rectangle"; case .ellipse:stroke.kind = "ellipse"; case .line:stroke.kind = "line"; case .text:stroke.kind = "text";stroke.text = s.textContent;stroke.width = max(10,s.brushSize); case .fill:stroke.kind = "fill"; case .gradient:stroke.kind = "gradient";stroke.secondaryColor = s.secondaryColor; default:break }
         if s.tool == .bucket {
             guard var fill = s.bucketStroke(at:local,documentPoint:doc) else { interactionBegan = false; return }
@@ -137,8 +153,10 @@ struct ArtworkCanvas: NSViewRepresentable {
         if s.tool == .move, let originalTransform { let a = geometry.toDocument(start); s.layers[s.selectedLayer].transform.x = originalTransform.x+doc.x-a.x; s.layers[s.selectedLayer].transform.y = originalTransform.y+doc.y-a.y; needsDisplay = true;return }
         guard var stroke = active else { return }; let q = localPoint(doc)
         var point = InkPoint(x:q.x,y:q.y,pressure:s.pressureEnabled ? pressure : 1,tiltX:tilt.x,tiltY:tilt.y,rotation:rotation)
-        if stroke.kind == nil, let last = stroke.points.last { let factor = 1-s.smoothing*0.85;point.x = last.x+(point.x-last.x)*factor;point.y = last.y+(point.y-last.y)*factor; if hypot(point.x-last.x,point.y-last.y) < 0.15 { return } }
-        if stroke.kind != nil { stroke.points = [stroke.points[0],point] } else { stroke.points.append(point) }; active = stroke; needsDisplay = true
+        if stroke.isFreehand, let last = stroke.points.last { let factor = 1-s.smoothing*0.85;point.x = last.x+(point.x-last.x)*factor;point.y = last.y+(point.y-last.y)*factor; if hypot(point.x-last.x,point.y-last.y) < 0.15 { return } }
+        if !stroke.isFreehand { stroke.points = [stroke.points[0],point] } else { stroke.points.append(point) }
+        if stroke.kind == "smudge" { s.smudge(id:stroke.id,to:q) }
+        active = stroke; needsDisplay = true
     }
     private func finish() { guard let s = studio else { return }; if let stroke = active { s.add(stroke) }; if originalTransform != nil { s.changed() }; active = nil; originalTransform = nil; interactionBegan = false; needsDisplay = true }
     private func cancelInteraction() {

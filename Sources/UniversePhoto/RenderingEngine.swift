@@ -43,6 +43,8 @@ final class LayerImageCache {
 /// CPU reference compositor. Every public coordinate is in document pixels with y=0 at the top.
 /// All scratch contexts are flipped once; compositing cancels that flip when drawing CGImages.
 enum Renderer {
+    /// Pictures of retouch strokes still being drawn (main thread only; baked on release).
+    nonisolated(unsafe) static var transient: [UUID: CGImage] = [:]
     // CIContext is reusable and documented as thread-safe; retain its internal pipeline caches.
     private static let filters = CIContext(options: [.workingColorSpace: CGColorSpace(name: CGColorSpace.sRGB)!])
     enum RenderError: LocalizedError {
@@ -204,10 +206,39 @@ enum Renderer {
             context.scaleBy(x: 1, y: -1)
             context.textPosition = .zero
             CTLineDraw(line, context)
+        case "dodge", "burn":
+            // Soft light with white/black lightens/darkens; then the old transparency is restored.
+            guard let before = context.makeImage() else { break }
+            let strength = max(0, min(1, stroke.strength ?? 0.5))
+            context.setBlendMode(.softLight)
+            context.setFillColor(CGColor(gray: stroke.kind == "dodge" ? 1 : 0, alpha: strength))
+            context.addPath(brushPath(stroke)); context.fillPath()
+            context.setBlendMode(.destinationIn)
+            drawImage(before, in: context, rect: CGRect(x: 0, y: 0, width: context.width, height: context.height))
+        case "blurBrush", "sharpenBrush":
+            guard let before = context.makeImage() else { break }
+            let strength = max(0, min(1, stroke.strength ?? 0.5)), input = CIImage(cgImage: before)
+            let output = stroke.kind == "blurBrush"
+                ? input.clampedToExtent().applyingFilter("CIGaussianBlur", parameters: [kCIInputRadiusKey: 1 + strength * 9]).cropped(to: input.extent)
+                : input.applyingFilter("CISharpenLuminance", parameters: [kCIInputSharpnessKey: strength * 2, kCIInputRadiusKey: 2.5])
+            guard let filtered = filters.createCGImage(output, from: input.extent) else { break }
+            context.addPath(brushPath(stroke)); context.clip()
+            context.setBlendMode(.copy)
+            drawImage(filtered, in: context, rect: CGRect(x: 0, y: 0, width: context.width, height: context.height))
+        case "clone", "heal", "smudge":
+            // Live retouch: the studio keeps the picture to show (shifted source or smudged pixels);
+            // on release the stroke is baked into a bitmap stroke.
+            guard let picture = transient[stroke.id] else { break }
+            if stroke.kind == "smudge" { context.setBlendMode(.copy) } else { context.addPath(brushPath(stroke)); context.clip() }
+            drawImage(picture, in: context, rect: CGRect(x: 0, y: 0, width: picture.width, height: picture.height))
         default: drawBrush(stroke, in: context)
         }
     }
     private static func drawBrush(_ stroke: InkStroke, in context: CGContext) {
+        context.addPath(brushPath(stroke)); context.fillPath()
+    }
+    /// The filled outline of a pressure brush stroke (also the clip of the retouch brushes).
+    static func brushPath(_ stroke: InkStroke) -> CGPath {
         // One filled silhouette gives constant opacity at overlapping joints. Segment quads
         // connect the pressure radii directly; only real samples add round/elliptical joins.
         // This avoids thousands of overlapping interpolated ellipses on a long stroke.
@@ -244,7 +275,7 @@ enum Renderer {
             silhouette.addLine(to:CGPoint(x:b.x+nx*rb,y:b.y+ny*rb))
             silhouette.closeSubpath()
         }
-        context.addPath(silhouette); context.fillPath()
+        return silhouette
     }
     private static func applyMask(_ strokes: [InkStroke], image: CGImage, width: Int, height: Int) -> CGImage? {
         guard let mask = context(width: width, height: height) else { return nil }

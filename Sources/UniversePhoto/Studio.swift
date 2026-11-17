@@ -84,6 +84,7 @@ struct BrushPreset: Codable, Identifiable {
     }
     func add(_ stroke: InkStroke) {
         guard canEdit else { return }; checkpoint(tool.english)
+        let stroke = bakeRetouch(stroke)
         if activeLayer?.mask != nil && maskEditing { layers[selectedLayer].mask?.append(stroke) } else { layers[selectedLayer].strokes.append(stroke) }
         changed()
     }
@@ -95,6 +96,15 @@ struct BrushPreset: Codable, Identifiable {
     /// Our last copy (document size, in place) and the pasteboard state right after it.
     var copiedPixels: CGImage?
     var copiedChangeCount = -1
+    /// Retouch: clone source (document pixels), the offset kept while "aligned", brush strength,
+    /// dodge ↔ burn and blur ↔ sharpen.
+    @Published var cloneSource: CGPoint?
+    var cloneOffset: CGSize?
+    @Published var cloneAligned = true
+    @Published var toolStrength = 0.5
+    @Published var burnMode = false
+    @Published var sharpenMode = false
+    var smudgeState: SmudgeState?
     /// The system pasteboard; tests use a private one so they never touch the user's clipboard.
     var pasteboard = NSPasteboard.general
     func undo() {

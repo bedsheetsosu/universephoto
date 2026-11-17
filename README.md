@@ -1,4 +1,4 @@
-# UniversePhoto™ 0.4
+# UniversePhoto™ 0.5
 
 Kostenlose, quelloffene macOS-Anwendung zum Zeichnen, zur Bildbearbeitung und für Frame-Animation. UniversePhoto läuft eigenständig und lokal; UniversePen ist optional. Dieser Entwicklungsstand liefert eine benutzbare Grundlage mit neuem UltraUI und klar begrenztem Funktionsumfang.
 
@@ -24,7 +24,8 @@ Details: [Installation](INSTALL.md), [Architektur](ARCHITECTURE.md), [Gestaltung
 ## Implementiert
 
 - **UltraUI im UniversePen-Stil:** Mint-Akzent und Indigo-Hintergrund wie UniversePen (dieselben Akzent-Presets), optional fließender Mesh-Hintergrund mit einstellbarem Tempo (steht bei „Bewegung reduzieren“ still), schwebende Werkzeugpalette, Dokument-Tabs mit Änderungsanzeige, kontextbezogene Optionen, Inspector-Karten, Befehlssuche und Simple/Photo/Animate. Dunkler, heller und Systemmodus, fünf Akzentfarben sowie Deutsch/Englisch. Inspector und Timeline sind einblendbar und skalierbar; Werkzeugpositionen lassen sich über das Kontextmenü ändern.
-- **16 Werkzeuge:** Pinsel, Radierer, Pipette, Ebenenverschiebung, Rechteckauswahl, Ellipsenauswahl, Lasso, Zauberstab, Flächenfüllung, Farbeimer, Farbverlauf, Text, Rechteck, Ellipse, Linie und Handwerkzeug.
+- **21 Werkzeuge:** Pinsel, Radierer, Pipette, Ebenenverschiebung, Rechteckauswahl, Ellipsenauswahl, Lasso, Zauberstab, Flächenfüllung, Farbeimer, Farbverlauf, Kopierstempel, Reparaturpinsel, Wischfinger, Abwedler/Nachbelichter, Weichzeichner/Scharfzeichner, Text, Rechteck, Ellipse, Linie und Handwerkzeug.
+- **Retusche (0.5):** Kopierstempel (S) und Reparaturpinsel (J): ⌥-Klick setzt die Quelle, ein Fadenkreuz zeigt beim Malen, woher kopiert wird; „Ausgerichtet“ behält den Abstand über mehrere Striche, „Alle Ebenen“ kopiert aus dem sichtbaren Bild. Der Reparaturpinsel übernimmt die Struktur der Quelle mit Helligkeit und Farbe des Ziels (Quelle + Weichzeichnung(Ziel) − Weichzeichnung(Quelle)). Wischfinger (F) schiebt Farbe mit weicher Kante live über die Ebene. Abwedler/Nachbelichter (O) hellt auf oder dunkelt ab, Weichzeichner/Scharfzeichner (Y) wirkt nur unter dem Pinsel; beide mit Stärke und ohne neue Pixel auf leeren Flächen. Alle Retuschestriche sind je ein Undo-Schritt; Stempel, Reparatur und Wischfinger werden beim Loslassen zu Bitmap-Strichen.
 - **Farbeimer und Zauberstab (0.3):** Toleranz 0–255, nur benachbarte oder alle ähnlichen Pixel, aktive Ebene oder alle Ebenen. Der Farbeimer legt seine Füllung als eigenen Bitmap-Strich ab (ein Undo-Schritt, Striche bleiben erhalten) und deckt Kantenpixel mit ab. Der Zauberstab erzeugt eine Pixelauswahl; ⇧ fügt hinzu, ⌥ zieht ab. Auswahl → Alles auswählen (⌘A), Auswahl umkehren (⇧⌘I). Ebenen → Ebene rastern.
 - **Zeichnen:** variabler Druckradius, Neigung und Stiftrotation bei vorhandenen Gerätedaten, Deckkraft, Glättung und JSON-Import/-Export eigener Pinselvorgaben. Der Radierer entfernt Alpha auf der aktiven Ebene.
 - **Leinwand:** transparenter Schachbretthintergrund, Pan, Zoom, Drehung, Spiegelansicht, Lineale, Raster und optionales 25-Pixel-Snapping. Anzeige und Eingabe verwenden dieselbe invertierbare Transformation.
@@ -69,13 +70,13 @@ Die vollständige Bridge-Tabelle steht in der Plugin-Dokumentation. Tastenkürze
 
 ## Grenzen und Nachweise
 
-Zuletzt bestanden 54 Swift-Tests (u. a. Farbeimer, Zauberstab, Auswahlmasken, Looks, Mischmodi, Schnittmasken, Kurven, Kopieren/Einfügen). Die Tests verwenden eine eigene Zwischenablage, nie die des Nutzers. Sie prüfen unter anderem ältere Dokumente, echte Speicher-/Ladeoperationen, Undo/Redo, Masken, Mischmodi, Transformationen, Auswahl-Clips, Export und API-Protokoll. Der JavaScript-Test prüft die 31 Plugin-Aktionen und Vordergrundsperre. Diese Prüfungen ersetzen keine manuelle Interaktionsprüfung. Der reale API-Verbindungs- und Abonnementtest mit verbundenem iPad war erfolgreich; echte Pencil-Striche und iPad-Plugin-Auslösung wurden dabei noch nicht beobachtet.
+Zuletzt bestanden 60 Swift-Tests (u. a. Retusche, Farbeimer, Zauberstab, Auswahlmasken, Looks, Mischmodi, Schnittmasken, Kurven, Kopieren/Einfügen). Die Tests verwenden eine eigene Zwischenablage, nie die des Nutzers. Sie prüfen unter anderem ältere Dokumente, echte Speicher-/Ladeoperationen, Undo/Redo, Masken, Mischmodi, Transformationen, Auswahl-Clips, Export und API-Protokoll. Der JavaScript-Test prüft die 31 Plugin-Aktionen und Vordergrundsperre. Diese Prüfungen ersetzen keine manuelle Interaktionsprüfung. Der reale API-Verbindungs- und Abonnementtest mit verbundenem iPad war erfolgreich; echte Pencil-Striche und iPad-Plugin-Auslösung wurden dabei noch nicht beobachtet.
 
 Der Renderer verarbeitet 8-Bit-sRGB/RGBA über Core Graphics und Core Image mit einem Ebenencache. Der dokumentierte Benchmark ist keine FPS- oder Eingabelatenzmessung. Filter- und Maskenvorschauen können bei großen Dokumenten teuer werden; eine eigene Metal-Tile-Engine ist noch offen.
 
 PNG und TIFF erhalten Alpha, JPEG und MP4 werden über Weiß ausgegeben. Bildexporte sind flach und enthalten keine Ebenen; dafür das native Format behalten. Importbilder werden nach sRGB normalisiert und auf die Dokumentfläche abgebildet. TIFF-Mehrseitenbilder und animierte Importbilder werden ausdrücklich abgewiesen. GIF besitzt eine begrenzte Palette und gerundetes Frame-Timing. MP4 benötigt gerade Bildmaße; exportiert wird in Dokumentauflösung.
 
-Noch offen sind Ebenengruppen (brauchen Mehrfachauswahl in der Ebenenliste), freies Transformieren einer schwebenden Auswahl, Stempel und Retuschewerkzeuge, CMYK/HDR, Audio, unabhängige Animationstracks, Keyframe-Interpolation, Cutout-Rigs, Lip-Sync, HEVC, PSD, OpenRaster, WebP und SVG. Vollständige Photoshop-/PSD-Kompatibilität wird nicht beansprucht. Sinnvolle nächste Schritte sind Audio/Timeline, Auswahl-Pixeloperationen und eine gekachelte Rasterengine.
+Noch offen sind Ebenengruppen (brauchen Mehrfachauswahl in der Ebenenliste), freies Transformieren einer schwebenden Auswahl, inhaltsbasierte Füllung, CMYK/HDR, Audio, unabhängige Animationstracks, Keyframe-Interpolation, Cutout-Rigs, Lip-Sync, HEVC, PSD, OpenRaster, WebP und SVG. Vollständige Photoshop-/PSD-Kompatibilität wird nicht beansprucht. Sinnvolle nächste Schritte sind Audio/Timeline, Auswahl-Pixeloperationen und eine gekachelte Rasterengine.
 
 ## Lizenz
 
