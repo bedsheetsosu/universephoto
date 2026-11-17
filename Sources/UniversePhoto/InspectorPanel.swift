@@ -88,6 +88,7 @@ struct InspectorPanel: View {
                 Spacer(minLength: 0)
                 ColorPicker(L("Secondary"), selection: Binding(get: { s.secondaryColor.color }, set: { s.secondaryColor = CodableColor($0) })).labelsHidden().help(L("Secondary gradient color"))
             }
+            ColorExtras()
         }.photoCard()
     }
     private func component(_ title: String, _ value: Double) -> some View {

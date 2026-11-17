@@ -24,6 +24,7 @@ struct BrushPreset: Codable, Identifiable {
     @Published var fontFamily = "Helvetica"
     @Published var textBold = false
     @Published var textItalic = false
+    @Published var recentColors: [CodableColor] = []
     @Published var textAlign = TextAlign.left
     @Published var textTracking = 0.0
     @Published var textLineSpacing = 1.2
@@ -115,6 +116,7 @@ struct BrushPreset: Codable, Identifiable {
     }
     func add(_ stroke: InkStroke) {
         guard canEdit else { return }; checkpoint(tool.english)
+        if !stroke.isEraser, stroke.kind != "bitmap", !maskEditing { rememberColor(stroke.color) }
         let stroke = bakeRetouch(stroke)
         if activeLayer?.isAdjustmentLayer == true { layers[selectedLayer].mask = (layers[selectedLayer].mask ?? []) + [stroke] }   // paints its mask
         else if activeLayer?.mask != nil && maskEditing { layers[selectedLayer].mask?.append(stroke) } else { layers[selectedLayer].strokes.append(stroke) }

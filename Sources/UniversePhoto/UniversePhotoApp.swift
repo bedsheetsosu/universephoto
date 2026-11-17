@@ -38,6 +38,7 @@ struct StudioCommands: Commands {
             Button(L("Decrease brush size")) { studio.brushSize = max(1,studio.brushSize-2) }.keyboardShortcut("[",modifiers:[])
             Button(L("Increase opacity")) { studio.brushOpacity = min(1,studio.brushOpacity+0.1) }.keyboardShortcut(".",modifiers:[])
             Button(L("Decrease opacity")) { studio.brushOpacity = max(0.1,studio.brushOpacity-0.1) }.keyboardShortcut(",",modifiers:[])
+            Button(L("Swap colors")) { studio.swapColors() }.keyboardShortcut("x",modifiers:[])
             Button(L("Next color")) { studio.cycleColor() }.keyboardShortcut("x",modifiers:[])
             Button(L("Select all")) { if !forwardToTextField(#selector(NSText.selectAll(_:))) { studio.selectAll() } }.keyboardShortcut("a",modifiers:.command)
             Button(L("Deselect")) { studio.selection = nil }.keyboardShortcut("d",modifiers:.command)
