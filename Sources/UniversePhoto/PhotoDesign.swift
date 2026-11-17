@@ -55,13 +55,16 @@ struct PhotoAmbient:View {
     @AppStorage("photoFlow") private var flow = false
     @AppStorage("photoFlowSpeed") private var speed = 1.0
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    /// False while another app is in front: the flow stands still then (no GPU work in the background).
+    @Environment(\.appearsActive) private var appearsActive
     @State private var clock = FlowClock()
     var body:some View {
         Group {
             if flow && theme.isDark {
                 // Reduce Motion: same colours, standing still.
-                TimelineView(.animation(minimumInterval:1.0/30,paused:reduceMotion)) { ctx in
-                    let t = reduceMotion ? clock.phase : clock.advance(to:ctx.date,speed:speed)
+                // 20 fps is plenty for a slow drift; every frame redraws the glass panels above it.
+                TimelineView(.animation(minimumInterval:1.0/20,paused:reduceMotion || !appearsActive)) { ctx in
+                    let t = reduceMotion || !appearsActive ? clock.phase : clock.advance(to:ctx.date,speed:speed)
                     MeshGradient(width:3,height:3,points:Self.points(t),colors:Self.colors(t,theme))
                 }
             } else { still }
