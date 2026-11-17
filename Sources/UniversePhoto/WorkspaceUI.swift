@@ -110,6 +110,12 @@ struct Workspace: View {
                 Toggle(L("All layers"),isOn:$s.sampleMerged).toggleStyle(.checkbox).controlSize(.mini)
                 if g.size.width > 760 { Text(s.cloneSource == nil ? L("⌥-click sets the source") : L("Source set · ⌥-click to change")).foregroundStyle(theme.secondary) }
             }
+            if s.tool == .rectangle {
+                Picker(L("Shape"),selection:$s.shapeStyle) { ForEach(ShapeStyle.allCases,id:\.self) { Image(systemName:$0.symbol).help(L($0.title)).accessibilityLabel(L($0.title)).tag($0) } }.pickerStyle(.segmented).labelsHidden().frame(width:150).controlSize(.mini)
+                if let r = s.shapeStyle.parameter { Text(L(s.shapeStyle.parameterTitle)).foregroundStyle(theme.secondary);Slider(value:Binding(get:{ min(r.upperBound,max(r.lowerBound,s.shapeParameter)) },set:{ s.shapeParameter = $0.rounded() }),in:r).frame(width:60).controlSize(.mini).accessibilityLabel(L(s.shapeStyle.parameterTitle));Text("\(Int(min(r.upperBound,max(r.lowerBound,s.shapeParameter))))").monospacedDigit().frame(width:26,alignment:.leading) }
+            }
+            if [.rectangle,.ellipse].contains(s.tool) { Toggle(L("Filled"),isOn:$s.shapeFill).toggleStyle(.checkbox).controlSize(.mini) }
+            if s.tool == .line { Toggle(L("Arrow"),isOn:$s.lineArrow).toggleStyle(.checkbox).controlSize(.mini) }
             if s.tool == .gradient { Picker(L("Gradient"),selection:$s.gradientStyle) { ForEach(GradientStyle.allCases,id:\.self) { Label(L($0.title),systemImage:$0.symbol).tag($0) } }.pickerStyle(.segmented).labelsHidden().frame(width:150).controlSize(.mini).help(L("Gradient")) }
             if s.tool == .dodge { Picker(L("Mode"),selection:$s.burnMode) { Text(L("Dodge")).tag(false);Text(L("Burn")).tag(true) }.pickerStyle(.segmented).labelsHidden().frame(width:120).controlSize(.mini) }
             if s.tool == .focus { Picker(L("Mode"),selection:$s.sharpenMode) { Text(L("Blur")).tag(false);Text(L("Sharpen")).tag(true) }.pickerStyle(.segmented).labelsHidden().frame(width:130).controlSize(.mini) }

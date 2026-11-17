@@ -231,9 +231,16 @@ enum Renderer {
         let q = CGPoint(x: last.x, y: last.y)
         let rect = CGRect(x: min(p.x,q.x), y: min(p.y,q.y), width: abs(q.x-p.x), height: abs(q.y-p.y))
         switch stroke.kind {
-        case "rectangle": context.stroke(rect)
-        case "ellipse": context.strokeEllipse(in: rect)
+        case "rectangle", "ellipse", "roundedRect", "polygon", "star":
+            if let shape = ShapeGeometry.path(kind: stroke.kind!, in: rect, parameter: stroke.strength) {
+                context.addPath(shape)
+                if stroke.filled == true { context.fillPath() } else { context.strokePath() }
+            }
         case "line": context.move(to: p); context.addLine(to: q); context.strokePath()
+        case "arrow":
+            let w = max(0.1, stroke.width), a = atan2(q.y - p.y, q.x - p.x), back = max(12, w * 3.2) * 0.7
+            context.move(to: p); context.addLine(to: CGPoint(x: q.x - cos(a) * back, y: q.y - sin(a) * back)); context.strokePath()
+            context.addPath(ShapeGeometry.arrowHead(from: p, to: q, width: w)); context.fillPath()
         case "fill": context.fill(context.boundingBoxOfClipPath)
         case "bitmap":
             if let data = stroke.imageData, let source = CGImageSourceCreateWithData(data as CFData, nil),

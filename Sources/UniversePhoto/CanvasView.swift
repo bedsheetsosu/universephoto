@@ -158,7 +158,7 @@ struct ArtworkCanvas: NSViewRepresentable {
         case .focus: stroke.kind = s.sharpenMode ? "sharpenBrush" : "blurBrush"; stroke.strength = s.toolStrength
         default: break
         }
-        switch s.tool { case .rectangle:stroke.kind = "rectangle"; case .ellipse:stroke.kind = "ellipse"; case .line:stroke.kind = "line"; case .text:stroke.kind = "text";stroke.text = s.textContent;stroke.fontName = NSFontManager.shared.font(withFamily:s.fontFamily,traits:s.textBold ? .boldFontMask : [],weight:5,size:12)?.fontName;stroke.width = max(10,s.brushSize); case .fill:stroke.kind = "fill"; case .gradient:stroke.kind = s.gradientStyle.kind;stroke.secondaryColor = s.secondaryColor; default:break }
+        switch s.tool { case .rectangle:stroke.kind = s.shapeStyle.kind;stroke.filled = s.shapeFill ? true : nil;if let r = s.shapeStyle.parameter { stroke.strength = min(r.upperBound,max(r.lowerBound,s.shapeParameter)) }; case .ellipse:stroke.kind = "ellipse";stroke.filled = s.shapeFill ? true : nil; case .line:stroke.kind = s.lineArrow ? "arrow" : "line"; case .text:stroke.kind = "text";stroke.text = s.textContent;stroke.fontName = NSFontManager.shared.font(withFamily:s.fontFamily,traits:s.textBold ? .boldFontMask : [],weight:5,size:12)?.fontName;stroke.width = max(10,s.brushSize); case .fill:stroke.kind = "fill"; case .gradient:stroke.kind = s.gradientStyle.kind;stroke.secondaryColor = s.secondaryColor; default:break }
         if s.tool == .bucket {
             guard var fill = s.bucketStroke(at:local,documentPoint:doc) else { interactionBegan = false; return }
             fill.selectionPoints = stroke.selectionPoints; fill.selectionEllipse = stroke.selectionEllipse; fill.selectionMask = stroke.selectionMask

@@ -27,6 +27,12 @@ struct BrushPreset: Codable, Identifiable {
     @Published var secondaryColor = CodableColor.white
     /// Gradient tool: linear, radial or reflected (mirrored around the start point).
     @Published var gradientStyle = GradientStyle.linear
+    /// Rectangle tool: which shape, its value (corner radius / corners / points), filled or outlined.
+    @Published var shapeStyle = ShapeStyle.rectangle
+    @Published var shapeParameter = 6.0
+    @Published var shapeFill = false
+    /// Line tool: arrow head at the end.
+    @Published var lineArrow = false
     @Published var brushSize = 12.0
     @Published var brushOpacity = 1.0
     @Published var smoothing = 0.15
