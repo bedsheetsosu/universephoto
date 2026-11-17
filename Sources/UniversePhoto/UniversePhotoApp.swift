@@ -43,6 +43,24 @@ struct StudioCommands: Commands {
             Button(L("Deselect")) { studio.selection = nil }.keyboardShortcut("d",modifiers:.command)
             Button(L("Invert selection")) { studio.invertSelection() }.keyboardShortcut("i",modifiers:[.command,.shift])
         }
+        CommandMenu(L("Image")) {
+            Button(L("Image size…")) { studio.imageDialog = .imageSize }.keyboardShortcut("i",modifiers:[.command,.option])
+            Button(L("Canvas size…")) { studio.imageDialog = .canvasSize }.keyboardShortcut("c",modifiers:[.command,.option])
+            Divider()
+            Button(L("Crop to selection")) { studio.cropToSelection() }.disabled(studio.selection == nil)
+            Button(L("Trim transparent pixels")) { studio.trim() }
+            Divider()
+            Button(L("Rotate 90° clockwise")) { studio.rotateCanvas(.clockwise) }
+            Button(L("Rotate 90° counter-clockwise")) { studio.rotateCanvas(.counterClockwise) }
+            Button(L("Rotate 180°")) { studio.rotateCanvas(.halfTurn) }
+            Button(L("Flip canvas horizontally")) { studio.flipCanvas(horizontal:true) }
+            Button(L("Flip canvas vertically")) { studio.flipCanvas(horizontal:false) }
+            Divider()
+            Button(L("Flip layer horizontally")) { studio.flipLayer(horizontal:true) }
+            Button(L("Flip layer vertically")) { studio.flipLayer(horizontal:false) }
+            Button(L("Reveal selection")) { studio.maskFromSelection(reveal:true) }.disabled(studio.selection == nil)
+            Button(L("Hide selection")) { studio.maskFromSelection(reveal:false) }.disabled(studio.selection == nil)
+        }
         CommandMenu(L("Layers")) {
             Button(L("New layer")) { studio.newLayer() }.keyboardShortcut("n",modifiers:[.command,.shift])
             Button(L("Duplicate")) { studio.duplicateLayer() }
