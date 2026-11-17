@@ -124,18 +124,38 @@ enum Renderer {
         return ctx.makeImage()
     }
     /// Layer effects on a placed layer picture: glow and shadow below, outline around, overlay on top.
+    /// Box around the non-transparent pixels (y down), nil when empty.
+    static func alphaBounds(_ image: CGImage) -> CGRect? {
+        guard let b = PixelOps.bitmap(image) else { return nil }
+        var alpha = [UInt8](repeating: 0, count: b.width * b.height)
+        for i in 0..<(b.width * b.height) { alpha[i] = b.bytes[i * 4 + 3] }
+        return PixelOps.bounds(alpha, width: b.width, height: b.height)
+    }
     static func applyStyle(_ style: LayerStyle, to image: CGImage) -> CGImage? {
         let w = image.width, h = image.height, r = CGRect(x: 0, y: 0, width: w, height: h)
         guard let ctx = context(width: w, height: h) else { return nil }
         // Only the shadow of a picture: draw it far off to the left, its shadow shifted back in.
-        func shadowOnly(color: CodableColor, opacity: Double, offset: CGSize, blur: Double) {
+        func shadowOnly(color: CodableColor, opacity: Double, offset: CGSize, blur: Double, of source: CGImage? = nil, at rect: CGRect? = nil, blend: CGBlendMode = .normal) {
             var c = color; c.alpha = max(0, min(1, opacity))
             ctx.saveGState()
-            let far = Double(w) * 2 + blur * 4
+            ctx.setBlendMode(blend)
+            let place = rect ?? r
+            let far = Double(place.width) * 2 + blur * 4
             // Shadow offsets live in device space (y up), the context draws y down.
             ctx.setShadow(offset: CGSize(width: far + offset.width, height: -offset.height), blur: blur, color: c.cgColor)
-            drawImage(image, in: ctx, rect: r.offsetBy(dx: -far, dy: 0))
+            drawImage(source ?? image, in: ctx, rect: place.offsetBy(dx: -far, dy: 0))
             ctx.restoreGState()
+        }
+        /// Inner effects: the shadow of everything *outside* the shape, kept only on the shape.
+        func inner(color: CodableColor, opacity: Double, offset: CGSize, blur: Double) {
+            let pad = Int((abs(offset.width) + abs(offset.height) + blur * 3).rounded(.up)) + 2
+            guard let hole = context(width: w + pad * 2, height: h + pad * 2) else { return }
+            hole.setFillColor(CGColor(gray: 0, alpha: 1)); hole.fill(CGRect(x: 0, y: 0, width: w + pad * 2, height: h + pad * 2))
+            hole.setBlendMode(.destinationOut)
+            drawImage(image, in: hole, rect: CGRect(x: pad, y: pad, width: w, height: h))
+            guard let outside = hole.makeImage() else { return }
+            shadowOnly(color: color, opacity: opacity, offset: offset, blur: blur, of: outside,
+                       at: CGRect(x: -pad, y: -pad, width: w + pad * 2, height: h + pad * 2), blend: .sourceAtop)
         }
         if style.glow.on { shadowOnly(color: style.glow.color, opacity: style.glow.opacity, offset: .zero, blur: style.glow.size) }
         if style.shadow.on {
@@ -153,6 +173,24 @@ enum Renderer {
             if let cg = filters.createCGImage(outline, from: fill.extent) { drawImage(cg, in: ctx, rect: r) }
         }
         drawImage(image, in: ctx, rect: r)
+        if style.gradient.on, let box = alphaBounds(image) {
+            // Across the layer's own pixels, at `angle` (90° = bottom to top).
+            let g = style.gradient, a = g.angle * .pi / 180
+            let c = CGPoint(x: box.midX, y: box.midY), half = (abs(cos(a)) * box.width + abs(sin(a)) * box.height) / 2
+            let dir = CGPoint(x: cos(a) * half, y: -sin(a) * half)
+            if let grad = CGGradient(colorsSpace: CGColorSpace(name: CGColorSpace.sRGB), colors: [g.from.cgColor, g.to.cgColor] as CFArray, locations: [0, 1]) {
+                ctx.saveGState(); ctx.setBlendMode(.sourceAtop); ctx.setAlpha(max(0, min(1, g.opacity)))
+                ctx.drawLinearGradient(grad, start: CGPoint(x: c.x - dir.x, y: c.y - dir.y), end: CGPoint(x: c.x + dir.x, y: c.y + dir.y), options: [.drawsBeforeStartLocation, .drawsAfterEndLocation])
+                ctx.restoreGState()
+            }
+        }
+        // Twice, so the rim is close to full strength (one blurred pass only reaches half at the edge).
+        if style.innerGlow.on { for _ in 0..<2 { inner(color: style.innerGlow.color, opacity: style.innerGlow.opacity, offset: .zero, blur: style.innerGlow.size) } }
+        if style.innerShadow.on {
+            let a = style.innerShadow.angle * .pi / 180
+            inner(color: style.innerShadow.color, opacity: style.innerShadow.opacity,
+                  offset: CGSize(width: -cos(a) * style.innerShadow.distance, height: sin(a) * style.innerShadow.distance), blur: style.innerShadow.blur)
+        }
         if style.overlay.on {
             ctx.saveGState()
             ctx.setBlendMode(.sourceAtop)

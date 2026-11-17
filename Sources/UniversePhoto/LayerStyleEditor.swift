@@ -23,6 +23,22 @@ struct LayerStyleEditor: View {
                 slider(L("Width"), style.outline.width, 1...40, " px", 1) { var s = style; s.outline.width = $0; set(s) }
                 slider(L("Opacity"), style.outline.opacity, 0...1, "%", 100) { var s = style; s.outline.opacity = $0; set(s) }
             }
+            effect(L("Inner shadow"), "square.inset.filled", on: style.innerShadow.on, color: style.innerShadow.color, { var s = style; s.innerShadow.on = $0; set(s) }, { var s = style; s.innerShadow.color = $0; set(s) }) {
+                slider(L("Opacity"), style.innerShadow.opacity, 0...1, "%", 100) { var s = style; s.innerShadow.opacity = $0; set(s) }
+                slider(L("Angle"), style.innerShadow.angle, -180...180, "°", 1) { var s = style; s.innerShadow.angle = $0; set(s) }
+                slider(L("Distance"), style.innerShadow.distance, 0...100, " px", 1) { var s = style; s.innerShadow.distance = $0; set(s) }
+                slider(L("Softness"), style.innerShadow.blur, 0...80, " px", 1) { var s = style; s.innerShadow.blur = $0; set(s) }
+            }
+            effect(L("Inner glow"), "circle.dashed.inset.filled", on: style.innerGlow.on, color: style.innerGlow.color, { var s = style; s.innerGlow.on = $0; set(s) }, { var s = style; s.innerGlow.color = $0; set(s) }) {
+                slider(L("Opacity"), style.innerGlow.opacity, 0...1, "%", 100) { var s = style; s.innerGlow.opacity = $0; set(s) }
+                slider(L("Size"), style.innerGlow.size, 1...100, " px", 1) { var s = style; s.innerGlow.size = $0; set(s) }
+            }
+            effect(L("Gradient overlay"), "rectangle.lefthalf.filled", on: style.gradient.on, color: style.gradient.from, { var s = style; s.gradient.on = $0; set(s) }, { var s = style; s.gradient.from = $0; set(s) }) {
+                HStack { Text(L("Second color")).font(.system(size: 10)); Spacer()
+                    ColorPicker(L("Second color"), selection: Binding(get: { style.gradient.to.color }, set: { var s = style; s.gradient.to = CodableColor($0); set(s) }), supportsOpacity: false).labelsHidden().frame(width: 26) }
+                slider(L("Angle"), style.gradient.angle, -180...180, "°", 1) { var s = style; s.gradient.angle = $0; set(s) }
+                slider(L("Opacity"), style.gradient.opacity, 0...1, "%", 100) { var s = style; s.gradient.opacity = $0; set(s) }
+            }
             effect(L("Color overlay"), "paintbrush", on: style.overlay.on, color: style.overlay.color, { var s = style; s.overlay.on = $0; set(s) }, { var s = style; s.overlay.color = $0; set(s) }) {
                 slider(L("Opacity"), style.overlay.opacity, 0...1, "%", 100) { var s = style; s.overlay.opacity = $0; set(s) }
             }

@@ -188,7 +188,28 @@ struct LayerStyle: Codable, Equatable, Sendable {
     struct Overlay: Codable, Equatable, Sendable {
         var on = false; var color = CodableColor(red: 1, green: 0.4, blue: 0.5, alpha: 1); var opacity = 1.0
     }
+    struct GradientOverlay: Codable, Equatable, Sendable {
+        var on = false; var from = CodableColor(red: 0.5, green: 0.89, blue: 0.83, alpha: 1); var to = CodableColor(red: 0.75, green: 0.55, blue: 1, alpha: 1)
+        var angle = 90.0; var opacity = 1.0
+    }
     var shadow = Shadow(); var glow = Glow(); var outline = Outline(); var overlay = Overlay()
-    var isActive: Bool { shadow.on || glow.on || outline.on || overlay.on }
-    var numbers: [Double] { [shadow.opacity, shadow.angle, shadow.distance, shadow.blur, glow.opacity, glow.size, outline.opacity, outline.width, overlay.opacity] }
+    /// Since 0.16; older files decode them switched off.
+    var innerShadow = Shadow(on: false, opacity: 0.55, distance: 5, blur: 8)
+    var innerGlow = Glow(on: false, color: CodableColor(red: 1, green: 1, blue: 1, alpha: 1), opacity: 0.6, size: 10)
+    var gradient = GradientOverlay()
+    var isActive: Bool { shadow.on || glow.on || outline.on || overlay.on || innerShadow.on || innerGlow.on || gradient.on }
+    var numbers: [Double] { [shadow.opacity, shadow.angle, shadow.distance, shadow.blur, glow.opacity, glow.size, outline.opacity, outline.width, overlay.opacity,
+                             innerShadow.opacity, innerShadow.angle, innerShadow.distance, innerShadow.blur, innerGlow.opacity, innerGlow.size, gradient.angle, gradient.opacity] }
+    init() {}
+    enum CodingKeys: String, CodingKey { case shadow, glow, outline, overlay, innerShadow, innerGlow, gradient }
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self), d = LayerStyle()
+        shadow = try c.decodeIfPresent(Shadow.self, forKey: .shadow) ?? d.shadow
+        glow = try c.decodeIfPresent(Glow.self, forKey: .glow) ?? d.glow
+        outline = try c.decodeIfPresent(Outline.self, forKey: .outline) ?? d.outline
+        overlay = try c.decodeIfPresent(Overlay.self, forKey: .overlay) ?? d.overlay
+        innerShadow = try c.decodeIfPresent(Shadow.self, forKey: .innerShadow) ?? d.innerShadow
+        innerGlow = try c.decodeIfPresent(Glow.self, forKey: .innerGlow) ?? d.innerGlow
+        gradient = try c.decodeIfPresent(GradientOverlay.self, forKey: .gradient) ?? d.gradient
+    }
 }
