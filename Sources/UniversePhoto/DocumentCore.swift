@@ -34,6 +34,10 @@ struct InkStroke: Codable, Equatable, Identifiable, Sendable {
     var filled: Bool? = nil
     /// Pressure brush tip (nil = round, as before 0.15).
     var brushTip: String? = nil
+    /// Text (0.18): alignment around the click (left, center, right), tracking in 1/1000 em, line spacing × size.
+    var textAlign: String? = nil
+    var tracking: Double? = nil
+    var lineSpacing: Double? = nil
     /// Freehand kinds: the pressure brush and the retouch brushes (smoothed, every point kept).
     var isFreehand: Bool { kind == nil || ["dodge", "burn", "blurBrush", "sharpenBrush", "clone", "heal", "smudge"].contains(kind!) }
 }

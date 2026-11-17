@@ -328,14 +328,14 @@ enum Renderer {
                 }
             }
         case "text":
-            let font = CTFontCreateWithName((stroke.fontName ?? "Helvetica") as CFString, max(6, stroke.width), nil)
-            let attr: [NSAttributedString.Key: Any] = [NSAttributedString.Key(kCTFontAttributeName as String): font,
-                NSAttributedString.Key(kCTForegroundColorAttributeName as String): stroke.color.cgColor]
-            let line = CTLineCreateWithAttributedString(NSAttributedString(string: stroke.text ?? "", attributes: attr))
-            context.translateBy(x: p.x, y: p.y + max(6, stroke.width))
-            context.scaleBy(x: 1, y: -1)
-            context.textPosition = .zero
-            CTLineDraw(line, context)
+            for row in textLines(stroke, at: p) {
+                context.saveGState()
+                context.translateBy(x: row.x, y: row.baseline)
+                context.scaleBy(x: 1, y: -1)
+                context.textPosition = .zero
+                CTLineDraw(row.line, context)
+                context.restoreGState()
+            }
         case "dodge", "burn":
             // Soft light with white/black lightens/darkens; then the old transparency is restored.
             guard let before = context.makeImage() else { break }

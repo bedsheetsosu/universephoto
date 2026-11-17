@@ -23,6 +23,10 @@ struct BrushPreset: Codable, Identifiable {
     /// Text tool: font family and weight.
     @Published var fontFamily = "Helvetica"
     @Published var textBold = false
+    @Published var textItalic = false
+    @Published var textAlign = TextAlign.left
+    @Published var textTracking = 0.0
+    @Published var textLineSpacing = 1.2
     @Published var color = CodableColor.black
     @Published var secondaryColor = CodableColor.white
     /// Gradient tool: linear, radial or reflected (mirrored around the start point).

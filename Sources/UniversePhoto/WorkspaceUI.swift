@@ -19,6 +19,7 @@ struct Workspace: View {
     @State private var timelineHeight = 176.0
     @State private var showPreferences = false
     @State private var exportSheet = false
+    @State private var textOptions = false
     @State private var recoverySheet = false
     @State private var exportType = "png"
     @State private var query = ""
@@ -97,7 +98,7 @@ struct Workspace: View {
         GeometryReader { g in HStack(spacing:11) {
             HStack(spacing:7) { Image(systemName:s.tool.symbol).foregroundStyle(tint);Text(L(s.tool.english)).fontWeight(.semibold) }.frame(minWidth:70,alignment:.leading)
             Rectangle().fill(theme.outline).frame(width:1,height:17)
-            if s.tool == .text { TextField(L("Text"),text:$s.textContent).textFieldStyle(.plain).padding(6).background(theme.card,in:RoundedRectangle(cornerRadius:6)).frame(width:120) }
+            if s.tool == .text { TextField(L("Text"),text:$s.textContent).textFieldStyle(.plain).padding(6).background(theme.card,in:RoundedRectangle(cornerRadius:6)).frame(width:120);Button { textOptions.toggle() } label: { Image(systemName:"text.alignleft") }.buttonStyle(PhotoPress()).help(L("Text options")).accessibilityLabel(L("Text options")).popover(isPresented:$textOptions) { TextOptionsPopover().environmentObject(s).environment(\.photoTheme,theme) } }
             if s.tool == .text && g.size.width > 700 {
                 Picker(L("Font"),selection:$s.fontFamily) { ForEach(NSFontManager.shared.availableFontFamilies,id:\.self) { Text($0).tag($0) } }.labelsHidden().frame(width:130).controlSize(.mini)
                 Toggle(L("Bold"),isOn:$s.textBold).toggleStyle(.checkbox).controlSize(.mini)
