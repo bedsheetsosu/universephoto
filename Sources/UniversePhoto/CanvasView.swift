@@ -132,6 +132,7 @@ struct ArtworkCanvas: NSViewRepresentable {
         if s.maskEditing { c = s.eraser ? .white : CodableColor(red:0,green:0,blue:0,alpha:1) }
         let local = localPoint(doc)
         var stroke = InkStroke(points:[InkPoint(x:local.x,y:local.y,pressure:s.mapPressure(pressure),tiltX:tilt.x,tiltY:tilt.y,rotation:rotation)],color:c,width:s.brushSize,isEraser:s.eraser && !s.maskEditing)
+        if s.tool == .brush && !s.eraser && !s.maskEditing && s.brushTip != .round { stroke.brushTip = s.brushTip.rawValue }
         if let selection = s.selection, let maskData = selection.maskData {
             stroke.selectionMask = maskData
         } else if let selection = s.selection {

@@ -32,6 +32,8 @@ struct InkStroke: Codable, Equatable, Identifiable, Sendable {
     var fontName: String? = nil
     /// Closed shapes: filled instead of outlined (nil = outline, as before 0.14).
     var filled: Bool? = nil
+    /// Pressure brush tip (nil = round, as before 0.15).
+    var brushTip: String? = nil
     /// Freehand kinds: the pressure brush and the retouch brushes (smoothed, every point kept).
     var isFreehand: Bool { kind == nil || ["dodge", "burn", "blurBrush", "sharpenBrush", "clone", "heal", "smudge"].contains(kind!) }
 }

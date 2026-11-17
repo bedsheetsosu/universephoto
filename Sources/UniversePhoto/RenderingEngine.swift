@@ -303,7 +303,7 @@ enum Renderer {
         }
     }
     private static func drawBrush(_ stroke: InkStroke, in context: CGContext) {
-        context.addPath(brushPath(stroke)); context.fillPath()
+        drawTip(stroke.brushTip.flatMap(BrushTip.init(rawValue:)) ?? .round, stroke, in: context)
     }
     /// The filled outline of a pressure brush stroke (also the clip of the retouch brushes).
     static func brushPath(_ stroke: InkStroke) -> CGPath {

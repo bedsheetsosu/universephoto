@@ -110,6 +110,7 @@ struct Workspace: View {
                 Toggle(L("All layers"),isOn:$s.sampleMerged).toggleStyle(.checkbox).controlSize(.mini)
                 if g.size.width > 760 { Text(s.cloneSource == nil ? L("⌥-click sets the source") : L("Source set · ⌥-click to change")).foregroundStyle(theme.secondary) }
             }
+            if s.tool == .brush { Picker(L("Brush tip"),selection:$s.brushTip) { ForEach(BrushTip.allCases,id:\.self) { Image(systemName:$0.symbol).help(L($0.title)).accessibilityLabel(L($0.title)).tag($0) } }.pickerStyle(.segmented).labelsHidden().frame(width:190).controlSize(.mini).help(L("Brush tip")) }
             if s.tool == .rectangle {
                 Picker(L("Shape"),selection:$s.shapeStyle) { ForEach(ShapeStyle.allCases,id:\.self) { Image(systemName:$0.symbol).help(L($0.title)).accessibilityLabel(L($0.title)).tag($0) } }.pickerStyle(.segmented).labelsHidden().frame(width:150).controlSize(.mini)
                 if let r = s.shapeStyle.parameter { Text(L(s.shapeStyle.parameterTitle)).foregroundStyle(theme.secondary);Slider(value:Binding(get:{ min(r.upperBound,max(r.lowerBound,s.shapeParameter)) },set:{ s.shapeParameter = $0.rounded() }),in:r).frame(width:60).controlSize(.mini).accessibilityLabel(L(s.shapeStyle.parameterTitle));Text("\(Int(min(r.upperBound,max(r.lowerBound,s.shapeParameter))))").monospacedDigit().frame(width:26,alignment:.leading) }

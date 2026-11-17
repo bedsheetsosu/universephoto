@@ -31,6 +31,7 @@ struct BrushPreset: Codable, Identifiable {
     @Published var shapeStyle = ShapeStyle.rectangle
     @Published var shapeParameter = 6.0
     @Published var shapeFill = false
+    @Published var brushTip = BrushTip.round
     /// Line tool: arrow head at the end.
     @Published var lineArrow = false
     @Published var brushSize = 12.0
