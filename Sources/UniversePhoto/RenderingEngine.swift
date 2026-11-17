@@ -62,30 +62,63 @@ enum Renderer {
                        preview: InkStroke? = nil, previewLayer: Int? = nil, cache: LayerImageCache? = nil) -> CGImage? {
         guard let result = context(width: width, height: height) else { return nil }
         let bounds = CGRect(x: 0, y: 0, width: width, height: height)
-        for (index, layer) in layers.enumerated() where layer.visible && layer.opacity > 0 {
+        // Clipping: a clipped layer only shows where the nearest unclipped layer below has pixels.
+        var base: CGImage?           // that layer, placed (transform applied), when something clips to it
+        var baseShown = true         // a hidden base hides what clips to it
+        var hasBase = false
+        for (index, layer) in layers.enumerated() {
+            let clipping = layer.clipped && hasBase
+            if !clipping { base = nil; hasBase = true; baseShown = layer.visible && layer.opacity > 0 }
+            guard layer.visible && layer.opacity > 0, !clipping || (baseShown && base != nil) else { continue }
             let hasPreview = index == previewLayer && preview != nil
             let layerImage: CGImage?
             if !hasPreview, let cached = cache?.image(for:layer,width:width,height:height) { layerImage = cached }
             else {
-                let base = hasPreview && layer.mask == nil && layer.adjustment == LayerAdjustment() ? cache?.image(for:layer,width:width,height:height) : nil
-                layerImage = renderLayer(layer, width:width,height:height,preview:hasPreview ? preview : nil, base:base)
+                let reuse = hasPreview && layer.mask == nil && layer.adjustment == LayerAdjustment() ? cache?.image(for:layer,width:width,height:height) : nil
+                layerImage = renderLayer(layer, width:width,height:height,preview:hasPreview ? preview : nil, base:reuse)
                 if !hasPreview, let layerImage { cache?.store(layerImage,layer:layer,width:width,height:height) }
             }
             guard let image = layerImage else { continue }
+            let clipsNext = layers.indices.contains(index + 1) && layers[index + 1].clipped
+            if clipping || clipsNext {
+                guard let placedImage = placed(image, transform: layer.transform, width: width, height: height) else { continue }
+                if clipsNext && !clipping { base = placedImage }
+                var shown = placedImage
+                if clipping, let base, let ctx = context(width: width, height: height) {
+                    drawImage(placedImage, in: ctx, rect: bounds)
+                    ctx.setBlendMode(.destinationIn); drawImage(base, in: ctx, rect: bounds)
+                    shown = ctx.makeImage() ?? placedImage
+                }
+                result.saveGState()
+                result.setAlpha(max(0, min(1, layer.opacity))); result.setBlendMode(blendMode(layer.blend))
+                drawImage(shown, in: result, rect: bounds)
+                result.restoreGState()
+                continue
+            }
             result.saveGState()
             result.setAlpha(max(0, min(1, layer.opacity)))
             result.setBlendMode(blendMode(layer.blend))
             // Layer pivot is the document center. Translation remains in document pixels.
-            let t = layer.transform
-            result.translateBy(x: t.x + Double(width)/2, y: t.y + Double(height)/2)
-            result.rotate(by: t.rotation * .pi / 180)
-            result.scaleBy(x: t.scale, y: t.scale)
-            result.translateBy(x: -Double(width)/2, y: -Double(height)/2)
+            apply(layer.transform, to: result, width: width, height: height)
             drawImage(image, in: result, rect: bounds)
             result.restoreGState()
         }
         cache?.retain(ids: Set(layers.map(\.id)))
         return result.makeImage()
+    }
+    static func apply(_ t: LayerTransform, to ctx: CGContext, width: Int, height: Int) {
+        ctx.translateBy(x: t.x + Double(width)/2, y: t.y + Double(height)/2)
+        ctx.rotate(by: t.rotation * .pi / 180)
+        ctx.scaleBy(x: t.scale, y: t.scale)
+        ctx.translateBy(x: -Double(width)/2, y: -Double(height)/2)
+    }
+    /// The layer picture with its transform applied, in document pixels.
+    static func placed(_ image: CGImage, transform: LayerTransform, width: Int, height: Int) -> CGImage? {
+        if transform == LayerTransform() { return image }
+        guard let ctx = context(width: width, height: height) else { return nil }
+        apply(transform, to: ctx, width: width, height: height)
+        drawImage(image, in: ctx, rect: CGRect(x: 0, y: 0, width: width, height: height))
+        return ctx.makeImage()
     }
     private static func renderLayer(_ layer: ArtLayer, width: Int, height: Int, preview: InkStroke?, base: CGImage? = nil) -> CGImage? {
         guard let bitmap = context(width:width,height:height) else { return nil }
@@ -101,7 +134,7 @@ enum Renderer {
         if let mask = layer.mask { image = applyMask(mask,image:image,width:width,height:height) ?? image }
         return adjusted(image,adjustment:layer.adjustment) ?? image
     }
-    private static func drawImage(_ image: CGImage, in context: CGContext, rect: CGRect) {
+    static func drawImage(_ image: CGImage, in context: CGContext, rect: CGRect) {
         context.saveGState()
         context.translateBy(x: rect.minX, y: rect.maxY); context.scaleBy(x: 1, y: -1)
         context.draw(image, in: CGRect(origin: .zero, size: rect.size))
@@ -242,6 +275,10 @@ enum Renderer {
                 .applyingFilter("CIColorClamp")
         }
         if a.gamma != 1 { output = output.applyingFilter("CIGammaAdjust", parameters: ["inputPower": 1 / max(0.05, a.gamma)]) }
+        if let curves = a.curves, let table = ToneCurve.table(curves) {
+            output = output.applyingFilter("CIColorCurves", parameters: ["inputCurvesData": table, "inputCurvesDomain": CIVector(x: 0, y: 1),
+                "inputColorSpace": CGColorSpace(name: CGColorSpace.sRGB)!])
+        }
         if a.hue != 0 { output = output.applyingFilter("CIHueAdjust", parameters: [kCIInputAngleKey: a.hue * .pi / 180]) }
         if a.vibrance != 0 { output = output.applyingFilter("CIVibrance", parameters: ["inputAmount": a.vibrance]) }
         if a.temperature != 0 || a.tint != 0 {

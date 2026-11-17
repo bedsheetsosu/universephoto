@@ -55,6 +55,8 @@ struct LayerAdjustment: Codable, Equatable, Sendable {
     var posterize = 0.0        // 0 = off, else 2…32 levels
     var pixelate = 0.0         // 0 = off, else block size in px
     var grain = 0.0            // 0…1 film grain
+    /// Tone curves by channel ("rgb", "red", "green", "blue"); nil = straight.
+    var curves: [String: [CurvePoint]]? = nil
     init() {}
     init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
@@ -65,8 +67,9 @@ struct LayerAdjustment: Codable, Equatable, Sendable {
         levelsBlack = try v(.levelsBlack, 0); levelsWhite = try v(.levelsWhite, 1); gamma = try v(.gamma, 1)
         sharpen = try v(.sharpen, 0); noiseReduction = try v(.noiseReduction, 0); vignette = try v(.vignette, 0)
         posterize = try v(.posterize, 0); pixelate = try v(.pixelate, 0); grain = try v(.grain, 0)
+        curves = try c.decodeIfPresent([String: [CurvePoint]].self, forKey: .curves)
     }
-    var numbers: [Double] { [brightness, contrast, saturation, exposure, blur, hue, vibrance, temperature, tint, levelsBlack, levelsWhite, gamma, sharpen, noiseReduction, vignette, posterize, pixelate, grain] }
+    var numbers: [Double] { (curves ?? [:]).values.flatMap { $0.flatMap { [$0.x, $0.y] } } + [brightness, contrast, saturation, exposure, blur, hue, vibrance, temperature, tint, levelsBlack, levelsWhite, gamma, sharpen, noiseReduction, vignette, posterize, pixelate, grain] }
 }
 struct ArtLayer: Codable, Identifiable, Equatable, Sendable {
     var id = UUID(); var name: String; var visible = true; var strokes: [InkStroke] = []
@@ -75,8 +78,10 @@ struct ArtLayer: Codable, Identifiable, Equatable, Sendable {
     var imageData: Data? = nil
     // White reveals; black hides. Rendered in layer coordinates.
     var mask: [InkStroke]? = nil
+    /// Clipping mask: only shows where the nearest unclipped layer below has pixels.
+    var clipped = false
     init(name: String) { self.name = name }
-    enum CodingKeys: String, CodingKey { case id, name, visible, strokes, opacity, blend, locked, transform, adjustment, imageData, mask }
+    enum CodingKeys: String, CodingKey { case id, name, visible, strokes, opacity, blend, locked, transform, adjustment, imageData, mask, clipped }
     init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         id = try c.decodeIfPresent(UUID.self, forKey: .id) ?? UUID(); name = try c.decode(String.self, forKey: .name)
@@ -89,6 +94,7 @@ struct ArtLayer: Codable, Identifiable, Equatable, Sendable {
         adjustment = try c.decodeIfPresent(LayerAdjustment.self, forKey: .adjustment) ?? .init()
         imageData = try c.decodeIfPresent(Data.self, forKey: .imageData)
         mask = try c.decodeIfPresent([InkStroke].self, forKey: .mask)
+        clipped = try c.decodeIfPresent(Bool.self, forKey: .clipped) ?? false
     }
 }
 struct ArtDocument: Codable, Equatable, Sendable {

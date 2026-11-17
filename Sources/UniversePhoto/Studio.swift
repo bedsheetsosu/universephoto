@@ -92,6 +92,11 @@ struct BrushPreset: Codable, Identifiable {
     @Published var tolerance = 32.0
     @Published var contiguous = true
     @Published var sampleMerged = false
+    /// Our last copy (document size, in place) and the pasteboard state right after it.
+    var copiedPixels: CGImage?
+    var copiedChangeCount = -1
+    /// The system pasteboard; tests use a private one so they never touch the user's clipboard.
+    var pasteboard = NSPasteboard.general
     func undo() {
         stopPlayback(); guard let last = undoStack.popLast() else { return }
         redoStack.append(HistoryEntry(document: document(), label: last.label)); apply(last.document); changed()

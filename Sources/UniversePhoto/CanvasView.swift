@@ -96,7 +96,11 @@ struct ArtworkCanvas: NSViewRepresentable {
             s.magicWand(at:doc,combine:flags.contains(.shift) ? .add : flags.contains(.option) ? .subtract : .replace); interactionBegan = false; needsDisplay = true; return
         }
         guard s.canEdit else { return }
-        if s.tool == .move { s.checkpoint("Move"); originalTransform = s.activeLayer?.transform; return }
+        if s.tool == .move {
+            // Moving with a selection lifts the selected pixels onto their own layer first (like Photoshop).
+            if s.selection != nil { s.layerFromSelection(cut:true) }
+            s.checkpoint("Move"); originalTransform = s.activeLayer?.transform; return
+        }
         var c = s.color; c.alpha *= s.brushOpacity
         if s.maskEditing { c = s.eraser ? .white : CodableColor(red:0,green:0,blue:0,alpha:1) }
         let local = localPoint(doc)

@@ -7,6 +7,7 @@ struct InspectorPanel: View {
     var simple = false
     @State private var tab = "layers"
     @State private var hoveringLayer: UUID?
+    @State private var histogram: [Double] = []
 
     var body: some View {
         VStack(spacing: 0) {
@@ -136,6 +137,8 @@ struct InspectorPanel: View {
                         Divider().overlay(theme.outline)
                         HStack {
                             Button { s.addMask() } label: { Label(L("Mask"), systemImage: "circle.lefthalf.filled") }.disabled(layer.mask != nil)
+                            Button { s.toggleClipping() } label: { Label(L("Clip"), systemImage: layer.clipped ? "arrow.turn.left.down" : "arrow.turn.down.left") }
+                                .disabled(s.selectedLayer == 0).help(L("Clipping mask")).accessibilityAddTraits(layer.clipped ? .isSelected : [])
                             if layer.mask != nil { Button { s.removeMask() } label: { Image(systemName: "trash") }.help(L("Remove mask")).accessibilityLabel(L("Remove mask")) }
                         }.buttonStyle(PhotoButtonStyle())
                         if s.maskEditing { Text(L("Mask active: black hides, white reveals.")).font(.system(size: 10)).foregroundStyle(theme.accent).lineSpacing(3) }
@@ -153,6 +156,7 @@ struct InspectorPanel: View {
             Button { s.selectedLayer = index; s.mutateLayer("Layer visibility") { $0.visible.toggle() } } label: {
                 Image(systemName: layer.visible ? "eye" : "eye.slash").font(.system(size: 10)).foregroundStyle(layer.visible ? theme.secondary : theme.secondary.opacity(0.45))
             }.buttonStyle(.plain).frame(width: 15).help(L("Visibility")).accessibilityLabel(L("Toggle layer visibility"))
+            if layer.clipped && index > 0 { Image(systemName: "arrow.turn.left.down").font(.system(size: 9, weight: .semibold)).foregroundStyle(theme.accent).help(L("Clipping mask")).accessibilityLabel(L("Clipping mask")) }
             ZStack {
                 RoundedRectangle(cornerRadius: 8).fill(selected ? theme.accentSoft : theme.deep)
                 Image(systemName: layer.imageData == nil ? "scribble.variable" : "photo").font(.system(size: 18, weight: .light)).foregroundStyle(selected ? theme.accent : theme.secondary)
@@ -223,6 +227,9 @@ struct InspectorPanel: View {
                     valueSlider(L("Saturation"), value: a.saturation, range: 0...2, suffix: "%", multiplier: 100) { v in s.mutateLayer("Saturation") { $0.adjustment.saturation = v } }
                     valueSlider(L("Exposure"), value: a.exposure, range: -4...4, suffix: " EV") { v in s.mutateLayer("Exposure") { $0.adjustment.exposure = v } }
                     valueSlider(L("Gaussian blur"), value: a.blur, range: 0...40, suffix: " px") { v in s.mutateLayer("Gaussian blur") { $0.adjustment.blur = v } }
+                    subheading(L("Curves"))
+                    CurvesEditor(curves: a.curves ?? [:], histogram: histogram) { c in s.mutateLayer("Curves") { $0.adjustment.curves = c } }
+                        .task(id: s.selectedLayer * 100_000 + s.undoStack.count) { histogram = s.placedLayerPixels().map(ToneCurve.histogram) ?? [] }
                     subheading(L("Color"))
                     valueSlider(L("Hue"), value: a.hue, range: -180...180, suffix: "°") { v in s.mutateLayer("Hue") { $0.adjustment.hue = v } }
                     valueSlider(L("Vibrance"), value: a.vibrance, range: -1...1, suffix: "", multiplier: 100) { v in s.mutateLayer("Vibrance") { $0.adjustment.vibrance = v } }
