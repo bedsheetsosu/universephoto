@@ -1,0 +1,153 @@
+import AppKit
+import SwiftUI
+
+struct ArtworkCanvas: NSViewRepresentable {
+    @ObservedObject var studio: Studio
+    var grid: Bool; var rulers: Bool; var snap: Bool; var background:NSColor = .windowBackgroundColor
+    func makeNSView(context: Context) -> ArtworkView { let v = ArtworkView(); v.studio = studio; return v }
+    func updateNSView(_ view: ArtworkView, context: Context) { view.studio = studio;view.backdrop = background; view.grid = grid; view.rulers = rulers; view.snap = snap; view.needsDisplay = true; studio.pen.onPen = { [weak view] sample in view?.remote(sample) } }
+}
+
+@MainActor final class ArtworkView: NSView {
+    weak var studio: Studio?
+    var grid = false; var rulers = true; var snap = false;var backdrop:NSColor = .windowBackgroundColor
+    private var cachedLayers: [ArtLayer] = []; private var cachedSize = CGSize.zero
+    private var image: CGImage?
+    private let layerCache = LayerImageCache()
+    private var active: InkStroke?
+    private var start = CGPoint.zero; private var previous = CGPoint.zero
+    private var originalTransform: LayerTransform?
+    private var remoteActive = false; private var lastRemote = Date.distantPast
+    private var interactionBegan = false
+    private var lastRemoteScreen: CGPoint?
+    private var pointer = CGPoint.zero; private var tracking: NSTrackingArea?
+    override var isFlipped: Bool { true }
+    override var acceptsFirstResponder: Bool { true }
+    var geometry: CanvasGeometry { guard let s = studio else { return CanvasGeometry(size: bounds.size, document: CGSize(width:1200,height:800),zoom:1,pan:.zero,rotation:0,mirrored:false) }; return CanvasGeometry(size: bounds.size, document: CGSize(width:s.width,height:s.height), zoom:s.zoom,pan:s.pan,rotation:s.rotation,mirrored:s.mirrored) }
+    override func updateTrackingAreas() { super.updateTrackingAreas(); if let tracking { removeTrackingArea(tracking) }; let t = NSTrackingArea(rect:bounds,options:[.activeInKeyWindow,.mouseMoved,.mouseEnteredAndExited,.inVisibleRect],owner:self); addTrackingArea(t); tracking = t }
+    func committedImage() -> CGImage? {
+        guard let s = studio else { return nil }
+        if cachedLayers != s.layers || cachedSize != CGSize(width:s.width,height:s.height) || image == nil {
+            image = Renderer.render(layers:s.layers,width:s.width,height:s.height,cache:layerCache); cachedLayers = s.layers; cachedSize = CGSize(width:s.width,height:s.height)
+        }
+        return image
+    }
+    private func drawImage(_ img: CGImage, in c: CGContext, rect: CGRect) {
+        c.saveGState(); c.translateBy(x:rect.minX,y:rect.maxY); c.scaleBy(x:1,y:-1); c.draw(img,in:CGRect(origin:.zero,size:rect.size)); c.restoreGState()
+    }
+    override func draw(_ dirtyRect: NSRect) {
+        guard let s = studio, let ctx = NSGraphicsContext.current?.cgContext else { return }
+        backdrop.setFill(); bounds.fill()
+        let doc = CGRect(x:0,y:0,width:s.width,height:s.height)
+        ctx.saveGState(); ctx.concatenate(geometry.transform)
+        ctx.setShadow(offset:CGSize(width:0,height:3),blur:20,color:CGColor(gray:0,alpha:0.22)); ctx.setFillColor(CGColor(gray:0.9,alpha:1)); ctx.fill(doc); ctx.setShadow(offset:.zero,blur:0)
+        ctx.saveGState(); ctx.clip(to:doc)
+        // Small reusable checker tile avoids one view per square.
+        let cell = 16.0
+        ctx.setFillColor(CGColor(gray:0.97,alpha:1)); ctx.fill(doc)
+        ctx.setFillColor(CGColor(gray:0.88,alpha:1))
+        for y in stride(from:0,to:s.height,by:Int(cell)) { for x in stride(from:0,to:s.width,by:Int(cell)) where (x/Int(cell)+y/Int(cell)) % 2 == 0 { ctx.fill(CGRect(x:x,y:y,width:Int(cell),height:Int(cell))) } }
+        if s.onionSkin && s.frameIndex > 0 && s.frames.indices.contains(s.frameIndex-1), let onion = Renderer.render(layers:s.frames[s.frameIndex-1],width:s.width,height:s.height) { ctx.setAlpha(0.2); drawImage(onion,in:ctx,rect:doc); ctx.setAlpha(1) }
+        let rendered: CGImage?
+        if let active, s.layers.indices.contains(s.selectedLayer) { if s.maskEditing { var previewLayers = s.layers;previewLayers[s.selectedLayer].mask?.append(active);rendered = Renderer.render(layers:previewLayers,width:s.width,height:s.height,cache:layerCache) } else { rendered = Renderer.render(layers:s.layers,width:s.width,height:s.height,preview:active,previewLayer:s.selectedLayer,cache:layerCache) } } else { rendered = committedImage() }
+        if let rendered { drawImage(rendered,in:ctx,rect:doc) }
+        if grid { ctx.setStrokeColor(CGColor(gray:0.4,alpha:0.25)); ctx.setLineWidth(0.5 / max(geometry.scale,0.01)); for x in stride(from:0,through:s.width,by:50) { ctx.move(to:CGPoint(x:x,y:0)); ctx.addLine(to:CGPoint(x:x,y:s.height)) }; for y in stride(from:0,through:s.height,by:50) { ctx.move(to:CGPoint(x:0,y:y)); ctx.addLine(to:CGPoint(x:s.width,y:y)) }; ctx.strokePath() }
+        if let selection = s.selection { let path = selectionPath(selection); ctx.setLineWidth(1/max(geometry.scale,0.01)); ctx.setStrokeColor(CGColor(gray:1,alpha:1)); ctx.addPath(path); ctx.strokePath(); ctx.setStrokeColor(CGColor(gray:0,alpha:0.9)); ctx.setLineDash(phase:0,lengths:[5/max(geometry.scale,0.01),5/max(geometry.scale,0.01)]); ctx.addPath(path); ctx.strokePath(); ctx.setLineDash(phase:0,lengths:[]) }
+        if let hover = s.hoverPoint, s.tool == .brush || s.tool == .eraser { ctx.setStrokeColor(CGColor(gray:0.2,alpha:0.7)); ctx.setLineWidth(1/max(geometry.scale,0.01)); let r = s.brushSize/2; ctx.strokeEllipse(in:CGRect(x:hover.x-r,y:hover.y-r,width:r*2,height:r*2)) }
+        ctx.restoreGState(); ctx.setStrokeColor(CGColor(gray:0.35,alpha:0.6)); ctx.setLineWidth(1/max(geometry.scale,0.01)); ctx.stroke(doc); ctx.restoreGState()
+        if rulers { drawRulers() }
+    }
+    private func drawRulers() {
+        NSColor.controlBackgroundColor.withAlphaComponent(0.9).setFill(); NSRect(x:0,y:0,width:bounds.width,height:20).fill(); NSRect(x:0,y:0,width:20,height:bounds.height).fill()
+        let attributes: [NSAttributedString.Key:Any] = [.font:NSFont.monospacedDigitSystemFont(ofSize:9,weight:.regular),.foregroundColor:NSColor.secondaryLabelColor]
+        let g = geometry
+        for value in stride(from:0,through:studio?.width ?? 1200,by:100) { let p = CGPoint(x:value,y:0).applying(g.transform); if p.x > 24 && p.x < bounds.width { ("\(value)" as NSString).draw(at:CGPoint(x:p.x+3,y:3),withAttributes:attributes) } }
+        for value in stride(from:100,through:studio?.height ?? 800,by:100) { let p = CGPoint(x:0,y:value).applying(g.transform); if p.y > 24 && p.y < bounds.height { ("\(value)" as NSString).draw(at:CGPoint(x:2,y:p.y),withAttributes:attributes) } }
+    }
+    func selectionPath(_ s: CanvasSelection) -> CGPath { let p = CGMutablePath(); if s.ellipse { p.addEllipse(in:s.bounds) } else if s.points.count == 2 { p.addRect(s.bounds) } else if let first = s.points.first { p.move(to:first); s.points.dropFirst().forEach { p.addLine(to:$0) }; p.closeSubpath() }; return p }
+    private func documentPoint(_ p: CGPoint) -> CGPoint { var q = geometry.toDocument(p); if snap { q.x = (q.x/25).rounded()*25; q.y = (q.y/25).rounded()*25 }; return q }
+    private func localPoint(_ p: CGPoint) -> CGPoint { guard let s = studio, let t = s.activeLayer?.transform else { return p }; let transform = CGAffineTransform(translationX:t.x+Double(s.width)/2,y:t.y+Double(s.height)/2).rotated(by:t.rotation * .pi/180).scaledBy(x:t.scale,y:t.scale).translatedBy(x:-Double(s.width)/2,y:-Double(s.height)/2); return p.applying(transform.inverted()) }
+    private func isDuplicate(_ e: NSEvent) -> Bool {
+        // UniversePen tags its injected Pencil CGEvents with this device ID (Host/InputInjector).
+        // Claim only that route after a validated subscription; ordinary mice and tablets remain usable.
+        studio?.pen.connected == true && e.cgEvent?.getIntegerValueField(.tabletEventDeviceID) == 0x7AFE1
+    }
+    override func mouseDown(with e:NSEvent) { window?.makeFirstResponder(self); guard !isDuplicate(e) else { return }; begin(at:convert(e.locationInWindow,from:nil),pressure:pressure(e),tilt: e.subtype == .tabletPoint ? e.tilt : .zero,rotation:Double(e.rotation)) }
+    override func mouseDragged(with e:NSEvent) { guard !isDuplicate(e) else { return }; drag(at:convert(e.locationInWindow,from:nil),pressure:pressure(e),tilt:e.subtype == .tabletPoint ? e.tilt : .zero,rotation:Double(e.rotation)) }
+    override func mouseUp(with e:NSEvent) { guard !isDuplicate(e) else { return }; if interactionBegan { drag(at:convert(e.locationInWindow,from:nil),pressure:pressure(e),tilt:e.subtype == .tabletPoint ? e.tilt : .zero,rotation:Double(e.rotation)) };finish() }
+    override func mouseMoved(with e:NSEvent) { pointer = convert(e.locationInWindow,from:nil); studio?.hoverPoint = geometry.toDocument(pointer); needsDisplay = true }
+    override func mouseExited(with e:NSEvent) { studio?.hoverPoint = nil; needsDisplay = true }
+    private func pressure(_ e:NSEvent) -> Double { e.subtype == .tabletPoint ? max(0.05,Double(e.pressure)) : 1 }
+    private func begin(at p:CGPoint,pressure:Double,tilt:CGPoint = .zero,rotation:Double = 0) {
+        guard let s = studio,!s.isPlaying else { return }; interactionBegan = false; active = nil; originalTransform = nil; start = p; previous = p
+        let doc = documentPoint(p); guard CGRect(x:0,y:0,width:s.width,height:s.height).contains(doc) || s.tool == .pan else { return }
+        interactionBegan = true
+        if s.tool == .pan { return }
+        if s.tool == .eyedropper { if let image = committedImage() { s.color = Renderer.sample(image,at:doc) }; return }
+        if [.rectangleSelection,.ellipseSelection,.lasso].contains(s.tool) { s.selection = CanvasSelection(points:[doc,doc],ellipse:s.tool == .ellipseSelection); return }
+        guard s.canEdit else { return }
+        if s.tool == .move { s.checkpoint("Move"); originalTransform = s.activeLayer?.transform; return }
+        var c = s.color; c.alpha *= s.brushOpacity
+        if s.maskEditing { c = s.eraser ? .white : CodableColor(red:0,green:0,blue:0,alpha:1) }
+        let local = localPoint(doc)
+        var stroke = InkStroke(points:[InkPoint(x:local.x,y:local.y,pressure:s.pressureEnabled ? pressure : 1,tiltX:tilt.x,tiltY:tilt.y,rotation:rotation)],color:c,width:s.brushSize,isEraser:s.eraser && !s.maskEditing)
+        if let selection = s.selection {
+            // Persist the selection in layer coordinates. Sampling an ellipse before the inverse
+            // transform preserves its true boundary on translated, rotated and scaled layers.
+            let points: [CGPoint]
+            if selection.ellipse {
+                let b = selection.bounds
+                points = (0..<96).map { i in let a = Double(i) * 2 * .pi / 96; return CGPoint(x:b.midX + cos(a)*b.width/2,y:b.midY + sin(a)*b.height/2) }
+            } else if selection.points.count == 2 {
+                let b = selection.bounds
+                points = [CGPoint(x:b.minX,y:b.minY),CGPoint(x:b.maxX,y:b.minY),CGPoint(x:b.maxX,y:b.maxY),CGPoint(x:b.minX,y:b.maxY)]
+            } else { points = selection.points }
+            stroke.selectionPoints = points.map { let p = localPoint($0); return InkPoint(x:p.x,y:p.y,pressure:1) }
+            stroke.selectionEllipse = false
+        }
+        switch s.tool { case .rectangle:stroke.kind = "rectangle"; case .ellipse:stroke.kind = "ellipse"; case .line:stroke.kind = "line"; case .text:stroke.kind = "text";stroke.text = s.textContent;stroke.width = max(10,s.brushSize); case .fill:stroke.kind = "fill"; case .gradient:stroke.kind = "gradient";stroke.secondaryColor = s.secondaryColor; default:break }
+        active = stroke; if s.tool == .text || s.tool == .fill { finish() }; needsDisplay = true
+    }
+    private func drag(at p:CGPoint,pressure:Double,tilt:CGPoint = .zero,rotation:Double = 0) {
+        guard let s = studio, interactionBegan else { return }
+        if s.tool == .pan { s.pan.width += p.x-previous.x;s.pan.height += p.y-previous.y;previous = p;return }
+        let doc = documentPoint(p)
+        if var selection = s.selection, [.rectangleSelection,.ellipseSelection,.lasso].contains(s.tool) { if s.tool == .lasso { selection.points.append(doc) } else { selection.points = [documentPoint(start),doc] };s.selection = selection;return }
+        if s.tool == .move, let originalTransform { let a = geometry.toDocument(start); s.layers[s.selectedLayer].transform.x = originalTransform.x+doc.x-a.x; s.layers[s.selectedLayer].transform.y = originalTransform.y+doc.y-a.y; needsDisplay = true;return }
+        guard var stroke = active else { return }; let q = localPoint(doc)
+        var point = InkPoint(x:q.x,y:q.y,pressure:s.pressureEnabled ? pressure : 1,tiltX:tilt.x,tiltY:tilt.y,rotation:rotation)
+        if stroke.kind == nil, let last = stroke.points.last { let factor = 1-s.smoothing*0.85;point.x = last.x+(point.x-last.x)*factor;point.y = last.y+(point.y-last.y)*factor; if hypot(point.x-last.x,point.y-last.y) < 0.15 { return } }
+        if stroke.kind != nil { stroke.points = [stroke.points[0],point] } else { stroke.points.append(point) }; active = stroke; needsDisplay = true
+    }
+    private func finish() { guard let s = studio else { return }; if let stroke = active { s.add(stroke) }; if originalTransform != nil { s.changed() }; active = nil; originalTransform = nil; interactionBegan = false; needsDisplay = true }
+    private func cancelInteraction() {
+        if let s = studio, let originalTransform, s.layers.indices.contains(s.selectedLayer) { s.layers[s.selectedLayer].transform = originalTransform }
+        active = nil; originalTransform = nil; interactionBegan = false; needsDisplay = true
+    }
+    func remote(_ sample:PenSample) {
+        guard let s = studio else { return }
+        // Disconnect/disable emits a coordinate-free cancel. It must release the remote route
+        // even after focus has moved, otherwise native input remains suppressed indefinitely.
+        if sample.phase == "cancel" || sample.phase == "exit" {
+            if remoteActive { cancelInteraction() }
+            remoteActive = false; lastRemote = .distantPast; lastRemoteScreen = nil; s.hoverPoint = nil; needsDisplay = true; return
+        }
+        guard window?.isKeyWindow == true, NSApp.isActive else {
+            if remoteActive { cancelInteraction(); remoteActive = false }
+            return
+        }
+        guard let sx = sample.screenX,let sy = sample.screenY else { return } // normalized picture coordinates alone don't identify the canvas on screen
+        let mainHeight = NSScreen.screens.first?.frame.height ?? 0
+        let global = CGPoint(x:sx,y:mainHeight-sy)
+        let p = convert(window!.convertPoint(fromScreen:global),from:nil)
+        lastRemote = Date(); lastRemoteScreen = global
+        if sample.phase == "hover" || sample.phase == "enter" { s.hoverPoint = geometry.toDocument(p); needsDisplay = true;return }
+        if sample.phase == "down" { active = nil; remoteActive = true; begin(at:p,pressure:sample.pressure,tilt:CGPoint(x:sample.tiltX ?? 0,y:sample.tiltY ?? 0),rotation:sample.rotation ?? 0) }
+        if sample.phase == "move" && remoteActive { drag(at:p,pressure:sample.pressure,tilt:CGPoint(x:sample.tiltX ?? 0,y:sample.tiltY ?? 0),rotation:sample.rotation ?? 0) }
+        if sample.phase == "up" && remoteActive { drag(at:p,pressure:sample.pressure,tilt:CGPoint(x:sample.tiltX ?? 0,y:sample.tiltY ?? 0),rotation:sample.rotation ?? 0);finish();remoteActive = false }
+    }
+    override func scrollWheel(with e:NSEvent) { guard let s = studio else { return }; if e.modifierFlags.contains(.command) { s.zoom = max(0.1,min(16,s.zoom * exp(e.scrollingDeltaY*0.01))) } else { s.pan.width -= e.scrollingDeltaX;s.pan.height -= e.scrollingDeltaY } }
+    override func magnify(with e:NSEvent) { guard let s = studio else { return };s.zoom = max(0.1,min(16,s.zoom*(1+e.magnification))) }
+    override func rotate(with e:NSEvent) { studio?.rotation += Double(e.rotation) }
+    override func keyDown(with e:NSEvent) { guard let s = studio else { return }; if e.keyCode == 53 { s.selection = nil;cancelInteraction();remoteActive = false;return };super.keyDown(with:e) }
+}

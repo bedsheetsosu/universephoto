@@ -1,0 +1,7 @@
+{
+  "id": "universephoto-bridge",
+  "name": "UniversePhoto Bridge",
+  "version": "0.2.0",
+  "description": "31 foreground-gated UniversePhoto actions for the shortcut bar, radial menu and assignable gestures. No profile changes or direct app connection.",
+  "main": "main.js"
+}
