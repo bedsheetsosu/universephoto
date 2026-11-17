@@ -86,8 +86,10 @@ struct ArtLayer: Codable, Identifiable, Equatable, Sendable {
     var clipped = false
     /// Layer effects (drop shadow, outer glow, stroke, colour overlay); nil = none.
     var style: LayerStyle? = nil
+    /// The group (folder) this layer belongs to, see `ArtDocument.groups`.
+    var groupID: UUID? = nil
     init(name: String) { self.name = name }
-    enum CodingKeys: String, CodingKey { case id, name, visible, strokes, opacity, blend, locked, transform, adjustment, imageData, mask, clipped, style }
+    enum CodingKeys: String, CodingKey { case id, name, visible, strokes, opacity, blend, locked, transform, adjustment, imageData, mask, clipped, style, groupID }
     init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         id = try c.decodeIfPresent(UUID.self, forKey: .id) ?? UUID(); name = try c.decode(String.self, forKey: .name)
@@ -102,12 +104,18 @@ struct ArtLayer: Codable, Identifiable, Equatable, Sendable {
         mask = try c.decodeIfPresent([InkStroke].self, forKey: .mask)
         clipped = try c.decodeIfPresent(Bool.self, forKey: .clipped) ?? false
         style = try c.decodeIfPresent(LayerStyle.self, forKey: .style)
+        groupID = try c.decodeIfPresent(UUID.self, forKey: .groupID)
     }
 }
 struct ArtDocument: Codable, Equatable, Sendable {
     var version = 2; var title: String; var width: Int; var height: Int; var layers: [ArtLayer]; var frames: [[ArtLayer]] = []
     var fps: Double? = 12
     var activeFrame: Int? = 0
+    /// Layer groups (folders); layers point to them with `groupID`. Shared by all frames.
+    var groups: [LayerGroup]? = nil
+}
+struct LayerGroup: Codable, Equatable, Identifiable, Sendable {
+    var id = UUID(); var name: String; var visible = true; var opacity = 1.0; var collapsed = false
 }
 extension JSONEncoder { static var pretty: JSONEncoder { let e = JSONEncoder(); e.outputFormatting = [.prettyPrinted, .sortedKeys]; return e } }
 

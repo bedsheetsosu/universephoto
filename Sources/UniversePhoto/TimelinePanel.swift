@@ -114,7 +114,7 @@ struct TimelinePanel: View {
                     Circle().fill(selected ? theme.accent : .clear).frame(width: 4, height: 4)
                     Text(String(format: "%02d", index + 1)).font(.system(size: 9, weight: selected ? .semibold : .regular, design: .monospaced))
                 }.foregroundStyle(selected ? theme.accent : theme.secondary)
-                FrameThumbnail(layers: selected ? s.layers : layers, width: s.width, height: s.height)
+                FrameThumbnail(layers: s.composite(selected ? s.layers : layers), width: s.width, height: s.height)
                     .frame(width: 82, height: 53).padding(3)
                     .background(Color.white.opacity(0.95), in: RoundedRectangle(cornerRadius: 7))
                     .clipShape(RoundedRectangle(cornerRadius: 7))

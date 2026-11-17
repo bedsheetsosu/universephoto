@@ -111,11 +111,17 @@ struct InspectorPanel: View {
                     valueSlider(L("Opacity"), value: layer.opacity, range: 0...1, suffix: "%", multiplier: 100) { v in s.mutateLayer("Opacity") { $0.opacity = v } }
                 }
                 VStack(spacing: 5) {
-                    ForEach(Array(s.layers.enumerated().reversed()), id: \.element.id) { idx, layer in layerRow(layer, index: idx) }
+                    ForEach(Array(s.layers.enumerated().reversed()), id: \.element.id) { idx, layer in
+                        // A group header above the top-most layer of each group; collapsed groups hide their layers.
+                        let g = s.group(of: layer)
+                        if let g, !s.layers.indices.contains(idx + 1) || s.layers[idx + 1].groupID != g.id { groupHeader(g) }
+                        if g?.collapsed != true { layerRow(layer, index: idx).padding(.leading, g == nil ? 0 : 14) }
+                    }
                 }
                 HStack(spacing: 5) {
                     mini("plus", L("New layer")) { s.newLayer() }
                     mini("square.on.square", L("Duplicate")) { s.duplicateLayer() }
+                    mini("folder.badge.plus", L("Group layers")) { s.groupSelected() }
                     mini("arrow.up", L("Raise")) { s.reorderLayer(1) }.disabled(s.selectedLayer == s.layers.count - 1)
                     mini("arrow.down", L("Lower")) { s.reorderLayer(-1) }.disabled(s.selectedLayer == 0)
                     Spacer(minLength: 0)
@@ -127,6 +133,15 @@ struct InspectorPanel: View {
                     heading(L("Properties"), symbol: "slider.horizontal.2.square")
                     TextField(L("Layer name"), text: Binding(get: { layer.name }, set: { name in s.mutateLayer("Rename layer") { $0.name = name } }))
                         .textFieldStyle(.plain).font(.system(size: 11)).padding(9).background(theme.deep.opacity(0.6), in: RoundedRectangle(cornerRadius: 8))
+                    if let g = s.group(of: layer) {
+                        HStack(spacing: 6) {
+                            Image(systemName: "folder.fill").foregroundStyle(theme.accent).font(.system(size: 10))
+                            TextField(L("Group name"), text: Binding(get: { g.name }, set: { n in if let i = s.groups.firstIndex(where: { $0.id == g.id }) { s.groups[i].name = n; s.changed() } }))
+                                .textFieldStyle(.plain).font(.system(size: 11))
+                            Button { s.ungroup() } label: { Image(systemName: "folder.badge.minus") }.buttonStyle(.plain).help(L("Ungroup")).accessibilityLabel(L("Ungroup"))
+                        }.padding(8).background(theme.deep.opacity(0.4), in: RoundedRectangle(cornerRadius: 8))
+                        valueSlider(L("Group opacity"), value: g.opacity, range: 0...1, suffix: "%", multiplier: 100) { v in if let i = s.groups.firstIndex(where: { $0.id == g.id }) { if s.groups[i].opacity != v { s.groups[i].opacity = v; s.changed() } } }
+                    }
                     if !simple {
                         HStack(spacing: 9) {
                             numberField("X", layer.transform.x) { n in s.mutateLayer("Position") { $0.transform.x = n } }
@@ -152,8 +167,27 @@ struct InspectorPanel: View {
             }
         }
     }
+    private func groupHeader(_ g: LayerGroup) -> some View {
+        HStack(spacing: 7) {
+            Button { s.updateGroup(g.id, "Group visibility") { $0.visible.toggle() } } label: {
+                Image(systemName: g.visible ? "eye" : "eye.slash").font(.system(size: 10)).foregroundStyle(theme.secondary.opacity(g.visible ? 1 : 0.45))
+            }.buttonStyle(.plain).frame(width: 15).accessibilityLabel(L("Toggle group visibility"))
+            Button { withAnimation(PhotoMotion.panel) { if let i = s.groups.firstIndex(where: { $0.id == g.id }) { s.groups[i].collapsed.toggle() } } } label: {
+                Image(systemName: "chevron.right").font(.system(size: 9, weight: .bold)).rotationEffect(.degrees(g.collapsed ? 0 : 90)).foregroundStyle(theme.secondary)
+            }.buttonStyle(.plain).accessibilityLabel(g.collapsed ? L("Expand group") : L("Collapse group"))
+            Image(systemName: g.collapsed ? "folder" : "folder.fill").font(.system(size: 12)).foregroundStyle(theme.accent)
+            Text(g.name).font(.system(size: 11, weight: .semibold)).lineLimit(1)
+            Spacer(minLength: 0)
+            if g.opacity < 1 { Text("\(Int(g.opacity * 100))%").font(.system(size: 9, design: .monospaced)).foregroundStyle(theme.secondary) }
+        }
+        .padding(.horizontal, 8).padding(.vertical, 6)
+        .background(theme.deep.opacity(0.45), in: RoundedRectangle(cornerRadius: 9))
+        .contentShape(RoundedRectangle(cornerRadius: 9)).onTapGesture { s.selectGroup(g.id) }
+        .accessibilityElement(children: .contain).accessibilityLabel(LF("Group %@", g.name))
+    }
+
     private func layerRow(_ layer: ArtLayer, index: Int) -> some View {
-        let selected = index == s.selectedLayer
+        let selected = index == s.selectedLayer || s.selectedIDs.contains(layer.id)
         return HStack(spacing: 8) {
             Button { s.selectedLayer = index; s.mutateLayer("Layer visibility") { $0.visible.toggle() } } label: {
                 Image(systemName: layer.visible ? "eye" : "eye.slash").font(.system(size: 10)).foregroundStyle(layer.visible ? theme.secondary : theme.secondary.opacity(0.45))
@@ -182,7 +216,7 @@ struct InspectorPanel: View {
         }.padding(.horizontal, 8).padding(.vertical, 8)
             .background(selected ? theme.accentSoft : hoveringLayer == layer.id ? theme.deep.opacity(0.6) : .clear, in: RoundedRectangle(cornerRadius: 10))
             .overlay(RoundedRectangle(cornerRadius: 10).strokeBorder(selected ? theme.accent.opacity(0.4) : .clear))
-            .contentShape(RoundedRectangle(cornerRadius: 10)).onTapGesture { s.selectedLayer = index; s.maskEditing = false }
+            .contentShape(RoundedRectangle(cornerRadius: 10)).onTapGesture { let f = NSEvent.modifierFlags; s.selectLayer(index, command: f.contains(.command), shift: f.contains(.shift)) }
             .onHover { hoveringLayer = $0 ? layer.id : nil }
     }
 

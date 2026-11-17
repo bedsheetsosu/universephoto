@@ -48,6 +48,8 @@ struct StudioCommands: Commands {
             Button(L("Duplicate")) { studio.duplicateLayer() }
             Button(L("Layer via copy")) { studio.layerFromSelection(cut:false) }.keyboardShortcut("j")
             Button(L("Layer via cut")) { studio.layerFromSelection(cut:true) }.keyboardShortcut("j",modifiers:[.command,.shift])
+            Button(L("Group layers")) { studio.groupSelected() }.keyboardShortcut("g",modifiers:.command)
+            Button(L("Ungroup")) { studio.ungroup() }.keyboardShortcut("g",modifiers:[.command,.shift]).disabled(studio.activeLayer?.groupID == nil)
             Button(L("Clipping mask")) { studio.toggleClipping() }.keyboardShortcut("g",modifiers:[.command,.option]).disabled(studio.selectedLayer == 0)
             Button(L("Delete layer")) { studio.deleteLayer() }.keyboardShortcut(.delete,modifiers:[.command,.shift])
             Button(L("Visibility")) { studio.mutateLayer("Visibility") { $0.visible.toggle() } }.keyboardShortcut("h",modifiers:.option)

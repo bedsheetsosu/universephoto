@@ -12,7 +12,7 @@ extension Studio {
 
     /// Pixels inside the selection (everything without one), document size, transparent elsewhere.
     func selectedPixels(merged: Bool) -> CGImage? {
-        guard let source = merged ? Renderer.render(layers: layers, width: width, height: height) : placedLayerPixels() else { return nil }
+        guard let source = merged ? Renderer.render(layers: composite(layers), width: width, height: height) : placedLayerPixels() else { return nil }
         guard let mask = selectionMask(), let gray = PixelOps.grayImage(mask, width: width, height: height),
               let ctx = CGContext(data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: width * 4,
                                   space: CGColorSpace(name: CGColorSpace.sRGB)!, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) else { return source }

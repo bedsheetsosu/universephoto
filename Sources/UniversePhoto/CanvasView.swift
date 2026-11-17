@@ -17,6 +17,7 @@ struct ArtworkCanvas: NSViewRepresentable {
     private var active: InkStroke?
     private var start = CGPoint.zero; private var previous = CGPoint.zero
     private var originalTransform: LayerTransform?
+    private var moveStart: [UUID: LayerTransform] = [:]
     private var remoteActive = false; private var lastRemote = Date.distantPast
     private var interactionBegan = false
     private var lastRemoteScreen: CGPoint?
@@ -27,8 +28,9 @@ struct ArtworkCanvas: NSViewRepresentable {
     override func updateTrackingAreas() { super.updateTrackingAreas(); if let tracking { removeTrackingArea(tracking) }; let t = NSTrackingArea(rect:bounds,options:[.activeInKeyWindow,.mouseMoved,.mouseEnteredAndExited,.inVisibleRect],owner:self); addTrackingArea(t); tracking = t }
     func committedImage() -> CGImage? {
         guard let s = studio else { return nil }
-        if cachedLayers != s.layers || cachedSize != CGSize(width:s.width,height:s.height) || image == nil {
-            image = Renderer.render(layers:s.layers,width:s.width,height:s.height,cache:layerCache); cachedLayers = s.layers; cachedSize = CGSize(width:s.width,height:s.height)
+        let shown = s.composite(s.layers)
+        if cachedLayers != shown || cachedSize != CGSize(width:s.width,height:s.height) || image == nil {
+            image = Renderer.render(layers:shown,width:s.width,height:s.height,cache:layerCache); cachedLayers = shown; cachedSize = CGSize(width:s.width,height:s.height)
         }
         return image
     }
@@ -47,9 +49,9 @@ struct ArtworkCanvas: NSViewRepresentable {
         ctx.setFillColor(CGColor(gray:0.97,alpha:1)); ctx.fill(doc)
         ctx.setFillColor(CGColor(gray:0.88,alpha:1))
         for y in stride(from:0,to:s.height,by:Int(cell)) { for x in stride(from:0,to:s.width,by:Int(cell)) where (x/Int(cell)+y/Int(cell)) % 2 == 0 { ctx.fill(CGRect(x:x,y:y,width:Int(cell),height:Int(cell))) } }
-        if s.onionSkin && s.frameIndex > 0 && s.frames.indices.contains(s.frameIndex-1), let onion = Renderer.render(layers:s.frames[s.frameIndex-1],width:s.width,height:s.height) { ctx.setAlpha(0.2); drawImage(onion,in:ctx,rect:doc); ctx.setAlpha(1) }
+        if s.onionSkin && s.frameIndex > 0 && s.frames.indices.contains(s.frameIndex-1), let onion = Renderer.render(layers:s.composite(s.frames[s.frameIndex-1]),width:s.width,height:s.height) { ctx.setAlpha(0.2); drawImage(onion,in:ctx,rect:doc); ctx.setAlpha(1) }
         let rendered: CGImage?
-        if let active, s.layers.indices.contains(s.selectedLayer) { if s.maskEditing { var previewLayers = s.layers;previewLayers[s.selectedLayer].mask?.append(active);rendered = Renderer.render(layers:previewLayers,width:s.width,height:s.height,cache:layerCache) } else { rendered = Renderer.render(layers:s.layers,width:s.width,height:s.height,preview:active,previewLayer:s.selectedLayer,cache:layerCache) } } else { rendered = committedImage() }
+        if let active, s.layers.indices.contains(s.selectedLayer) { if s.maskEditing { var previewLayers = s.composite(s.layers);previewLayers[s.selectedLayer].mask?.append(active);rendered = Renderer.render(layers:previewLayers,width:s.width,height:s.height,cache:layerCache) } else { rendered = Renderer.render(layers:s.composite(s.layers),width:s.width,height:s.height,preview:active,previewLayer:s.selectedLayer,cache:layerCache) } } else { rendered = committedImage() }
         if let rendered { drawImage(rendered,in:ctx,rect:doc) }
         if grid { ctx.setStrokeColor(CGColor(gray:0.4,alpha:0.25)); ctx.setLineWidth(0.5 / max(geometry.scale,0.01)); for x in stride(from:0,through:s.width,by:50) { ctx.move(to:CGPoint(x:x,y:0)); ctx.addLine(to:CGPoint(x:x,y:s.height)) }; for y in stride(from:0,through:s.height,by:50) { ctx.move(to:CGPoint(x:0,y:y)); ctx.addLine(to:CGPoint(x:s.width,y:y)) }; ctx.strokePath() }
         if let selection = s.selection, let mask = selection.mask {
@@ -105,7 +107,7 @@ struct ArtworkCanvas: NSViewRepresentable {
         if s.tool == .move {
             // Moving with a selection lifts the selected pixels onto their own layer first (like Photoshop).
             if s.selection != nil { s.layerFromSelection(cut:true) }
-            s.checkpoint("Move"); originalTransform = s.activeLayer?.transform; return
+            s.checkpoint("Move"); originalTransform = s.activeLayer?.transform; moveStart = s.beginMove(); return
         }
         var c = s.color; c.alpha *= s.brushOpacity
         if s.maskEditing { c = s.eraser ? .white : CodableColor(red:0,green:0,blue:0,alpha:1) }
@@ -150,7 +152,7 @@ struct ArtworkCanvas: NSViewRepresentable {
         if s.tool == .pan { s.pan.width += p.x-previous.x;s.pan.height += p.y-previous.y;previous = p;return }
         let doc = documentPoint(p)
         if var selection = s.selection, [.rectangleSelection,.ellipseSelection,.lasso].contains(s.tool) { if s.tool == .lasso { selection.points.append(doc) } else { selection.points = [documentPoint(start),doc] };s.selection = selection;return }
-        if s.tool == .move, let originalTransform { let a = geometry.toDocument(start); s.layers[s.selectedLayer].transform.x = originalTransform.x+doc.x-a.x; s.layers[s.selectedLayer].transform.y = originalTransform.y+doc.y-a.y; needsDisplay = true;return }
+        if s.tool == .move, originalTransform != nil { let a = geometry.toDocument(start); s.move(moveStart,by:CGSize(width:doc.x-a.x,height:doc.y-a.y)); needsDisplay = true;return }
         guard var stroke = active else { return }; let q = localPoint(doc)
         var point = InkPoint(x:q.x,y:q.y,pressure:s.pressureEnabled ? pressure : 1,tiltX:tilt.x,tiltY:tilt.y,rotation:rotation)
         if stroke.isFreehand, let last = stroke.points.last { let factor = 1-s.smoothing*0.85;point.x = last.x+(point.x-last.x)*factor;point.y = last.y+(point.y-last.y)*factor; if hypot(point.x-last.x,point.y-last.y) < 0.15 { return } }
@@ -160,7 +162,7 @@ struct ArtworkCanvas: NSViewRepresentable {
     }
     private func finish() { guard let s = studio else { return }; if let stroke = active { s.add(stroke) }; if originalTransform != nil { s.changed() }; active = nil; originalTransform = nil; interactionBegan = false; needsDisplay = true }
     private func cancelInteraction() {
-        if let s = studio, let originalTransform, s.layers.indices.contains(s.selectedLayer) { s.layers[s.selectedLayer].transform = originalTransform }
+        if let s = studio, originalTransform != nil { s.move(moveStart,by:.zero) }
         active = nil; originalTransform = nil; interactionBegan = false; needsDisplay = true
     }
     func remote(_ sample:PenSample) {

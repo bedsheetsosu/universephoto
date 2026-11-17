@@ -30,7 +30,7 @@ extension Studio {
         guard let source = cloneSource else { message = "Option-click to set the source first."; return false }
         let offset = (cloneAligned ? cloneOffset : nil) ?? CGSize(width: source.x - point.x, height: source.y - point.y)
         cloneOffset = offset
-        guard let picture = sampleMerged ? Renderer.render(layers: layers, width: width, height: height) : rawLayerPixels(),
+        guard let picture = sampleMerged ? Renderer.render(layers: composite(layers), width: width, height: height) : rawLayerPixels(),
               let ctx = Renderer.context(width: width, height: height) else { return false }
         // Pixel (x, y) of the result shows the source at (x + dx, y + dy).
         Renderer.drawImage(picture, in: ctx, rect: CGRect(x: -offset.width, y: -offset.height, width: Double(width), height: Double(height)))

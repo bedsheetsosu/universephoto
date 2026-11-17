@@ -7,7 +7,7 @@ extension Studio {
 
     /// What the bucket and the wand look at: the active layer alone, or everything visible.
     func sampledImage(merged: Bool) -> CGImage? {
-        if merged { return Renderer.render(layers: layers, width: width, height: height) }
+        if merged { return Renderer.render(layers: composite(layers), width: width, height: height) }
         guard var layer = activeLayer else { return nil }
         // The layer's own pixels in its own coordinates (no opacity, blend, transform).
         layer.opacity = 1; layer.blend = .normal; layer.transform = .init(); layer.visible = true
