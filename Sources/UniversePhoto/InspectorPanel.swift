@@ -308,6 +308,9 @@ struct InspectorPanel: View {
                     }.buttonStyle(PhotoButtonStyle())
                 }
             }.photoCard()
+            if let layer = s.activeLayer {
+                SmartFilterEditor(filters: layer.filters ?? []) { list in s.mutateLayer("Smart filters") { $0.filters = list.isEmpty ? nil : list } }.photoCard()
+            }
             Text(L("Original strokes and image data are preserved. All values are saved in the project.")).font(.system(size: 10)).foregroundStyle(theme.secondary).lineSpacing(4).padding(.horizontal, 6)
         }
     }

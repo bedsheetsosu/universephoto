@@ -174,7 +174,16 @@ enum Renderer {
         if let preview { drawStroke(preview,in:bitmap) }
         guard var image = bitmap.makeImage() else { return nil }
         if let mask = layer.mask { image = applyMask(mask,image:image,width:width,height:height) ?? image }
-        return adjusted(image,adjustment:layer.adjustment) ?? image
+        image = adjusted(image,adjustment:layer.adjustment) ?? image
+        return filtered(image,layer.filters ?? []) ?? image
+    }
+    /// The layer's smart filter stack (enabled entries, in order).
+    static func filtered(_ image: CGImage, _ stack: [SmartFilter]) -> CGImage? {
+        let active = stack.filter(\.enabled)
+        guard !active.isEmpty else { return image }
+        let input = CIImage(cgImage: image)
+        let output = active.reduce(input) { $1.apply(to: $0) }
+        return filters.createCGImage(output, from: input.extent, format: .RGBA8, colorSpace: CGColorSpace(name: CGColorSpace.sRGB)!)
     }
     static func drawImage(_ image: CGImage, in context: CGContext, rect: CGRect) {
         context.saveGState()
@@ -231,11 +240,23 @@ enum Renderer {
                let image = CGImageSourceCreateImageAtIndex(source, 0, nil) {
                 drawImage(image, in: context, rect: CGRect(x: 0, y: 0, width: image.width, height: image.height))
             }
-        case "gradient":
-            if let gradient = CGGradient(colorsSpace: CGColorSpace(name: CGColorSpace.sRGB),
-                                         colors: [stroke.color.cgColor, (stroke.secondaryColor ?? .white).cgColor] as CFArray,
-                                         locations: [0, 1]) {
-                context.drawLinearGradient(gradient, start: p, end: q, options: [.drawsBeforeStartLocation, .drawsAfterEndLocation])
+        case "gradient", "gradientRadial", "gradientReflected":
+            let a = stroke.color.cgColor, b = (stroke.secondaryColor ?? .white).cgColor, space = CGColorSpace(name: CGColorSpace.sRGB)
+            let both: CGGradientDrawingOptions = [.drawsBeforeStartLocation, .drawsAfterEndLocation]
+            switch stroke.kind {
+            case "gradientRadial":
+                if let g = CGGradient(colorsSpace: space, colors: [a, b] as CFArray, locations: [0, 1]) {
+                    context.drawRadialGradient(g, startCenter: p, startRadius: 0, endCenter: p, endRadius: max(1, hypot(q.x - p.x, q.y - p.y)), options: both)
+                }
+            case "gradientReflected":
+                // Start colour on the drag's start, the second colour on both ends of the mirrored line.
+                if let g = CGGradient(colorsSpace: space, colors: [b, a, b] as CFArray, locations: [0, 0.5, 1]) {
+                    context.drawLinearGradient(g, start: CGPoint(x: 2 * p.x - q.x, y: 2 * p.y - q.y), end: q, options: both)
+                }
+            default:
+                if let g = CGGradient(colorsSpace: space, colors: [a, b] as CFArray, locations: [0, 1]) {
+                    context.drawLinearGradient(g, start: p, end: q, options: both)
+                }
             }
         case "text":
             let font = CTFontCreateWithName((stroke.fontName ?? "Helvetica") as CFString, max(6, stroke.width), nil)

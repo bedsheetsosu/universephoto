@@ -108,6 +108,7 @@ struct Workspace: View {
                 Toggle(L("All layers"),isOn:$s.sampleMerged).toggleStyle(.checkbox).controlSize(.mini)
                 if g.size.width > 760 { Text(s.cloneSource == nil ? L("⌥-click sets the source") : L("Source set · ⌥-click to change")).foregroundStyle(theme.secondary) }
             }
+            if s.tool == .gradient { Picker(L("Gradient"),selection:$s.gradientStyle) { ForEach(GradientStyle.allCases,id:\.self) { Label(L($0.title),systemImage:$0.symbol).tag($0) } }.pickerStyle(.segmented).labelsHidden().frame(width:150).controlSize(.mini).help(L("Gradient")) }
             if s.tool == .dodge { Picker(L("Mode"),selection:$s.burnMode) { Text(L("Dodge")).tag(false);Text(L("Burn")).tag(true) }.pickerStyle(.segmented).labelsHidden().frame(width:120).controlSize(.mini) }
             if s.tool == .focus { Picker(L("Mode"),selection:$s.sharpenMode) { Text(L("Blur")).tag(false);Text(L("Sharpen")).tag(true) }.pickerStyle(.segmented).labelsHidden().frame(width:130).controlSize(.mini) }
             if [.smudge,.dodge,.focus].contains(s.tool) { Text(L("Strength")).foregroundStyle(theme.secondary);Slider(value:$s.toolStrength,in:0.05...1).frame(width:60).controlSize(.mini).accessibilityLabel(L("Strength"));Text("\(Int(s.toolStrength*100))%").monospacedDigit().frame(width:30) }

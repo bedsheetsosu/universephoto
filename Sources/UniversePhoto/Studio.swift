@@ -25,6 +25,8 @@ struct BrushPreset: Codable, Identifiable {
     @Published var textBold = false
     @Published var color = CodableColor.black
     @Published var secondaryColor = CodableColor.white
+    /// Gradient tool: linear, radial or reflected (mirrored around the start point).
+    @Published var gradientStyle = GradientStyle.linear
     @Published var brushSize = 12.0
     @Published var brushOpacity = 1.0
     @Published var smoothing = 0.15

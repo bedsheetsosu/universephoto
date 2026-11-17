@@ -15,7 +15,7 @@ extension Studio {
         let key = "\(layer.id)-\(layer.strokes.count)-\(layer.strokes.last?.id.uuidString ?? "")-\(layer.imageData?.count ?? 0)-\(width)x\(height)"
         if let hit = boundsCache[key] { return hit.isNull ? nil : hit }
         var l = layer
-        l.opacity = 1; l.blend = .normal; l.transform = .init(); l.visible = true; l.adjustment = .init(); l.clipped = false; l.style = nil
+        l.opacity = 1; l.blend = .normal; l.transform = .init(); l.visible = true; l.adjustment = .init(); l.clipped = false; l.style = nil; l.filters = nil
         var box = CGRect.null
         if let image = Renderer.render(layers: [l], width: width, height: height), let b = PixelOps.bitmap(image) {
             var alpha = [UInt8](repeating: 0, count: width * height)
