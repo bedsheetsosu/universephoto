@@ -1,7 +1,7 @@
 #!/bin/zsh
 set -euo pipefail
 project_dir="${0:A:h:h}"
-app_dir="${project_dir:h}/UniversePhoto.app"
+app_dir="$project_dir/build/UniversePhoto.app"
 cd "$project_dir"
 swift build -c release
 bin_dir="$(swift build -c release --show-bin-path)"

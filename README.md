@@ -4,11 +4,11 @@ Kostenlose, quelloffene macOS-Anwendung zum Zeichnen, zur Bildbearbeitung und f�
 
 ## Start
 
-Die gebaute App liegt neben diesem Projektordner als `UniversePhoto.app`. Zum eigenen Bauen werden macOS 14 oder neuer und Swift 6 benötigt:
+Die gebaute App liegt nach dem Bauen unter `build/UniversePhoto.app`. Zum eigenen Bauen werden macOS 14 oder neuer und Swift 6 benötigt:
 
 ```sh
 ./scripts/build-app.sh
-open ../UniversePhoto.app
+open build/UniversePhoto.app
 ```
 
 Für Entwicklung und Tests:

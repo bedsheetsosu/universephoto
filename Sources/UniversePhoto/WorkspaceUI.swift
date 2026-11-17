@@ -6,7 +6,7 @@ struct Workspace: View {
     @EnvironmentObject var s:Studio
     @AppStorage("workspace") private var workspace = "Photo"
     @AppStorage("appearance") private var appearance = "dark"
-    @AppStorage("ultraAccent") private var accent = "rose"
+    @AppStorage("photoAccent") private var accent = "mint"
     @ObservedObject private var localization = Localization.shared
     @AppStorage("showInspector") private var showInspector = true
     @AppStorage("showTimeline") private var showTimeline = false
@@ -65,7 +65,7 @@ struct Workspace: View {
             Spacer(minLength:6)
             HStack(spacing:3) { ForEach(["Simple","Photo","Animate"],id:\.self) { mode in
                 let selected = workspace == mode
-                Button { withAnimation(PhotoMotion.select) { workspace = mode } } label: { HStack(spacing:5) { Image(systemName:mode == "Simple" ? "pencil.tip" : mode == "Photo" ? "camera.aperture" : "play.rectangle").font(.system(size:10,weight:.semibold));Text(L(mode)).font(.system(size:11,weight:.semibold,design:.rounded)) }.frame(width:88,height:31).foregroundStyle(selected ? Color(red:0.2,green:0.11,blue:0.25) : theme.secondary).background { if selected { Capsule().fill(theme.accentGradient).matchedGeometryEffect(id:"workspace",in:workspaceMotion).shadow(color:tint.opacity(0.18),radius:6,y:2) } }.contentShape(Capsule()) }.buttonStyle(PhotoPress()).accessibilityAddTraits(selected ? .isSelected : [])
+                Button { withAnimation(PhotoMotion.select) { workspace = mode } } label: { HStack(spacing:5) { Image(systemName:mode == "Simple" ? "pencil.tip" : mode == "Photo" ? "camera.aperture" : "play.rectangle").font(.system(size:10,weight:.semibold));Text(L(mode)).font(.system(size:11,weight:.semibold,design:.rounded)) }.frame(width:88,height:31).foregroundStyle(selected ? theme.onAccent : theme.secondary).background { if selected { Capsule().fill(theme.accentGradient).matchedGeometryEffect(id:"workspace",in:workspaceMotion).shadow(color:tint.opacity(0.18),radius:6,y:2) } }.contentShape(Capsule()) }.buttonStyle(PhotoPress()).accessibilityAddTraits(selected ? .isSelected : [])
             } }.padding(4).background(theme.deep.opacity(0.5),in:Capsule()).overlay(Capsule().strokeBorder(theme.outline,lineWidth:0.75))
             Spacer(minLength:6)
             iconButton("magnifyingglass",L("Command search · ⇧⌘P")) { s.commandSearch = true }
@@ -109,7 +109,7 @@ struct Workspace: View {
                 ForEach(availableTools) { tool in
                     let selected = s.tool == tool
                     Button { withAnimation(PhotoMotion.select) { s.tool = tool } } label: {
-                        Image(systemName:tool.symbol).font(.system(size:16,weight:selected ? .semibold : .regular)).frame(width:38,height:35).foregroundStyle(selected ? Color(red:0.2,green:0.11,blue:0.25) : theme.text.opacity(0.8)).background { if selected { RoundedRectangle(cornerRadius:12,style:.continuous).fill(theme.accentGradient).shadow(color:tint.opacity(0.22),radius:7,y:2) } else { RoundedRectangle(cornerRadius:12,style:.continuous).fill(theme.card.opacity(0.4)) } }
+                        Image(systemName:tool.symbol).font(.system(size:16,weight:selected ? .semibold : .regular)).frame(width:38,height:35).foregroundStyle(selected ? theme.onAccent : theme.text.opacity(0.8)).background { if selected { RoundedRectangle(cornerRadius:12,style:.continuous).fill(theme.accentGradient).shadow(color:tint.opacity(0.22),radius:7,y:2) } else { RoundedRectangle(cornerRadius:12,style:.continuous).fill(theme.card.opacity(0.4)) } }
                     }.buttonStyle(HoverButtonStyle()).help(L(tool.english)+" · "+tool.key.uppercased()).accessibilityLabel(L(tool.english)).accessibilityAddTraits(selected ? .isSelected : []).contextMenu { Button(L("Move up")) { moveTool(tool,-1) };Button(L("Move down")) { moveTool(tool,1) } }
                     if tool == .eyedropper || tool == .lasso || tool == .text { Capsule().fill(theme.outline).frame(width:22,height:1).padding(.vertical,7) }
                 }
@@ -143,11 +143,11 @@ struct Workspace: View {
             Text(L("Appearance")).font(.system(size:11,weight:.semibold))
             HStack(spacing:8) { ForEach(["dark","light","system"],id:\.self) { mode in
                 Button { withAnimation(PhotoMotion.select) { appearance = mode } } label: { VStack(spacing:8) {
-                    ZStack(alignment:.leading) { RoundedRectangle(cornerRadius:7).fill(mode == "light" ? Color(red:0.93,green:0.90,blue:0.95) : Color(red:0.17,green:0.12,blue:0.22));RoundedRectangle(cornerRadius:4).fill(mode == "light" ? Color.white : Color.white.opacity(0.12)).frame(width:16).padding(5);Image(systemName:mode == "dark" ? "moon.stars" : mode == "light" ? "sun.max" : "circle.lefthalf.filled").foregroundStyle(mode == "light" ? .black.opacity(0.6) : .white.opacity(0.85)).frame(maxWidth:.infinity) }.frame(height:43)
+                    ZStack(alignment:.leading) { RoundedRectangle(cornerRadius:7).fill(mode == "light" ? Color(red:0.93,green:0.90,blue:0.95) : Color(red:0x17/255.0,green:0x1A/255.0,blue:0x3F/255.0));RoundedRectangle(cornerRadius:4).fill(mode == "light" ? Color.white : Color.white.opacity(0.12)).frame(width:16).padding(5);Image(systemName:mode == "dark" ? "moon.stars" : mode == "light" ? "sun.max" : "circle.lefthalf.filled").foregroundStyle(mode == "light" ? .black.opacity(0.6) : .white.opacity(0.85)).frame(maxWidth:.infinity) }.frame(height:43)
                     Text(mode == "dark" ? L("Dark") : mode == "light" ? L("Light") : L("System")).font(.system(size:10,weight:.medium))
                 }.padding(8).frame(maxWidth:.infinity).background(appearance == mode ? theme.accentSoft : theme.card,in:RoundedRectangle(cornerRadius:12)).overlay(RoundedRectangle(cornerRadius:12).strokeBorder(appearance == mode ? theme.accent.opacity(0.6) : theme.outline,lineWidth:1)) }.buttonStyle(PhotoPress())
             } }
-            HStack(spacing:12) { Text(L("Accent")).font(.system(size:10)).foregroundStyle(theme.secondary);Spacer();ForEach(["rose","violet","blue","mint","amber"],id:\.self) { key in Button { withAnimation(PhotoMotion.select) { accent = key } } label: { Circle().fill(PhotoTheme.accent(key)).frame(width:25,height:25).overlay(Circle().strokeBorder(theme.text.opacity(accent == key ? 0.9 : 0.1),lineWidth:accent == key ? 2.5 : 1)).scaleEffect(accent == key ? 1.08 : 1) }.buttonStyle(PhotoPress()).help(L(key.capitalized)).accessibilityLabel(L(key.capitalized)) } }
+            HStack(spacing:12) { Text(L("Accent")).font(.system(size:10)).foregroundStyle(theme.secondary);Spacer();ForEach(PhotoTheme.accentKeys,id:\.self) { key in Button { withAnimation(PhotoMotion.select) { accent = key } } label: { Circle().fill(PhotoTheme.accent(key)).frame(width:25,height:25).overlay(Circle().strokeBorder(theme.text.opacity(accent == key ? 0.9 : 0.1),lineWidth:accent == key ? 2.5 : 1)).scaleEffect(accent == key ? 1.08 : 1) }.buttonStyle(PhotoPress()).help(L(key.capitalized)).accessibilityLabel(L(key.capitalized)) } }
         }.photoCard()
         HStack { Text(L("Language")).font(.system(size:10));Spacer();Picker("",selection:$localization.language) { Text(L("German")).tag("de");Text(L("English")).tag("en") }.labelsHidden().pickerStyle(.segmented).frame(width:180) }.photoCard()
         VStack(alignment:.leading,spacing:10) {
