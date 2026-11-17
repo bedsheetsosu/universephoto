@@ -171,9 +171,11 @@ struct BrushPreset: Codable, Identifiable {
     func open(_ url: URL) throws {
         let data = try Data(contentsOf: url, options: .mappedIfSafe)
         guard data.count < 256 * 1024 * 1024 else { throw StudioError.message("The project exceeds the current 256 MB file limit.") }
-        let d = try JSONDecoder().decode(ArtDocument.self, from: data)
+        let isPSD = url.pathExtension.lowercased() == "psd"
+        let d = isPSD ? try PSD.read(data, title: url.deletingPathExtension().lastPathComponent) : try JSONDecoder().decode(ArtDocument.self, from: data)
         try Self.validate(d)
-        stopPlayback(); syncTab(); tabID = UUID(); fileURL = url; frameIndex = 0; apply(d); selectedLayer = max(0,layers.count-1); dirty = false; savedDocument = d; undoStack = []; redoStack = []; tabs.append(OpenArtwork(id: tabID, document: d, url: url)); fit()
+        // A Photoshop file opens as a new project: saving asks for a .universephoto name.
+        stopPlayback(); syncTab(); tabID = UUID(); fileURL = isPSD ? nil : url; frameIndex = 0; apply(d); selectedLayer = max(0,layers.count-1); dirty = false; savedDocument = d; undoStack = []; redoStack = []; tabs.append(OpenArtwork(id: tabID, document: d, url: url)); fit()
     }
     static func validate(_ d: ArtDocument) throws {
         guard (1...2).contains(d.version), (1...8192).contains(d.width), (1...8192).contains(d.height), !d.layers.isEmpty, d.layers.count <= 256, d.frames.count <= 10000 else { throw StudioError.message("Unsupported document version or invalid dimensions.") }
@@ -186,8 +188,8 @@ struct BrushPreset: Codable, Identifiable {
     }
     func savePanel() { if let url = fileURL { do { try save(to:url) } catch { report(error) }; return }; saveAsPanel() }
     func saveAsPanel() { let p = NSSavePanel();p.title = L("Save project");p.prompt = L("Save"); p.allowedContentTypes = [.universePhoto]; p.nameFieldStringValue = documentName + ".universephoto"; if p.runModal() == .OK, let url = p.url { do { try save(to: url) } catch { report(error) } } }
-    func openPanel() { let p = NSOpenPanel();p.title = L("Open project");p.prompt = L("Open"); p.allowedContentTypes = [.universePhoto, .json]; if p.runModal() == .OK, let url = p.url { do { try open(url) } catch { report(error) } } }
-    func importPanel() { let p = NSOpenPanel();p.title = L("Import image as layer");p.prompt = L("Import"); p.allowedContentTypes = [.png, .jpeg, .tiff]; if p.runModal() == .OK, let url = p.url { do { let imported = try ImageFiles.importImage(url: url); checkpoint("Import image"); layers.append(imported.layer); selectedLayer = layers.count-1; changed() } catch { report(error) } } }
+    func openPanel() { let p = NSOpenPanel();p.title = L("Open project");p.prompt = L("Open"); p.allowedContentTypes = [.universePhoto, .json, PSD.type]; if p.runModal() == .OK, let url = p.url { do { try open(url) } catch { report(error) } } }
+    func importPanel() { let p = NSOpenPanel();p.title = L("Import image as layer");p.prompt = L("Import"); p.allowedContentTypes = ImageFiles.supportedImports; if p.runModal() == .OK, let url = p.url { do { let imported = try ImageFiles.importImage(url: url); checkpoint("Import image"); layers.append(imported.layer); selectedLayer = layers.count-1; changed() } catch { report(error) } } }
     func recoveryDirectory() -> URL { if let recoveryRoot { return recoveryRoot }; return FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0].appendingPathComponent("UniversePhoto/Recovery", isDirectory: true) }
     private func scheduleRecovery() {
         autosaveTask?.cancel(); guard dirty else { removeRecovery(); return }

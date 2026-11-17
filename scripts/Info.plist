@@ -6,7 +6,7 @@
 <key>CFBundleIconFile</key><string>UniversePhoto</string>
 <key>CFBundleExecutable</key><string>UniversePhoto</string>
 <key>CFBundlePackageType</key><string>APPL</string>
-<key>CFBundleShortVersionString</key><string>0.8.0</string>
+<key>CFBundleShortVersionString</key><string>0.9.0</string>
 <key>CFBundleVersion</key><string>3</string>
 <key>CFBundleDevelopmentRegion</key><string>en</string>
 <key>CFBundleLocalizations</key><array><string>en</string><string>de</string></array>
@@ -17,6 +17,11 @@
 <key>CFBundleTypeName</key><string>UniversePhoto document</string>
 <key>CFBundleTypeRole</key><string>Editor</string>
 <key>LSItemContentTypes</key><array><string>local.universephoto.document</string></array>
+</dict><dict>
+<key>CFBundleTypeName</key><string>Photoshop document</string>
+<key>CFBundleTypeRole</key><string>Editor</string>
+<key>LSHandlerRank</key><string>Alternate</string>
+<key>LSItemContentTypes</key><array><string>com.adobe.photoshop-image</string></array>
 </dict></array>
 <key>UTExportedTypeDeclarations</key><array><dict>
 <key>UTTypeIdentifier</key><string>local.universephoto.document</string>

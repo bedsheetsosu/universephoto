@@ -7146,6 +7146,150 @@
           }
         }
       }
+    },
+    "The Photoshop file is damaged or incomplete.": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Photoshop-Datei ist beschädigt oder unvollständig."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The Photoshop file is damaged or incomplete."
+          }
+        }
+      }
+    },
+    "This Photoshop file is not supported:": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diese Photoshop-Datei wird nicht unterstützt:"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This Photoshop file is not supported:"
+          }
+        }
+      }
+    },
+    "HEIC · Alpha": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HEIC · Alpha"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HEIC · Alpha"
+          }
+        }
+      }
+    },
+    "PSD · Layers": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "PSD · Ebenen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "PSD · Layers"
+          }
+        }
+      }
+    },
+    "Not a PSD (PSB is not supported).": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keine PSD-Datei (PSB wird nicht unterstützt)."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not a PSD (PSB is not supported)."
+          }
+        }
+      }
+    },
+    "Only 8-bit files.": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nur 8-Bit-Dateien."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Only 8-bit files."
+          }
+        }
+      }
+    },
+    "Only RGB or grayscale files.": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nur RGB- oder Graustufendateien."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Only RGB or grayscale files."
+          }
+        }
+      }
+    },
+    "ZIP-compressed layers.": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ZIP-komprimierte Ebenen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ZIP-compressed layers."
+          }
+        }
+      }
     }
   },
   "version": "1.0"

@@ -1,4 +1,4 @@
-# UniversePhoto™ 0.8
+# UniversePhoto™ 0.9
 
 Kostenlose, quelloffene macOS-Anwendung zum Zeichnen, zur Bildbearbeitung und für Frame-Animation. UniversePhoto läuft eigenständig und lokal; UniversePen ist optional. Dieser Entwicklungsstand liefert eine benutzbare Grundlage mit neuem UltraUI und klar begrenztem Funktionsumfang.
 
@@ -39,7 +39,8 @@ Details: [Installation](INSTALL.md), [Architektur](ARCHITECTURE.md), [Gestaltung
 - **Nichtdestruktive Korrekturen:** Helligkeit, Kontrast, Sättigung, Belichtung, Farbton, Dynamik, Farbtemperatur, Farbstich, Tonwerte (Schwarz-/Weißpunkt, Mitteltöne), Schärfen, Rauschreduzierung, Vignette, Filmkorn, Tontrennung, Verpixeln, Gauß-Weichzeichner und Invertieren, dazu sechs Looks (Film, Lebendig, Noir, Kühl, Warm, Retro) als Startwerte. Ältere Dokumente laden die neuen Werte neutral.
 - **Dokumente:** Undo/Redo, atomisches Speichern, eingebettete Bilddaten, Formatversion 2 mit aktivem Animationsframe sowie Laden alter Version-1-Projekte. Wiederherstellungskopien werden nach 1,5 Sekunden ohne weitere Bearbeitung geschrieben.
 - **Animation:** ganze Ebenenstapel als Frames, leere/duplizierte/gelöschte Frames, Vorschaubilder, Framewechsel, einstellbare FPS, Schleifenwiedergabe und vorheriger Frame als Onion Skin.
-- **Dateien:** PNG-, JPEG- und TIFF-Import als Ebene; PNG-/JPEG-/TIFF-Export; transparente PNG-Sequenz; GIF und H.264-MP4 ohne Ton.
+- **Dateien:** PNG-, JPEG-, TIFF-, HEIC-, WebP-, BMP- und GIF-Import (Einzelbild) als Ebene; PNG-/JPEG-/TIFF-/HEIC-Export; transparente PNG-Sequenz; GIF und H.264-MP4 ohne Ton.
+- **Photoshop-Dateien (0.9):** Öffnen (⌘O) liest PSD mit Ebenen – Namen, Deckkraft, Mischmodus, Sichtbarkeit, Schnittmasken, rohe und PackBits-komprimierte Daten; Dateien ohne Ebenen öffnen als ein Bild. Exportieren → „PSD · Ebenen“ schreibt jede Ebene so, wie sie aussieht (Transformation, Korrekturen, Maske und Ebenenstil eingerechnet) mit denselben Eigenschaften plus das zusammengesetzte Bild; macOS (Vorschau, Quick Look) liest die Dateien. Nicht übernommen werden Smartobjekte, Einstellungsebenen, editierbarer Text, Vektormasken, Effekte als Effekte und Gruppen als Ordner; 16/32-Bit, CMYK, PSB und ZIP-komprimierte Ebenen werden mit einer Meldung abgelehnt.
 
 Die Flächenfüllung füllt die aktive Ebene beziehungsweise Auswahl; der Farbeimer füllt nach Toleranz. Pixelauswahl und Farbeimer arbeiten in Dokumentkoordinaten: auf verschobenen, gedrehten oder skalierten Ebenen passen sie erst nach „Ebene rastern“ und Zurücksetzen der Transformation genau. Auswahlen begrenzen nachfolgende Zeichenoperationen. Sie verschieben oder kopieren keine vorhandenen Pixel. Text wird mit seinem Textinhalt im Dokument gespeichert; eine nachträgliche Textobjekt-Auswahl ist noch nicht vorhanden.
 
@@ -73,13 +74,13 @@ Die vollständige Bridge-Tabelle steht in der Plugin-Dokumentation. Tastenkürze
 
 ## Grenzen und Nachweise
 
-Zuletzt bestanden 73 Swift-Tests (u. a. Transformieren, Ausrichten, Gruppen, Ebenenstile, Retusche, Farbeimer, Zauberstab, Auswahlmasken, Looks, Mischmodi, Schnittmasken, Kurven, Kopieren/Einfügen). Die Tests verwenden eine eigene Zwischenablage, nie die des Nutzers. Sie prüfen unter anderem ältere Dokumente, echte Speicher-/Ladeoperationen, Undo/Redo, Masken, Mischmodi, Transformationen, Auswahl-Clips, Export und API-Protokoll. Der JavaScript-Test prüft die 31 Plugin-Aktionen und Vordergrundsperre. Diese Prüfungen ersetzen keine manuelle Interaktionsprüfung. Der reale API-Verbindungs- und Abonnementtest mit verbundenem iPad war erfolgreich; echte Pencil-Striche und iPad-Plugin-Auslösung wurden dabei noch nicht beobachtet.
+Zuletzt bestanden 78 Swift-Tests (u. a. PSD hin und zurück und Lesbarkeit durch macOS, Transformieren, Ausrichten, Gruppen, Ebenenstile, Retusche, Farbeimer, Zauberstab, Auswahlmasken, Looks, Mischmodi, Schnittmasken, Kurven, Kopieren/Einfügen). Die Tests verwenden eine eigene Zwischenablage, nie die des Nutzers. Sie prüfen unter anderem ältere Dokumente, echte Speicher-/Ladeoperationen, Undo/Redo, Masken, Mischmodi, Transformationen, Auswahl-Clips, Export und API-Protokoll. Der JavaScript-Test prüft die 31 Plugin-Aktionen und Vordergrundsperre. Diese Prüfungen ersetzen keine manuelle Interaktionsprüfung. Der reale API-Verbindungs- und Abonnementtest mit verbundenem iPad war erfolgreich; echte Pencil-Striche und iPad-Plugin-Auslösung wurden dabei noch nicht beobachtet.
 
 Der Renderer verarbeitet 8-Bit-sRGB/RGBA über Core Graphics und Core Image mit einem Ebenencache. Der dokumentierte Benchmark ist keine FPS- oder Eingabelatenzmessung. Filter- und Maskenvorschauen können bei großen Dokumenten teuer werden; eine eigene Metal-Tile-Engine ist noch offen.
 
 PNG und TIFF erhalten Alpha, JPEG und MP4 werden über Weiß ausgegeben. Bildexporte sind flach und enthalten keine Ebenen; dafür das native Format behalten. Importbilder werden nach sRGB normalisiert und auf die Dokumentfläche abgebildet. TIFF-Mehrseitenbilder und animierte Importbilder werden ausdrücklich abgewiesen. GIF besitzt eine begrenzte Palette und gerundetes Frame-Timing. MP4 benötigt gerade Bildmaße; exportiert wird in Dokumentauflösung.
 
-Noch offen sind verschachtelte Gruppen, freies Transformieren einer schwebenden Auswahl, inhaltsbasierte Füllung, CMYK/HDR, Audio, unabhängige Animationstracks, Keyframe-Interpolation, Cutout-Rigs, Lip-Sync, HEVC, PSD, OpenRaster, WebP und SVG. Vollständige Photoshop-/PSD-Kompatibilität wird nicht beansprucht. Sinnvolle nächste Schritte sind Audio/Timeline, Auswahl-Pixeloperationen und eine gekachelte Rasterengine.
+Noch offen sind verschachtelte Gruppen, freies Transformieren einer schwebenden Auswahl, inhaltsbasierte Füllung, CMYK/HDR, Audio, unabhängige Animationstracks, Keyframe-Interpolation, Cutout-Rigs, Lip-Sync, HEVC, OpenRaster und SVG. Vollständige Photoshop-Kompatibilität wird nicht beansprucht (siehe die Grenzen des PSD-Imports oben). Sinnvolle nächste Schritte sind Audio/Timeline, Auswahl-Pixeloperationen und eine gekachelte Rasterengine.
 
 ## Lizenz
 

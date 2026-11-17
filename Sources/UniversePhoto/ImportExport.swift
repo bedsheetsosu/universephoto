@@ -21,8 +21,8 @@ enum ImageFiles {
         }
     }
 
-    static let supportedImports: [UTType] = [.png, .jpeg, .tiff]
-    static let supportedExports: [UTType] = [.png, .jpeg, .tiff]
+    static let supportedImports: [UTType] = [.png, .jpeg, .tiff, .heic, .heif, .webP, .bmp, .gif]
+    static let supportedExports: [UTType] = [.png, .jpeg, .tiff, .heic]
 
     static func validate(width: Int, height: Int) throws {
         guard (1...8192).contains(width), (1...8192).contains(height), width * height <= 64_000_000 else { throw FileError.dimensions }
