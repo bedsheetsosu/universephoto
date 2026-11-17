@@ -155,6 +155,8 @@ struct InspectorPanel: View {
                             Button { s.addMask() } label: { Label(L("Mask"), systemImage: "circle.lefthalf.filled") }.disabled(layer.mask != nil)
                             Button { s.toggleClipping() } label: { Label(L("Clip"), systemImage: layer.clipped ? "arrow.turn.left.down" : "arrow.turn.down.left") }
                                 .disabled(s.selectedLayer == 0).help(L("Clipping mask")).accessibilityAddTraits(layer.clipped ? .isSelected : [])
+                            Button { s.mutateLayer("Lock transparency") { $0.lockAlpha = $0.lockAlpha == true ? nil : true } } label: { Image(systemName: layer.lockAlpha == true ? "checkerboard.rectangle" : "rectangle.dashed") }
+                                .help(L("Lock transparency")).accessibilityLabel(L("Lock transparency")).accessibilityAddTraits(layer.lockAlpha == true ? .isSelected : [])
                             if layer.mask != nil { Button { s.removeMask() } label: { Image(systemName: "trash") }.help(L("Remove mask")).accessibilityLabel(L("Remove mask")) }
                         }.buttonStyle(PhotoButtonStyle())
                         if s.maskEditing { Text(L("Mask active: black hides, white reveals.")).font(.system(size: 10)).foregroundStyle(theme.accent).lineSpacing(3) }
@@ -323,15 +325,24 @@ struct InspectorPanel: View {
                 Button { s.redo() } label: { Label(L("Redo"), systemImage: "arrow.uturn.forward") }.disabled(s.redoStack.isEmpty)
             }.buttonStyle(PhotoButtonStyle())
             if s.undoStack.isEmpty { Text(L("Your next editing steps will appear here.")).font(.system(size: 11)).foregroundStyle(theme.secondary).lineSpacing(4).padding(.vertical, 10) }
+            // Steps that can be redone (dimmed, newest on top), then the done ones; a click jumps there.
+            ForEach(Array(s.redoStack.enumerated()), id: \.offset) { j, item in
+                historyRow(L(item.label), step: s.undoStack.count + s.redoStack.count - j, current: false, future: true)
+            }
             ForEach(Array(s.undoStack.enumerated().reversed()), id: \.offset) { idx, item in
-                HStack(spacing: 10) {
-                    Image(systemName: idx == s.undoStack.count - 1 ? "circle.inset.filled" : "circle").font(.system(size: 10)).foregroundStyle(idx == s.undoStack.count - 1 ? theme.accent : theme.secondary.opacity(0.5))
-                    Text(L(item.label)).font(.system(size: 11)).foregroundStyle(idx == s.undoStack.count - 1 ? theme.text : theme.secondary)
-                    Spacer()
-                    Text(String(format: "%02d", idx + 1)).font(.system(size: 9, design: .monospaced)).foregroundStyle(theme.secondary.opacity(0.7))
-                }.padding(.vertical, 6)
+                historyRow(L(item.label), step: idx + 1, current: idx == s.undoStack.count - 1, future: false)
             }
         }.photoCard()
+    }
+    private func historyRow(_ label: String, step: Int, current: Bool, future: Bool) -> some View {
+        Button { withAnimation(PhotoMotion.select) { s.jumpToHistory(step) } } label: {
+            HStack(spacing: 10) {
+                Image(systemName: current ? "circle.inset.filled" : future ? "circle.dotted" : "circle").font(.system(size: 10)).foregroundStyle(current ? theme.accent : theme.secondary.opacity(0.5))
+                Text(label).font(.system(size: 11)).foregroundStyle(current ? theme.text : theme.secondary).opacity(future ? 0.55 : 1)
+                Spacer()
+                Text(String(format: "%02d", step)).font(.system(size: 9, design: .monospaced)).foregroundStyle(theme.secondary.opacity(0.7))
+            }.padding(.vertical, 6).contentShape(Rectangle())
+        }.buttonStyle(.plain).disabled(current).help(L("Jump to this step")).accessibilityAddTraits(current ? .isSelected : [])
     }
     private func mini(_ symbol: String, _ help: String, _ action: @escaping () -> Void) -> some View {
         Button(action: action) { Image(systemName: symbol).font(.system(size: 11)).frame(width: 28, height: 28).background(theme.text.opacity(0.055), in: RoundedRectangle(cornerRadius: 8)) }.buttonStyle(PhotoPress()).help(help).accessibilityLabel(help)

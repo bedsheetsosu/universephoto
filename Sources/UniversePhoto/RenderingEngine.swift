@@ -283,7 +283,7 @@ enum Renderer {
             }
             context.addPath(path); context.clip()
         }
-        context.setBlendMode(stroke.isEraser ? .clear : .normal)
+        context.setBlendMode(stroke.isEraser ? .clear : stroke.atop == true ? .sourceAtop : .normal)
         context.setStrokeColor(stroke.color.cgColor)
         context.setFillColor(stroke.color.cgColor)
         context.setLineCap(.round); context.setLineJoin(.round)

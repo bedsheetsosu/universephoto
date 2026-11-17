@@ -117,7 +117,8 @@ struct BrushPreset: Codable, Identifiable {
     func add(_ stroke: InkStroke) {
         guard canEdit else { return }; checkpoint(tool.english)
         if !stroke.isEraser, stroke.kind != "bitmap", !maskEditing { rememberColor(stroke.color) }
-        let stroke = bakeRetouch(stroke)
+        var stroke = bakeRetouch(stroke)
+        if activeLayer?.lockAlpha == true, !maskEditing, !stroke.isEraser, activeLayer?.isAdjustmentLayer != true { stroke.atop = true }
         if activeLayer?.isAdjustmentLayer == true { layers[selectedLayer].mask = (layers[selectedLayer].mask ?? []) + [stroke] }   // paints its mask
         else if activeLayer?.mask != nil && maskEditing { layers[selectedLayer].mask?.append(stroke) } else { layers[selectedLayer].strokes.append(stroke) }
         changed()
@@ -141,6 +142,11 @@ struct BrushPreset: Codable, Identifiable {
     var smudgeState: SmudgeState?
     /// The system pasteboard; tests use a private one so they never touch the user's clipboard.
     var pasteboard = NSPasteboard.general
+    /// Jumps to the state after history step `count` (0 = before the first step), undoing or redoing.
+    func jumpToHistory(_ count: Int) {
+        while undoStack.count > max(0, count) { undo() }
+        while undoStack.count < count, !redoStack.isEmpty { redo() }
+    }
     func undo() {
         stopPlayback(); guard let last = undoStack.popLast() else { return }
         redoStack.append(HistoryEntry(document: document(), label: last.label)); apply(last.document); changed()

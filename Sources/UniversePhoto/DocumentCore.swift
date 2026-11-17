@@ -38,6 +38,8 @@ struct InkStroke: Codable, Equatable, Identifiable, Sendable {
     var textAlign: String? = nil
     var tracking: Double? = nil
     var lineSpacing: Double? = nil
+    /// Painted on a layer with locked transparency: only lands on pixels already there (source atop).
+    var atop: Bool? = nil
     /// Freehand kinds: the pressure brush and the retouch brushes (smoothed, every point kept).
     var isFreehand: Bool { kind == nil || ["dodge", "burn", "blurBrush", "sharpenBrush", "clone", "heal", "smudge"].contains(kind!) }
 }
@@ -102,9 +104,11 @@ struct ArtLayer: Codable, Identifiable, Equatable, Sendable {
     var filters: [SmartFilter]? = nil
     /// Adjustment layer (0.17): no pixels of its own; its adjustments, filters and mask act on everything below.
     var adjustsBelow: Bool? = nil
+    /// Lock transparency (0.20): new paint only lands where the layer already has pixels.
+    var lockAlpha: Bool? = nil
     var isAdjustmentLayer: Bool { adjustsBelow == true }
     init(name: String) { self.name = name }
-    enum CodingKeys: String, CodingKey { case id, name, visible, strokes, opacity, blend, locked, transform, adjustment, imageData, mask, clipped, style, groupID, filters, adjustsBelow }
+    enum CodingKeys: String, CodingKey { case id, name, visible, strokes, opacity, blend, locked, transform, adjustment, imageData, mask, clipped, style, groupID, filters, adjustsBelow, lockAlpha }
     init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         id = try c.decodeIfPresent(UUID.self, forKey: .id) ?? UUID(); name = try c.decode(String.self, forKey: .name)
@@ -122,6 +126,7 @@ struct ArtLayer: Codable, Identifiable, Equatable, Sendable {
         groupID = try c.decodeIfPresent(UUID.self, forKey: .groupID)
         filters = try c.decodeIfPresent([SmartFilter].self, forKey: .filters)
         adjustsBelow = try c.decodeIfPresent(Bool.self, forKey: .adjustsBelow)
+        lockAlpha = try c.decodeIfPresent(Bool.self, forKey: .lockAlpha)
     }
 }
 struct ArtDocument: Codable, Equatable, Sendable {
