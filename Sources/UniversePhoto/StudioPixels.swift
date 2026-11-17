@@ -69,7 +69,7 @@ extension Studio {
 
     /// Bakes the layer's strokes and picture into one picture (masks and adjustments stay live).
     func rasterizeLayer() {
-        guard var layer = activeLayer, !layer.locked, !layer.strokes.isEmpty else { return }
+        guard var layer = activeLayer, !layer.locked, !layer.strokes.isEmpty, !layer.isAdjustmentLayer else { return }
         layer.opacity = 1; layer.blend = .normal; layer.transform = .init(); layer.visible = true; layer.mask = nil; layer.adjustment = .init()
         guard let image = Renderer.render(layers: [layer], width: width, height: height), let data = try? Renderer.png(image) else { return }
         mutateLayer("Rasterize layer") { $0.imageData = data; $0.strokes = [] }

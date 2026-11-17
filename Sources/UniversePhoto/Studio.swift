@@ -112,7 +112,8 @@ struct BrushPreset: Codable, Identifiable {
     func add(_ stroke: InkStroke) {
         guard canEdit else { return }; checkpoint(tool.english)
         let stroke = bakeRetouch(stroke)
-        if activeLayer?.mask != nil && maskEditing { layers[selectedLayer].mask?.append(stroke) } else { layers[selectedLayer].strokes.append(stroke) }
+        if activeLayer?.isAdjustmentLayer == true { layers[selectedLayer].mask = (layers[selectedLayer].mask ?? []) + [stroke] }   // paints its mask
+        else if activeLayer?.mask != nil && maskEditing { layers[selectedLayer].mask?.append(stroke) } else { layers[selectedLayer].strokes.append(stroke) }
         changed()
     }
     @Published var maskEditing = false
@@ -142,12 +143,18 @@ struct BrushPreset: Codable, Identifiable {
         stopPlayback(); guard let last = redoStack.popLast() else { return }
         undoStack.append(HistoryEntry(document: document(), label: last.label)); apply(last.document); changed()
     }
+    /// A new adjustment layer above the active one; painting on it paints its mask.
+    func newAdjustmentLayer() {
+        checkpoint("New adjustment layer")
+        var l = ArtLayer(name: L("Adjustment") + " \(layers.count + 1)"); l.adjustsBelow = true; l.mask = []
+        layers.insert(l, at: min(selectedLayer + 1, layers.count)); selectedLayer = min(selectedLayer + 1, layers.count - 1); maskEditing = true; changed()
+    }
     func newLayer() { checkpoint("New layer"); layers.insert(ArtLayer(name: L("Layer") + " \(layers.count + 1)"), at: min(selectedLayer + 1, layers.count)); selectedLayer = min(selectedLayer + 1, layers.count - 1); maskEditing = false; changed() }
     func duplicateLayer() { guard var copy = activeLayer else { return }; checkpoint("Duplicate layer"); copy.id = UUID(); copy.name += L(" copy"); layers.insert(copy, at: selectedLayer + 1); selectedLayer += 1; changed() }
     func deleteLayer() { guard layers.count > 1, activeLayer?.locked == false else { return }; checkpoint("Delete layer"); layers.remove(at: selectedLayer); selectedLayer = max(0, selectedLayer - 1); changed() }
     func reorderLayer(_ offset: Int) { let next = selectedLayer + offset; guard layers.indices.contains(next) else { return }; checkpoint("Reorder layers"); layers.swapAt(selectedLayer, next); selectedLayer = next; changed() }
     func mergeDown() {
-        guard selectedLayer > 0, let top = activeLayer, !top.locked, !layers[selectedLayer-1].locked else { return }
+        guard selectedLayer > 0, let top = activeLayer, !top.locked, !layers[selectedLayer-1].locked, !top.isAdjustmentLayer, !layers[selectedLayer-1].isAdjustmentLayer else { return }
         let pair = [layers[selectedLayer-1], top]
         guard let image = Renderer.render(layers: pair, width: width, height: height), let data = try? Renderer.png(image) else { return }
         checkpoint("Merge layers"); var layer = ArtLayer(name: layers[selectedLayer-1].name); layer.imageData = data

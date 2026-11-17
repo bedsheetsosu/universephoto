@@ -55,7 +55,7 @@ struct ArtworkCanvas: NSViewRepresentable {
         for y in stride(from:0,to:s.height,by:Int(cell)) { for x in stride(from:0,to:s.width,by:Int(cell)) where (x/Int(cell)+y/Int(cell)) % 2 == 0 { ctx.fill(CGRect(x:x,y:y,width:Int(cell),height:Int(cell))) } }
         if s.onionSkin && s.frameIndex > 0 && s.frames.indices.contains(s.frameIndex-1), let onion = Renderer.render(layers:s.composite(s.frames[s.frameIndex-1]),width:s.width,height:s.height) { ctx.setAlpha(0.2); drawImage(onion,in:ctx,rect:doc); ctx.setAlpha(1) }
         let rendered: CGImage?
-        if let active, s.layers.indices.contains(s.selectedLayer) { if s.maskEditing { var previewLayers = s.composite(s.layers);previewLayers[s.selectedLayer].mask?.append(active);rendered = Renderer.render(layers:previewLayers,width:s.width,height:s.height,cache:layerCache) } else { rendered = Renderer.render(layers:s.composite(s.layers),width:s.width,height:s.height,preview:active,previewLayer:s.selectedLayer,cache:layerCache) } } else { rendered = committedImage() }
+        if let active, s.layers.indices.contains(s.selectedLayer) { if s.maskEditing || s.activeLayer?.isAdjustmentLayer == true { var previewLayers = s.composite(s.layers);previewLayers[s.selectedLayer].mask = (previewLayers[s.selectedLayer].mask ?? []) + [active];rendered = Renderer.render(layers:previewLayers,width:s.width,height:s.height,cache:layerCache) } else { rendered = Renderer.render(layers:s.composite(s.layers),width:s.width,height:s.height,preview:active,previewLayer:s.selectedLayer,cache:layerCache) } } else { rendered = committedImage() }
         if let rendered { drawImage(rendered,in:ctx,rect:doc) }
         if grid { ctx.setStrokeColor(CGColor(gray:0.4,alpha:0.25)); ctx.setLineWidth(0.5 / max(geometry.scale,0.01)); for x in stride(from:0,through:s.width,by:50) { ctx.move(to:CGPoint(x:x,y:0)); ctx.addLine(to:CGPoint(x:x,y:s.height)) }; for y in stride(from:0,through:s.height,by:50) { ctx.move(to:CGPoint(x:0,y:y)); ctx.addLine(to:CGPoint(x:s.width,y:y)) }; ctx.strokePath() }
         if s.transformMode, let corners = s.transformCorners() {
@@ -129,10 +129,11 @@ struct ArtworkCanvas: NSViewRepresentable {
             s.checkpoint("Move"); originalTransform = s.activeLayer?.transform; moveStart = s.beginMove(); return
         }
         var c = s.color; c.alpha *= s.brushOpacity
-        if s.maskEditing { c = s.eraser ? .white : CodableColor(red:0,green:0,blue:0,alpha:1) }
+        let paintsMask = s.maskEditing || s.activeLayer?.isAdjustmentLayer == true
+        if paintsMask { c = s.eraser ? .white : CodableColor(red:0,green:0,blue:0,alpha:1) }
         let local = localPoint(doc)
-        var stroke = InkStroke(points:[InkPoint(x:local.x,y:local.y,pressure:s.mapPressure(pressure),tiltX:tilt.x,tiltY:tilt.y,rotation:rotation)],color:c,width:s.brushSize,isEraser:s.eraser && !s.maskEditing)
-        if s.tool == .brush && !s.eraser && !s.maskEditing && s.brushTip != .round { stroke.brushTip = s.brushTip.rawValue }
+        var stroke = InkStroke(points:[InkPoint(x:local.x,y:local.y,pressure:s.mapPressure(pressure),tiltX:tilt.x,tiltY:tilt.y,rotation:rotation)],color:c,width:s.brushSize,isEraser:s.eraser && !paintsMask)
+        if s.tool == .brush && !s.eraser && !paintsMask && s.brushTip != .round { stroke.brushTip = s.brushTip.rawValue }
         if let selection = s.selection, let maskData = selection.maskData {
             stroke.selectionMask = maskData
         } else if let selection = s.selection {

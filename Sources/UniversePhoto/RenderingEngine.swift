@@ -72,6 +72,12 @@ enum Renderer {
             let clipping = layer.clipped && hasBase
             if !clipping { base = nil; hasBase = true; baseShown = layer.visible && layer.opacity > 0 }
             guard layer.visible && layer.opacity > 0, !clipping || (baseShown && base != nil) else { continue }
+            if layer.isAdjustmentLayer {
+                if let below = result.makeImage(), let mixed = adjustBelow(layer, below, width: width, height: height) {
+                    result.saveGState(); result.setBlendMode(.copy); drawImage(mixed, in: result, rect: bounds); result.restoreGState()
+                }
+                continue
+            }
             let hasPreview = index == previewLayer && preview != nil
             let layerImage: CGImage?
             if !hasPreview, let cached = cache?.image(for:layer,width:width,height:height) { layerImage = cached }
@@ -124,6 +130,24 @@ enum Renderer {
         return ctx.makeImage()
     }
     /// Layer effects on a placed layer picture: glow and shadow below, outline around, overlay on top.
+    /// Everything below an adjustment layer, adjusted and filtered, blended back by mask × opacity.
+    static func adjustBelow(_ layer: ArtLayer, _ below: CGImage, width: Int, height: Int) -> CGImage? {
+        var changed = adjusted(below, adjustment: layer.adjustment) ?? below
+        changed = filtered(changed, layer.filters ?? []) ?? changed
+        let d = CIImage(cgImage: below), extent = d.extent
+        // Same alpha as below: only the colours change (filters that move pixels keep their own).
+        var s = CIImage(cgImage: changed)
+        let o = max(0, min(1, layer.opacity))
+        if o < 1 { s = d.applyingFilter("CIDissolveTransition", parameters: [kCIInputTargetImageKey: s, kCIInputTimeKey: o]) }
+        if let strokes = layer.mask, let matte = context(width: width, height: height) {
+            matte.setFillColor(CGColor(gray: 1, alpha: 1)); matte.fill(CGRect(x: 0, y: 0, width: width, height: height))
+            for stroke in strokes { drawStroke(stroke, in: matte) }
+            if let m = matte.makeImage() {
+                s = s.applyingFilter("CIBlendWithMask", parameters: [kCIInputBackgroundImageKey: d, kCIInputMaskImageKey: CIImage(cgImage: m)])
+            }
+        }
+        return filters.createCGImage(s.cropped(to: extent), from: extent)
+    }
     /// Box around the non-transparent pixels (y down), nil when empty.
     static func alphaBounds(_ image: CGImage) -> CGRect? {
         guard let b = PixelOps.bitmap(image) else { return nil }

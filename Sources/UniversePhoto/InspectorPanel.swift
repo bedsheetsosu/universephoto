@@ -195,11 +195,11 @@ struct InspectorPanel: View {
             if layer.clipped && index > 0 { Image(systemName: "arrow.turn.left.down").font(.system(size: 9, weight: .semibold)).foregroundStyle(theme.accent).help(L("Clipping mask")).accessibilityLabel(L("Clipping mask")) }
             ZStack {
                 RoundedRectangle(cornerRadius: 8).fill(selected ? theme.accentSoft : theme.deep)
-                Image(systemName: layer.imageData == nil ? "scribble.variable" : "photo").font(.system(size: 18, weight: .light)).foregroundStyle(selected ? theme.accent : theme.secondary)
+                Image(systemName: layer.isAdjustmentLayer ? "slider.horizontal.3" : layer.imageData == nil ? "scribble.variable" : "photo").font(.system(size: 18, weight: .light)).foregroundStyle(selected ? theme.accent : theme.secondary)
             }.frame(width: 36, height: 37).overlay(RoundedRectangle(cornerRadius: 8).strokeBorder(theme.outline))
             VStack(alignment: .leading, spacing: 4) {
                 Text(layer.name).font(.system(size: 11, weight: .medium)).lineLimit(1)
-                Text(layer.mask != nil ? L("Layer + mask") : layer.imageData != nil ? LF("Raster · %d%%", Int(layer.opacity * 100)) : LC("%d stroke", "%d strokes", layer.strokes.count))
+                Text(layer.isAdjustmentLayer ? L("Adjusts layers below") : layer.mask != nil ? L("Layer + mask") : layer.imageData != nil ? LF("Raster · %d%%", Int(layer.opacity * 100)) : LC("%d stroke", "%d strokes", layer.strokes.count))
                     .font(.system(size: 9)).foregroundStyle(theme.secondary)
             }
             Spacer(minLength: 0)

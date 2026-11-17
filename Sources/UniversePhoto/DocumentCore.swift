@@ -96,8 +96,11 @@ struct ArtLayer: Codable, Identifiable, Equatable, Sendable {
     var groupID: UUID? = nil
     /// Smart filters, applied after the adjustments in order; never change the pixels.
     var filters: [SmartFilter]? = nil
+    /// Adjustment layer (0.17): no pixels of its own; its adjustments, filters and mask act on everything below.
+    var adjustsBelow: Bool? = nil
+    var isAdjustmentLayer: Bool { adjustsBelow == true }
     init(name: String) { self.name = name }
-    enum CodingKeys: String, CodingKey { case id, name, visible, strokes, opacity, blend, locked, transform, adjustment, imageData, mask, clipped, style, groupID, filters }
+    enum CodingKeys: String, CodingKey { case id, name, visible, strokes, opacity, blend, locked, transform, adjustment, imageData, mask, clipped, style, groupID, filters, adjustsBelow }
     init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         id = try c.decodeIfPresent(UUID.self, forKey: .id) ?? UUID(); name = try c.decode(String.self, forKey: .name)
@@ -114,6 +117,7 @@ struct ArtLayer: Codable, Identifiable, Equatable, Sendable {
         style = try c.decodeIfPresent(LayerStyle.self, forKey: .style)
         groupID = try c.decodeIfPresent(UUID.self, forKey: .groupID)
         filters = try c.decodeIfPresent([SmartFilter].self, forKey: .filters)
+        adjustsBelow = try c.decodeIfPresent(Bool.self, forKey: .adjustsBelow)
     }
 }
 struct ArtDocument: Codable, Equatable, Sendable {

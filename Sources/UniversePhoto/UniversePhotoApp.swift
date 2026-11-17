@@ -65,6 +65,7 @@ struct StudioCommands: Commands {
         }
         CommandMenu(L("Layers")) {
             Button(L("New layer")) { studio.newLayer() }.keyboardShortcut("n",modifiers:[.command,.shift])
+            Button(L("New adjustment layer")) { studio.newAdjustmentLayer() }.keyboardShortcut("j",modifiers:[.command,.option])
             Button(L("Duplicate")) { studio.duplicateLayer() }
             Button(L("Layer via copy")) { studio.layerFromSelection(cut:false) }.keyboardShortcut("j")
             Button(L("Layer via cut")) { studio.layerFromSelection(cut:true) }.keyboardShortcut("j",modifiers:[.command,.shift])
