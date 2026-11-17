@@ -42,6 +42,8 @@ struct StudioCommands: Commands {
             Button(L("Select all")) { if !forwardToTextField(#selector(NSText.selectAll(_:))) { studio.selectAll() } }.keyboardShortcut("a",modifiers:.command)
             Button(L("Deselect")) { studio.selection = nil }.keyboardShortcut("d",modifiers:.command)
             Button(L("Invert selection")) { studio.invertSelection() }.keyboardShortcut("i",modifiers:[.command,.shift])
+            Menu(L("Modify")) { ForEach(Studio.SelectionModify.allCases) { k in Button(L(k.title) + "…") { studio.selectionDialog = k } } }.disabled(studio.selection == nil)
+            Button(L("Select color range")) { studio.selectColorRange() }
         }
         CommandMenu(L("Image")) {
             Button(L("Image size…")) { studio.imageDialog = .imageSize }.keyboardShortcut("i",modifiers:[.command,.option])

@@ -67,6 +67,7 @@ struct BrushPreset: Codable, Identifiable {
     @Published var textContent = "UniversePhoto"
     @Published var showNewDocument = false
     @Published var imageDialog: ImageDialog?
+    @Published var selectionDialog: SelectionModify?
     @Published var busy = false
     @Published var apiEnabled = false
     @Published var hoverPoint: CGPoint?
