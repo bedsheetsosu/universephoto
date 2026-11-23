@@ -186,7 +186,7 @@ public struct InputSettings: Codable, Equatable, Sendable {
     public var sendRoll = true
 
     public var doubleTap: PencilAction = .eraser
-    public var squeeze: PencilAction = .undo
+    public var squeeze: PencilAction = .radialMenu
     public var twoFingerTap: PencilAction = .undo
     public var threeFingerTap: PencilAction = .redo
 

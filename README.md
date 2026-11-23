@@ -372,7 +372,7 @@ Please go through in order and note each result:
 4. **Affinity:** brush with pressure→size (brush dynamics), stroke light → firm. Then tilt/rotation dynamics if the brush uses them.
    - If step 3 shows pressure but Affinity doesn't: Affinity ignores synthetic tablet events → document as a limitation.
 5. **Gestures:** pan with two fingers, pinch to zoom (adjust the zoom method), two-/three-finger tap = undo/redo.
-6. **Squeeze / double-tap** → the configured action in Affinity (default: double-tap = eraser E, squeeze = undo).
+6. **Squeeze / double-tap** → the configured action in Affinity (default: double-tap = eraser E, squeeze = radial menu).
 7. **Drop case:** turn off Wi-Fi on the iPad mid-stroke → the mouse button on the Mac must not stay "stuck".
 
 ## Phase 7: Optimisation ideas (not implemented yet)

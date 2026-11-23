@@ -245,4 +245,9 @@ final class TabletExtrasTests: XCTestCase {
         XCTAssertGreaterThan(f[0].minX, 1000)
         XCTAssertLessThan(f[0].maxY, f[1].minY)
     }
+
+    func testSqueezeOpensTheRadialMenuByDefault() throws {
+        XCTAssertEqual(InputSettings().squeeze, .radialMenu)
+        XCTAssertEqual(try JSONDecoder().decode(InputSettings.self, from: Data("{}".utf8)).squeeze, .radialMenu)
+    }
 }

@@ -383,6 +383,12 @@ final class ClientModel: ObservableObject {
             }
             d.set(true, forKey: "swipeDefaultsV2")
         }
+        // v3: squeeze opens the radial menu by default. Squeeze still on the old default (⌘Z) moves
+        // over once; any other choice stays.
+        if !d.bool(forKey: "squeezeRadialDefault") {
+            if loaded.squeeze == .undo { loaded.squeeze = .radialMenu }
+            d.set(true, forKey: "squeezeRadialDefault")
+        }
         settings = loaded
         quality = Self.load(StreamQuality.self, "quality") ?? StreamQuality()
         showStatusOverlay = d.bool(forKey: "showStatusOverlay")
