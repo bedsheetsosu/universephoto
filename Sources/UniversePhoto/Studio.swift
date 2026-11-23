@@ -95,6 +95,7 @@ struct BrushPreset: Codable, Identifiable {
     @Published var showNewDocument = false
     @Published var imageDialog: ImageDialog?
     @Published var selectionDialog: SelectionModify?
+    @Published var strokeSelectionDialog = false
     @Published var busy = false
     @Published var apiEnabled = false
     @Published var hoverPoint: CGPoint?

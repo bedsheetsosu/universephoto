@@ -59,6 +59,7 @@ struct Workspace: View {
         .sheet(isPresented:$s.showNewDocument) { newDocument }
         .sheet(isPresented:$s.guideDialog) { NewGuideDialog().environmentObject(s).environment(\.photoTheme,theme) }
         .sheet(item:$s.selectionDialog) { kind in SelectionModifyDialog(kind:kind).environmentObject(s).environment(\.photoTheme,theme) }
+        .sheet(isPresented:$s.strokeSelectionDialog) { StrokeSelectionDialog().environmentObject(s).environment(\.photoTheme,theme) }
         .sheet(item:$s.imageDialog) { kind in ImageSizeDialog(kind:kind).environmentObject(s).environment(\.photoTheme,theme) }
         .sheet(isPresented:$s.commandSearch) { commandPalette }
         .sheet(isPresented:$exportSheet) { exportOptions }
