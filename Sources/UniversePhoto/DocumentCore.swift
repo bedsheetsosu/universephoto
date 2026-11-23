@@ -42,6 +42,8 @@ struct InkStroke: Codable, Equatable, Identifiable, Sendable {
     var atop: Bool? = nil
     /// Kind "path" (pen tool): points are anchor/out-handle pairs; closed path or not.
     var pathClosed: Bool? = nil
+    /// Kind "path": three points per node (anchor, out-, in-handle) instead of two.
+    var pathTriples: Bool? = nil
     /// Freehand kinds: the pressure brush and the retouch brushes (smoothed, every point kept).
     var isFreehand: Bool { kind == nil || ["dodge", "burn", "blurBrush", "sharpenBrush", "clone", "heal", "smudge", "liquify"].contains(kind!) }
 }

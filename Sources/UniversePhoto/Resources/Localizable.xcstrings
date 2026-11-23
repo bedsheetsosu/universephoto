@@ -10458,6 +10458,24 @@
           }
         }
       }
+    },
+    "Click a curve to add a point · ⌥ on a handle: move it alone · ⌥-click a point: corner": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Klick auf die Kurve fügt einen Punkt ein · ⌥ auf einem Griff: einzeln bewegen · ⌥-Klick auf einen Punkt: Ecke"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Click a curve to add a point · ⌥ on a handle: move it alone · ⌥-click a point: corner"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

@@ -109,10 +109,10 @@ struct ArtworkCanvas: NSViewRepresentable {
             ctx.saveGState(); ctx.setLineWidth(1.5*line); ctx.setStrokeColor(NSColor(red:0.2,green:0.55,blue:1,alpha:0.95).cgColor); ctx.addPath(path.cgPath); ctx.strokePath()
             ctx.setLineWidth(line)
             for (i, n) in path.nodes.enumerated() {
-                if let out = n.out {
-                    let inH = PenPath.inHandle(n)
-                    ctx.move(to:inH); ctx.addLine(to:out); ctx.strokePath()
-                    for q in [inH, out] { ctx.setFillColor(CGColor(gray:1,alpha:1)); ctx.fillEllipse(in:CGRect(x:q.x-h*0.8,y:q.y-h*0.8,width:h*1.6,height:h*1.6)); ctx.strokeEllipse(in:CGRect(x:q.x-h*0.8,y:q.y-h*0.8,width:h*1.6,height:h*1.6)) }
+                let handles = [n.out, PenPath.inHandle(n)].compactMap { $0 }.filter { $0 != n.anchor }
+                if !handles.isEmpty {
+                    for q in handles { ctx.move(to:n.anchor); ctx.addLine(to:q) }; ctx.strokePath()
+                    for q in handles { ctx.setFillColor(CGColor(gray:1,alpha:1)); ctx.fillEllipse(in:CGRect(x:q.x-h*0.8,y:q.y-h*0.8,width:h*1.6,height:h*1.6)); ctx.strokeEllipse(in:CGRect(x:q.x-h*0.8,y:q.y-h*0.8,width:h*1.6,height:h*1.6)) }
                 }
                 let r = CGRect(x:n.anchor.x-h,y:n.anchor.y-h,width:2*h,height:2*h)
                 ctx.setFillColor(i == 0 && !path.closed ? NSColor(PhotoTheme.mint).cgColor : CGColor(gray:1,alpha:1)); ctx.fill(r); ctx.stroke(r)

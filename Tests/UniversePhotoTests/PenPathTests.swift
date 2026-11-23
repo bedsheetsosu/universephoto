@@ -88,3 +88,43 @@ struct PenEditTests {
         #expect(s.penPath == nil)
     }
 }
+
+@MainActor
+struct PenInsertTests {
+    @Test func insertingKeepsTheCurveShape() {
+        var path = PenPath(nodes: [.init(anchor: .zero, out: CGPoint(x: 0, y: 80)), .init(anchor: CGPoint(x: 200, y: 0), out: CGPoint(x: 200, y: -80))])
+        let before = path.flattened(step: 1)
+        let i = path.insert(segment: 0, t: 0.4)
+        #expect(i == 1 && path.nodes.count == 3)
+        // Every point of the new outline lies on the old one.
+        let after = path.flattened(step: 1)
+        let worst = after.map { q in before.map { hypot($0.x - q.x, $0.y - q.y) }.min() ?? 0 }.max() ?? 0
+        #expect(worst < 1.5)
+        // The end node's handle on that segment is now its own, and survives the round trip.
+        #expect(path.nodes[2].inH != nil && path.hasOwnInHandles)
+        #expect(PenPath(encoded: path.encoded, closed: false, triples: true) == path)
+    }
+
+    @Test func straightSegmentsGetACornerPoint() {
+        var path = PenPath(nodes: [.init(anchor: .zero, out: nil), .init(anchor: CGPoint(x: 100, y: 0), out: nil)])
+        let hit = path.segmentHit(CGPoint(x: 50, y: 2), tolerance: 4)
+        #expect(hit?.segment == 0)
+        path.insert(segment: 0, t: hit!.t)
+        #expect(path.nodes.count == 3 && path.nodes[1].out == nil && !path.hasOwnInHandles)
+        #expect(abs(path.nodes[1].anchor.x - 50) < 1.5)
+    }
+
+    @Test func pressOnSegmentAndOptionDragBreaksHandles() {
+        let s = Studio()
+        s.penPath = PenPath(nodes: [.init(anchor: .zero, out: nil), .init(anchor: CGPoint(x: 100, y: 0), out: CGPoint(x: 120, y: 30)), .init(anchor: CGPoint(x: 100, y: 100), out: nil)])
+        // ⌥ on the out-handle: from then on the in-handle stays put.
+        #expect(s.penPress(at: CGPoint(x: 120, y: 30), tolerance: 4, corner: true) == .outHandle(1))
+        let inBefore = PenPath.inHandle(s.penPath!.nodes[1])
+        s.penMove(.outHandle(1), to: CGPoint(x: 140, y: 0))
+        #expect(PenPath.inHandle(s.penPath!.nodes[1]) == inBefore)
+        // A press in the middle of the first segment inserts a point and grabs it.
+        let onCurve = PenPath.point(s.penPath!.controls(0), 0.4)
+        let grab = s.penPress(at: onCurve, tolerance: 6)
+        #expect(grab == .anchor(1) && s.penPath?.nodes.count == 4)
+    }
+}
