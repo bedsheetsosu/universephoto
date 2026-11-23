@@ -370,10 +370,9 @@ enum Renderer {
     /// The filled outline of a pressure brush stroke (also the clip of the retouch brushes).
     static func brushPath(_ stroke: InkStroke) -> CGPath {
         // One filled silhouette gives constant opacity at overlapping joints. Segment quads
-        // connect the pressure radii directly; only real samples add round/elliptical joins.
-        // This avoids thousands of overlapping interpolated ellipses on a long stroke.
+        // connect the pressure radii along a smoothed curve through the samples.
         let silhouette = CGMutablePath()
-        let points = stroke.points.filter { $0.x.isFinite && $0.y.isFinite }
+        let points = smoothed(stroke.points.filter { $0.x.isFinite && $0.y.isFinite }, width: stroke.width)
         func radius(_ p: InkPoint) -> Double { max(0.15, stroke.width * max(0.05, min(1, p.pressure.isFinite ? p.pressure : 1)) / 2) }
         func tip(_ p: InkPoint) -> (Double,Double) {
             let tx = p.tiltX ?? 0, ty = p.tiltY ?? 0
@@ -386,7 +385,14 @@ enum Renderer {
             let x = nx*cos(angle)+ny*sin(angle), y = -nx*sin(angle)+ny*cos(angle)
             return radius(p)*sqrt(x*x+aspect*aspect*y*y)
         }
-        for p in points {
+        for (i, p) in points.enumerated() {
+            // Round joins only at the ends and where the outline actually bends; along the smoothed
+            // curve the quads already meet almost edge to edge (and every ellipse costs fill time).
+            if i > 0 && i < points.count - 1 {
+                let a = points[i - 1], c = points[i + 1]
+                let turn = abs(remainder(atan2(c.y - p.y, c.x - p.x) - atan2(p.y - a.y, p.x - a.x), 2 * .pi))
+                if turn < 0.08 { continue }
+            }
             let r = radius(p), (aspect,angle) = tip(p)
             var transform = CGAffineTransform(translationX:p.x,y:p.y).rotated(by:angle).scaledBy(x:1,y:aspect)
             let circle = CGMutablePath()
@@ -394,15 +400,24 @@ enum Renderer {
             circle.closeSubpath()
             if let ellipse = circle.copy(using:&transform) { silhouette.addPath(ellipse) }
         }
-        for (a,b) in zip(points,points.dropFirst()) {
-            let dx = b.x-a.x, dy = b.y-a.y, length = hypot(dx,dy)
-            guard length > 0.0001 else { continue }
-            let nx = -dy/length, ny = dx/length
-            let ra = support(a,nx:nx,ny:ny), rb = support(b,nx:nx,ny:ny)
-            silhouette.move(to:CGPoint(x:a.x+nx*ra,y:a.y+ny*ra))
-            silhouette.addLine(to:CGPoint(x:a.x-nx*ra,y:a.y-ny*ra))
-            silhouette.addLine(to:CGPoint(x:b.x-nx*rb,y:b.y-ny*rb))
-            silhouette.addLine(to:CGPoint(x:b.x+nx*rb,y:b.y+ny*rb))
+        // Each point gets one normal (from its neighbours), so neighbouring quads share their edges:
+        // no wedge-shaped gaps on the outside of a curve.
+        var normals: [(Double, Double)] = []
+        normals.reserveCapacity(points.count)
+        for i in points.indices {
+            let a = points[max(0, i - 1)], c = points[min(points.count - 1, i + 1)]
+            let dx = c.x - a.x, dy = c.y - a.y, len = hypot(dx, dy)
+            normals.append(len > 0.0001 ? (-dy / len, dx / len) : (normals.last ?? (0, 1)))
+        }
+        for i in 0..<max(0, points.count - 1) {
+            let a = points[i], b = points[i + 1]
+            guard hypot(b.x - a.x, b.y - a.y) > 0.0001 else { continue }
+            let (nax, nay) = normals[i], (nbx, nby) = normals[i + 1]
+            let ra = support(a, nx: nax, ny: nay), rb = support(b, nx: nbx, ny: nby)
+            silhouette.move(to: CGPoint(x: a.x + nax * ra, y: a.y + nay * ra))
+            silhouette.addLine(to: CGPoint(x: a.x - nax * ra, y: a.y - nay * ra))
+            silhouette.addLine(to: CGPoint(x: b.x - nbx * rb, y: b.y - nby * rb))
+            silhouette.addLine(to: CGPoint(x: b.x + nbx * rb, y: b.y + nby * rb))
             silhouette.closeSubpath()
         }
         return silhouette

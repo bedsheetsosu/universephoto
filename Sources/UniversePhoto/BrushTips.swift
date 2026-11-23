@@ -9,6 +9,46 @@ enum BrushTip: String, CaseIterable, Sendable {
 }
 
 extension Renderer {
+    /// Mouse and tablet events arrive 60–240 times a second, so a fast stroke has samples tens of
+    /// pixels apart. A centripetal Catmull-Rom curve through them (no overshoot, no loops) with
+    /// extra points every few pixels makes the outline round instead of a polygon. Pressure, tilt
+    /// and roll are interpolated along; the real samples stay in the stroke.
+    static func smoothed(_ pts: [InkPoint], width: Double) -> [InkPoint] {
+        guard pts.count >= 3 else { return pts }
+        let step = max(1.5, min(6, width * 0.2))
+        func lerp(_ a: Double?, _ b: Double?, _ t: Double) -> Double? { guard let a, let b else { return a ?? b }; return a + (b - a) * t }
+        var out: [InkPoint] = [pts[0]]
+        out.reserveCapacity(pts.count * 2)
+        for i in 0..<(pts.count - 1) {
+            let p1 = pts[i], p2 = pts[i + 1]
+            let len = hypot(p2.x - p1.x, p2.y - p1.y)
+            let n = Int(len / step)
+            if n >= 2 {
+                let p0 = i > 0 ? pts[i - 1] : p1, p3 = i + 2 < pts.count ? pts[i + 2] : p2
+                // Centripetal parameterisation (alpha 0.5).
+                func knot(_ a: InkPoint, _ b: InkPoint) -> Double { max(1e-4, pow(hypot(b.x - a.x, b.y - a.y), 0.5)) }
+                let t0 = 0.0, t1 = t0 + knot(p0, p1), t2 = t1 + knot(p1, p2), t3 = t2 + knot(p2, p3)
+                func coord(_ v0: Double, _ v1: Double, _ v2: Double, _ v3: Double, _ t: Double) -> Double {
+                    let a1 = (t1 - t) / (t1 - t0) * v0 + (t - t0) / (t1 - t0) * v1
+                    let a2 = (t2 - t) / (t2 - t1) * v1 + (t - t1) / (t2 - t1) * v2
+                    let a3 = (t3 - t) / (t3 - t2) * v2 + (t - t2) / (t3 - t2) * v3
+                    let b1 = (t2 - t) / (t2 - t0) * a1 + (t - t0) / (t2 - t0) * a2
+                    let b2 = (t3 - t) / (t3 - t1) * a2 + (t - t1) / (t3 - t1) * a3
+                    return (t2 - t) / (t2 - t1) * b1 + (t - t1) / (t2 - t1) * b2
+                }
+                for k in 1..<n {
+                    let f = Double(k) / Double(n), t = t1 + (t2 - t1) * f
+                    let x = coord(p0.x, p1.x, p2.x, p3.x, t), y = coord(p0.y, p1.y, p2.y, p3.y, t)
+                    guard x.isFinite, y.isFinite else { continue }
+                    out.append(InkPoint(x: x, y: y, pressure: p1.pressure + (p2.pressure - p1.pressure) * f,
+                                        tiltX: lerp(p1.tiltX, p2.tiltX, f), tiltY: lerp(p1.tiltY, p2.tiltY, f), rotation: lerp(p1.rotation, p2.rotation, f)))
+                }
+            }
+            out.append(p2)
+        }
+        return out
+    }
+
     /// SplitMix64 seeded from the stroke id: the same stroke always sprays the same dots.
     struct StrokeRandom {
         private var state: UInt64
@@ -23,7 +63,7 @@ extension Renderer {
 
     /// Points every `spacing` px along the stroke, with interpolated pressure.
     static func dabs(_ stroke: InkStroke, spacing: (Double) -> Double) -> [(CGPoint, Double)] {
-        let pts = stroke.points.filter { $0.x.isFinite && $0.y.isFinite }
+        let pts = smoothed(stroke.points.filter { $0.x.isFinite && $0.y.isFinite }, width: stroke.width)
         guard let first = pts.first else { return [] }
         func pr(_ p: InkPoint) -> Double { max(0.05, min(1, p.pressure.isFinite ? p.pressure : 1)) }
         var out = [(CGPoint(x: first.x, y: first.y), pr(first))]
