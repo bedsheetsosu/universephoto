@@ -355,11 +355,11 @@ enum Renderer {
             context.addPath(brushPath(stroke)); context.clip()
             context.setBlendMode(.copy)
             drawImage(filtered, in: context, rect: CGRect(x: 0, y: 0, width: context.width, height: context.height))
-        case "clone", "heal", "smudge":
+        case "clone", "heal", "smudge", "liquify":
             // Live retouch: the studio keeps the picture to show (shifted source or smudged pixels);
             // on release the stroke is baked into a bitmap stroke.
             guard let picture = transient[stroke.id] else { break }
-            if stroke.kind == "smudge" { context.setBlendMode(.copy) } else { context.addPath(brushPath(stroke)); context.clip() }
+            if stroke.kind == "smudge" || stroke.kind == "liquify" { context.setBlendMode(.copy) } else { context.addPath(brushPath(stroke)); context.clip() }
             drawImage(picture, in: context, rect: CGRect(x: 0, y: 0, width: picture.width, height: picture.height))
         default: drawBrush(stroke, in: context)
         }

@@ -10026,6 +10026,24 @@
           }
         }
       }
+    },
+    "Liquify": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verflüssigen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Liquify"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

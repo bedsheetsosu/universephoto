@@ -84,7 +84,7 @@ struct ArtworkCanvas: NSViewRepresentable {
             ctx.setLineWidth(line); ctx.setStrokeColor(CGColor(gray:1,alpha:0.9)); ctx.strokeEllipse(in:CGRect(x:source.x-r,y:source.y-r,width:r*2,height:r*2))
             ctx.move(to:CGPoint(x:source.x-6*line,y:source.y)); ctx.addLine(to:CGPoint(x:source.x+6*line,y:source.y)); ctx.move(to:CGPoint(x:source.x,y:source.y-6*line)); ctx.addLine(to:CGPoint(x:source.x,y:source.y+6*line)); ctx.strokePath()
         }
-        if let hover = s.hoverPoint, [.brush,.eraser,.clone,.heal,.smudge,.dodge,.focus].contains(s.tool) { ctx.setStrokeColor(CGColor(gray:0.2,alpha:0.7)); ctx.setLineWidth(1/max(geometry.scale,0.01)); let r = s.brushSize/2; ctx.strokeEllipse(in:CGRect(x:hover.x-r,y:hover.y-r,width:r*2,height:r*2)) }
+        if let hover = s.hoverPoint, [.brush,.eraser,.clone,.heal,.smudge,.liquify,.dodge,.focus].contains(s.tool) { ctx.setStrokeColor(CGColor(gray:0.2,alpha:0.7)); ctx.setLineWidth(1/max(geometry.scale,0.01)); let r = s.brushSize/2; ctx.strokeEllipse(in:CGRect(x:hover.x-r,y:hover.y-r,width:r*2,height:r*2)) }
         ctx.restoreGState(); ctx.setStrokeColor(CGColor(gray:0.35,alpha:0.6)); ctx.setLineWidth(1/max(geometry.scale,0.01)); ctx.stroke(doc); ctx.restoreGState()
         if rulers { drawRulers() }
     }
@@ -99,7 +99,7 @@ struct ArtworkCanvas: NSViewRepresentable {
     private func documentPoint(_ p: CGPoint) -> CGPoint {
         var q = geometry.toDocument(p); if snap { q.x = (q.x/25).rounded()*25; q.y = (q.y/25).rounded()*25 }
         // Guides, canvas edges and centre pull within 6 screen points.
-        if let s = studio, ![.brush,.eraser,.clone,.heal,.smudge,.dodge,.focus].contains(s.tool) { q = s.snappedToGuides(q, tolerance: 6/max(geometry.scale,0.01)) }
+        if let s = studio, ![.brush,.eraser,.clone,.heal,.smudge,.liquify,.dodge,.focus].contains(s.tool) { q = s.snappedToGuides(q, tolerance: 6/max(geometry.scale,0.01)) }
         return q
     }
     /// Guide being dragged (from a ruler, or an existing one with the move tool).
@@ -183,6 +183,7 @@ struct ArtworkCanvas: NSViewRepresentable {
             stroke.kind = s.tool == .clone ? "clone" : "heal"
             guard s.beginClone(id:stroke.id,at:doc) else { interactionBegan = false; return }
         case .smudge: stroke.kind = "smudge"; stroke.strength = s.toolStrength; s.beginSmudge(id:stroke.id,at:local)
+        case .liquify: stroke.kind = "liquify"; stroke.strength = s.toolStrength; s.beginLiquify(id:stroke.id,at:local)
         case .dodge: stroke.kind = s.burnMode ? "burn" : "dodge"; stroke.strength = s.toolStrength
         case .focus: stroke.kind = s.sharpenMode ? "sharpenBrush" : "blurBrush"; stroke.strength = s.toolStrength
         default: break
@@ -223,6 +224,7 @@ struct ArtworkCanvas: NSViewRepresentable {
         if stroke.isFreehand, let last = stroke.points.last { let factor = 1-s.smoothing*0.85;point.x = last.x+(point.x-last.x)*factor;point.y = last.y+(point.y-last.y)*factor; if hypot(point.x-last.x,point.y-last.y) < 0.15 { return } }
         if !stroke.isFreehand { stroke.points = [stroke.points[0],point] } else { stroke.points.append(point) }
         if stroke.kind == "smudge" { s.smudge(id:stroke.id,to:q) }
+        if stroke.kind == "liquify" { s.liquify(id:stroke.id,to:q) }
         active = stroke; needsDisplay = true
     }
     private func finish() { guard let s = studio else { return }; if transformDrag != nil { transformDrag = nil; s.changed() }; if let stroke = active { s.add(stroke) }; if originalTransform != nil { s.changed() }; active = nil; originalTransform = nil; interactionBegan = false; needsDisplay = true }

@@ -130,6 +130,7 @@ struct BrushPreset: Codable, Identifiable {
         if lastMutation?.0 != label || Date().timeIntervalSince(lastMutation?.1 ?? .distantPast) > 0.4 { checkpoint(label) }; lastMutation = (label,Date());body(&layers[selectedLayer]); changed()
     }
     func add(_ stroke: InkStroke) {
+        if stroke.kind == "liquify" { finishLiquify(stroke); return }
         guard canEdit else { return }; checkpoint(tool.english)
         if !stroke.isEraser, stroke.kind != "bitmap", !maskEditing { rememberColor(stroke.color) }
         var stroke = bakeRetouch(stroke)
@@ -155,6 +156,7 @@ struct BrushPreset: Codable, Identifiable {
     @Published var burnMode = false
     @Published var sharpenMode = false
     var smudgeState: SmudgeState?
+    var liquifyState: LiquifyState?
     /// The system pasteboard; tests use a private one so they never touch the user's clipboard.
     var pasteboard = NSPasteboard.general
     /// Jumps to the state after history step `count` (0 = before the first step), undoing or redoing.
