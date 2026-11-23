@@ -5,7 +5,7 @@ struct ArtworkCanvas: NSViewRepresentable {
     @ObservedObject var studio: Studio
     var grid: Bool; var rulers: Bool; var snap: Bool; var background:NSColor = .windowBackgroundColor
     func makeNSView(context: Context) -> ArtworkView { let v = ArtworkView(); v.studio = studio; return v }
-    func updateNSView(_ view: ArtworkView, context: Context) { view.studio = studio;view.backdrop = background; view.grid = grid; view.rulers = rulers; view.snap = snap; view.needsDisplay = true; studio.pen.onPen = { [weak view] sample in view?.remote(sample) } }
+    func updateNSView(_ view: ArtworkView, context: Context) { view.studio = studio;view.backdrop = background; view.grid = grid; view.rulers = rulers; view.snap = snap; view.needsDisplay = true; studio.pen.onPen = { [weak view] sample in view?.remote(sample) }; studio.liquifyChanged = { [weak view] in view?.needsDisplay = true } }
 }
 
 @MainActor final class ArtworkView: NSView {

@@ -157,6 +157,10 @@ struct BrushPreset: Codable, Identifiable {
     @Published var sharpenMode = false
     var smudgeState: SmudgeState?
     var liquifyState: LiquifyState?
+    var liquifyTimer: Timer?
+    /// Lets the canvas redraw after a timer tick (twirl and friends change pixels without mouse events).
+    var liquifyChanged: (() -> Void)?
+    @Published var liquifyMode = LiquifyMode.push
     /// The system pasteboard; tests use a private one so they never touch the user's clipboard.
     var pasteboard = NSPasteboard.general
     /// Jumps to the state after history step `count` (0 = before the first step), undoing or redoing.

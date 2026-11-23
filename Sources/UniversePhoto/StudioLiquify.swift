@@ -11,18 +11,67 @@ struct LiquifyState {
     var last: CGPoint
 }
 
-/// Liquify (push): drag to push pixels along, like a finger in wet paint, without smearing colours.
+/// What the liquify brush does: push drags pixels along; the others work while the brush rests
+/// or moves (about 30 times a second) and grow with the time spent there.
+enum LiquifyMode: String, CaseIterable, Sendable {
+    case push, twirl, bloat, pinch, reconstruct
+    var title: String { switch self { case .push: "Push"; case .twirl: "Twirl"; case .bloat: "Bloat"; case .pinch: "Pucker"; case .reconstruct: "Reconstruct" } }
+    var symbol: String { switch self { case .push: "hand.point.right"; case .twirl: "tornado"; case .bloat: "arrow.up.left.and.arrow.down.right"; case .pinch: "arrow.down.right.and.arrow.up.left"; case .reconstruct: "arrow.uturn.backward" } }
+}
+
+/// Liquify: drag to push pixels along, like a finger in wet paint, without smearing colours;
+/// or twirl, bloat, pucker and reconstruct under the brush.
 extension Studio {
     func beginLiquify(id: UUID, at point: CGPoint) {
         guard activeLayer?.isAdjustmentLayer != true, let image = rawLayerPixels(), let bitmap = PixelOps.bitmap(image) else { return }
         let n = width * height
         liquifyState = LiquifyState(source: bitmap, output: bitmap, dx: [Float](repeating: 0, count: n), dy: [Float](repeating: 0, count: n), last: point)
         Renderer.transient[id] = image
+        liquifyTimer?.invalidate(); liquifyTimer = nil
+        if liquifyMode != .push {
+            // Effects that build up while the brush rests: tick about 30 times a second.
+            liquifyTimer = Timer.scheduledTimer(withTimeInterval: 1.0 / 30, repeats: true) { [weak self] _ in
+                MainActor.assumeIsolated { self?.liquifyTick(id: id) }
+            }
+        }
+    }
+
+    /// One tick of twirl, bloat, pucker or reconstruct at the brush's current position.
+    func liquifyTick(id: UUID) {
+        guard var st = liquifyState, liquifyMode != .push else { return }
+        let c = st.last, r = max(2, brushSize / 2), k = 0.06 * max(0.05, min(1, toolStrength))
+        let x0 = max(0, Int(c.x - r)), x1 = min(width - 1, Int(c.x + r)), y0 = max(0, Int(c.y - r)), y1 = min(height - 1, Int(c.y + r))
+        guard x0 <= x1, y0 <= y1 else { return }
+        for y in y0...y1 { for x in x0...x1 {
+            let rx = Double(x) - c.x, ry = Double(y) - c.y, d2 = (rx * rx + ry * ry) / (r * r)
+            guard d2 < 1 else { continue }
+            let w = (1 - d2) * (1 - d2), i = y * width + x
+            // Where this pixel samples the source now, relative to the brush centre; each tick moves
+            // that sample point (so repeated ticks compose into a real turn or scale).
+            let sx = rx + Double(st.dx[i]), sy = ry + Double(st.dy[i])
+            var nx = sx, ny = sy
+            switch liquifyMode {
+            case .bloat: nx = sx * (1 - k * w); ny = sy * (1 - k * w)         // sample nearer the centre: grows
+            case .pinch: nx = sx * (1 + k * w); ny = sy * (1 + k * w)         // sample further out: shrinks
+            case .twirl:
+                let a = -k * 1.5 * w, ca = cos(a), sa = sin(a)                 // clockwise
+                nx = sx * ca - sy * sa; ny = sx * sa + sy * ca
+            case .reconstruct:
+                let f = 1 - min(1, k * 3 * w); nx = rx + (sx - rx) * f; ny = ry + (sy - ry) * f
+            case .push: break
+            }
+            st.dx[i] = Float(nx - rx); st.dy[i] = Float(ny - ry)
+        } }
+        Self.resample(&st, in: CGRect(x: x0, y: y0, width: x1 - x0 + 1, height: y1 - y0 + 1), width: width, height: height)
+        liquifyState = st
+        Renderer.transient[id] = Self.cgImage(st.output)
+        liquifyChanged?()
     }
 
     /// Pushes from the last point to `point` in steps of a quarter radius.
     func liquify(id: UUID, to point: CGPoint) {
         guard var st = liquifyState else { return }
+        if liquifyMode != .push { st.last = point; liquifyState = st; liquifyTick(id: id); return }
         let r = max(2, brushSize / 2), strength = max(0.05, min(1, toolStrength))
         let dist = hypot(point.x - st.last.x, point.y - st.last.y)
         guard dist > 0.01 else { return }
@@ -73,6 +122,7 @@ extension Studio {
 
     /// Ends a liquify stroke: the layer becomes the pushed picture (its strokes are rasterized).
     func finishLiquify(_ stroke: InkStroke) {
+        liquifyTimer?.invalidate(); liquifyTimer = nil
         defer { Renderer.transient[stroke.id] = nil; liquifyState = nil }
         guard canEdit, let st = liquifyState, let image = Self.cgImage(st.output), let data = try? Renderer.png(image) else { return }
         mutateLayer("Liquify") { $0.imageData = data; $0.strokes = [] }

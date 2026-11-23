@@ -43,3 +43,54 @@ import XCTest
         XCTAssertEqual(s.layers.count, before.count)
     }
 }
+
+@MainActor final class LiquifyModeTests: XCTestCase {
+    /// 80×80, a 10×10 red square in the middle (35…45).
+    private func studio() -> Studio {
+        let s = Studio(recoveryRoot: FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString))
+        s.newDocument(width: 80, height: 80)
+        var f = InkStroke(points: [InkPoint(x: 0, y: 0, pressure: 1)], color: CodableColor(red: 1, green: 0, blue: 0, alpha: 1), width: 1)
+        f.kind = "fill"; f.selectionPoints = [InkPoint(x: 35, y: 35, pressure: 1), InkPoint(x: 45, y: 45, pressure: 1)]
+        s.add(f)
+        s.brushSize = 50; s.toolStrength = 1
+        return s
+    }
+    private func alpha(_ s: Studio, _ x: Double, _ y: Double) throws -> Double {
+        Renderer.sample(try XCTUnwrap(Renderer.render(layers: s.layers, width: s.width, height: s.height)), at: CGPoint(x: x, y: y)).alpha
+    }
+    private func hold(_ s: Studio, _ mode: LiquifyMode, ticks: Int) {
+        s.liquifyMode = mode
+        var stroke = InkStroke(points: [InkPoint(x: 40, y: 40, pressure: 1)], color: .black, width: 1); stroke.kind = "liquify"
+        s.beginLiquify(id: stroke.id, at: CGPoint(x: 40, y: 40))
+        for _ in 0..<ticks { s.liquifyTick(id: stroke.id) }
+        s.add(stroke)
+    }
+
+    func testBloatGrowsAndPuckerShrinks() throws {
+        let s = studio()
+        XCTAssertEqual(try alpha(s, 48, 40), 0)
+        hold(s, .bloat, ticks: 30)
+        XCTAssertGreaterThan(try alpha(s, 48, 40), 0.9, "Bloated past its old edge")
+        s.undo()
+        hold(s, .pinch, ticks: 30)
+        XCTAssertEqual(try alpha(s, 43.5, 40), 0, accuracy: 0.05, "Puckered inside its old edge")
+        XCTAssertGreaterThan(try alpha(s, 40, 40), 0.9)
+    }
+
+    func testTwirlTurnsCornersAndReconstructUndoesIt() throws {
+        let s = studio()
+        hold(s, .twirl, ticks: 10)   // ~40°: a corner points straight down
+        XCTAssertGreaterThan(try alpha(s, 40, 46.5), 0.5, "A turned square reaches past its flat edge")
+        // Reconstruct within one liquify session brings the displacement back to zero.
+        s.liquifyMode = .twirl
+        var stroke = InkStroke(points: [InkPoint(x: 40, y: 40, pressure: 1)], color: .black, width: 1); stroke.kind = "liquify"
+        s.undo()
+        s.beginLiquify(id: stroke.id, at: CGPoint(x: 40, y: 40))
+        for _ in 0..<10 { s.liquifyTick(id: stroke.id) }
+        s.liquifyMode = .reconstruct
+        for _ in 0..<200 { s.liquifyTick(id: stroke.id) }
+        s.add(stroke); _ = stroke
+        XCTAssertEqual(try alpha(s, 40, 46.5), 0, accuracy: 0.05)
+        XCTAssertGreaterThan(try alpha(s, 44, 40), 0.9)
+    }
+}
