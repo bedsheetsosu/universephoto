@@ -77,6 +77,7 @@ struct StudioCommands: Commands {
             Button(L("Layer via copy")) { studio.layerFromSelection(cut:false) }.keyboardShortcut("j")
             Button(L("Layer via cut")) { studio.layerFromSelection(cut:true) }.keyboardShortcut("j",modifiers:[.command,.shift])
             Button(L("Free transform")) { studio.transformMode.toggle() }.keyboardShortcut("t",modifiers:.command)
+            Button(L("Distort")) { studio.distorting ? studio.applyDistort() : studio.beginDistort() }.keyboardShortcut("t",modifiers:[.command,.option]).disabled(!studio.canEdit)
             Button(L("Reset transform")) { studio.resetTransform() }
             Menu(L("Align to canvas")) {
                 Button(L("Left edges")) { studio.align(.left) };Button(L("Horizontal centers")) { studio.align(.centerX) };Button(L("Right edges")) { studio.align(.right) }

@@ -27,6 +27,7 @@ struct ArtworkCanvas: NSViewRepresentable {
     /// Pen tool: the node whose handles the current drag pulls out.
     private var penGrab: PenGrab?
     private var cropGrab: CropGrab?
+    private var distortCorner: Int?
     private var lastRemoteScreen: CGPoint?
     private var pointer = CGPoint.zero; private var tracking: NSTrackingArea?
     override var isFlipped: Bool { true }
@@ -60,7 +61,7 @@ struct ArtworkCanvas: NSViewRepresentable {
         for y in stride(from:0,to:s.height,by:Int(cell)) { for x in stride(from:0,to:s.width,by:Int(cell)) where (x/Int(cell)+y/Int(cell)) % 2 == 0 { ctx.fill(CGRect(x:x,y:y,width:Int(cell),height:Int(cell))) } }
         if s.onionSkin && s.frameIndex > 0 && s.frames.indices.contains(s.frameIndex-1), let onion = Renderer.render(layers:s.composite(s.frames[s.frameIndex-1]),width:s.width,height:s.height) { ctx.setAlpha(0.2); drawImage(onion,in:ctx,rect:doc); ctx.setAlpha(1) }
         let rendered: CGImage?
-        if let active, s.layers.indices.contains(s.selectedLayer) { if s.maskEditing || s.activeLayer?.isAdjustmentLayer == true { var previewLayers = s.composite(s.layers);previewLayers[s.selectedLayer].mask = (previewLayers[s.selectedLayer].mask ?? []) + [active];rendered = Renderer.render(layers:previewLayers,width:s.width,height:s.height,cache:layerCache) } else { rendered = Renderer.render(layers:s.composite(s.layers),width:s.width,height:s.height,preview:active,previewLayer:s.selectedLayer,cache:layerCache) } } else { rendered = committedImage() }
+        if let active = active ?? s.distortStroke, s.layers.indices.contains(s.selectedLayer) { if s.maskEditing || s.activeLayer?.isAdjustmentLayer == true { var previewLayers = s.composite(s.layers);previewLayers[s.selectedLayer].mask = (previewLayers[s.selectedLayer].mask ?? []) + [active];rendered = Renderer.render(layers:previewLayers,width:s.width,height:s.height,cache:layerCache) } else { rendered = Renderer.render(layers:s.composite(s.layers),width:s.width,height:s.height,preview:active,previewLayer:s.selectedLayer,cache:layerCache) } } else { rendered = committedImage() }
         if let rendered { drawImage(rendered,in:ctx,rect:doc) }
         if grid { ctx.setStrokeColor(CGColor(gray:0.4,alpha:0.25)); ctx.setLineWidth(0.5 / max(geometry.scale,0.01)); for x in stride(from:0,through:s.width,by:50) { ctx.move(to:CGPoint(x:x,y:0)); ctx.addLine(to:CGPoint(x:x,y:s.height)) }; for y in stride(from:0,through:s.height,by:50) { ctx.move(to:CGPoint(x:0,y:y)); ctx.addLine(to:CGPoint(x:s.width,y:y)) }; ctx.strokePath() }
         if s.transformMode, let corners = s.transformCorners() {
@@ -98,6 +99,13 @@ struct ArtworkCanvas: NSViewRepresentable {
             switch s.symmetry { case .vertical: angles = [.pi/2]; case .horizontal: angles = [0]; case .quad: angles = [0,.pi/2]; case .radial: angles = (0..<max(2,s.symmetrySegments)).map { Double($0) * .pi / Double(max(2,s.symmetrySegments)) - .pi/2 }; case .off: angles = [] }
             for a in angles { ctx.move(to:CGPoint(x:c.x-cos(a)*r,y:c.y-sin(a)*r)); ctx.addLine(to:CGPoint(x:c.x+cos(a)*r,y:c.y+sin(a)*r)) }
             ctx.strokePath(); ctx.setLineDash(phase:0,lengths:[]); ctx.setFillColor(NSColor(PhotoTheme.mint).cgColor); ctx.fillEllipse(in:CGRect(x:c.x-4*line,y:c.y-4*line,width:8*line,height:8*line)); ctx.restoreGState()
+        }
+        if let corners = s.distortCorners {
+            let line = 1/max(geometry.scale,0.01), h = 4.5*line
+            ctx.saveGState(); ctx.setLineWidth(1.2*line); ctx.setStrokeColor(NSColor(PhotoTheme.mint).cgColor)
+            ctx.addLines(between:corners); ctx.closePath(); ctx.strokePath()
+            ctx.setFillColor(CGColor(gray:1,alpha:1)); for q in corners { let r = CGRect(x:q.x-h,y:q.y-h,width:2*h,height:2*h); ctx.fill(r); ctx.stroke(r) }
+            ctx.restoreGState()
         }
         if let r = s.cropRect, s.tool == .crop {
             // Crop frame: dim what goes, thirds inside, handles on corners and edges.
@@ -182,6 +190,12 @@ struct ArtworkCanvas: NSViewRepresentable {
     private func pressure(_ e:NSEvent) -> Double { e.subtype == .tabletPoint ? max(0.05,Double(e.pressure)) : 1 }
     private func begin(at p:CGPoint,pressure:Double,tilt:CGPoint = .zero,rotation:Double = 0) {
         guard let s = studio,!s.isPlaying else { return }; interactionBegan = false; active = nil; originalTransform = nil; start = p; previous = p
+        if let corners = s.distortCorners {
+            // Distort: grab the nearest corner within 12 screen points.
+            let view = corners.map { $0.applying(geometry.transform) }
+            distortCorner = view.indices.min { hypot(view[$0].x-p.x,view[$0].y-p.y) < hypot(view[$1].x-p.x,view[$1].y-p.y) }.flatMap { hypot(view[$0].x-p.x,view[$0].y-p.y) < 12 ? $0 : nil }
+            interactionBegan = distortCorner != nil; return
+        }
         if s.transformMode, s.canEdit, let corners = s.transformCorners() {
             // Corners scale, inside moves, outside rotates – all around the content's centre.
             let view = corners.map { $0.applying(geometry.transform) }
@@ -257,6 +271,7 @@ struct ArtworkCanvas: NSViewRepresentable {
     }
     private func drag(at p:CGPoint,pressure:Double,tilt:CGPoint = .zero,rotation:Double = 0) {
         guard let s = studio, interactionBegan else { return }
+        if let i = distortCorner { s.moveDistortCorner(i,to:geometry.toDocument(p)); needsDisplay = true; return }
         if s.tool == .pan { s.pan.width += p.x-previous.x;s.pan.height += p.y-previous.y;previous = p;return }
         if s.tool == .crop { if let g = cropGrab { s.cropDrag(g,to:documentPoint(p),square:NSEvent.modifierFlags.contains(.shift)) }; needsDisplay = true; return }
         if s.tool == .pen { if let g = penGrab { s.penMove(g,to:documentPoint(p)) }; needsDisplay = true; return }
@@ -288,7 +303,7 @@ struct ArtworkCanvas: NSViewRepresentable {
         if stroke.kind == "liquify" { s.liquify(id:stroke.id,to:q) }
         active = stroke; needsDisplay = true
     }
-    private func finish() { guard let s = studio else { return }; penGrab = nil; cropGrab = nil; if s.cropRect.map({ $0.width < 2 || $0.height < 2 }) == true { s.cropRect = nil }; if transformDrag != nil { transformDrag = nil; s.changed() }; if let stroke = active { s.add(stroke) }; if originalTransform != nil { s.changed() }; active = nil; originalTransform = nil; interactionBegan = false; needsDisplay = true }
+    private func finish() { guard let s = studio else { return }; penGrab = nil; cropGrab = nil; distortCorner = nil; if s.cropRect.map({ $0.width < 2 || $0.height < 2 }) == true { s.cropRect = nil }; if transformDrag != nil { transformDrag = nil; s.changed() }; if let stroke = active { s.add(stroke) }; if originalTransform != nil { s.changed() }; active = nil; originalTransform = nil; interactionBegan = false; needsDisplay = true }
     private func cancelInteraction() {
         if let s = studio, originalTransform != nil { s.move(moveStart,by:.zero) }
         if let s = studio, transformDrag != nil, s.layers.indices.contains(s.selectedLayer) { s.layers[s.selectedLayer].transform = transformStart }; transformDrag = nil
@@ -320,5 +335,5 @@ struct ArtworkCanvas: NSViewRepresentable {
     override func scrollWheel(with e:NSEvent) { guard let s = studio else { return }; if e.modifierFlags.contains(.command) { s.zoom = max(0.1,min(16,s.zoom * exp(e.scrollingDeltaY*0.01))) } else { s.pan.width += e.scrollingDeltaX;s.pan.height += e.scrollingDeltaY } }
     override func magnify(with e:NSEvent) { guard let s = studio else { return };s.zoom = max(0.1,min(16,s.zoom*(1+e.magnification))) }
     override func rotate(with e:NSEvent) { studio?.rotation += Double(e.rotation) }
-    override func keyDown(with e:NSEvent) { guard let s = studio else { return }; if e.keyCode == 53, s.editingText != nil { s.editingText = nil; needsDisplay = true; return }; if e.keyCode == 53, s.cropRect != nil { s.cropRect = nil; needsDisplay = true; return }; if e.keyCode == 36 || e.keyCode == 76, s.tool == .crop, s.cropRect != nil { s.applyCrop(); needsDisplay = true; return }; if e.keyCode == 53, s.tool == .pen, s.penPath != nil { s.penPath = nil; s.editingPath = nil; needsDisplay = true; return }; if e.keyCode == 51, s.tool == .pen, s.penPath != nil { s.penDeleteLast(); needsDisplay = true; return }; if e.keyCode == 53 { s.selection = nil;s.transformMode = false;cancelInteraction();remoteActive = false;return }; if e.keyCode == 36 && s.transformMode { s.transformMode = false; return };super.keyDown(with:e) }
+    override func keyDown(with e:NSEvent) { guard let s = studio else { return }; if s.distorting, e.keyCode == 53 { s.cancelDistort(); needsDisplay = true; return }; if s.distorting, e.keyCode == 36 || e.keyCode == 76 { s.applyDistort(); needsDisplay = true; return }; if e.keyCode == 53, s.editingText != nil { s.editingText = nil; needsDisplay = true; return }; if e.keyCode == 53, s.cropRect != nil { s.cropRect = nil; needsDisplay = true; return }; if e.keyCode == 36 || e.keyCode == 76, s.tool == .crop, s.cropRect != nil { s.applyCrop(); needsDisplay = true; return }; if e.keyCode == 53, s.tool == .pen, s.penPath != nil { s.penPath = nil; s.editingPath = nil; needsDisplay = true; return }; if e.keyCode == 51, s.tool == .pen, s.penPath != nil { s.penDeleteLast(); needsDisplay = true; return }; if e.keyCode == 53 { s.selection = nil;s.transformMode = false;cancelInteraction();remoteActive = false;return }; if e.keyCode == 36 && s.transformMode { s.transformMode = false; return };super.keyDown(with:e) }
 }

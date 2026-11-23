@@ -10764,6 +10764,24 @@
           }
         }
       }
+    },
+    "Drag the corners · ↩ applies · Esc cancels": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ecken ziehen · ↩ anwenden · Esc abbrechen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Drag the corners · ↩ applies · Esc cancels"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

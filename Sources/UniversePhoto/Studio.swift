@@ -180,6 +180,11 @@ struct BrushPreset: Codable, Identifiable {
     @Published var settingSymmetryCenter = false
     /// Visible colour under the pointer (status bar).
     @Published var hoverColor: CodableColor?
+    /// Distort: the four corners (document pixels, TL TR BR BL) while it runs, and what it warps.
+    @Published var distortCorners: [CGPoint]?
+    var distortSource: CGImage?
+    var distortBounds: CGRect?
+    var distortStroke: InkStroke?
     var symmetryPivot: CGPoint { symmetryCenter ?? CGPoint(x: Double(width) / 2, y: Double(height) / 2) }
     /// The system pasteboard; tests use a private one so they never touch the user's clipboard.
     var pasteboard = NSPasteboard.general
