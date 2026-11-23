@@ -53,10 +53,10 @@ enum ImageFiles {
     }
 
     /// JPEG is explicitly flattened over white. PNG and TIFF retain transparency.
-    static func export(image: CGImage, url: URL, type: UTType) throws {
+    static func export(image: CGImage, url: URL, type: UTType, quality: Double = 0.94) throws {
         guard supportedExports.contains(type) else { throw FileError.unsupported(type.identifier) }
         try validate(width: image.width, height: image.height)
-        let data = try encoded(image: image, type: type)
+        let data = try encoded(image: image, type: type, quality: quality)
         // Atomic replacement is intentional: native save panels ask before replacing a file.
         try data.write(to: url, options: .atomic)
     }
@@ -154,7 +154,20 @@ enum ImageFiles {
         guard fps.isFinite, (1...120).contains(fps), frames.count <= 10_000 else { throw FileError.encoder("Animation supports 1–120 FPS and up to 10,000 frames") }
     }
 
-    private static func encoded(image: CGImage, type: UTType) throws -> Data {
+    /// The picture scaled by `factor` (high-quality resampling), at least 1 × 1 pixel.
+    static func scaled(_ image: CGImage, by factor: Double) -> CGImage? {
+        guard abs(factor - 1) > 0.001 else { return image }
+        let w = max(1, Int((Double(image.width) * factor).rounded())), h = max(1, Int((Double(image.height) * factor).rounded()))
+        guard let ctx = bitmap(width: w, height: h) else { return nil }
+        ctx.interpolationQuality = .high
+        ctx.draw(image, in: CGRect(x: 0, y: 0, width: w, height: h))
+        return ctx.makeImage()
+    }
+
+    /// The bytes an export with these settings would write (for the size estimate).
+    static func encodedData(image: CGImage, type: UTType, quality: Double) throws -> Data { try encoded(image: image, type: type, quality: quality) }
+
+    private static func encoded(image: CGImage, type: UTType, quality: Double = 0.94) throws -> Data {
         var output = image
         if type == .jpeg {
             guard let context = bitmap(width: image.width, height: image.height) else { throw FileError.invalidImage }
@@ -164,7 +177,7 @@ enum ImageFiles {
         }
         let data = NSMutableData()
         guard let destination = CGImageDestinationCreateWithData(data, type.identifier as CFString, 1, nil) else { throw FileError.encoder(type.identifier) }
-        CGImageDestinationAddImage(destination, output, [kCGImageDestinationLossyCompressionQuality: 0.94] as CFDictionary)
+        CGImageDestinationAddImage(destination, output, [kCGImageDestinationLossyCompressionQuality: max(0.05, min(1, quality))] as CFDictionary)
         guard CGImageDestinationFinalize(destination) else { throw FileError.encoder(type.identifier) }
         return data as Data
     }

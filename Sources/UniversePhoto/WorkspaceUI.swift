@@ -22,6 +22,9 @@ struct Workspace: View {
     @State private var textOptions = false
     @State private var recoverySheet = false
     @State private var exportType = "png"
+    @AppStorage("exportQuality") private var exportQuality = 0.9
+    @AppStorage("exportScale") private var exportScale = 1.0
+    @State private var exportEstimate = ""
     @State private var query = ""
     @State private var newWidth = 1200
     @AppStorage("documentBackground") private var newBackground = "white"
@@ -232,11 +235,32 @@ struct Workspace: View {
     }.padding(26).frame(width:480).background(PhotoAmbient()).environment(\.photoTheme,theme) }
     private var newDocument:some View { VStack(alignment:.leading,spacing:18) { Text(L("New document")).font(.system(size:23,weight:.bold,design:.rounded));HStack { Text(L("Width"));TextField("px",value:$newWidth,format:.number).accessibilityLabel(L("Width"));Text(L("Height"));TextField("px",value:$newHeight,format:.number).accessibilityLabel(L("Height")) }.textFieldStyle(.roundedBorder);Picker(L("Background"),selection:$newBackground) { Text(L("White")).tag("white");Text(L("Transparent")).tag("transparent") }.pickerStyle(.segmented);Text(L("sRGB · 8 bit · RGBA")).font(.caption).foregroundStyle(.secondary);HStack { Button(L("Cancel")) { s.showNewDocument = false };Spacer();Button(L("Create")) { s.newDocument(width:newWidth,height:newHeight,background:newBackground == "transparent" ? nil : .white);s.showNewDocument = false }.buttonStyle(PhotoButtonStyle(prominent:true)).keyboardShortcut(.defaultAction).disabled(!(32...8192).contains(newWidth) || !(32...8192).contains(newHeight)) } }.padding(28).frame(width:430).background(PhotoAmbient()).environment(\.photoTheme,theme) }
     private var commandPalette:some View { VStack(spacing:0) { TextField(L("Search commands…"),text:$query).font(.title3).textFieldStyle(.plain).padding(20);Divider();ScrollView { VStack(spacing:2) { ForEach(Tool.allCases.filter { query.isEmpty || L($0.english).localizedCaseInsensitiveContains(query) }) { tool in Button { s.tool = tool;s.commandSearch = false } label: { HStack { Image(systemName:tool.symbol).frame(width:26);Text(L(tool.english));Spacer();Text(tool.key.uppercased()).foregroundStyle(.secondary) }.padding(10).contentShape(Rectangle()) }.buttonStyle(HoverButtonStyle()) };if query.isEmpty { Button(L("Import image…")) { s.commandSearch = false;s.importPanel() }.padding(10);Button(L("Fit canvas")) { s.fit();s.commandSearch = false }.padding(10) } }.padding(10) }.frame(height:340);Divider();HStack { Text("⇧⌘P").foregroundStyle(.tertiary);Spacer();Button(L("Close")) { s.commandSearch = false }.keyboardShortcut(.cancelAction) }.font(.caption).padding(12) }.frame(width:480).background(PhotoAmbient()).environment(\.photoTheme,theme) }
-    private var exportOptions:some View { VStack(alignment:.leading,spacing:18) { Text(L("Export artwork")).font(.system(size:23,weight:.bold,design:.rounded));Picker(L("Format"),selection:$exportType) { Text(L("PNG · Alpha")).tag("png");Text(L("JPEG · White")).tag("jpeg");Text(L("TIFF · Alpha")).tag("tiff");Text(L("HEIC · Alpha")).tag("heic");Text(L("PSD · Layers")).tag("psd");Text(L("PNG Sequence")).tag("sequence");Text(L("GIF · Loop")).tag("gif");Text(L("MP4 · H.264")).tag("mp4") };Text(LF("%d × %d px · %d FPS · %d frames",s.width,s.height,Int(s.fps),max(s.frames.count,1))).font(.caption).foregroundStyle(.secondary);HStack { Button(L("Cancel")) { exportSheet = false };Spacer();Button(L("Export")) { exportSheet = false;runExport() }.buttonStyle(PhotoButtonStyle(prominent:true)).keyboardShortcut(.defaultAction) } }.padding(28).frame(width:420).background(PhotoAmbient()).environment(\.photoTheme,theme) }
+    private var exportOptions:some View { VStack(alignment:.leading,spacing:18) { Text(L("Export artwork")).font(.system(size:23,weight:.bold,design:.rounded));Picker(L("Format"),selection:$exportType) { Text(L("PNG · Alpha")).tag("png");Text(L("JPEG · White")).tag("jpeg");Text(L("TIFF · Alpha")).tag("tiff");Text(L("HEIC · Alpha")).tag("heic");Text(L("PSD · Layers")).tag("psd");Text(L("PNG Sequence")).tag("sequence");Text(L("GIF · Loop")).tag("gif");Text(L("MP4 · H.264")).tag("mp4") };Text(LF("%d × %d px · %d FPS · %d frames",s.width,s.height,Int(s.fps),max(s.frames.count,1))).font(.caption).foregroundStyle(.secondary);if ["png","jpeg","heic","tiff"].contains(exportType) { exportImageSettings };HStack { Button(L("Cancel")) { exportSheet = false };Spacer();Button(L("Export")) { exportSheet = false;runExport() }.buttonStyle(PhotoButtonStyle(prominent:true)).keyboardShortcut(.defaultAction) } }.padding(28).frame(width:420).background(PhotoAmbient()).environment(\.photoTheme,theme) }
     private var recovery:some View { VStack(alignment:.leading,spacing:14) { Text(L("Recovery")).font(.title2);let files = s.recoveryFiles();if files.isEmpty { Text(L("No recovery copies available.")) };ForEach(files,id:\.self) { url in Button(url.lastPathComponent) { recoverySheet = false;s.restore(url) }.font(.caption) };Button(L("Close")) { recoverySheet = false } }.padding(28).frame(width:480).background(PhotoAmbient()).environment(\.photoTheme,theme) }
+    /// Size and quality for single pictures, with the file size these settings give.
+    @ViewBuilder private var exportImageSettings:some View {
+        VStack(alignment:.leading,spacing:10) {
+            HStack { Text(L("Size")).font(.system(size:11)).frame(width:62,alignment:.leading);Slider(value:$exportScale,in:0.1...4).controlSize(.small).accessibilityLabel(L("Size"));Text("\(Int((exportScale*100).rounded())) %").monospacedDigit().frame(width:52,alignment:.trailing) }
+            HStack(spacing:6) { ForEach([0.25,0.5,1.0,2.0],id:\.self) { f in Button("\(Int(f*100)) %") { exportScale = f }.buttonStyle(PhotoButtonStyle()) } }
+            if ["jpeg","heic"].contains(exportType) { HStack { Text(L("Quality")).font(.system(size:11)).frame(width:62,alignment:.leading);Slider(value:$exportQuality,in:0.1...1).controlSize(.small).accessibilityLabel(L("Quality"));Text("\(Int((exportQuality*100).rounded())) %").monospacedDigit().frame(width:52,alignment:.trailing) } }
+            Text(LF("%d × %d px",max(1,Int((Double(s.width)*exportScale).rounded())),max(1,Int((Double(s.height)*exportScale).rounded()))) + (exportEstimate.isEmpty ? "" : " · " + exportEstimate)).font(.caption).monospacedDigit().foregroundStyle(.secondary)
+        }
+        .task(id:"\(exportType)|\(Int(exportScale*100))|\(Int(exportQuality*100))|\(s.undoStack.count)") {
+            exportEstimate = ""
+            try? await Task.sleep(for:.milliseconds(250))
+            guard !Task.isCancelled else { return }
+            let layers = s.composite(s.layers), w = s.width, h = s.height, scale = exportScale, quality = exportQuality
+            let type:UTType = exportType == "png" ? .png : exportType == "jpeg" ? .jpeg : exportType == "heic" ? .heic : .tiff
+            let bytes = await Task.detached(priority:.utility) { () -> Int? in
+                guard let image = Renderer.render(layers:layers,width:w,height:h), let scaled = ImageFiles.scaled(image,by:scale) else { return nil }
+                return try? ImageFiles.encodedData(image:scaled,type:type,quality:quality).count
+            }.value
+            if !Task.isCancelled, let bytes { exportEstimate = LF("about %@",ByteCountFormatter.string(fromByteCount:Int64(bytes),countStyle:.file)) }
+        }
+    }
     private func runExport() {
         s.stopPlayback();let d = { var doc = s.document();doc.layers = s.composite(doc.layers);return doc }();let frames = (d.frames.isEmpty ? [d.layers] : d.frames).map { s.composite($0) }
-        let format = exportType
+        let format = exportType, scale = exportScale, quality = exportQuality
         let url:URL
         if format == "sequence" { let p = NSOpenPanel();p.title = L("Export PNG sequence");p.prompt = L("Export");p.canChooseDirectories = true;p.canChooseFiles = false;p.canCreateDirectories = true;guard p.runModal() == .OK,let selected = p.url else { return };url = selected }
         else { let p = NSSavePanel();p.title = L("Export artwork");p.prompt = L("Export");p.allowedContentTypes = [format == "png" ? .png : format == "jpeg" ? .jpeg : format == "tiff" ? .tiff : format == "heic" ? .heic : format == "psd" ? PSD.type : format == "gif" ? .gif : .mpeg4Movie];p.nameFieldStringValue = s.title;guard p.runModal() == .OK,let selected = p.url else { return };url = selected }
@@ -246,7 +270,7 @@ struct Workspace: View {
             else if format == "gif" { try ImageFiles.exportGIF(frames:frames,width:d.width,height:d.height,fps:d.fps ?? 12,url:url) }
             else if format == "mp4" { try await ImageFiles.exportVideo(frames:frames,width:d.width,height:d.height,fps:d.fps ?? 12,url:url) }
             else if format == "psd" { try PSD.write(layers:d.layers,width:d.width,height:d.height).write(to:url,options:.atomic) }
-            else { guard let image = Renderer.render(layers:d.layers,width:d.width,height:d.height) else { throw StudioError.message("The canvas could not be rendered.") };try ImageFiles.export(image:image,url:url,type:format == "png" ? .png : format == "jpeg" ? .jpeg : format == "heic" ? .heic : .tiff) }
+            else { guard let image = Renderer.render(layers:d.layers,width:d.width,height:d.height), let sized = ImageFiles.scaled(image,by:scale) else { throw StudioError.message("The canvas could not be rendered.") };try ImageFiles.export(image:sized,url:url,type:format == "png" ? .png : format == "jpeg" ? .jpeg : format == "heic" ? .heic : .tiff,quality:quality) }
         }.value;s.busy = false } catch { s.busy = false;s.report(error) } }
     }
     private func iconButton(_ icon:String,_ help:String,action:@escaping ()->Void)->some View { Button(action:action) { Image(systemName:icon).font(.system(size:12)).frame(width:25,height:26).contentShape(Rectangle()) }.buttonStyle(HoverButtonStyle()).help(help).accessibilityLabel(help) }
