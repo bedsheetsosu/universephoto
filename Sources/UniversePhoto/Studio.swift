@@ -180,6 +180,7 @@ struct BrushPreset: Codable, Identifiable {
     @Published var settingSymmetryCenter = false
     /// Visible colour under the pointer (status bar).
     @Published var hoverColor: CodableColor?
+    @Published var showShortcuts = false
     /// Distort: the four corners (document pixels, TL TR BR BL) while it runs, and what it warps.
     @Published var distortCorners: [CGPoint]?
     var distortSource: CGImage?

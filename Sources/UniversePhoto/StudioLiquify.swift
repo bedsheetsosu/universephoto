@@ -9,6 +9,8 @@ struct LiquifyState {
     var dx: [Float]
     var dy: [Float]
     var last: CGPoint
+    /// Selection in layer pixels (255 = may change); nil without a selection.
+    var limit: [UInt8]? = nil
 }
 
 /// What the liquify brush does: push drags pixels along; the others work while the brush rests
@@ -25,7 +27,7 @@ extension Studio {
     func beginLiquify(id: UUID, at point: CGPoint) {
         guard activeLayer?.isAdjustmentLayer != true, let image = rawLayerPixels(), let bitmap = PixelOps.bitmap(image) else { return }
         let n = width * height
-        liquifyState = LiquifyState(source: bitmap, output: bitmap, dx: [Float](repeating: 0, count: n), dy: [Float](repeating: 0, count: n), last: point)
+        liquifyState = LiquifyState(source: bitmap, output: bitmap, dx: [Float](repeating: 0, count: n), dy: [Float](repeating: 0, count: n), last: point, limit: selectionInLayerPixels())
         Renderer.transient[id] = image
         liquifyTimer?.invalidate(); liquifyTimer = nil
         if liquifyMode != .push {
@@ -34,6 +36,17 @@ extension Studio {
                 MainActor.assumeIsolated { self?.liquifyTick(id: id) }
             }
         }
+    }
+
+    /// The selection as a mask in the active layer's own pixels (nil without a selection).
+    func selectionInLayerPixels() -> [UInt8]? {
+        guard let mask = selectionMask(), let layer = activeLayer else { return nil }
+        let m = matrix(layer.transform)
+        guard !m.isIdentity else { return mask }
+        guard let gray = PixelOps.grayImage(mask, width: width, height: height),
+              let moved = Self.remap(gray, width: width, height: height, m.inverted()), let b = PixelOps.bitmap(moved) else { return mask }
+        // Grey on an RGBA canvas: red carries the value, alpha says where anything landed.
+        return (0..<(width * height)).map { b.bytes[$0 * 4 + 3] == 0 ? 0 : b.bytes[$0 * 4] }
     }
 
     /// One tick of twirl, bloat, pucker or reconstruct at the brush's current position.
@@ -109,7 +122,9 @@ extension Studio {
             for ch in 0..<4 {
                 let top = Double(src.bytes[p00 + ch]) * (1 - fx) + Double(src.bytes[p10 + ch]) * fx
                 let bottom = Double(src.bytes[p01 + ch]) * (1 - fx) + Double(src.bytes[p11 + ch]) * fx
-                st.output.bytes[o + ch] = UInt8(max(0, min(255, (top * (1 - fy) + bottom * fy).rounded())))
+                var v = top * (1 - fy) + bottom * fy
+                if let limit = st.limit { let w = Double(limit[i]) / 255; v = Double(src.bytes[o + ch]) * (1 - w) + v * w }
+                st.output.bytes[o + ch] = UInt8(max(0, min(255, v.rounded())))
             }
         } }
     }

@@ -66,6 +66,7 @@ struct Workspace: View {
         .onChange(of:s.tool) { if s.tool != .text { s.editingText = nil }; if s.tool != .pen { s.editingPath = nil; s.penPath = nil } }
         .onChange(of:s.penPath) { s.syncEditedPath() }
         .onChange(of:s.textEditKey) { if s.editingPath != nil { s.commitEditedPathStyle() } }
+        .sheet(isPresented:$s.showShortcuts) { ShortcutsSheet().environmentObject(s).environment(\.photoTheme,theme) }
         .sheet(isPresented:$s.strokeSelectionDialog) { StrokeSelectionDialog().environmentObject(s).environment(\.photoTheme,theme) }
         .sheet(item:$s.imageDialog) { kind in ImageSizeDialog(kind:kind).environmentObject(s).environment(\.photoTheme,theme) }
         .sheet(isPresented:$s.commandSearch) { commandPalette }

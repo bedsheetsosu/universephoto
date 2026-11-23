@@ -35,6 +35,7 @@ struct StudioCommands: Commands {
             Button(L("Content-aware fill")) { studio.contentAwareFill() }.keyboardShortcut(.delete,modifiers:.shift).disabled(studio.selection == nil || !studio.canEdit)
         }
         CommandGroup(replacing:.undoRedo) { Button(L("Undo")) { studio.undo() }.keyboardShortcut("z").disabled(studio.undoStack.isEmpty);Button(L("Redo")) { studio.redo() }.keyboardShortcut("z",modifiers:[.command,.shift]).disabled(studio.redoStack.isEmpty) }
+        CommandGroup(replacing:.help) { Button(L("Keyboard shortcuts")) { studio.showShortcuts = true }.keyboardShortcut("/",modifiers:.command) }
         CommandMenu(L("Tools")) {
             ForEach(Tool.allCases) { tool in Button(L(tool.english)) { studio.tool = tool }.keyboardShortcut(KeyEquivalent(Character(tool.key)),modifiers:[]) }
             Divider();Button(L("Increase brush size")) { studio.brushSize = min(300,studio.brushSize+2) }.keyboardShortcut("]",modifiers:[])
@@ -42,7 +43,7 @@ struct StudioCommands: Commands {
             Button(L("Increase opacity")) { studio.brushOpacity = min(1,studio.brushOpacity+0.1) }.keyboardShortcut(".",modifiers:[])
             Button(L("Decrease opacity")) { studio.brushOpacity = max(0.1,studio.brushOpacity-0.1) }.keyboardShortcut(",",modifiers:[])
             Button(L("Swap colors")) { studio.swapColors() }.keyboardShortcut("x",modifiers:[])
-            Button(L("Next color")) { studio.cycleColor() }.keyboardShortcut("x",modifiers:[])
+            Button(L("Next color")) { studio.cycleColor() }.keyboardShortcut("x",modifiers:.shift)
             Button(L("Select all")) { if !forwardToTextField(#selector(NSText.selectAll(_:))) { studio.selectAll() } }.keyboardShortcut("a",modifiers:.command)
             Button(L("Deselect")) { studio.selection = nil }.keyboardShortcut("d",modifiers:.command)
             Button(L("Invert selection")) { studio.invertSelection() }.keyboardShortcut("i",modifiers:[.command,.shift])
@@ -103,7 +104,7 @@ struct StudioCommands: Commands {
             Button(L("Fit canvas")) { studio.fit() }.keyboardShortcut("0")
             Button(L("Zoom in")) { studio.zoom = min(16,studio.zoom*1.2) }.keyboardShortcut("+")
             Button(L("Zoom out")) { studio.zoom = max(0.1,studio.zoom/1.2) }.keyboardShortcut("-")
-            Button(L("Mirror canvas")) { studio.mirrored.toggle() }.keyboardShortcut("h",modifiers:[])
+            Button(L("Mirror canvas")) { studio.mirrored.toggle() }.keyboardShortcut("h",modifiers:.shift)
             Button(L("Command search")) { studio.commandSearch = true }.keyboardShortcut("p",modifiers:[.command,.shift])
         }
         CommandMenu(L("Animation")) {
