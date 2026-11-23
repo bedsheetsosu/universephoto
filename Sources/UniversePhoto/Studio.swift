@@ -171,6 +171,9 @@ struct BrushPreset: Codable, Identifiable {
     /// The finished path (active layer) the pen tool has reopened, nil for a new path.
     @Published var editingPath: UUID?
     @Published var symmetry = Symmetry.off
+    /// Quick mask layer while the mode is on, and the layer to return to.
+    @Published var quickMaskLayer: UUID?
+    var quickMaskReturn = 0
     @Published var symmetrySegments = 6
     /// The system pasteboard; tests use a private one so they never touch the user's clipboard.
     var pasteboard = NSPasteboard.general

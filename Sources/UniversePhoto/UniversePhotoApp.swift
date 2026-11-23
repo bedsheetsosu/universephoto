@@ -48,6 +48,7 @@ struct StudioCommands: Commands {
             Button(L("Invert selection")) { studio.invertSelection() }.keyboardShortcut("i",modifiers:[.command,.shift])
             Menu(L("Modify")) { ForEach(Studio.SelectionModify.allCases) { k in Button(L(k.title) + "…") { studio.selectionDialog = k } } }.disabled(studio.selection == nil)
             Button(L("Select color range")) { studio.selectColorRange() }
+            Button(L(studio.quickMaskActive ? "Leave quick mask" : "Edit in quick mask")) { studio.toggleQuickMask() }.keyboardShortcut("q",modifiers:.shift)
             Button(L("Subject")) { if !studio.selectSubject() { studio.message = "No subject found in the picture." } }
         }
         CommandMenu(L("Image")) {

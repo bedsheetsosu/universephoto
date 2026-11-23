@@ -212,6 +212,7 @@ struct ArtworkCanvas: NSViewRepresentable {
         var c = s.color; c.alpha *= s.brushOpacity
         let paintsMask = s.maskEditing || s.activeLayer?.isAdjustmentLayer == true
         if paintsMask { c = s.eraser ? .white : CodableColor(red:0,green:0,blue:0,alpha:1) }
+        if s.quickMaskActive, s.activeLayer?.id == s.quickMaskLayer { c = Studio.quickMaskRed; c.alpha = s.brushOpacity }
         let local = localPoint(doc)
         var stroke = InkStroke(points:[InkPoint(x:local.x,y:local.y,pressure:s.mapPressure(pressure),tiltX:tilt.x,tiltY:tilt.y,rotation:rotation)],color:c,width:s.brushSize,isEraser:s.eraser && !paintsMask)
         if s.tool == .brush && !s.eraser && !paintsMask && s.brushTip != .round { stroke.brushTip = s.brushTip.rawValue }
