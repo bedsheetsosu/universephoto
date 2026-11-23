@@ -333,6 +333,7 @@ Confirmed on real hardware (2026-11-15).
 - **One finger** (setting "One finger": Mouse / Pen with fixed pressure / Off): tap = click where you touch, tap twice = double-click, drag = click and drag (draws in Affinity without pressure), hold ≈ 0.55 s = right-click.
 - **Palm rejection:** fingers do nothing while the Pencil hovers, touches, or was used less than 0.6 s ago, nor with a large contact area (`majorRadius`, adjustable threshold). A second finger cleanly ends a running one-finger action (no stray click before pinch/scroll).
 - **Multiple fingers:** two fingers scroll, pinch zooms (method selectable), rotate → shortcuts, two-/three-/four-finger tap and three-finger swipe in all directions are freely assignable (defaults like a Mac trackpad: left/right = switch desktop, up = Mission Control, down = App Exposé; confirmed on real hardware).
+- **Zoom or scroll, never both:** each two-finger touch is decided once – a change in finger distance of 6 % means zoom, 14 pt of movement means scroll – and stays that way until the fingers lift. Before, the fingers' small drift while pinching also scrolled, so the Mac picture jumped up and down while zooming.
 - iPadOS intercepts four-finger gestures if multitasking gestures are enabled in the iPad settings.
 - The Mac can't create real trackpad gestures (magnify/rotate) with public APIs, so zoom works via scroll + modifier.
 

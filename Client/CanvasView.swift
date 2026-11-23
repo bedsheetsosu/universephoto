@@ -65,6 +65,10 @@ final class CanvasView: UIView, UIGestureRecognizerDelegate, UIPencilInteraction
 
     private var lastPan: CGPoint = .zero
     private var lastPinchScale: CGFloat = 1
+    /// Scroll or zoom, decided once per two-finger touch (see `TwoFingerLock`).
+    private var twoFingerLock = TwoFingerLock()
+    private var panActive = false
+    private var pinchActive = false
     private var zoomSteps = StepAccumulator(stepSize: 0.35)
     private var lastRotation: CGFloat = 0
     // Local zoom ("only on the iPad"): screen = centre + (content − centre)·scale + offset.
@@ -1258,12 +1262,22 @@ final class CanvasView: UIView, UIGestureRecognizerDelegate, UIPencilInteraction
             lastPan = t
             return
         }
-        guard settings.panEnabled, let session else { return }
         let t = g.translation(in: self)
+        switch g.state {
+        case .began:
+            if !pinchActive { twoFingerLock.reset() }
+            panActive = true
+        case .changed: break
+        default: panActive = false
+        }
+        guard settings.panEnabled, let session else { return }
         switch g.state {
         case .began:
             lastPan = t
         case .changed:
+            // Only scroll once the touch is a scroll; while undecided the movement adds up.
+            let mode = twoFingerLock.pan(translation: Double(hypot(t.x, t.y)))
+            guard mode == .scroll || settings.zoomMethod == .off else { if mode == .zoom { lastPan = t }; return }
             let r = videoRect
             guard r.width > 0, r.height > 0 else { return }
             let sign: CGFloat = settings.invertPan ? -1 : 1
@@ -1294,6 +1308,13 @@ final class CanvasView: UIView, UIGestureRecognizerDelegate, UIPencilInteraction
             }
             return
         }
+        switch g.state {
+        case .began:
+            if !panActive { twoFingerLock.reset() }
+            pinchActive = true
+        case .changed: break
+        default: pinchActive = false
+        }
         guard let session, settings.zoomMethod != .off else { return }
         switch g.state {
         case .began:
@@ -1302,6 +1323,9 @@ final class CanvasView: UIView, UIGestureRecognizerDelegate, UIPencilInteraction
             zoomSteps.reset()
         case .changed:
             guard lastPinchScale > 0, g.scale > 0 else { return }
+            // Only zoom once the touch is a pinch (fingers drifting while zooming never scroll).
+            let mode = twoFingerLock.pinch(scale: Double(g.scale))
+            guard mode == .zoom || !settings.panEnabled else { if mode == .scroll { lastPinchScale = g.scale }; return }
             let factor = Double(g.scale / lastPinchScale)
             let delta = log2(factor)
             lastPinchScale = g.scale
