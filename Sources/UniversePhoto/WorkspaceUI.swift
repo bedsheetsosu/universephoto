@@ -266,7 +266,7 @@ struct Workspace: View {
         }
     }
     private func runExport() {
-        s.stopPlayback();let d = { var doc = s.document();doc.layers = s.composite(doc.layers);return doc }();let frames = (d.frames.isEmpty ? [d.layers] : d.frames).map { s.composite($0) }
+        s.stopPlayback();let quick = s.quickMaskLayer;let d = { var doc = s.document();doc.layers = s.composite(doc.layers.filter { $0.id != quick });return doc }();let frames = (d.frames.isEmpty ? [d.layers] : d.frames).map { s.composite($0.filter { $0.id != quick }) }
         let format = exportType, scale = exportScale, quality = exportQuality
         let url:URL
         if format == "sequence" { let p = NSOpenPanel();p.title = L("Export PNG sequence");p.prompt = L("Export");p.canChooseDirectories = true;p.canChooseFiles = false;p.canCreateDirectories = true;guard p.runModal() == .OK,let selected = p.url else { return };url = selected }
