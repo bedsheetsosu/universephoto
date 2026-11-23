@@ -30,6 +30,7 @@ struct StudioCommands: Commands {
             Button(L("Copy merged")) { studio.copySelection(merged:true) }.keyboardShortcut("c",modifiers:[.command,.shift])
             Button(L("Paste")) { if !forwardToTextField(#selector(NSText.paste(_:))) { studio.paste() } }.keyboardShortcut("v")
             Button(L("Clear selection")) { studio.clearSelection() }.disabled(studio.selection == nil)
+            Button(L("Content-aware fill")) { studio.contentAwareFill() }.keyboardShortcut(.delete,modifiers:.shift).disabled(studio.selection == nil || !studio.canEdit)
         }
         CommandGroup(replacing:.undoRedo) { Button(L("Undo")) { studio.undo() }.keyboardShortcut("z").disabled(studio.undoStack.isEmpty);Button(L("Redo")) { studio.redo() }.keyboardShortcut("z",modifiers:[.command,.shift]).disabled(studio.redoStack.isEmpty) }
         CommandMenu(L("Tools")) {

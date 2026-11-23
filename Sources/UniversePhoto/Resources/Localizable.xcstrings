@@ -10224,6 +10224,24 @@
           }
         }
       }
+    },
+    "Content-aware fill": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inhaltsbasiert füllen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Content-aware fill"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
