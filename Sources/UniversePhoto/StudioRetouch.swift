@@ -18,7 +18,8 @@ extension Studio {
     func rawLayerPixels() -> CGImage? {
         guard var layer = activeLayer else { return nil }
         layer.opacity = 1; layer.blend = .normal; layer.transform = .init(); layer.visible = true
-        layer.mask = nil; layer.adjustment = .init(); layer.clipped = false
+        // Effects stay live on the layer: retouch and liquify must not bake them in (twice).
+        layer.mask = nil; layer.adjustment = .init(); layer.clipped = false; layer.style = nil; layer.filters = nil
         return Renderer.render(layers: [layer], width: width, height: height)
     }
 

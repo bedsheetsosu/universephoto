@@ -474,6 +474,12 @@ enum Renderer {
         if a.pixelate >= 2 {
             output = output.clampedToExtent().applyingFilter("CIPixellate", parameters: [kCIInputScaleKey: a.pixelate, kCIInputCenterKey: CIVector(x: 0, y: 0)]).cropped(to: extent)
         }
+        if let g = a.gradientMap, g.count == 2 {
+            // Luminance to a two-colour ramp; the layer keeps its transparency.
+            func ci(_ c: CodableColor) -> CIColor { CIColor(red: c.red, green: c.green, blue: c.blue, alpha: 1, colorSpace: CGColorSpace(name: CGColorSpace.sRGB)!) ?? CIColor(red: c.red, green: c.green, blue: c.blue) }
+            output = output.applyingFilter("CIFalseColor", parameters: ["inputColor0": ci(g[0]), "inputColor1": ci(g[1])])
+                .applyingFilter("CIBlendWithAlphaMask", parameters: [kCIInputBackgroundImageKey: CIImage(color: .clear).cropped(to: extent), kCIInputMaskImageKey: input])
+        }
         if a.inverted { output = output.applyingFilter("CIColorInvert") }
         if a.blur > 0 { output = output.clampedToExtent().applyingFilter("CIGaussianBlur", parameters: [kCIInputRadiusKey: a.blur]).cropped(to: extent) }
         if a.vignette > 0 {

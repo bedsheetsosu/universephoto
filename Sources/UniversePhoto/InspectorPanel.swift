@@ -317,6 +317,15 @@ struct InspectorPanel: View {
                         }
                     }.buttonStyle(PhotoButtonStyle())
                     Toggle(L("Invert"), isOn: Binding(get: { a.inverted }, set: { v in s.mutateLayer("Invert") { $0.adjustment.inverted = v } })).toggleStyle(.switch).controlSize(.mini).font(.system(size: 11))
+                    HStack(spacing: 8) {
+                        Toggle(L("Gradient map"), isOn: Binding(get: { a.gradientMap != nil }, set: { v in s.mutateLayer("Gradient map") { $0.adjustment.gradientMap = v ? [s.color, s.secondaryColor] : nil } })).toggleStyle(.switch).controlSize(.mini).font(.system(size: 11))
+                        if let g = a.gradientMap, g.count == 2 {
+                            Spacer(minLength: 0)
+                            ForEach(0..<2, id: \.self) { k in
+                                ColorPicker(L(k == 0 ? "Shadows" : "Highlights"), selection: Binding(get: { g[k].color }, set: { c in s.mutateLayer("Gradient map") { $0.adjustment.gradientMap?[k] = CodableColor(c) } }), supportsOpacity: false).labelsHidden().frame(width: 26).help(L(k == 0 ? "Shadows" : "Highlights"))
+                            }
+                        }
+                    }
                     HStack {
                         Button { s.mutateLayer("Monochrome") { $0.adjustment.saturation = 0 } } label: { Label(L("Monochrome"), systemImage: "circle.lefthalf.filled") }
                         Button { s.mutateLayer("Reset adjustments") { $0.adjustment = LayerAdjustment() } } label: { Image(systemName: "arrow.counterclockwise") }.help(L("Reset adjustments")).accessibilityLabel(L("Reset adjustments"))

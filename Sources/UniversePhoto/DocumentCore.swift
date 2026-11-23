@@ -81,6 +81,8 @@ struct LayerAdjustment: Codable, Equatable, Sendable {
     var grain = 0.0            // 0…1 film grain
     /// Tone curves by channel ("rgb", "red", "green", "blue"); nil = straight.
     var curves: [String: [CurvePoint]]? = nil
+    /// Gradient map: shadows to the first colour, highlights to the second (nil = off).
+    var gradientMap: [CodableColor]? = nil
     init() {}
     init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
@@ -92,6 +94,7 @@ struct LayerAdjustment: Codable, Equatable, Sendable {
         sharpen = try v(.sharpen, 0); noiseReduction = try v(.noiseReduction, 0); vignette = try v(.vignette, 0)
         posterize = try v(.posterize, 0); pixelate = try v(.pixelate, 0); grain = try v(.grain, 0)
         curves = try c.decodeIfPresent([String: [CurvePoint]].self, forKey: .curves)
+        gradientMap = try c.decodeIfPresent([CodableColor].self, forKey: .gradientMap)
     }
     var numbers: [Double] { (curves ?? [:]).values.flatMap { $0.flatMap { [$0.x, $0.y] } } + [brightness, contrast, saturation, exposure, blur, hue, vibrance, temperature, tint, levelsBlack, levelsWhite, gamma, sharpen, noiseReduction, vignette, posterize, pixelate, grain] }
 }
