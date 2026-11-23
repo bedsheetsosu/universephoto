@@ -57,6 +57,7 @@ struct Workspace: View {
         .onChange(of:localization.language) { _,_ in Task { @MainActor in Localization.shared.refreshNativeMenus() } }
         .sheet(isPresented:$showPreferences) { preferences }
         .sheet(isPresented:$s.showNewDocument) { newDocument }
+        .sheet(isPresented:$s.guideDialog) { NewGuideDialog().environmentObject(s).environment(\.photoTheme,theme) }
         .sheet(item:$s.selectionDialog) { kind in SelectionModifyDialog(kind:kind).environmentObject(s).environment(\.photoTheme,theme) }
         .sheet(item:$s.imageDialog) { kind in ImageSizeDialog(kind:kind).environmentObject(s).environment(\.photoTheme,theme) }
         .sheet(isPresented:$s.commandSearch) { commandPalette }

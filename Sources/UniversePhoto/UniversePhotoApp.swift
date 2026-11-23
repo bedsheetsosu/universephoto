@@ -86,6 +86,13 @@ struct StudioCommands: Commands {
             Button(L("Rasterize layer")) { studio.rasterizeLayer() }
         }
         CommandMenu(L("View")) {
+            Toggle(L("Show guides"),isOn:Binding(get:{ studio.showGuides },set:{ studio.showGuides = $0 })).keyboardShortcut(";",modifiers:.command)
+            Toggle(L("Snap to guides"),isOn:Binding(get:{ studio.snapToGuides },set:{ studio.snapToGuides = $0 })).keyboardShortcut(";",modifiers:[.command,.shift])
+            Toggle(L("Lock guides"),isOn:Binding(get:{ studio.guidesLocked },set:{ studio.guidesLocked = $0 }))
+            Button(L("New guide…")) { studio.guideDialog = true }
+            Button(L("Guides from selection")) { studio.guidesFromSelection() }
+            Button(L("Clear guides")) { studio.clearGuides() }.disabled(studio.guides.isEmpty)
+            Divider()
             Button(L("Fit canvas")) { studio.fit() }.keyboardShortcut("0")
             Button(L("Zoom in")) { studio.zoom = min(16,studio.zoom*1.2) }.keyboardShortcut("+")
             Button(L("Zoom out")) { studio.zoom = max(0.1,studio.zoom/1.2) }.keyboardShortcut("-")

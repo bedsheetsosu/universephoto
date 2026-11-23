@@ -72,6 +72,12 @@ struct ArtworkCanvas: NSViewRepresentable {
             ctx.setFillColor(NSColor(PhotoTheme.mint).withAlphaComponent(0.28).cgColor); ctx.fill(CGRect(x:0,y:0,width:s.width,height:s.height)); ctx.restoreGState()
             ctx.setLineWidth(1/max(geometry.scale,0.01)); ctx.setStrokeColor(CGColor(gray:0,alpha:0.9)); ctx.setLineDash(phase:0,lengths:[5/max(geometry.scale,0.01),5/max(geometry.scale,0.01)]); ctx.stroke(selection.bounds); ctx.setLineDash(phase:0,lengths:[])
         } else if let selection = s.selection { let path = selectionPath(selection); ctx.setLineWidth(1/max(geometry.scale,0.01)); ctx.setStrokeColor(CGColor(gray:1,alpha:1)); ctx.addPath(path); ctx.strokePath(); ctx.setStrokeColor(CGColor(gray:0,alpha:0.9)); ctx.setLineDash(phase:0,lengths:[5/max(geometry.scale,0.01),5/max(geometry.scale,0.01)]); ctx.addPath(path); ctx.strokePath(); ctx.setLineDash(phase:0,lengths:[]) }
+        if s.showGuides && !s.guides.isEmpty {
+            ctx.saveGState(); ctx.setLineWidth(1/max(geometry.scale,0.01)); ctx.setStrokeColor(NSColor(red:0.2,green:0.85,blue:1,alpha:0.9).cgColor)
+            let far = 100_000.0
+            for g in s.guides { if g.vertical { ctx.move(to:CGPoint(x:g.position,y:-far)); ctx.addLine(to:CGPoint(x:g.position,y:far)) } else { ctx.move(to:CGPoint(x:-far,y:g.position)); ctx.addLine(to:CGPoint(x:far,y:g.position)) } }
+            ctx.strokePath(); ctx.restoreGState()
+        }
         if let hover = s.hoverPoint, [.clone,.heal].contains(s.tool), let source = s.cloneSourceMarker(for:hover) {
             // Where the stamp copies from: a ring with a cross.
             let r = s.brushSize/2, line = 1/max(geometry.scale,0.01)
@@ -90,16 +96,37 @@ struct ArtworkCanvas: NSViewRepresentable {
         for value in stride(from:100,through:studio?.height ?? 800,by:100) { let p = CGPoint(x:0,y:value).applying(g.transform); if p.y > 24 && p.y < bounds.height { ("\(value)" as NSString).draw(at:CGPoint(x:2,y:p.y),withAttributes:attributes) } }
     }
     func selectionPath(_ s: CanvasSelection) -> CGPath { let p = CGMutablePath(); if s.ellipse { p.addEllipse(in:s.bounds) } else if s.points.count == 2 { p.addRect(s.bounds) } else if let first = s.points.first { p.move(to:first); s.points.dropFirst().forEach { p.addLine(to:$0) }; p.closeSubpath() }; return p }
-    private func documentPoint(_ p: CGPoint) -> CGPoint { var q = geometry.toDocument(p); if snap { q.x = (q.x/25).rounded()*25; q.y = (q.y/25).rounded()*25 }; return q }
+    private func documentPoint(_ p: CGPoint) -> CGPoint {
+        var q = geometry.toDocument(p); if snap { q.x = (q.x/25).rounded()*25; q.y = (q.y/25).rounded()*25 }
+        // Guides, canvas edges and centre pull within 6 screen points.
+        if let s = studio, ![.brush,.eraser,.clone,.heal,.smudge,.dodge,.focus].contains(s.tool) { q = s.snappedToGuides(q, tolerance: 6/max(geometry.scale,0.01)) }
+        return q
+    }
+    /// Guide being dragged (from a ruler, or an existing one with the move tool).
+    private var draggingGuide: UUID?
+    private func guideDown(_ p: CGPoint) -> Bool {
+        guard let s = studio else { return false }
+        let d = geometry.toDocument(p)
+        if rulers && (p.y < 20 || p.x < 20), !s.guidesLocked {
+            let vertical = p.x < 20 && p.y >= 20
+            s.addGuide(vertical: vertical, at: vertical ? d.x : d.y); draggingGuide = s.guides.last?.id; return true
+        }
+        if s.tool == .move, let g = s.guide(near: d, tolerance: 4/max(geometry.scale,0.01)) { s.checkpoint("Move guide"); draggingGuide = g.id; return true }
+        return false
+    }
+    private func guideDrag(_ p: CGPoint) -> Bool {
+        guard let id = draggingGuide, let s = studio, let g = s.guides.first(where: { $0.id == id }) else { return draggingGuide != nil }
+        let d = geometry.toDocument(p); s.moveGuide(id, to: g.vertical ? d.x : d.y); needsDisplay = true; return true
+    }
     private func localPoint(_ p: CGPoint) -> CGPoint { guard let s = studio, let t = s.activeLayer?.transform else { return p }; let transform = CGAffineTransform(translationX:t.x+Double(s.width)/2,y:t.y+Double(s.height)/2).rotated(by:t.rotation * .pi/180).scaledBy(x:t.scale,y:t.scale).translatedBy(x:-Double(s.width)/2,y:-Double(s.height)/2); return p.applying(transform.inverted()) }
     private func isDuplicate(_ e: NSEvent) -> Bool {
         // UniversePen tags its injected Pencil CGEvents with this device ID (Host/InputInjector).
         // Claim only that route after a validated subscription; ordinary mice and tablets remain usable.
         studio?.pen.connected == true && e.cgEvent?.getIntegerValueField(.tabletEventDeviceID) == 0x7AFE1
     }
-    override func mouseDown(with e:NSEvent) { window?.makeFirstResponder(self); guard !isDuplicate(e) else { return }; begin(at:convert(e.locationInWindow,from:nil),pressure:pressure(e),tilt: e.subtype == .tabletPoint ? e.tilt : .zero,rotation:Double(e.rotation)) }
-    override func mouseDragged(with e:NSEvent) { guard !isDuplicate(e) else { return }; drag(at:convert(e.locationInWindow,from:nil),pressure:pressure(e),tilt:e.subtype == .tabletPoint ? e.tilt : .zero,rotation:Double(e.rotation)) }
-    override func mouseUp(with e:NSEvent) { guard !isDuplicate(e) else { return }; if interactionBegan { drag(at:convert(e.locationInWindow,from:nil),pressure:pressure(e),tilt:e.subtype == .tabletPoint ? e.tilt : .zero,rotation:Double(e.rotation)) };finish() }
+    override func mouseDown(with e:NSEvent) { window?.makeFirstResponder(self); guard !isDuplicate(e) else { return }; if guideDown(convert(e.locationInWindow,from:nil)) { return }; begin(at:convert(e.locationInWindow,from:nil),pressure:pressure(e),tilt: e.subtype == .tabletPoint ? e.tilt : .zero,rotation:Double(e.rotation)) }
+    override func mouseDragged(with e:NSEvent) { guard !isDuplicate(e) else { return }; if guideDrag(convert(e.locationInWindow,from:nil)) { return }; drag(at:convert(e.locationInWindow,from:nil),pressure:pressure(e),tilt:e.subtype == .tabletPoint ? e.tilt : .zero,rotation:Double(e.rotation)) }
+    override func mouseUp(with e:NSEvent) { guard !isDuplicate(e) else { return }; if draggingGuide != nil { _ = guideDrag(convert(e.locationInWindow,from:nil)); draggingGuide = nil; return }; if interactionBegan { drag(at:convert(e.locationInWindow,from:nil),pressure:pressure(e),tilt:e.subtype == .tabletPoint ? e.tilt : .zero,rotation:Double(e.rotation)) };finish() }
     override func mouseMoved(with e:NSEvent) { pointer = convert(e.locationInWindow,from:nil); studio?.hoverPoint = geometry.toDocument(pointer); needsDisplay = true }
     override func mouseExited(with e:NSEvent) { studio?.hoverPoint = nil; needsDisplay = true }
     private func pressure(_ e:NSEvent) -> Double { e.subtype == .tabletPoint ? max(0.05,Double(e.pressure)) : 1 }

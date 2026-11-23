@@ -57,6 +57,13 @@ extension Studio {
         if frames.indices.contains(frameIndex) { frames[frameIndex] = layers }
         frames = frames.map { $0.map { baked($0, width: w, height: h, g) } }
         layers = layers.map { baked($0, width: w, height: h, g) }
+        // Guides follow the picture (a quarter turn makes vertical guides horizontal).
+        guides = guides.compactMap { guide in
+            let a = (guide.vertical ? CGPoint(x: guide.position, y: 0) : CGPoint(x: 0, y: guide.position)).applying(g)
+            let b = (guide.vertical ? CGPoint(x: guide.position, y: 1) : CGPoint(x: 1, y: guide.position)).applying(g)
+            let vertical = abs(a.x - b.x) < 0.001, pos = vertical ? a.x : a.y
+            return pos < 0 || pos > Double(vertical ? w : h) ? nil : Guide(id: guide.id, vertical: vertical, position: pos.rounded())
+        }
         width = w; height = h
         selection = nil; boundsCache.removeAll()
         changed()

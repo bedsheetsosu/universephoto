@@ -135,6 +135,8 @@ struct ArtDocument: Codable, Equatable, Sendable {
     var activeFrame: Int? = 0
     /// Layer groups (folders); layers point to them with `groupID`. Shared by all frames.
     var groups: [LayerGroup]? = nil
+    /// Guide lines (0.22).
+    var guides: [Guide]? = nil
 }
 struct LayerGroup: Codable, Equatable, Identifiable, Sendable {
     var id = UUID(); var name: String; var visible = true; var opacity = 1.0; var collapsed = false
