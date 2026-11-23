@@ -10926,6 +10926,42 @@
           }
         }
       }
+    },
+    "Pressure controls opacity": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Druck steuert Deckkraft"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pressure controls opacity"
+          }
+        }
+      }
+    },
+    "Round brush: lighter pressure gives lighter ink, as well as a thinner line.": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Runder Pinsel: leichter Druck gibt hellere Farbe, nicht nur eine dünnere Linie."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Round brush: lighter pressure gives lighter ink, as well as a thinner line."
+          }
+        }
+      }
     }
   },
   "version": "1.0"

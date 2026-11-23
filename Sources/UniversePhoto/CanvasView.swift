@@ -231,6 +231,7 @@ struct ArtworkCanvas: NSViewRepresentable {
         let local = localPoint(doc)
         var stroke = InkStroke(points:[InkPoint(x:local.x,y:local.y,pressure:s.mapPressure(pressure),tiltX:tilt.x,tiltY:tilt.y,rotation:rotation)],color:c,width:s.brushSize,isEraser:s.eraser && !paintsMask)
         if s.tool == .brush && !s.eraser && !paintsMask && s.brushTip != .round { stroke.brushTip = s.brushTip.rawValue }
+        if s.tool == .brush, s.brushTip == .round, s.pressureOpacity { stroke.pressureOpacity = true }
         if [.brush,.eraser].contains(s.tool), let code = s.symmetry.code(segments:s.symmetrySegments) {
             let c = localPoint(s.symmetryPivot); stroke.symmetry = code; stroke.symmetryX = c.x; stroke.symmetryY = c.y
         }

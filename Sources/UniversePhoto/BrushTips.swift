@@ -85,11 +85,41 @@ extension Renderer {
     }
 
     /// Draws a pressure brush stroke with its tip (the colour and blend are already set).
+    /// Grey matte (white = full ink, row 0 = top) of a stroke's pressure along its path.
+    static func pressureMatte(_ stroke: InkStroke, width w: Int, height h: Int) -> CGImage? {
+        guard w > 0, h > 0, let ctx = CGContext(data: nil, width: w, height: h, bitsPerComponent: 8, bytesPerRow: w, space: CGColorSpaceCreateDeviceGray(), bitmapInfo: CGImageAlphaInfo.none.rawValue) else { return nil }
+        ctx.translateBy(x: 0, y: CGFloat(h)); ctx.scaleBy(x: 1, y: -1)   // draw y-down like the layer
+        ctx.setBlendMode(.lighten); ctx.setLineCap(.round); ctx.setLineWidth(max(1, stroke.width) + 2)
+        let pts = stroke.points.filter { $0.x.isFinite && $0.y.isFinite }
+        func level(_ p: InkPoint) -> Double { max(0.04, min(1, p.pressure.isFinite ? p.pressure : 1)) }
+        if pts.count == 1, let p = pts.first {
+            ctx.setFillColor(gray: level(p), alpha: 1)
+            ctx.fillEllipse(in: CGRect(x: p.x - stroke.width / 2 - 1, y: p.y - stroke.width / 2 - 1, width: stroke.width + 2, height: stroke.width + 2))
+        }
+        for (a, b) in zip(pts, pts.dropFirst()) {
+            ctx.setStrokeColor(gray: (level(a) + level(b)) / 2, alpha: 1)
+            ctx.move(to: CGPoint(x: a.x, y: a.y)); ctx.addLine(to: CGPoint(x: b.x, y: b.y)); ctx.strokePath()
+        }
+        return ctx.makeImage()
+    }
+
     static func drawTip(_ tip: BrushTip, _ stroke: InkStroke, in context: CGContext) {
         let color = stroke.color
         switch tip {
         case .round:
-            context.addPath(brushPath(stroke)); context.fillPath()
+            if stroke.pressureOpacity == true, let matte = pressureMatte(stroke, width: context.width, height: context.height) {
+                // Ink only as dense as the pen pressed: the silhouette filled through a grey matte
+                // (per pixel the strongest pressure that touched it, so overlaps don't build up).
+                let h = CGFloat(context.height)
+                context.saveGState()
+                context.translateBy(x: 0, y: h); context.scaleBy(x: 1, y: -1)
+                context.clip(to: CGRect(x: 0, y: 0, width: matte.width, height: matte.height), mask: matte)
+                context.scaleBy(x: 1, y: -1); context.translateBy(x: 0, y: -h)
+                context.addPath(brushPath(stroke)); context.fillPath()
+                context.restoreGState()
+            } else {
+                context.addPath(brushPath(stroke)); context.fillPath()
+            }
         case .pencil:
             context.setShouldAntialias(false)
             context.addPath(brushPath(stroke)); context.fillPath()

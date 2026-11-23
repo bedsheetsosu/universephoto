@@ -46,6 +46,8 @@ struct InkStroke: Codable, Equatable, Identifiable, Sendable {
     var pathTriples: Bool? = nil
     /// Symmetry painting: "v", "h", "vh" or "r<N>", around (symmetryX, symmetryY) in layer pixels.
     var symmetry: String? = nil
+    /// Round brush: pen pressure sets the ink's opacity (as well as the width).
+    var pressureOpacity: Bool? = nil
     var symmetryX: Double? = nil
     var symmetryY: Double? = nil
     /// Freehand kinds: the pressure brush and the retouch brushes (smoothed, every point kept).

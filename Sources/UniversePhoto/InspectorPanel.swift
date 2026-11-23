@@ -247,6 +247,8 @@ struct InspectorPanel: View {
                 valueSlider(L("Size"), value: s.brushSize, range: 1...300, suffix: " px") { s.brushSize = $0 }
                 valueSlider(L("Opacity"), value: s.brushOpacity, range: 0.05...1, suffix: "%", multiplier: 100) { s.brushOpacity = $0 }
                 valueSlider(L("Stabilization"), value: s.smoothing, range: 0...0.9, suffix: "%", multiplier: 100) { s.smoothing = $0 }
+                Toggle(L("Pressure controls opacity"), isOn: $s.pressureOpacity).toggleStyle(.switch).controlSize(.mini).font(.system(size: 11))
+                    .help(L("Round brush: lighter pressure gives lighter ink, as well as a thinner line."))
                 Toggle(L("Pressure controls size"), isOn: $s.pressureEnabled).toggleStyle(.switch).controlSize(.mini).font(.system(size: 11))
                 if s.pressureEnabled {
                     Text(L("Pressure curve")).font(.system(size: 10)).foregroundStyle(theme.secondary)
