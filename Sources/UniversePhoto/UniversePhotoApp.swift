@@ -48,6 +48,7 @@ struct StudioCommands: Commands {
             Button(L("Invert selection")) { studio.invertSelection() }.keyboardShortcut("i",modifiers:[.command,.shift])
             Menu(L("Modify")) { ForEach(Studio.SelectionModify.allCases) { k in Button(L(k.title) + "…") { studio.selectionDialog = k } } }.disabled(studio.selection == nil)
             Button(L("Select color range")) { studio.selectColorRange() }
+            Button(L("Subject")) { if !studio.selectSubject() { studio.message = "No subject found in the picture." } }
         }
         CommandMenu(L("Image")) {
             Button(L("Image size…")) { studio.imageDialog = .imageSize }.keyboardShortcut("i",modifiers:[.command,.option])
@@ -64,6 +65,7 @@ struct StudioCommands: Commands {
             Divider()
             Button(L("Flip layer horizontally")) { studio.flipLayer(horizontal:true) }
             Button(L("Flip layer vertically")) { studio.flipLayer(horizontal:false) }
+            Button(L("Remove background")) { if !studio.removeBackground() { studio.message = "No subject found in the picture." } }.disabled(!studio.canEdit)
             Button(L("Reveal selection")) { studio.maskFromSelection(reveal:true) }.disabled(studio.selection == nil)
             Button(L("Hide selection")) { studio.maskFromSelection(reveal:false) }.disabled(studio.selection == nil)
         }
