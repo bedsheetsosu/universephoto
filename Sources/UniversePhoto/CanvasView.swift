@@ -90,6 +90,15 @@ struct ArtworkCanvas: NSViewRepresentable {
             ctx.setLineWidth(line/max(layer.transform.scale,0.01)); ctx.setStrokeColor(NSColor(PhotoTheme.mint).cgColor); ctx.setLineDash(phase:0,lengths:[4*line,3*line])
             ctx.stroke(Renderer.textBounds(stroke).insetBy(dx:-3,dy:-3)); ctx.restoreGState()
         }
+        if s.symmetry != .off, [.brush,.eraser].contains(s.tool) {
+            // Symmetry axes through the canvas centre.
+            let line = 1/max(geometry.scale,0.01), c = CGPoint(x:Double(s.width)/2,y:Double(s.height)/2), r = hypot(Double(s.width),Double(s.height))
+            ctx.saveGState(); ctx.clip(to:doc); ctx.setLineWidth(line); ctx.setStrokeColor(NSColor(PhotoTheme.mint).withAlphaComponent(0.7).cgColor); ctx.setLineDash(phase:0,lengths:[6*line,4*line])
+            let angles: [Double]
+            switch s.symmetry { case .vertical: angles = [.pi/2]; case .horizontal: angles = [0]; case .quad: angles = [0,.pi/2]; case .radial: angles = (0..<max(2,s.symmetrySegments)).map { Double($0) * .pi / Double(max(2,s.symmetrySegments)) - .pi/2 }; case .off: angles = [] }
+            for a in angles { ctx.move(to:CGPoint(x:c.x-cos(a)*r,y:c.y-sin(a)*r)); ctx.addLine(to:CGPoint(x:c.x+cos(a)*r,y:c.y+sin(a)*r)) }
+            ctx.strokePath(); ctx.restoreGState()
+        }
         if let r = s.cropRect, s.tool == .crop {
             // Crop frame: dim what goes, thirds inside, handles on corners and edges.
             let line = 1/max(geometry.scale,0.01), h = 4*line
@@ -206,6 +215,9 @@ struct ArtworkCanvas: NSViewRepresentable {
         let local = localPoint(doc)
         var stroke = InkStroke(points:[InkPoint(x:local.x,y:local.y,pressure:s.mapPressure(pressure),tiltX:tilt.x,tiltY:tilt.y,rotation:rotation)],color:c,width:s.brushSize,isEraser:s.eraser && !paintsMask)
         if s.tool == .brush && !s.eraser && !paintsMask && s.brushTip != .round { stroke.brushTip = s.brushTip.rawValue }
+        if [.brush,.eraser].contains(s.tool), let code = s.symmetry.code(segments:s.symmetrySegments) {
+            let c = localPoint(CGPoint(x:Double(s.width)/2,y:Double(s.height)/2)); stroke.symmetry = code; stroke.symmetryX = c.x; stroke.symmetryY = c.y
+        }
         if let selection = s.selection, let maskData = selection.maskData {
             stroke.selectionMask = maskData
         } else if let selection = s.selection {

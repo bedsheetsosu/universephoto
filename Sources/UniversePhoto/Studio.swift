@@ -170,6 +170,8 @@ struct BrushPreset: Codable, Identifiable {
     @Published var editingText: UUID?
     /// The finished path (active layer) the pen tool has reopened, nil for a new path.
     @Published var editingPath: UUID?
+    @Published var symmetry = Symmetry.off
+    @Published var symmetrySegments = 6
     /// The system pasteboard; tests use a private one so they never touch the user's clipboard.
     var pasteboard = NSPasteboard.general
     /// Jumps to the state after history step `count` (0 = before the first step), undoing or redoing.

@@ -261,6 +261,10 @@ enum Renderer {
         case .hue: .hue; case .saturation: .saturation; case .color: .color; case .luminosity: .luminosity }
     }
     static func drawStroke(_ stroke: InkStroke, in context: CGContext) {
+        if stroke.symmetry != nil { for copy in Symmetry.copies(of: stroke) { drawStrokeOnce(copy, in: context) }; return }
+        drawStrokeOnce(stroke, in: context)
+    }
+    private static func drawStrokeOnce(_ stroke: InkStroke, in context: CGContext) {
         guard let first = stroke.points.first, first.x.isFinite, first.y.isFinite, stroke.width.isFinite, stroke.width > 0 else { return }
         context.saveGState()
         defer { context.restoreGState() }
