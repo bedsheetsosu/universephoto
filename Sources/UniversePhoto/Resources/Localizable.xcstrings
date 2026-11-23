@@ -10422,6 +10422,24 @@
           }
         }
       }
+    },
+    "Drag a frame · edges and corners resize · ⇧ square · ↩ crops": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rahmen ziehen · Kanten und Ecken ändern die Größe · ⇧ quadratisch · ↩ stellt frei"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Drag a frame · edges and corners resize · ⇧ square · ↩ crops"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

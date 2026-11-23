@@ -125,6 +125,12 @@ struct Workspace: View {
             if s.tool == .dodge { Picker(L("Mode"),selection:$s.burnMode) { Text(L("Dodge")).tag(false);Text(L("Burn")).tag(true) }.pickerStyle(.segmented).labelsHidden().frame(width:120).controlSize(.mini) }
             if s.tool == .focus { Picker(L("Mode"),selection:$s.sharpenMode) { Text(L("Blur")).tag(false);Text(L("Sharpen")).tag(true) }.pickerStyle(.segmented).labelsHidden().frame(width:130).controlSize(.mini) }
             if s.tool == .liquify { Picker(L("Mode"),selection:$s.liquifyMode) { ForEach(LiquifyMode.allCases,id:\.self) { Image(systemName:$0.symbol).help(L($0.title)).accessibilityLabel(L($0.title)).tag($0) } }.pickerStyle(.segmented).labelsHidden().frame(width:170).controlSize(.mini) }
+            if s.tool == .crop {
+                if let r = s.cropRect { Text("\(Int(r.width)) × \(Int(r.height)) px").monospacedDigit().foregroundStyle(theme.secondary) }
+                Button(L("Crop")) { s.applyCrop() }.disabled(s.cropRect == nil || s.isPlaying)
+                Button(L("Cancel")) { s.cropRect = nil }.disabled(s.cropRect == nil)
+                if g.size.width > 900 { Text(L("Drag a frame · edges and corners resize · ⇧ square · ↩ crops")).foregroundStyle(theme.secondary) }
+            }
             if s.tool == .pen {
                 let ready = (s.penPath?.nodes.count ?? 0) >= 2
                 Button(L("Fill path")) { s.commitPath(fill:true) }.disabled(!ready || !s.canEdit)

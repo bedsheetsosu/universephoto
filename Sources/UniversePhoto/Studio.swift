@@ -164,6 +164,8 @@ struct BrushPreset: Codable, Identifiable {
     @Published var liquifyMode = LiquifyMode.push
     /// The pen tool's path in document pixels (not part of the document until filled or stroked).
     @Published var penPath: PenPath?
+    /// The crop tool's frame (document pixels), nil when none is drawn.
+    @Published var cropRect: CGRect?
     /// The system pasteboard; tests use a private one so they never touch the user's clipboard.
     var pasteboard = NSPasteboard.general
     /// Jumps to the state after history step `count` (0 = before the first step), undoing or redoing.
