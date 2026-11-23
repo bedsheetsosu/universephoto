@@ -275,7 +275,8 @@ struct ArtworkCanvas: NSViewRepresentable {
         if sample.phase == "move" && remoteActive { drag(at:p,pressure:sample.pressure,tilt:CGPoint(x:sample.tiltX ?? 0,y:sample.tiltY ?? 0),rotation:sample.rotation ?? 0) }
         if sample.phase == "up" && remoteActive { drag(at:p,pressure:sample.pressure,tilt:CGPoint(x:sample.tiltX ?? 0,y:sample.tiltY ?? 0),rotation:sample.rotation ?? 0);finish();remoteActive = false }
     }
-    override func scrollWheel(with e:NSEvent) { guard let s = studio else { return }; if e.modifierFlags.contains(.command) { s.zoom = max(0.1,min(16,s.zoom * exp(e.scrollingDeltaY*0.01))) } else { s.pan.width -= e.scrollingDeltaX;s.pan.height -= e.scrollingDeltaY } }
+    /// Two-finger scrolling moves the picture with the fingers (scrollingDelta already follows the system's scroll direction).
+    override func scrollWheel(with e:NSEvent) { guard let s = studio else { return }; if e.modifierFlags.contains(.command) { s.zoom = max(0.1,min(16,s.zoom * exp(e.scrollingDeltaY*0.01))) } else { s.pan.width += e.scrollingDeltaX;s.pan.height += e.scrollingDeltaY } }
     override func magnify(with e:NSEvent) { guard let s = studio else { return };s.zoom = max(0.1,min(16,s.zoom*(1+e.magnification))) }
     override func rotate(with e:NSEvent) { studio?.rotation += Double(e.rotation) }
     override func keyDown(with e:NSEvent) { guard let s = studio else { return }; if e.keyCode == 53, s.tool == .pen, s.penPath != nil { s.penPath = nil; needsDisplay = true; return }; if e.keyCode == 53 { s.selection = nil;s.transformMode = false;cancelInteraction();remoteActive = false;return }; if e.keyCode == 36 && s.transformMode { s.transformMode = false; return };super.keyDown(with:e) }
