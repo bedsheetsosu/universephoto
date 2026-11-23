@@ -40,6 +40,8 @@ struct InkStroke: Codable, Equatable, Identifiable, Sendable {
     var lineSpacing: Double? = nil
     /// Painted on a layer with locked transparency: only lands on pixels already there (source atop).
     var atop: Bool? = nil
+    /// Kind "path" (pen tool): points are anchor/out-handle pairs; closed path or not.
+    var pathClosed: Bool? = nil
     /// Freehand kinds: the pressure brush and the retouch brushes (smoothed, every point kept).
     var isFreehand: Bool { kind == nil || ["dodge", "burn", "blurBrush", "sharpenBrush", "clone", "heal", "smudge", "liquify"].contains(kind!) }
 }
@@ -144,14 +146,14 @@ struct LayerGroup: Codable, Equatable, Identifiable, Sendable {
 extension JSONEncoder { static var pretty: JSONEncoder { let e = JSONEncoder(); e.outputFormatting = [.prettyPrinted, .sortedKeys]; return e } }
 
 enum Tool: String, CaseIterable, Identifiable {
-    case brush, eraser, eyedropper, move, rectangleSelection, ellipseSelection, lasso, wand, fill, bucket, gradient, clone, heal, smudge, liquify, dodge, focus, text, rectangle, ellipse, line, pan
+    case brush, eraser, eyedropper, move, rectangleSelection, ellipseSelection, lasso, wand, fill, bucket, gradient, clone, heal, smudge, liquify, dodge, pen, focus, text, rectangle, ellipse, line, pan
     var id: String { rawValue }
     var symbol: String { switch self {
-    case .brush: "paintbrush.pointed"; case .eraser: "eraser"; case .eyedropper: "eyedropper"; case .move: "move.3d"; case .rectangleSelection: "rectangle.dashed"; case .ellipseSelection: "circle.dashed"; case .lasso: "lasso"; case .wand: "wand.and.stars"; case .fill: "drop.fill"; case .bucket: "paintbrush.pointed.fill"; case .clone: "seal"; case .heal: "bandage"; case .smudge: "hand.point.up.left"; case .liquify: "drop.halffull"; case .dodge: "circle.lefthalf.striped.horizontal"; case .focus: "drop.degreesign"; case .gradient: "rectangle.lefthalf.filled"; case .text: "textformat"; case .rectangle: "rectangle"; case .ellipse: "circle"; case .line: "line.diagonal"; case .pan: "hand.draw"
+    case .brush: "paintbrush.pointed"; case .eraser: "eraser"; case .eyedropper: "eyedropper"; case .move: "move.3d"; case .rectangleSelection: "rectangle.dashed"; case .ellipseSelection: "circle.dashed"; case .lasso: "lasso"; case .wand: "wand.and.stars"; case .fill: "drop.fill"; case .bucket: "paintbrush.pointed.fill"; case .clone: "seal"; case .heal: "bandage"; case .smudge: "hand.point.up.left"; case .liquify: "drop.halffull"; case .pen: "point.bottomleft.forward.to.point.topright.scurvepath"; case .dodge: "circle.lefthalf.striped.horizontal"; case .focus: "drop.degreesign"; case .gradient: "rectangle.lefthalf.filled"; case .text: "textformat"; case .rectangle: "rectangle"; case .ellipse: "circle"; case .line: "line.diagonal"; case .pan: "hand.draw"
     } }
-    var key: String { switch self { case .brush: "b"; case .eraser: "e"; case .eyedropper: "i"; case .move: "v"; case .rectangleSelection: "m"; case .ellipseSelection: "u"; case .lasso: "l"; case .wand: "w"; case .fill: "g"; case .bucket: "k"; case .clone: "s"; case .heal: "j"; case .smudge: "f"; case .liquify: "q"; case .dodge: "o"; case .focus: "y"; case .gradient: "d"; case .text: "t"; case .rectangle: "r"; case .ellipse: "c"; case .line: "n"; case .pan: "p" } }
+    var key: String { switch self { case .brush: "b"; case .eraser: "e"; case .eyedropper: "i"; case .move: "v"; case .rectangleSelection: "m"; case .ellipseSelection: "u"; case .lasso: "l"; case .wand: "w"; case .fill: "g"; case .bucket: "k"; case .clone: "s"; case .heal: "j"; case .smudge: "f"; case .liquify: "q"; case .pen: "a"; case .dodge: "o"; case .focus: "y"; case .gradient: "d"; case .text: "t"; case .rectangle: "r"; case .ellipse: "c"; case .line: "n"; case .pan: "p" } }
 
-    var english: String { switch self { case .brush: "Brush"; case .eraser: "Eraser"; case .eyedropper: "Eyedropper"; case .move: "Move"; case .rectangleSelection: "Rectangle selection"; case .ellipseSelection: "Ellipse selection"; case .lasso: "Lasso"; case .wand: "Magic wand"; case .fill: "Fill layer"; case .bucket: "Paint bucket"; case .clone: "Clone stamp"; case .heal: "Healing brush"; case .smudge: "Smudge"; case .liquify: "Liquify"; case .dodge: "Dodge and burn"; case .focus: "Blur and sharpen"; case .gradient: "Gradient"; case .text: "Text"; case .rectangle: "Rectangle"; case .ellipse: "Ellipse"; case .line: "Line"; case .pan: "Hand" } }
+    var english: String { switch self { case .brush: "Brush"; case .eraser: "Eraser"; case .eyedropper: "Eyedropper"; case .move: "Move"; case .rectangleSelection: "Rectangle selection"; case .ellipseSelection: "Ellipse selection"; case .lasso: "Lasso"; case .wand: "Magic wand"; case .fill: "Fill layer"; case .bucket: "Paint bucket"; case .clone: "Clone stamp"; case .heal: "Healing brush"; case .smudge: "Smudge"; case .liquify: "Liquify"; case .pen: "Pen"; case .dodge: "Dodge and burn"; case .focus: "Blur and sharpen"; case .gradient: "Gradient"; case .text: "Text"; case .rectangle: "Rectangle"; case .ellipse: "Ellipse"; case .line: "Line"; case .pan: "Hand" } }
 }
 struct CanvasSelection: Equatable {
     var points: [CGPoint]; var ellipse = false

@@ -24,6 +24,8 @@ struct ArtworkCanvas: NSViewRepresentable {
     private var transformCentre = CGPoint.zero
     private var remoteActive = false; private var lastRemote = Date.distantPast
     private var interactionBegan = false
+    /// Pen tool: the node whose handles the current drag pulls out.
+    private var penNode: Int?
     private var lastRemoteScreen: CGPoint?
     private var pointer = CGPoint.zero; private var tracking: NSTrackingArea?
     override var isFlipped: Bool { true }
@@ -77,6 +79,22 @@ struct ArtworkCanvas: NSViewRepresentable {
             let far = 100_000.0
             for g in s.guides { if g.vertical { ctx.move(to:CGPoint(x:g.position,y:-far)); ctx.addLine(to:CGPoint(x:g.position,y:far)) } else { ctx.move(to:CGPoint(x:-far,y:g.position)); ctx.addLine(to:CGPoint(x:far,y:g.position)) } }
             ctx.strokePath(); ctx.restoreGState()
+        }
+        if let path = s.penPath, !path.nodes.isEmpty {
+            // Pen path: the curve, its anchors as squares and the handles of each node.
+            let line = 1/max(geometry.scale,0.01), h = 3.5*line
+            ctx.saveGState(); ctx.setLineWidth(1.5*line); ctx.setStrokeColor(NSColor(red:0.2,green:0.55,blue:1,alpha:0.95).cgColor); ctx.addPath(path.cgPath); ctx.strokePath()
+            ctx.setLineWidth(line)
+            for (i, n) in path.nodes.enumerated() {
+                if let out = n.out {
+                    let inH = PenPath.inHandle(n)
+                    ctx.move(to:inH); ctx.addLine(to:out); ctx.strokePath()
+                    for q in [inH, out] { ctx.setFillColor(CGColor(gray:1,alpha:1)); ctx.fillEllipse(in:CGRect(x:q.x-h*0.8,y:q.y-h*0.8,width:h*1.6,height:h*1.6)); ctx.strokeEllipse(in:CGRect(x:q.x-h*0.8,y:q.y-h*0.8,width:h*1.6,height:h*1.6)) }
+                }
+                let r = CGRect(x:n.anchor.x-h,y:n.anchor.y-h,width:2*h,height:2*h)
+                ctx.setFillColor(i == 0 && !path.closed ? NSColor(PhotoTheme.mint).cgColor : CGColor(gray:1,alpha:1)); ctx.fill(r); ctx.stroke(r)
+            }
+            ctx.restoreGState()
         }
         if let hover = s.hoverPoint, [.clone,.heal].contains(s.tool), let source = s.cloneSourceMarker(for:hover) {
             // Where the stamp copies from: a ring with a cross.
@@ -144,6 +162,7 @@ struct ArtworkCanvas: NSViewRepresentable {
         interactionBegan = true
         if s.tool == .pan { return }
         if s.tool == .eyedropper { if let image = committedImage() { s.color = Renderer.sample(image,at:doc) }; return }
+        if s.tool == .pen { penNode = s.penClick(at:doc,closeDistance:8/max(geometry.scale,0.01)); needsDisplay = true; return }
         if [.rectangleSelection,.ellipseSelection,.lasso].contains(s.tool) { s.selection = CanvasSelection(points:[doc,doc],ellipse:s.tool == .ellipseSelection); return }
         if s.tool == .wand {
             let flags = NSEvent.modifierFlags
@@ -199,6 +218,7 @@ struct ArtworkCanvas: NSViewRepresentable {
     private func drag(at p:CGPoint,pressure:Double,tilt:CGPoint = .zero,rotation:Double = 0) {
         guard let s = studio, interactionBegan else { return }
         if s.tool == .pan { s.pan.width += p.x-previous.x;s.pan.height += p.y-previous.y;previous = p;return }
+        if s.tool == .pen { if let i = penNode { s.penDrag(node:i,to:geometry.toDocument(p)) }; needsDisplay = true; return }
         if let mode = transformDrag {
             var t = transformStart
             switch mode {
@@ -227,7 +247,7 @@ struct ArtworkCanvas: NSViewRepresentable {
         if stroke.kind == "liquify" { s.liquify(id:stroke.id,to:q) }
         active = stroke; needsDisplay = true
     }
-    private func finish() { guard let s = studio else { return }; if transformDrag != nil { transformDrag = nil; s.changed() }; if let stroke = active { s.add(stroke) }; if originalTransform != nil { s.changed() }; active = nil; originalTransform = nil; interactionBegan = false; needsDisplay = true }
+    private func finish() { guard let s = studio else { return }; penNode = nil; if transformDrag != nil { transformDrag = nil; s.changed() }; if let stroke = active { s.add(stroke) }; if originalTransform != nil { s.changed() }; active = nil; originalTransform = nil; interactionBegan = false; needsDisplay = true }
     private func cancelInteraction() {
         if let s = studio, originalTransform != nil { s.move(moveStart,by:.zero) }
         if let s = studio, transformDrag != nil, s.layers.indices.contains(s.selectedLayer) { s.layers[s.selectedLayer].transform = transformStart }; transformDrag = nil
@@ -258,5 +278,5 @@ struct ArtworkCanvas: NSViewRepresentable {
     override func scrollWheel(with e:NSEvent) { guard let s = studio else { return }; if e.modifierFlags.contains(.command) { s.zoom = max(0.1,min(16,s.zoom * exp(e.scrollingDeltaY*0.01))) } else { s.pan.width -= e.scrollingDeltaX;s.pan.height -= e.scrollingDeltaY } }
     override func magnify(with e:NSEvent) { guard let s = studio else { return };s.zoom = max(0.1,min(16,s.zoom*(1+e.magnification))) }
     override func rotate(with e:NSEvent) { studio?.rotation += Double(e.rotation) }
-    override func keyDown(with e:NSEvent) { guard let s = studio else { return }; if e.keyCode == 53 { s.selection = nil;s.transformMode = false;cancelInteraction();remoteActive = false;return }; if e.keyCode == 36 && s.transformMode { s.transformMode = false; return };super.keyDown(with:e) }
+    override func keyDown(with e:NSEvent) { guard let s = studio else { return }; if e.keyCode == 53, s.tool == .pen, s.penPath != nil { s.penPath = nil; needsDisplay = true; return }; if e.keyCode == 53 { s.selection = nil;s.transformMode = false;cancelInteraction();remoteActive = false;return }; if e.keyCode == 36 && s.transformMode { s.transformMode = false; return };super.keyDown(with:e) }
 }

@@ -299,6 +299,9 @@ enum Renderer {
                 if stroke.filled == true { context.fillPath() } else { context.strokePath() }
             }
         case "line": context.move(to: p); context.addLine(to: q); context.strokePath()
+        case "path":
+            context.addPath(PenPath(encoded: stroke.points, closed: stroke.pathClosed == true).cgPath)
+            if stroke.filled == true { context.fillPath() } else { context.strokePath() }
         case "arrow":
             let w = max(0.1, stroke.width), a = atan2(q.y - p.y, q.x - p.x), back = max(12, w * 3.2) * 0.7
             context.move(to: p); context.addLine(to: CGPoint(x: q.x - cos(a) * back, y: q.y - sin(a) * back)); context.strokePath()

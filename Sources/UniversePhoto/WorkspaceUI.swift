@@ -106,7 +106,7 @@ struct Workspace: View {
                 Toggle(L("Bold"),isOn:$s.textBold).toggleStyle(.checkbox).controlSize(.mini)
             }
             if s.transformMode { Text(L("Corners scale · inside moves · outside rotates (⇧ 15°) · ↩ done")).foregroundStyle(tint).lineLimit(1) }
-            if g.size.width > 575 && [.brush,.eraser,.rectangle,.ellipse,.line,.text,.clone,.heal,.smudge,.liquify,.dodge,.focus].contains(s.tool) { Text(L("Size")).foregroundStyle(theme.secondary);Slider(value:$s.brushSize,in:1...200).frame(width:65).controlSize(.mini).accessibilityLabel(L("Brush size"));Text("\(Int(s.brushSize))").monospacedDigit().frame(width:24,alignment:.leading) }
+            if g.size.width > 575 && [.brush,.eraser,.rectangle,.ellipse,.line,.pen,.text,.clone,.heal,.smudge,.liquify,.dodge,.focus].contains(s.tool) { Text(L("Size")).foregroundStyle(theme.secondary);Slider(value:$s.brushSize,in:1...200).frame(width:65).controlSize(.mini).accessibilityLabel(L("Brush size"));Text("\(Int(s.brushSize))").monospacedDigit().frame(width:24,alignment:.leading) }
             if g.size.width > 460 && ![.pan,.move,.rectangleSelection,.ellipseSelection,.lasso,.wand,.eyedropper,.clone,.heal,.smudge,.liquify,.dodge,.focus].contains(s.tool) { Text(L("Opacity")).foregroundStyle(theme.secondary);Slider(value:$s.brushOpacity,in:0.05...1).frame(width:55).controlSize(.mini).accessibilityLabel(L("Brush opacity"));Text("\(Int(s.brushOpacity*100))%").monospacedDigit().frame(width:29) }
             if [.clone,.heal].contains(s.tool) {
                 Toggle(L("Aligned"),isOn:$s.cloneAligned).toggleStyle(.checkbox).controlSize(.mini)
@@ -124,6 +124,14 @@ struct Workspace: View {
             if s.tool == .dodge { Picker(L("Mode"),selection:$s.burnMode) { Text(L("Dodge")).tag(false);Text(L("Burn")).tag(true) }.pickerStyle(.segmented).labelsHidden().frame(width:120).controlSize(.mini) }
             if s.tool == .focus { Picker(L("Mode"),selection:$s.sharpenMode) { Text(L("Blur")).tag(false);Text(L("Sharpen")).tag(true) }.pickerStyle(.segmented).labelsHidden().frame(width:130).controlSize(.mini) }
             if s.tool == .liquify { Picker(L("Mode"),selection:$s.liquifyMode) { ForEach(LiquifyMode.allCases,id:\.self) { Image(systemName:$0.symbol).help(L($0.title)).accessibilityLabel(L($0.title)).tag($0) } }.pickerStyle(.segmented).labelsHidden().frame(width:170).controlSize(.mini) }
+            if s.tool == .pen {
+                let ready = (s.penPath?.nodes.count ?? 0) >= 2
+                Button(L("Fill path")) { s.commitPath(fill:true) }.disabled(!ready || !s.canEdit)
+                Button(L("Stroke path")) { s.commitPath(fill:false) }.disabled(!ready || !s.canEdit)
+                Button(L("Path to selection")) { s.pathToSelection() }.disabled((s.penPath?.nodes.count ?? 0) < 3)
+                Button(L("Clear path")) { s.penPath = nil }.disabled(s.penPath == nil)
+                if g.size.width > 900 { Text(L("Click adds · drag curves · click the first point closes")).foregroundStyle(theme.secondary) }
+            }
             if [.smudge,.liquify,.dodge,.focus].contains(s.tool) { Text(L("Strength")).foregroundStyle(theme.secondary);Slider(value:$s.toolStrength,in:0.05...1).frame(width:60).controlSize(.mini).accessibilityLabel(L("Strength"));Text("\(Int(s.toolStrength*100))%").monospacedDigit().frame(width:30) }
             if [.bucket,.wand].contains(s.tool) {
                 Text(L("Tolerance")).foregroundStyle(theme.secondary);Slider(value:$s.tolerance,in:0...255).frame(width:70).controlSize(.mini).accessibilityLabel(L("Tolerance"));Text("\(Int(s.tolerance))").monospacedDigit().frame(width:26,alignment:.leading)
