@@ -130,7 +130,7 @@ struct Workspace: View {
                 Button(L("Stroke path")) { s.commitPath(fill:false) }.disabled(!ready || !s.canEdit)
                 Button(L("Path to selection")) { s.pathToSelection() }.disabled((s.penPath?.nodes.count ?? 0) < 3)
                 Button(L("Clear path")) { s.penPath = nil }.disabled(s.penPath == nil)
-                if g.size.width > 900 { Text(L("Click adds · drag curves · click the first point closes")).foregroundStyle(theme.secondary) }
+                if g.size.width > 900 { Text(L("Drag points and handles · ⌥-click: corner · ⌫: last point")).foregroundStyle(theme.secondary) }
             }
             if [.smudge,.liquify,.dodge,.focus].contains(s.tool) { Text(L("Strength")).foregroundStyle(theme.secondary);Slider(value:$s.toolStrength,in:0.05...1).frame(width:60).controlSize(.mini).accessibilityLabel(L("Strength"));Text("\(Int(s.toolStrength*100))%").monospacedDigit().frame(width:30) }
             if [.bucket,.wand].contains(s.tool) {

@@ -10242,6 +10242,24 @@
           }
         }
       }
+    },
+    "Drag points and handles · ⌥-click: corner · ⌫: last point": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Punkte und Griffe ziehen · ⌥-Klick: Ecke · ⌫: letzter Punkt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Drag points and handles · ⌥-click: corner · ⌫: last point"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

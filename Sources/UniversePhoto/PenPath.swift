@@ -101,3 +101,62 @@ extension Studio {
         selection = CanvasSelection(points: closed.flattened())
     }
 }
+
+/// What a pen-tool press grabbed: a new point's handle, an existing anchor, or one of its handles.
+enum PenGrab: Equatable, Sendable { case newHandle(Int), anchor(Int), outHandle(Int), inHandle(Int) }
+
+extension Studio {
+    /// Existing anchor or handle within `tolerance` of `p` (handles first: they sit on top).
+    func penHit(at p: CGPoint, tolerance: Double) -> PenGrab? {
+        guard let path = penPath else { return nil }
+        func near(_ q: CGPoint) -> Bool { hypot(q.x - p.x, q.y - p.y) <= tolerance }
+        for (i, n) in path.nodes.enumerated().reversed() where n.out != nil {
+            if near(n.out!) { return .outHandle(i) }
+            if near(PenPath.inHandle(n)) { return .inHandle(i) }
+        }
+        for (i, n) in path.nodes.enumerated().reversed() where near(n.anchor) {
+            // The first point of an open path closes it instead (see penClick).
+            if i == 0, !path.closed, path.nodes.count > 2 { return nil }
+            return .anchor(i)
+        }
+        return nil
+    }
+
+    /// A press with the pen tool: grab what is under it, else add a point (or close the path).
+    /// Option-pressing an anchor makes it a corner again.
+    /// `place` is where a new point goes (snapped to guides), `p` the raw pointer for grabbing.
+    func penPress(at p: CGPoint, place: CGPoint? = nil, tolerance: Double, corner: Bool = false) -> PenGrab? {
+        if let grab = penHit(at: p, tolerance: tolerance) {
+            if corner, case .anchor(let i) = grab { penPath?.nodes[i].out = nil; return nil }
+            return grab
+        }
+        return penClick(at: place ?? p, closeDistance: tolerance).map { .newHandle($0) }
+    }
+
+    /// Dragging what `penPress` grabbed: anchors carry their handles, handles stay mirrored.
+    func penMove(_ grab: PenGrab, to p: CGPoint) {
+        switch grab {
+        case .newHandle(let i), .outHandle(let i): penDrag(node: i, to: p)
+        case .inHandle(let i):
+            guard let a = penPath?.nodes[safe: i]?.anchor else { return }
+            penDrag(node: i, to: CGPoint(x: 2 * a.x - p.x, y: 2 * a.y - p.y))
+        case .anchor(let i):
+            guard var path = penPath, path.nodes.indices.contains(i) else { return }
+            let d = CGPoint(x: p.x - path.nodes[i].anchor.x, y: p.y - path.nodes[i].anchor.y)
+            path.nodes[i].anchor = p
+            path.nodes[i].out = path.nodes[i].out.map { CGPoint(x: $0.x + d.x, y: $0.y + d.y) }
+            penPath = path
+        }
+    }
+
+    /// Backspace with the pen tool: removes the last point (and opens a closed path first).
+    func penDeleteLast() {
+        guard var path = penPath else { return }
+        if path.closed { path.closed = false } else { path.nodes.removeLast() }
+        penPath = path.nodes.isEmpty ? nil : path
+    }
+}
+
+extension Array {
+    subscript(safe i: Int) -> Element? { indices.contains(i) ? self[i] : nil }
+}

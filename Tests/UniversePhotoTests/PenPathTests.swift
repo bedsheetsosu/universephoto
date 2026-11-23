@@ -50,3 +50,41 @@ struct PenPathTests {
         #expect(outside.red < 0.5 || outside.alpha < 0.5)
     }
 }
+
+@MainActor
+struct PenEditTests {
+    func studioWithPath() -> Studio {
+        let s = Studio()
+        s.penPath = PenPath(nodes: [.init(anchor: CGPoint(x: 10, y: 10), out: nil), .init(anchor: CGPoint(x: 100, y: 10), out: CGPoint(x: 120, y: 30)), .init(anchor: CGPoint(x: 60, y: 90), out: nil)])
+        return s
+    }
+
+    @Test func anchorsMoveWithTheirHandles() {
+        let s = studioWithPath()
+        let grab = s.penPress(at: CGPoint(x: 101, y: 11), tolerance: 5)
+        #expect(grab == .anchor(1))
+        s.penMove(.anchor(1), to: CGPoint(x: 110, y: 20))
+        #expect(s.penPath?.nodes[1].anchor == CGPoint(x: 110, y: 20))
+        #expect(s.penPath?.nodes[1].out == CGPoint(x: 130, y: 40))
+        #expect(s.penPath?.nodes.count == 3)
+    }
+
+    @Test func handlesStayMirrored() {
+        let s = studioWithPath()
+        #expect(s.penHit(at: CGPoint(x: 80, y: -10), tolerance: 5) == .inHandle(1))
+        s.penMove(.inHandle(1), to: CGPoint(x: 100, y: -20))
+        #expect(s.penPath?.nodes[1].out == CGPoint(x: 100, y: 40))
+    }
+
+    @Test func optionMakesACornerAndBackspaceRemoves() {
+        let s = studioWithPath()
+        #expect(s.penPress(at: CGPoint(x: 100, y: 10), tolerance: 5, corner: true) == nil)
+        #expect(s.penPath?.nodes[1].out == nil)
+        // The first point still closes an open path.
+        #expect(s.penPress(at: CGPoint(x: 10, y: 10), tolerance: 5) == nil && s.penPath?.closed == true)
+        s.penDeleteLast()
+        #expect(s.penPath?.closed == false && s.penPath?.nodes.count == 3)
+        s.penDeleteLast(); s.penDeleteLast(); s.penDeleteLast()
+        #expect(s.penPath == nil)
+    }
+}
