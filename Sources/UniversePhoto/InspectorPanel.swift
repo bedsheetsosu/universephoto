@@ -75,6 +75,7 @@ struct InspectorPanel: View {
                 Button { s.tool = .eyedropper } label: { Image(systemName: "eyedropper").font(.system(size: 12)) }
                     .buttonStyle(PhotoButtonStyle()).help(L("Eyedropper · I"))
             }
+            HSBPicker()
             HStack(spacing: 7) {
                 ForEach(Array(Studio.palette.enumerated()), id: \.offset) { _, color in
                     Button { s.color = color } label: {

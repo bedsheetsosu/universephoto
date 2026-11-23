@@ -10962,6 +10962,24 @@
           }
         }
       }
+    },
+    "Saturation and brightness": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sättigung und Helligkeit"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saturation and brightness"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
