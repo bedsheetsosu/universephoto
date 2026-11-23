@@ -39,7 +39,7 @@ struct Workspace: View {
                 VStack(spacing:0) {
                     tabs
                     contextbar
-                    ArtworkCanvas(studio:s,grid:grid,rulers:rulers,snap:snap,background:NSColor(theme.canvas))
+                    ArtworkCanvas(studio:s,grid:grid,rulers:rulers,snap:snap,background:NSColor(theme.canvas)).clipped()
                         .overlay(alignment:.bottomLeading) { canvasBadge.padding(14).allowsHitTesting(false) }
                     if showTimeline || workspace == "Animate" { resizeTimeline;TimelinePanel().environmentObject(s).frame(height:timelineHeight).transition(.move(edge:.bottom).combined(with:.opacity)) }
                 }.frame(maxWidth:.infinity,maxHeight:.infinity).photoSurface(radius:20,elevated:true)

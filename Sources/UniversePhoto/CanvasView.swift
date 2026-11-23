@@ -4,7 +4,7 @@ import SwiftUI
 struct ArtworkCanvas: NSViewRepresentable {
     @ObservedObject var studio: Studio
     var grid: Bool; var rulers: Bool; var snap: Bool; var background:NSColor = .windowBackgroundColor
-    func makeNSView(context: Context) -> ArtworkView { let v = ArtworkView(); v.studio = studio; return v }
+    func makeNSView(context: Context) -> ArtworkView { let v = ArtworkView(); v.clipsToBounds = true; v.studio = studio; return v }
     func updateNSView(_ view: ArtworkView, context: Context) { view.studio = studio;view.backdrop = background; view.grid = grid; view.rulers = rulers; view.snap = snap; view.needsDisplay = true; studio.pen.onPen = { [weak view] sample in view?.remote(sample) }; studio.liquifyChanged = { [weak view] in view?.needsDisplay = true } }
 }
 
@@ -45,6 +45,8 @@ struct ArtworkCanvas: NSViewRepresentable {
     }
     override func draw(_ dirtyRect: NSRect) {
         guard let s = studio, let ctx = NSGraphicsContext.current?.cgContext else { return }
+        // Since macOS 14 views may paint outside their bounds: keep the picture inside the canvas area.
+        ctx.clip(to:bounds)
         backdrop.setFill(); bounds.fill()
         let doc = CGRect(x:0,y:0,width:s.width,height:s.height)
         ctx.saveGState(); ctx.concatenate(geometry.transform)
