@@ -92,6 +92,9 @@ struct StudioCommands: Commands {
             Button(L("Delete layer")) { studio.deleteLayer() }.keyboardShortcut(.delete,modifiers:[.command,.shift])
             Button(L("Visibility")) { studio.mutateLayer("Visibility") { $0.visible.toggle() } }.keyboardShortcut("h",modifiers:.option)
             Button(L("Merge down")) { studio.mergeDown() }.keyboardShortcut("e",modifiers:.command)
+            Button(L("Merge visible")) { studio.mergeVisible() }.keyboardShortcut("e",modifiers:[.command,.shift])
+            Button(L("Stamp visible")) { studio.stampVisible() }.keyboardShortcut("e",modifiers:[.command,.shift,.option])
+            Button(L("Flatten image")) { studio.flattenImage() }
             Button(L("Rasterize layer")) { studio.rasterizeLayer() }
         }
         CommandMenu(L("View")) {

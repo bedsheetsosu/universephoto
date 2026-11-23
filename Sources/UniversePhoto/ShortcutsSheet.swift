@@ -17,7 +17,7 @@ struct ShortcutsSheet: View {
         ("Image", [("Image size…", "⌥⌘I"), ("Canvas size…", "⌥⌘C")]),
         ("Layers", [("New layer", "⇧⌘N"), ("New adjustment layer", "⌥⌘J"), ("Layer via copy", "⌘J"), ("Layer via cut", "⇧⌘J"),
                     ("Free transform", "⌘T"), ("Distort", "⌥⌘T"), ("Group layers", "⌘G"), ("Ungroup", "⇧⌘G"), ("Clipping mask", "⌥⌘G"),
-                    ("Merge down", "⌘E"), ("Delete layer", "⇧⌘⌫"), ("Visibility", "⌥H")]),
+                    ("Merge down", "⌘E"), ("Merge visible", "⇧⌘E"), ("Stamp visible", "⌥⇧⌘E"), ("Delete layer", "⇧⌘⌫"), ("Visibility", "⌥H")]),
         ("View", [("Fit canvas", "⌘0"), ("Zoom in", "⌘+"), ("Zoom out", "⌘−"), ("Mirror canvas", "⇧H")]),
         ("Animation", [("Play / Pause", "Space"), ("Duplicate frame", "⇧F"), ("Previous frame", "⌥←"), ("Next frame", "⌥→"), ("Onion Skin", "⌥O")]),
         ("Canvas", [("Pan", "Scroll"), ("Zoom", "⌘ Scroll"), ("Deselect", "Esc")]),
