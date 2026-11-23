@@ -10998,6 +10998,24 @@
           }
         }
       }
+    },
+    "Transform selection": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Auswahl transformieren"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Transform selection"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

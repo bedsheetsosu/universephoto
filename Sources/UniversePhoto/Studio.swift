@@ -181,6 +181,9 @@ struct BrushPreset: Codable, Identifiable {
     /// Visible colour under the pointer (status bar).
     @Published var hoverColor: CodableColor?
     @Published var showShortcuts = false
+    /// Transform selection: the frame (document pixels) and the selection with its box at the start.
+    @Published var selectionFrame: CGRect?
+    var selectionFrameOriginal: (CanvasSelection, CGRect)?
     @Published var pressureOpacity = UserDefaults.standard.bool(forKey: "pressureOpacity") { didSet { UserDefaults.standard.set(pressureOpacity, forKey: "pressureOpacity") } }
     /// Distort: the four corners (document pixels, TL TR BR BL) while it runs, and what it warps.
     @Published var distortCorners: [CGPoint]?

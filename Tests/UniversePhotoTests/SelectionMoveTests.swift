@@ -25,3 +25,33 @@ struct SelectionMoveTests {
         #expect(s.selection?.bounds.minX == 250 && s.selection?.bounds.minY == 130)
     }
 }
+
+@MainActor
+struct SelectionTransformTests {
+    @Test func frameScalesShapesAndCancelRestores() {
+        let s = Studio()
+        s.selection = CanvasSelection(points: [CGPoint(x: 100, y: 100), CGPoint(x: 200, y: 150)])
+        s.beginSelectionTransform()
+        #expect(s.selectionFrame == CGRect(x: 100, y: 100, width: 100, height: 50))
+        // Drag the right edge out to 300: twice as wide.
+        let grab = Studio.frameGrab(s.selectionFrame, at: CGPoint(x: 200, y: 125), tolerance: 5)
+        s.updateSelectionFrame(Studio.frameDrag(grab, to: CGPoint(x: 300, y: 125)))
+        #expect(s.selection?.bounds == CGRect(x: 100, y: 100, width: 200, height: 50))
+        s.cancelSelectionTransform()
+        #expect(s.selection?.bounds == CGRect(x: 100, y: 100, width: 100, height: 50) && !s.transformingSelection)
+    }
+
+    @Test func pixelMasksScaleToo() throws {
+        let s = Studio()
+        var m = [UInt8](repeating: 0, count: s.width * s.height)
+        for y in 100..<120 { for x in 100..<140 { m[y * s.width + x] = 255 } }
+        s.setSelection(mask: m)
+        s.beginSelectionTransform()
+        s.updateSelectionFrame(CGRect(x: 100, y: 100, width: 80, height: 40))
+        s.applySelectionTransform()
+        let mask = try #require(s.selectionMask())
+        #expect(mask[135 * s.width + 170] > 200)   // inside the doubled box
+        #expect(mask[150 * s.width + 190] == 0)
+        #expect(!s.transformingSelection)
+    }
+}

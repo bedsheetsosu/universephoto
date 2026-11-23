@@ -65,6 +65,7 @@ struct Workspace: View {
         .onChange(of:s.textEditKey) { if s.tool == .text { s.syncEditedText() } }
         .onChange(of:s.tool) { if s.tool != .text { s.editingText = nil }; if s.tool != .pen { s.editingPath = nil; s.penPath = nil } }
         .onChange(of:s.penPath) { s.syncEditedPath() }
+        .onChange(of:s.selection == nil) { if s.selection == nil { s.applySelectionTransform() } }
         .onChange(of:s.textEditKey) { if s.editingPath != nil { s.commitEditedPathStyle() } }
         .sheet(isPresented:$s.showShortcuts) { ShortcutsSheet().environmentObject(s).environment(\.photoTheme,theme) }
         .sheet(isPresented:$s.strokeSelectionDialog) { StrokeSelectionDialog().environmentObject(s).environment(\.photoTheme,theme) }
@@ -133,6 +134,7 @@ struct Workspace: View {
             if s.tool == .dodge { Picker(L("Mode"),selection:$s.burnMode) { Text(L("Dodge")).tag(false);Text(L("Burn")).tag(true) }.pickerStyle(.segmented).labelsHidden().frame(width:120).controlSize(.mini) }
             if s.tool == .focus { Picker(L("Mode"),selection:$s.sharpenMode) { Text(L("Blur")).tag(false);Text(L("Sharpen")).tag(true) }.pickerStyle(.segmented).labelsHidden().frame(width:130).controlSize(.mini) }
             if s.tool == .liquify { Picker(L("Mode"),selection:$s.liquifyMode) { ForEach(LiquifyMode.allCases,id:\.self) { Image(systemName:$0.symbol).help(L($0.title)).accessibilityLabel(L($0.title)).tag($0) } }.pickerStyle(.segmented).labelsHidden().frame(width:170).controlSize(.mini) }
+            if s.transformingSelection { if let r = s.selectionFrame { Text("\(Int(r.width)) × \(Int(r.height)) px").monospacedDigit().foregroundStyle(theme.secondary) };Button(L("Apply")) { s.applySelectionTransform() }.buttonStyle(PhotoButtonStyle(prominent:true));Button(L("Cancel")) { s.cancelSelectionTransform() } }
             if s.distorting { Text(L("Drag the corners · ↩ applies · Esc cancels")).foregroundStyle(theme.secondary);Button(L("Apply")) { s.applyDistort() }.buttonStyle(PhotoButtonStyle(prominent:true));Button(L("Cancel")) { s.cancelDistort() } }
             if s.quickMaskActive { Button(L("Leave quick mask")) { s.toggleQuickMask() }.buttonStyle(PhotoButtonStyle(prominent:true)).help("⇧Q") }
             if [.brush,.eraser].contains(s.tool) && g.size.width > 700 {

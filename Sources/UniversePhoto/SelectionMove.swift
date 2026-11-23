@@ -36,3 +36,46 @@ extension Studio {
         selection = moved
     }
 }
+
+/// Select → Transform selection: a frame around the selection whose edges and corners scale it
+/// and whose inside moves it (the pixels stay). ↩ or a click outside keeps it, Esc goes back.
+extension Studio {
+    var transformingSelection: Bool { selectionFrame != nil }
+
+    func beginSelectionTransform() {
+        guard let sel = selection else { return }
+        let box = sel.bounds.standardized
+        guard box.width >= 1, box.height >= 1 else { return }
+        selectionFrameOriginal = (sel, box); selectionFrame = box
+    }
+
+    /// `original` scaled from its box `from` into `to`.
+    func scaledSelection(_ original: CanvasSelection, from o: CGRect, to r: CGRect) -> CanvasSelection? {
+        let sx = r.width / max(o.width, 0.001), sy = r.height / max(o.height, 0.001)
+        let t = CGAffineTransform(translationX: r.minX, y: r.minY).scaledBy(x: sx, y: sy).translatedBy(x: -o.minX, y: -o.minY)
+        if let mask = original.mask {
+            guard let ctx = CGContext(data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: width, space: CGColorSpaceCreateDeviceGray(), bitmapInfo: CGImageAlphaInfo.none.rawValue) else { return nil }
+            ctx.interpolationQuality = .high
+            let R = CGRect(x: 0, y: 0, width: mask.width, height: mask.height).applying(t)
+            ctx.draw(mask, in: CGRect(x: R.minX, y: Double(height) - R.maxY, width: R.width, height: R.height))   // bitmap y runs up
+            guard let moved = ctx.makeImage(), let bytes = PixelOps.grayBytes(moved), let box = PixelOps.bounds(bytes, width: width, height: height) else { return nil }
+            return CanvasSelection(points: [box.origin, CGPoint(x: box.maxX, y: box.maxY)], mask: moved, maskData: PixelOps.png(moved))
+        }
+        var s = original
+        s.points = original.points.map { $0.applying(t) }
+        return s
+    }
+
+    func updateSelectionFrame(_ r: CGRect) {
+        guard let (original, box) = selectionFrameOriginal, r.width >= 1, r.height >= 1 else { return }
+        selectionFrame = r
+        if let s = scaledSelection(original, from: box, to: r) { selection = s }
+    }
+
+    func applySelectionTransform() { selectionFrame = nil; selectionFrameOriginal = nil }
+
+    func cancelSelectionTransform() {
+        if let (original, _) = selectionFrameOriginal { selection = original }
+        selectionFrame = nil; selectionFrameOriginal = nil
+    }
+}
