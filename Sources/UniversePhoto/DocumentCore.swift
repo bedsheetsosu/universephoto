@@ -5,7 +5,7 @@ struct InkPoint: Codable, Equatable, Sendable {
     var x: Double; var y: Double; var pressure: Double
     var tiltX: Double? = nil; var tiltY: Double? = nil; var rotation: Double? = nil
 }
-struct CodableColor: Codable, Equatable, Sendable {
+struct CodableColor: Codable, Hashable, Sendable {
     var red: Double; var green: Double; var blue: Double; var alpha: Double
     var color: Color { Color(.sRGB, red: red, green: green, blue: blue, opacity: alpha) }
     var cgColor: CGColor { CGColor(srgbRed: red, green: green, blue: blue, alpha: alpha) }

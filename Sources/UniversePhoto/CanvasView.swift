@@ -83,6 +83,13 @@ struct ArtworkCanvas: NSViewRepresentable {
             for g in s.guides { if g.vertical { ctx.move(to:CGPoint(x:g.position,y:-far)); ctx.addLine(to:CGPoint(x:g.position,y:far)) } else { ctx.move(to:CGPoint(x:-far,y:g.position)); ctx.addLine(to:CGPoint(x:far,y:g.position)) } }
             ctx.strokePath(); ctx.restoreGState()
         }
+        if s.tool == .text, let id = s.editingText, let layer = s.activeLayer, let stroke = layer.strokes.first(where: { $0.id == id }) {
+            // Edited text: dashed frame (layer pixels placed like the layer).
+            let line = 1/max(geometry.scale,0.01)
+            ctx.saveGState(); ctx.concatenate(s.matrix(layer.transform))
+            ctx.setLineWidth(line/max(layer.transform.scale,0.01)); ctx.setStrokeColor(NSColor(PhotoTheme.mint).cgColor); ctx.setLineDash(phase:0,lengths:[4*line,3*line])
+            ctx.stroke(Renderer.textBounds(stroke).insetBy(dx:-3,dy:-3)); ctx.restoreGState()
+        }
         if let r = s.cropRect, s.tool == .crop {
             // Crop frame: dim what goes, thirds inside, handles on corners and edges.
             let line = 1/max(geometry.scale,0.01), h = 4*line
@@ -177,6 +184,8 @@ struct ArtworkCanvas: NSViewRepresentable {
         let doc = documentPoint(p); guard CGRect(x:0,y:0,width:s.width,height:s.height).contains(doc) || s.tool == .pan || s.tool == .crop else { return }
         interactionBegan = true
         if s.tool == .pan { return }
+        if s.tool == .text, s.beginTextEdit(at:doc) { interactionBegan = false; needsDisplay = true; return }
+        if s.tool == .text { s.editingText = nil }
         if s.tool == .eyedropper { if let image = committedImage() { s.color = Renderer.sample(image,at:doc) }; return }
         if s.tool == .crop { cropGrab = s.cropPress(at:doc,tolerance:8/max(geometry.scale,0.01)); needsDisplay = true; return }
         if s.tool == .pen { penGrab = s.penPress(at:geometry.toDocument(p),place:doc,tolerance:8/max(geometry.scale,0.01),corner:NSEvent.modifierFlags.contains(.option)); needsDisplay = true; return }
@@ -297,5 +306,5 @@ struct ArtworkCanvas: NSViewRepresentable {
     override func scrollWheel(with e:NSEvent) { guard let s = studio else { return }; if e.modifierFlags.contains(.command) { s.zoom = max(0.1,min(16,s.zoom * exp(e.scrollingDeltaY*0.01))) } else { s.pan.width += e.scrollingDeltaX;s.pan.height += e.scrollingDeltaY } }
     override func magnify(with e:NSEvent) { guard let s = studio else { return };s.zoom = max(0.1,min(16,s.zoom*(1+e.magnification))) }
     override func rotate(with e:NSEvent) { studio?.rotation += Double(e.rotation) }
-    override func keyDown(with e:NSEvent) { guard let s = studio else { return }; if e.keyCode == 53, s.cropRect != nil { s.cropRect = nil; needsDisplay = true; return }; if e.keyCode == 36 || e.keyCode == 76, s.tool == .crop, s.cropRect != nil { s.applyCrop(); needsDisplay = true; return }; if e.keyCode == 53, s.tool == .pen, s.penPath != nil { s.penPath = nil; needsDisplay = true; return }; if e.keyCode == 51, s.tool == .pen, s.penPath != nil { s.penDeleteLast(); needsDisplay = true; return }; if e.keyCode == 53 { s.selection = nil;s.transformMode = false;cancelInteraction();remoteActive = false;return }; if e.keyCode == 36 && s.transformMode { s.transformMode = false; return };super.keyDown(with:e) }
+    override func keyDown(with e:NSEvent) { guard let s = studio else { return }; if e.keyCode == 53, s.editingText != nil { s.editingText = nil; needsDisplay = true; return }; if e.keyCode == 53, s.cropRect != nil { s.cropRect = nil; needsDisplay = true; return }; if e.keyCode == 36 || e.keyCode == 76, s.tool == .crop, s.cropRect != nil { s.applyCrop(); needsDisplay = true; return }; if e.keyCode == 53, s.tool == .pen, s.penPath != nil { s.penPath = nil; needsDisplay = true; return }; if e.keyCode == 51, s.tool == .pen, s.penPath != nil { s.penDeleteLast(); needsDisplay = true; return }; if e.keyCode == 53 { s.selection = nil;s.transformMode = false;cancelInteraction();remoteActive = false;return }; if e.keyCode == 36 && s.transformMode { s.transformMode = false; return };super.keyDown(with:e) }
 }
