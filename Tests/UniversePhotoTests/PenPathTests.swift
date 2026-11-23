@@ -128,3 +128,31 @@ struct PenInsertTests {
         #expect(grab == .anchor(1) && s.penPath?.nodes.count == 4)
     }
 }
+
+@MainActor
+struct PenReopenTests {
+    @Test func finishedPathsReopenAndChangeLive() throws {
+        let s = Studio()
+        s.color = CodableColor(red: 0, green: 1, blue: 0, alpha: 1); s.brushOpacity = 1; s.brushSize = 8
+        s.penPath = PenPath(nodes: [.init(anchor: CGPoint(x: 100, y: 100), out: nil), .init(anchor: CGPoint(x: 300, y: 100), out: nil), .init(anchor: CGPoint(x: 200, y: 300), out: nil)], closed: true)
+        s.commitPath(fill: true)
+        s.penPath = nil
+        let count = s.activeLayer?.strokes.count ?? 0
+        let id = try #require(s.activeLayer?.strokes.last?.id)
+        // A press inside the filled triangle reopens it.
+        #expect(s.penPress(at: CGPoint(x: 200, y: 160), tolerance: 6) == nil)
+        #expect(s.editingPath == id && s.penPath?.nodes.count == 3 && s.color.green == 1)
+        // Moving a point rewrites the same stroke; no new one appears.
+        s.penMove(.anchor(2), to: CGPoint(x: 200, y: 400))
+        s.syncEditedPath()
+        let edited = try #require(s.activeLayer?.strokes.first { $0.id == id })
+        #expect(PenPath(encoded: edited.points, closed: true).nodes[2].anchor == CGPoint(x: 200, y: 400))
+        // Switching to stroke keeps the id, a new colour applies to it.
+        s.color = CodableColor(red: 1, green: 0, blue: 0, alpha: 1)
+        s.commitEditedPathStyle()
+        s.commitPath(fill: false)
+        let restyled = try #require(s.activeLayer?.strokes.first { $0.id == id })
+        #expect(restyled.filled == nil && restyled.color.red == 1)
+        #expect(s.activeLayer?.strokes.count == count)
+    }
+}

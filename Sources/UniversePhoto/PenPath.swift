@@ -150,14 +150,65 @@ extension Studio {
     }
 
     /// The path as a stroke on the active layer: filled with the colour, or traced with the brush size.
+    /// While a finished path is reopened (`editingPath`), this switches it between fill and
+    /// stroke and takes the current colour and size instead of adding a new one.
     func commitPath(fill: Bool) {
         guard let path = penPath, path.nodes.count >= 2, canEdit, let layer = activeLayer, !layer.isAdjustmentLayer else { return }
         let local = path.applying(matrix(layer.transform).inverted())
         var c = color; c.alpha *= brushOpacity
         var stroke = InkStroke(points: local.encoded, color: c, width: max(1, brushSize))
+        if let id = editingPath, let i = layer.strokes.firstIndex(where: { $0.id == id }) { stroke.id = layer.strokes[i].id }
         stroke.kind = "path"; stroke.filled = fill ? true : nil; stroke.pathClosed = path.closed ? true : nil
         stroke.pathTriples = local.hasOwnInHandles ? true : nil
-        add(stroke)
+        if let id = editingPath, let i = layer.strokes.firstIndex(where: { $0.id == id }) {
+            mutateLayer("Edit path") { $0.strokes[i] = stroke }
+        } else {
+            add(stroke)
+        }
+    }
+
+    /// A finished path (filled or stroked) on the active layer under `p` (document pixels).
+    func pathStroke(at p: CGPoint, tolerance: Double) -> InkStroke? {
+        guard let layer = activeLayer else { return nil }
+        let local = p.applying(matrix(layer.transform).inverted())
+        return layer.strokes.reversed().first { s in
+            guard s.kind == "path" else { return false }
+            let path = PenPath(encoded: s.points, closed: s.pathClosed == true, triples: s.pathTriples == true).cgPath
+            if s.filled == true { return path.contains(local) }
+            return path.copy(strokingWithWidth: max(s.width, 2 * tolerance), lineCap: .round, lineJoin: .round, miterLimit: 10).contains(local)
+        }
+    }
+
+    /// Reopens the path under `p` for editing: its points become the pen path (document pixels),
+    /// its colour and width move into the options; later changes rewrite it live.
+    @discardableResult func reopenPath(at p: CGPoint, tolerance: Double) -> Bool {
+        guard canEdit, let layer = activeLayer, let stroke = pathStroke(at: p, tolerance: tolerance) else { return false }
+        editingPath = nil
+        var c = stroke.color; brushOpacity = max(0.05, c.alpha); c.alpha = 1; color = c
+        brushSize = stroke.width
+        penPath = PenPath(encoded: stroke.points, closed: stroke.pathClosed == true, triples: stroke.pathTriples == true).applying(matrix(layer.transform))
+        editingPath = stroke.id
+        return true
+    }
+
+    /// Colour, opacity and size from the options bar for the reopened path.
+    func commitEditedPathStyle() {
+        guard let id = editingPath, let layer = activeLayer, let i = layer.strokes.firstIndex(where: { $0.id == id }) else { return }
+        var s = layer.strokes[i]
+        var c = color; c.alpha *= brushOpacity; s.color = c; s.width = max(1, brushSize)
+        guard s != layer.strokes[i] else { return }
+        mutateLayer("Edit path") { $0.strokes[i] = s }
+    }
+
+    /// Writes the pen path's current shape into the reopened path (fill or stroke stays).
+    func syncEditedPath() {
+        guard let id = editingPath, let layer = activeLayer, let i = layer.strokes.firstIndex(where: { $0.id == id }) else { return }
+        guard let path = penPath, path.nodes.count >= 2 else { return }
+        let local = path.applying(matrix(layer.transform).inverted())
+        var s = layer.strokes[i]
+        s.points = local.encoded; s.pathClosed = path.closed ? true : nil; s.pathTriples = local.hasOwnInHandles ? true : nil
+        guard s != layer.strokes[i] else { return }
+        mutateLayer("Edit path") { $0.strokes[i] = s }
     }
 
     /// The path becomes the selection (an open path is closed with a straight line).
@@ -195,6 +246,10 @@ extension Studio {
     /// ⌥ on an anchor makes it a corner, ⌥ on a handle lets the two handles move on their own.
     /// A press on a segment inserts a point there (and grabs it).
     func penPress(at p: CGPoint, place: CGPoint? = nil, tolerance: Double, corner: Bool = false) -> PenGrab? {
+        // Without a path in progress, a press on a finished path reopens it.
+        let idle: Bool
+        if let path = penPath { idle = path.closed && penHit(at: p, tolerance: tolerance) == nil && path.segmentHit(p, tolerance: tolerance) == nil } else { idle = true }
+        if idle, reopenPath(at: p, tolerance: tolerance) { return nil }
         if let grab = penHit(at: p, tolerance: tolerance) {
             switch grab {
             case .anchor(let i) where corner: penPath?.nodes[i].out = nil; penPath?.nodes[i].inH = nil; return nil

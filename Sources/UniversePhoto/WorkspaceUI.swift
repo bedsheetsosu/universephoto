@@ -63,7 +63,9 @@ struct Workspace: View {
         .sheet(isPresented:$s.guideDialog) { NewGuideDialog().environmentObject(s).environment(\.photoTheme,theme) }
         .sheet(item:$s.selectionDialog) { kind in SelectionModifyDialog(kind:kind).environmentObject(s).environment(\.photoTheme,theme) }
         .onChange(of:s.textEditKey) { if s.tool == .text { s.syncEditedText() } }
-        .onChange(of:s.tool) { if s.tool != .text { s.editingText = nil } }
+        .onChange(of:s.tool) { if s.tool != .text { s.editingText = nil }; if s.tool != .pen { s.editingPath = nil; s.penPath = nil } }
+        .onChange(of:s.penPath) { s.syncEditedPath() }
+        .onChange(of:s.textEditKey) { if s.editingPath != nil { s.commitEditedPathStyle() } }
         .sheet(isPresented:$s.strokeSelectionDialog) { StrokeSelectionDialog().environmentObject(s).environment(\.photoTheme,theme) }
         .sheet(item:$s.imageDialog) { kind in ImageSizeDialog(kind:kind).environmentObject(s).environment(\.photoTheme,theme) }
         .sheet(isPresented:$s.commandSearch) { commandPalette }
@@ -141,7 +143,7 @@ struct Workspace: View {
                 Button(L("Fill path")) { s.commitPath(fill:true) }.disabled(!ready || !s.canEdit)
                 Button(L("Stroke path")) { s.commitPath(fill:false) }.disabled(!ready || !s.canEdit)
                 Button(L("Path to selection")) { s.pathToSelection() }.disabled((s.penPath?.nodes.count ?? 0) < 3)
-                Button(L("Clear path")) { s.penPath = nil }.disabled(s.penPath == nil)
+                Button(L(s.editingPath == nil ? "Clear path" : "Done")) { s.penPath = nil; s.editingPath = nil }.disabled(s.penPath == nil)
                 if g.size.width > 900 { Text(L("Click a curve to add a point · ⌥ on a handle: move it alone · ⌥-click a point: corner")).foregroundStyle(theme.secondary) }
             }
             if [.smudge,.liquify,.dodge,.focus].contains(s.tool) { Text(L("Strength")).foregroundStyle(theme.secondary);Slider(value:$s.toolStrength,in:0.05...1).frame(width:60).controlSize(.mini).accessibilityLabel(L("Strength"));Text("\(Int(s.toolStrength*100))%").monospacedDigit().frame(width:30) }

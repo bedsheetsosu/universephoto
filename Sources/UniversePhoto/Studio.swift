@@ -168,6 +168,8 @@ struct BrushPreset: Codable, Identifiable {
     @Published var cropRect: CGRect?
     /// The text stroke (active layer) the text tool is editing, nil when the next click places new text.
     @Published var editingText: UUID?
+    /// The finished path (active layer) the pen tool has reopened, nil for a new path.
+    @Published var editingPath: UUID?
     /// The system pasteboard; tests use a private one so they never touch the user's clipboard.
     var pasteboard = NSPasteboard.general
     /// Jumps to the state after history step `count` (0 = before the first step), undoing or redoing.
