@@ -8,6 +8,7 @@ struct InspectorPanel: View {
     @State private var tab = "layers"
     @State private var hoveringLayer: UUID?
     @State private var histogram: [Double] = []
+    @State private var layerQuery = ""
 
     var body: some View {
         VStack(spacing: 0) {
@@ -111,6 +112,19 @@ struct InspectorPanel: View {
                     }
                     valueSlider(L("Opacity"), value: layer.opacity, range: 0...1, suffix: "%", multiplier: 100) { v in s.mutateLayer("Opacity") { $0.opacity = v } }
                 }
+                if s.layers.count > 3 {
+                    HStack(spacing: 6) {
+                        Image(systemName: "magnifyingglass").foregroundStyle(theme.secondary)
+                        TextField(L("Find layer"), text: $layerQuery).textFieldStyle(.plain).accessibilityLabel(L("Find layer"))
+                        if !layerQuery.isEmpty { Button { layerQuery = "" } label: { Image(systemName: "xmark.circle.fill") }.buttonStyle(.plain).foregroundStyle(theme.secondary).accessibilityLabel(L("Clear")) }
+                    }.font(.system(size: 11)).padding(7).background(theme.deep.opacity(0.5), in: RoundedRectangle(cornerRadius: 8))
+                }
+                if !layerQuery.isEmpty {
+                    // Search: matching layers flat, top first (names, group names, "text", "adjustment", "hidden").
+                    let hits = s.layerMatches(layerQuery)
+                    VStack(spacing: 5) { ForEach(hits.reversed(), id: \.self) { idx in layerRow(s.layers[idx], index: idx) } }
+                    if hits.isEmpty { Text(L("No matching layers")).font(.system(size: 10)).foregroundStyle(theme.secondary) }
+                } else {
                 VStack(spacing: 5) {
                     ForEach(Array(s.layers.enumerated().reversed()), id: \.element.id) { idx, layer in
                         // A group header above the top-most layer of each group; collapsed groups hide their layers.
@@ -118,6 +132,7 @@ struct InspectorPanel: View {
                         if let g, !s.layers.indices.contains(idx + 1) || s.layers[idx + 1].groupID != g.id { groupHeader(g) }
                         if g?.collapsed != true { layerRow(layer, index: idx).padding(.leading, g == nil ? 0 : 14) }
                     }
+                }
                 }
                 HStack(spacing: 5) {
                     mini("plus", L("New layer")) { s.newLayer() }

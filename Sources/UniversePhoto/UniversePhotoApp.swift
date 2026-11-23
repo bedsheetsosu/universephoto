@@ -23,7 +23,7 @@ struct StudioCommands: Commands {
     @ObservedObject var studio: Studio
     var body: some Commands {
         CommandGroup(replacing:.newItem) { Button(L("New document…")) { studio.showNewDocument = true }.keyboardShortcut("n");Button(L("Open…")) { studio.openPanel() }.keyboardShortcut("o");Button(L("Import image as layer…")) { studio.importPanel() }.keyboardShortcut("o",modifiers:[.command,.shift]) }
-        CommandGroup(replacing:.saveItem) { Button(L("Save")) { studio.savePanel() }.keyboardShortcut("s");Button(L("Save as…")) { studio.saveAsPanel() }.keyboardShortcut("s",modifiers:[.command,.shift]) }
+        CommandGroup(replacing:.saveItem) { Button(L("Save")) { studio.savePanel() }.keyboardShortcut("s");Button(L("Save as…")) { studio.saveAsPanel() }.keyboardShortcut("s",modifiers:[.command,.shift]);Divider();Button(L("Export layers as files…")) { studio.exportLayersPanel() };Button(L("Export selection…")) { studio.exportSelectionPanel() }.disabled(studio.selection == nil) }
         CommandGroup(replacing:.pasteboard) {
             Button(L("Cut")) { if !forwardToTextField(#selector(NSText.cut(_:))) { studio.cutSelection() } }.keyboardShortcut("x")
             Button(L("Copy")) { if !forwardToTextField(#selector(NSText.copy(_:))) { studio.copySelection() } }.keyboardShortcut("c")
