@@ -10980,6 +10980,24 @@
           }
         }
       }
+    },
+    "Round brush and eraser: lighter pressure gives lighter ink (or erases less), as well as a thinner line.": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Runder Pinsel und Radierer: leichter Druck gibt hellere Farbe (bzw. radiert weniger), nicht nur eine dünnere Linie."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Round brush and eraser: lighter pressure gives lighter ink (or erases less), as well as a thinner line."
+          }
+        }
+      }
     }
   },
   "version": "1.0"
