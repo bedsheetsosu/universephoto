@@ -175,6 +175,12 @@ struct BrushPreset: Codable, Identifiable {
     @Published var quickMaskLayer: UUID?
     var quickMaskReturn = 0
     @Published var symmetrySegments = 6
+    /// Symmetry centre in document pixels (nil = canvas centre); the next click sets it while `settingSymmetryCenter`.
+    @Published var symmetryCenter: CGPoint?
+    @Published var settingSymmetryCenter = false
+    /// Visible colour under the pointer (status bar).
+    @Published var hoverColor: CodableColor?
+    var symmetryPivot: CGPoint { symmetryCenter ?? CGPoint(x: Double(width) / 2, y: Double(height) / 2) }
     /// The system pasteboard; tests use a private one so they never touch the user's clipboard.
     var pasteboard = NSPasteboard.general
     /// Jumps to the state after history step `count` (0 = before the first step), undoing or redoing.

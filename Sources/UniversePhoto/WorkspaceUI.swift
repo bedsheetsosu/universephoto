@@ -136,6 +136,10 @@ struct Workspace: View {
             if [.brush,.eraser].contains(s.tool) && g.size.width > 700 {
                 Picker(L("Symmetry"),selection:$s.symmetry) { ForEach(Symmetry.allCases) { Image(systemName:$0.symbol).help(L($0.title)).accessibilityLabel(L($0.title)).tag($0) } }.pickerStyle(.segmented).labelsHidden().frame(width:170).controlSize(.mini).help(L("Symmetry"))
                 if s.symmetry == .radial { Stepper("\(s.symmetrySegments)×",value:$s.symmetrySegments,in:2...24).controlSize(.mini).monospacedDigit().accessibilityLabel(L("Segments")) }
+                if s.symmetry != .off {
+                    iconButton("scope",L(s.settingSymmetryCenter ? "Click the canvas to place the centre" : "Set symmetry centre")) { s.settingSymmetryCenter.toggle() }.foregroundStyle(s.settingSymmetryCenter ? theme.accent : theme.secondary)
+                    if s.symmetryCenter != nil { iconButton("arrow.uturn.backward.circle",L("Centre on canvas")) { s.symmetryCenter = nil; s.settingSymmetryCenter = false } }
+                }
             }
             if s.tool == .crop {
                 if let r = s.cropRect { Text("\(Int(r.width)) × \(Int(r.height)) px").monospacedDigit().foregroundStyle(theme.secondary) }
@@ -203,7 +207,10 @@ struct Workspace: View {
         Circle().fill(s.pen.connected ? Color.green : .secondary.opacity(0.4)).frame(width:5,height:5)
         Text(s.pen.status).lineLimit(1)
         if let d = s.pen.device { penDeviceLine(d) }
-        Spacer();Text(L("Scroll: pan · ⌘ scroll: zoom · Esc: deselect")).lineLimit(1).foregroundStyle(theme.secondary.opacity(0.8))
+        Spacer()
+        if let p = s.hoverPoint, let c = s.hoverColor, CGRect(x:0,y:0,width:s.width,height:s.height).contains(p) {
+            HStack(spacing:6) { Text("X \(Int(p.x))  Y \(Int(p.y))").monospacedDigit();RoundedRectangle(cornerRadius:2).fill(Color(nsColor:NSColor(srgbRed:c.red,green:c.green,blue:c.blue,alpha:1))).frame(width:10,height:10).overlay(RoundedRectangle(cornerRadius:2).strokeBorder(theme.outline));Text(c.alpha < 0.01 ? L("Transparent") : "\(c.hex) · \(Int((c.alpha*100).rounded())) %").monospacedDigit() }.foregroundStyle(theme.secondary)
+        } else { Text(L("Scroll: pan · ⌘ scroll: zoom · Esc: deselect")).lineLimit(1).foregroundStyle(theme.secondary.opacity(0.8)) }
         Spacer();Button { grid.toggle() } label: { Image(systemName:"grid").foregroundStyle(grid ? tint : .secondary) }.buttonStyle(.plain).help(L("Grid"))
         Button { snap.toggle() } label: { Image(systemName:"dot.scope").foregroundStyle(snap ? tint : .secondary) }.buttonStyle(.plain).help(L("25 px snapping"))
         Button { rulers.toggle() } label: { Image(systemName:"ruler").foregroundStyle(rulers ? tint : .secondary) }.buttonStyle(.plain).help(L("Rulers")).accessibilityLabel(L("Rulers"))

@@ -37,3 +37,17 @@ struct SymmetryTests {
         #expect(Symmetry.quad.code(segments: 6) == "vh")
     }
 }
+
+@MainActor
+struct SymmetryCentreTests {
+    @Test func pivotDefaultsToTheCanvasCentre() {
+        let s = Studio()
+        #expect(s.symmetryPivot == CGPoint(x: Double(s.width) / 2, y: Double(s.height) / 2))
+        s.symmetryCenter = CGPoint(x: 10, y: 20)
+        #expect(s.symmetryPivot == CGPoint(x: 10, y: 20))
+        // An off-centre mirror: (0, 0) around x = 10 lands at x = 20.
+        var stroke = InkStroke(points: [InkPoint(x: 0, y: 0, pressure: 1)], color: .white, width: 4)
+        stroke.symmetry = "v"; stroke.symmetryX = s.symmetryPivot.x; stroke.symmetryY = s.symmetryPivot.y
+        #expect(Symmetry.copies(of: stroke)[1].points[0].x == 20)
+    }
+}

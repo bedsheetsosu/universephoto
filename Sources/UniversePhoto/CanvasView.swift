@@ -92,12 +92,12 @@ struct ArtworkCanvas: NSViewRepresentable {
         }
         if s.symmetry != .off, [.brush,.eraser].contains(s.tool) {
             // Symmetry axes through the canvas centre.
-            let line = 1/max(geometry.scale,0.01), c = CGPoint(x:Double(s.width)/2,y:Double(s.height)/2), r = hypot(Double(s.width),Double(s.height))
+            let line = 1/max(geometry.scale,0.01), c = s.symmetryPivot, r = 2*hypot(Double(s.width),Double(s.height))
             ctx.saveGState(); ctx.clip(to:doc); ctx.setLineWidth(line); ctx.setStrokeColor(NSColor(PhotoTheme.mint).withAlphaComponent(0.7).cgColor); ctx.setLineDash(phase:0,lengths:[6*line,4*line])
             let angles: [Double]
             switch s.symmetry { case .vertical: angles = [.pi/2]; case .horizontal: angles = [0]; case .quad: angles = [0,.pi/2]; case .radial: angles = (0..<max(2,s.symmetrySegments)).map { Double($0) * .pi / Double(max(2,s.symmetrySegments)) - .pi/2 }; case .off: angles = [] }
             for a in angles { ctx.move(to:CGPoint(x:c.x-cos(a)*r,y:c.y-sin(a)*r)); ctx.addLine(to:CGPoint(x:c.x+cos(a)*r,y:c.y+sin(a)*r)) }
-            ctx.strokePath(); ctx.restoreGState()
+            ctx.strokePath(); ctx.setLineDash(phase:0,lengths:[]); ctx.setFillColor(NSColor(PhotoTheme.mint).cgColor); ctx.fillEllipse(in:CGRect(x:c.x-4*line,y:c.y-4*line,width:8*line,height:8*line)); ctx.restoreGState()
         }
         if let r = s.cropRect, s.tool == .crop {
             // Crop frame: dim what goes, thirds inside, handles on corners and edges.
@@ -177,7 +177,7 @@ struct ArtworkCanvas: NSViewRepresentable {
     override func mouseDown(with e:NSEvent) { window?.makeFirstResponder(self); guard !isDuplicate(e) else { return }; if guideDown(convert(e.locationInWindow,from:nil)) { return }; begin(at:convert(e.locationInWindow,from:nil),pressure:pressure(e),tilt: e.subtype == .tabletPoint ? e.tilt : .zero,rotation:Double(e.rotation)) }
     override func mouseDragged(with e:NSEvent) { guard !isDuplicate(e) else { return }; if guideDrag(convert(e.locationInWindow,from:nil)) { return }; drag(at:convert(e.locationInWindow,from:nil),pressure:pressure(e),tilt:e.subtype == .tabletPoint ? e.tilt : .zero,rotation:Double(e.rotation)) }
     override func mouseUp(with e:NSEvent) { guard !isDuplicate(e) else { return }; if draggingGuide != nil { _ = guideDrag(convert(e.locationInWindow,from:nil)); draggingGuide = nil; return }; if interactionBegan { drag(at:convert(e.locationInWindow,from:nil),pressure:pressure(e),tilt:e.subtype == .tabletPoint ? e.tilt : .zero,rotation:Double(e.rotation)) };finish() }
-    override func mouseMoved(with e:NSEvent) { pointer = convert(e.locationInWindow,from:nil); studio?.hoverPoint = geometry.toDocument(pointer); needsDisplay = true }
+    override func mouseMoved(with e:NSEvent) { pointer = convert(e.locationInWindow,from:nil); let d = geometry.toDocument(pointer); studio?.hoverPoint = d; if let s = studio { let inside = CGRect(x:0,y:0,width:s.width,height:s.height).contains(d); let c = inside ? committedImage().map { Renderer.sample($0,at:d) } : nil; if s.hoverColor != c { s.hoverColor = c } }; needsDisplay = true }
     override func mouseExited(with e:NSEvent) { studio?.hoverPoint = nil; needsDisplay = true }
     private func pressure(_ e:NSEvent) -> Double { e.subtype == .tabletPoint ? max(0.05,Double(e.pressure)) : 1 }
     private func begin(at p:CGPoint,pressure:Double,tilt:CGPoint = .zero,rotation:Double = 0) {
@@ -193,6 +193,7 @@ struct ArtworkCanvas: NSViewRepresentable {
         let doc = documentPoint(p); guard CGRect(x:0,y:0,width:s.width,height:s.height).contains(doc) || s.tool == .pan || s.tool == .crop else { return }
         interactionBegan = true
         if s.tool == .pan { return }
+        if s.settingSymmetryCenter, [.brush,.eraser].contains(s.tool) { s.symmetryCenter = doc; s.settingSymmetryCenter = false; interactionBegan = false; needsDisplay = true; return }
         if s.tool == .text, s.beginTextEdit(at:doc) { interactionBegan = false; needsDisplay = true; return }
         if s.tool == .text { s.editingText = nil }
         if s.tool == .eyedropper { if let image = committedImage() { s.color = Renderer.sample(image,at:doc) }; return }
@@ -217,7 +218,7 @@ struct ArtworkCanvas: NSViewRepresentable {
         var stroke = InkStroke(points:[InkPoint(x:local.x,y:local.y,pressure:s.mapPressure(pressure),tiltX:tilt.x,tiltY:tilt.y,rotation:rotation)],color:c,width:s.brushSize,isEraser:s.eraser && !paintsMask)
         if s.tool == .brush && !s.eraser && !paintsMask && s.brushTip != .round { stroke.brushTip = s.brushTip.rawValue }
         if [.brush,.eraser].contains(s.tool), let code = s.symmetry.code(segments:s.symmetrySegments) {
-            let c = localPoint(CGPoint(x:Double(s.width)/2,y:Double(s.height)/2)); stroke.symmetry = code; stroke.symmetryX = c.x; stroke.symmetryY = c.y
+            let c = localPoint(s.symmetryPivot); stroke.symmetry = code; stroke.symmetryX = c.x; stroke.symmetryY = c.y
         }
         if let selection = s.selection, let maskData = selection.maskData {
             stroke.selectionMask = maskData

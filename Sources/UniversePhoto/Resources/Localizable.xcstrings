@@ -10710,6 +10710,60 @@
           }
         }
       }
+    },
+    "Click the canvas to place the centre": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Klick auf die Leinwand setzt die Mitte"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Click the canvas to place the centre"
+          }
+        }
+      }
+    },
+    "Set symmetry centre": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Symmetrie-Mitte setzen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Set symmetry centre"
+          }
+        }
+      }
+    },
+    "Centre on canvas": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mitte zurück auf Bildmitte"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Centre on canvas"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
