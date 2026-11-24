@@ -1,0 +1,7 @@
+{
+  "id": "affinity-actions",
+  "name": "Affinity actions",
+  "version": "1.0",
+  "description": "Actions for the iPad (… menu, squeeze, bar, radial menu): new layer, duplicate layer, swap colours. Shows a hint when Affinity comes to the front.",
+  "main": "main.js"
+}

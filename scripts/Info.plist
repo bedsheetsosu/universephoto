@@ -6,13 +6,21 @@
 <key>CFBundleIconFile</key><string>UniverseStudio</string>
 <key>CFBundleExecutable</key><string>UniverseStudio</string>
 <key>CFBundlePackageType</key><string>APPL</string>
-<key>CFBundleShortVersionString</key><string>0.49.0</string>
+<key>CFBundleShortVersionString</key><string>0.50.0</string>
 <key>CFBundleVersion</key><string>3</string>
 <key>CFBundleDevelopmentRegion</key><string>en</string>
 <key>CFBundleLocalizations</key><array><string>en</string><string>de</string></array>
 <key>LSMinimumSystemVersion</key><string>15.0</string>
 <key>NSHighResolutionCapable</key><true/>
 <key>NSPrincipalClass</key><string>NSApplication</string>
+<key>LSApplicationCategoryType</key><string>public.app-category.graphics-design</string>
+<key>NSLocalNetworkUsageDescription</key><string>UniversePen accepts connections from your paired iPad on the local network.</string>
+<key>NSBonjourServices</key><array><string>_tafel._tcp</string><string>_tafelpair._tcp</string></array>
+<key>NSScreenCaptureUsageDescription</key><string>UniversePen shows the selected part of your screen on your iPad.</string>
+<key>CFBundleURLTypes</key><array><dict>
+<key>CFBundleURLName</key><string>local.universestudio.universepen</string>
+<key>CFBundleURLSchemes</key><array><string>universepen</string><string>tafel</string></array>
+</dict></array>
 <key>CFBundleDocumentTypes</key><array><dict>
 <key>CFBundleTypeName</key><string>UniverseStudio photo document</string>
 <key>CFBundleTypeRole</key><string>Editor</string>

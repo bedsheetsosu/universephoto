@@ -1,5 +1,6 @@
 import SwiftUI
 import AppKit
+import UniversePenHost
 
 @main struct UniverseStudioApp: App {
     @StateObject private var studio = Studio()
@@ -7,9 +8,24 @@ import AppKit
     init() { AppMigration.run() }
     @ObservedObject private var localization = Localization.shared
     var body: some Scene {
-        WindowGroup { StudioRoot().environmentObject(studio).environment(\.locale,Locale(identifier:localization.language)).frame(minWidth:880,minHeight:600).onAppear { delegate.studio = studio;Localization.shared.refreshNativeMenus() } }
+        WindowGroup(id:"main") { StudioRoot().environmentObject(studio).environment(\.locale,Locale(identifier:localization.language)).frame(minWidth:880,minHeight:600).onAppear { delegate.studio = studio;Localization.shared.refreshNativeMenus();connectPen() }
+                .onChange(of:localization.language) { UniversePenModule.setLanguage(localization.language) } }
             .windowStyle(.hiddenTitleBar).defaultSize(width:1380,height:880)
-            .commands { StudioCommands(studio:studio) }
+            .commands { StudioCommands(studio:studio);PenCommands(studio:studio,pen:pen) }
+        // Windows and menu bar item of the built-in UniversePen host.
+        Window("UniversePen – " + L("Pen test"),id:"pentest") { UniversePenModule.penTestView() }
+        Window("UniversePen – Plugins",id:"plugins") { UniversePenModule.pluginsView() }
+        MenuBarExtra(isInserted:Binding(get:{ pen.running },set:{ _ in })) { UniversePenModule.menuPanel() } label: { UniversePenModule.menuIcon() }
+            .menuBarExtraStyle(.window)
+    }
+    @ObservedObject private var pen = PenHost.shared
+    private func connectPen() {
+        UniversePenModule.showInStudio = { [weak studio] in
+            studio?.enter(.pen)
+            if let w = NSApp.windows.first(where: { ($0.identifier?.rawValue ?? "").hasPrefix("main") }) { if w.isMiniaturized { w.deminiaturize(nil) }; w.makeKeyAndOrderFront(nil) }
+        }
+        UniversePenModule.setLanguage(localization.language)
+        pen.startIfWanted()
     }
 }
 @MainActor final class AppDelegate: NSObject, NSApplicationDelegate {
@@ -18,7 +34,36 @@ import AppKit
         guard let studio,studio.dirty || studio.tabs.contains(where: \.dirty) else { return .terminateNow }
         let a = NSAlert();a.messageText = L("Unsaved documents");a.informativeText = L("Unsaved changes remain available as recovery copies.");a.addButton(withTitle:L("Cancel"));a.addButton(withTitle:L("Quit"));return a.runModal() == .alertSecondButtonReturn ? .terminateNow : .terminateCancel
     }
-    func application(_ application:NSApplication,open urls:[URL]) { for url in urls { do { try studio?.open(url) } catch { studio?.report(error) } } }
+    func application(_ application:NSApplication,open urls:[URL]) {
+        for url in urls {
+            // universepen:// and tafel:// links (Shortcuts, iPad) go to the built-in UniversePen host.
+            if ["universepen","tafel"].contains(url.scheme?.lowercased() ?? "") { UniversePenModule.handle(url:url); continue }
+            do { try studio?.open(url) } catch { studio?.report(error) }
+        }
+    }
+}
+/// UniversePen menu, only while the built-in host runs.
+struct PenCommands: Commands {
+    @ObservedObject var studio: Studio
+    @ObservedObject var pen: PenHost
+    var body: some Commands {
+        CommandMenu("UniversePen") { Group {
+            Button(L("Open UniversePen")) { UniversePenModule.showInStudio?() }
+            Button(L("Pair iPad…")) { UniversePenModule.showInStudio?(); UniversePenModule.beginPairing() }.keyboardShortcut("k",modifiers:[.command,.shift])
+            Divider()
+            Button(L("Front window to the iPad")) { UniversePenModule.moveFrontWindowToIPad() }
+            Button(L("Choose palette for the iPad…")) { UniversePenModule.pickPalette() }
+            Button(L("Start or stop time-lapse")) { UniversePenModule.toggleTimelapse() }
+            Divider()
+            PenWindowButton(title:L("Pen test…"),id:"pentest")
+            PenWindowButton(title:L("Plugins…"),id:"plugins")
+        }.disabled(!pen.running) }
+    }
+}
+private struct PenWindowButton: View {
+    @Environment(\.openWindow) private var openWindow
+    let title:String, id:String
+    var body: some View { Button(title) { openWindow(id:id); NSApp.activate() } }
 }
 struct StudioCommands: Commands {
     @ObservedObject var studio: Studio
