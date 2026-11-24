@@ -48,3 +48,23 @@ extension Studio {
     /// Length of the animation in seconds, holds included.
     var animationDuration: Double { Double((0..<max(1, frames.count)).reduce(0) { $0 + hold($1) }) / max(1, fps) }
 }
+
+extension Studio {
+    /// Reverses the order of the frames in the play range (all frames without one); holds move
+    /// with their frames and the current frame stays with its drawing.
+    func reverseFrames() {
+        guard frames.count > 1 else { return }
+        stopPlayback(); checkpoint("Reverse frames")
+        if frames.indices.contains(frameIndex) { frames[frameIndex] = layers }
+        let r = Playback.clamp(playRange, count: frames.count) ?? 0...(frames.count - 1)
+        var h = (0..<frames.count).map { hold($0) }
+        frames.replaceSubrange(r, with: frames[r].reversed())
+        h.replaceSubrange(r, with: h[r].reversed())
+        frameHolds = h; normalizeHolds()
+        if r.contains(frameIndex) { frameIndex = r.lowerBound + r.upperBound - frameIndex }
+        layers = frames[frameIndex]
+        changed()
+    }
+    func firstFrame() { selectFrame(Playback.clamp(playRange, count: frames.count)?.lowerBound ?? 0) }
+    func lastFrame() { selectFrame(Playback.clamp(playRange, count: frames.count)?.upperBound ?? max(0, frames.count - 1)) }
+}
