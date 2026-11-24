@@ -13,6 +13,8 @@ import UniversePenHost
             .windowStyle(.hiddenTitleBar).defaultSize(width:1380,height:880)
             .commands { StudioCommands(studio:studio);PenCommands(studio:studio,pen:pen) }
         // Windows and menu bar item of the built-in UniversePen host.
+        Window(L("Animation preview"),id:AnimationPreview.windowID) { AnimationPreviewWindow().environmentObject(studio).environment(\.locale,Locale(identifier:localization.language)) }
+            .defaultSize(width:560,height:420)
         Window(L("Panels"),id:FocusMode.windowID) { FocusPanelsWindow().environmentObject(studio).environment(\.locale,Locale(identifier:localization.language)) }
             .windowStyle(.hiddenTitleBar).defaultSize(width:290,height:760).defaultPosition(.trailing)
         Window("UniversePen – " + L("Pen test"),id:"pentest") { UniversePenModule.penTestView() }
@@ -191,6 +193,7 @@ struct StudioCommands: Commands {
         CommandMenu(L("Animation")) {
             Button(L("Duplicate frame")) { studio.addFrame() }.keyboardShortcut("f",modifiers:.shift)
             Button(L("Import frames…")) { studio.importFramesPanel() }
+            AnimationPreviewButton()
             Button(L("Previous frame")) { studio.selectFrame(max(0,studio.frameIndex-1)) }.keyboardShortcut(.leftArrow,modifiers:.option)
             Button(L("Next frame")) { studio.selectFrame(min(studio.frames.count-1,studio.frameIndex+1)) }.keyboardShortcut(.rightArrow,modifiers:.option)
             Button(L("First frame")) { studio.firstFrame() }.keyboardShortcut(.leftArrow,modifiers:[.option,.shift])
