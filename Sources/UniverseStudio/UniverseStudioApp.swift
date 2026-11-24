@@ -13,6 +13,8 @@ import UniversePenHost
             .windowStyle(.hiddenTitleBar).defaultSize(width:1380,height:880)
             .commands { StudioCommands(studio:studio);PenCommands(studio:studio,pen:pen) }
         // Windows and menu bar item of the built-in UniversePen host.
+        Window(L("Panels"),id:FocusMode.windowID) { FocusPanelsWindow().environmentObject(studio).environment(\.locale,Locale(identifier:localization.language)) }
+            .windowStyle(.hiddenTitleBar).defaultSize(width:290,height:760).defaultPosition(.trailing)
         Window("UniversePen – " + L("Pen test"),id:"pentest") { UniversePenModule.penTestView() }
         Window("UniversePen – Plugins",id:"plugins") { UniversePenModule.pluginsView() }
         MenuBarExtra(isInserted:Binding(get:{ pen.running },set:{ _ in })) { UniversePenModule.menuPanel() } label: { UniversePenModule.menuIcon() }
@@ -180,6 +182,7 @@ struct StudioCommands: Commands {
             Button(L("Zoom in")) { studio.zoom = min(16,studio.zoom*1.2) }.keyboardShortcut("+")
             Button(L("Zoom out")) { studio.zoom = max(0.1,studio.zoom/1.2) }.keyboardShortcut("-")
             Button(L("Mirror canvas")) { studio.mirrored.toggle() }.keyboardShortcut("h",modifiers:.shift)
+            Toggle(L("Focus mode"),isOn:$studio.focusMode).keyboardShortcut("f",modifiers:[.command,.option])
             NavigatorToggle()
             HistogramToggle()
             PixelGridToggle()

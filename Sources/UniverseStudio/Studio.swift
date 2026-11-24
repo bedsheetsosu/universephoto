@@ -100,6 +100,8 @@ struct BrushPreset: Codable, Identifiable {
     @Published var selection: CanvasSelection?
     @Published var fileURL: URL?
     @Published var documentName = L("Untitled")
+    /// Focus mode: only canvas and tool options in the main window, panels in their own window.
+    @Published var focusMode = false
     @Published var width = 1200
     @Published var height = 800
     @Published var dirty = false

@@ -38,20 +38,21 @@ struct Workspace: View {
     private var tint:Color { theme.accent }
     var body:some View {
         VStack(spacing:0) {
-            topbar
+            if !s.focusMode { topbar.transition(.move(edge:.top).combined(with:.opacity)) }
             HStack(alignment:.top,spacing:10) {
-                toolPalette
+                if !s.focusMode { toolPalette.transition(.move(edge:.leading).combined(with:.opacity)) }
                 VStack(spacing:0) {
-                    tabs
+                    if !s.focusMode { tabs }
                     contextbar
                     ArtworkCanvas(studio:s,grid:grid,rulers:rulers,snap:snap,background:NSColor(theme.canvas)).clipped()
                         .overlay(alignment:.bottomLeading) { canvasBadge.padding(14).allowsHitTesting(false) }
+                        .overlay(alignment:.topLeading) { if s.focusMode { FocusPill().environmentObject(s).padding(12).transition(.scale(scale:0.9,anchor:.topLeading).combined(with:.opacity)) } }
                         .overlay(alignment:.bottomTrailing) { VStack(alignment:.trailing,spacing:10) { if showHistogram { HistogramPanel().environmentObject(s).transition(.scale(scale:0.9,anchor:.bottomTrailing).combined(with:.opacity)) }; if showNavigator { NavigatorPanel().environmentObject(s).transition(.scale(scale:0.9,anchor:.bottomTrailing).combined(with:.opacity)) } }.padding(14) }
                     if showTimeline || workspace == "Animate" { resizeTimeline;TimelinePanel().environmentObject(s).frame(height:timelineHeight).transition(.move(edge:.bottom).combined(with:.opacity)) }
                 }.frame(maxWidth:.infinity,maxHeight:.infinity).photoSurface(radius:20,elevated:true)
-                if showInspector { HStack(spacing:0) { resizeInspector;InspectorPanel(simple:workspace == "Simple").environmentObject(s).frame(width:inspectorWidth) }.photoChrome(radius:20).transition(.move(edge:.trailing).combined(with:.opacity)) }
-            }.padding(.horizontal,12).padding(.bottom,8)
-            statusbar
+                if showInspector && !s.focusMode { HStack(spacing:0) { resizeInspector;InspectorPanel(simple:workspace == "Simple").environmentObject(s).frame(width:inspectorWidth) }.photoChrome(radius:20).transition(.move(edge:.trailing).combined(with:.opacity)) }
+            }.padding(.horizontal,s.focusMode ? 6 : 12).padding(.bottom,s.focusMode ? 6 : 8).padding(.top,s.focusMode ? 30 : 0)
+            if !s.focusMode { statusbar }
         }
         .background(PhotoAmbient())
         .foregroundStyle(theme.text)
@@ -60,6 +61,8 @@ struct Workspace: View {
         .animation(PhotoMotion.panel,value:showInspector)
         .animation(PhotoMotion.panel,value:showNavigator)
         .animation(PhotoMotion.panel,value:showHistogram)
+        .animation(PhotoMotion.panel,value:s.focusMode)
+        .modifier(FocusWindowSync(s:s))
         .animation(PhotoMotion.panel,value:workspace)
         .animation(PhotoMotion.panel,value:showTimeline)
         .onChange(of:localization.language) { _,_ in Task { @MainActor in Localization.shared.refreshNativeMenus() } }
@@ -84,7 +87,7 @@ struct Workspace: View {
     }
     private var topbar:some View {
         HStack(spacing:10) {
-            HStack(spacing:10) { Button { s.showStartScreen() } label: { PhotoMark() }.buttonStyle(PhotoPress()).help(L("Start screen") + " · ⇧⌘H");VStack(alignment:.leading,spacing:2) { Text("UniverseStudio").font(.system(size:16,weight:.bold,design:.rounded));Text(L("PHOTO")).lineLimit(1).font(.system(size:7.5,weight:.semibold)).tracking(1.6).foregroundStyle(theme.secondary) } }.padding(.leading,68)
+            HStack(spacing:10) { Button { s.showStartScreen() } label: { PhotoMark() }.buttonStyle(PhotoPress()).help(L("Start screen") + " · ⇧⌘H");VStack(alignment:.leading,spacing:2) { Text("UniverseStudio").font(.system(size:16,weight:.bold,design:.rounded));Text(L("PHOTO")).lineLimit(1).font(.system(size:7.5,weight:.semibold)).tracking(1.6).foregroundStyle(theme.secondary) };iconButton("arrow.up.left.and.arrow.down.right",L("Focus mode") + " · ⌥⌘F") { withAnimation(PhotoMotion.panel) { s.focusMode = true } } }.padding(.leading,68)
             Spacer(minLength:6)
             HStack(spacing:3) { ForEach(["Simple","Photo","Animate"],id:\.self) { mode in
                 let selected = workspace == mode
