@@ -106,6 +106,8 @@ extension Renderer {
     static func drawTip(_ tip: BrushTip, _ stroke: InkStroke, in context: CGContext) {
         let color = stroke.color
         switch tip {
+        case .round where stroke.hasDynamics:
+            drawDynamicDabs(stroke, in: context)
         case .round:
             if stroke.pressureOpacity == true, let matte = pressureMatte(stroke, width: context.width, height: context.height) {
                 // Ink only as dense as the pen pressed: the silhouette filled through a grey matte
@@ -163,5 +165,46 @@ extension Renderer {
             }
             context.addPath(dots); context.fillPath()
         }
+    }
+
+    /// Round brush with dynamics: round dabs along the path, each thrown off by up to `scatter` ×
+    /// the brush size, sized by `sizeJitter` and tinted by `hueJitter`. Seeded by the stroke, so
+    /// the same stroke always looks the same (also after saving and reopening).
+    static func drawDynamicDabs(_ stroke: InkStroke, in context: CGContext) {
+        var rng = StrokeRandom(stroke.id)
+        let scatter = max(0, min(1, stroke.scatter ?? 0)), sizeJ = max(0, min(1, stroke.sizeJitter ?? 0)), hueJ = max(0, min(1, stroke.hueJitter ?? 0))
+        // Scattered dabs stand apart; without scatter they overlap into a line.
+        let spacingFactor = scatter > 0 ? 0.6 + scatter : 0.25
+        let base = stroke.color
+        for (c, p) in dabs(stroke, spacing: { max(0.75, $0 * spacingFactor) }) {
+            var r = max(0.5, stroke.width * p / 2)
+            if sizeJ > 0 { r *= 1 - sizeJ * rng.next() }
+            var at = c
+            if scatter > 0 {
+                let a = rng.next() * 2 * .pi, d = stroke.width * scatter * rng.next().squareRoot()
+                at = CGPoint(x: c.x + cos(a) * d, y: c.y + sin(a) * d)
+            }
+            var color = base
+            if hueJ > 0 { color = base.hueShifted(by: (rng.next() * 2 - 1) * hueJ / 6) }
+            if stroke.pressureOpacity == true { color.alpha *= p }
+            context.setFillColor(color.cgColor)
+            context.fillEllipse(in: CGRect(x: at.x - r, y: at.y - r, width: r * 2, height: r * 2))
+        }
+    }
+}
+
+extension CodableColor {
+    /// The same colour with its hue turned by `turns` (1 = full circle).
+    func hueShifted(by turns: Double) -> CodableColor {
+        let mx = max(red, green, blue), mn = min(red, green, blue), d = mx - mn
+        guard d > 0.0001 else { return self }
+        var h: Double
+        if mx == red { h = (green - blue) / d } else if mx == green { h = (blue - red) / d + 2 } else { h = (red - green) / d + 4 }
+        h = (h / 6 + turns).truncatingRemainder(dividingBy: 1); if h < 0 { h += 1 }
+        let sat = d / mx, v = mx
+        let i = Int(h * 6) % 6, f = h * 6 - Double(Int(h * 6))
+        let p = v * (1 - sat), q = v * (1 - f * sat), t = v * (1 - (1 - f) * sat)
+        let (r, g, b): (Double, Double, Double) = [(v, t, p), (q, v, p), (p, v, t), (p, q, v), (t, p, v), (v, p, q)][i]
+        return CodableColor(red: r, green: g, blue: b, alpha: alpha)
     }
 }

@@ -259,6 +259,11 @@ struct ArtworkCanvas: NSViewRepresentable {
         var stroke = InkStroke(points:[InkPoint(x:local.x,y:local.y,pressure:s.mapPressure(pressure),tiltX:tilt.x,tiltY:tilt.y,rotation:rotation)],color:c,width:s.brushSize,isEraser:s.eraser && !paintsMask)
         if s.tool == .brush && !s.eraser && !paintsMask && s.brushTip != .round { stroke.brushTip = s.brushTip.rawValue }
         if s.pressureOpacity, s.tool == .eraser || (s.tool == .brush && s.brushTip == .round) { stroke.pressureOpacity = true }
+        if s.tool == .brush && !s.eraser && !paintsMask && s.brushTip == .round {
+            if s.brushScatter > 0 { stroke.scatter = s.brushScatter }
+            if s.brushSizeJitter > 0 { stroke.sizeJitter = s.brushSizeJitter }
+            if s.brushHueJitter > 0 { stroke.hueJitter = s.brushHueJitter }
+        }
         if [.brush,.eraser].contains(s.tool), let code = s.symmetry.code(segments:s.symmetrySegments) {
             let c = localPoint(s.symmetryPivot); stroke.symmetry = code; stroke.symmetryX = c.x; stroke.symmetryY = c.y
         }

@@ -250,6 +250,12 @@ struct InspectorPanel: View {
                 valueSlider(L("Stabilization"), value: s.smoothing, range: 0...0.9, suffix: "%", multiplier: 100) { s.smoothing = $0 }
                 Toggle(L("Pressure controls opacity"), isOn: $s.pressureOpacity).toggleStyle(.switch).controlSize(.mini).font(.system(size: 11))
                     .help(L("Round brush and eraser: lighter pressure gives lighter ink (or erases less), as well as a thinner line."))
+                if s.brushTip == .round {
+                    subheading(L("Dynamics"))
+                    valueSlider(L("Scatter"), value: s.brushScatter, range: 0...1, suffix: "%", multiplier: 100) { s.brushScatter = $0 }
+                    valueSlider(L("Size jitter"), value: s.brushSizeJitter, range: 0...1, suffix: "%", multiplier: 100) { s.brushSizeJitter = $0 }
+                    valueSlider(L("Hue jitter"), value: s.brushHueJitter, range: 0...1, suffix: "%", multiplier: 100) { s.brushHueJitter = $0 }
+                }
                 Toggle(L("Pressure controls size"), isOn: $s.pressureEnabled).toggleStyle(.switch).controlSize(.mini).font(.system(size: 11))
                 if s.pressureEnabled {
                     Text(L("Pressure curve")).font(.system(size: 10)).foregroundStyle(theme.secondary)

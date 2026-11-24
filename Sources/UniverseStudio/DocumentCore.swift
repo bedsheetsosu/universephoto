@@ -50,6 +50,12 @@ struct InkStroke: Codable, Equatable, Identifiable, Sendable {
     var pressureOpacity: Bool? = nil
     var symmetryX: Double? = nil
     var symmetryY: Double? = nil
+    /// Brush dynamics (0.58), each 0…1: dabs thrown off the path (× brush size), random dab size,
+    /// random hue shift (up to ±60°). Any of them makes the round brush stamp dabs.
+    var scatter: Double? = nil
+    var sizeJitter: Double? = nil
+    var hueJitter: Double? = nil
+    var hasDynamics: Bool { (scatter ?? 0) > 0 || (sizeJitter ?? 0) > 0 || (hueJitter ?? 0) > 0 }
     /// Freehand kinds: the pressure brush and the retouch brushes (smoothed, every point kept).
     var isFreehand: Bool { kind == nil || ["dodge", "burn", "saturate", "desaturate", "blurBrush", "sharpenBrush", "clone", "heal", "smudge", "liquify"].contains(kind!) }
 }

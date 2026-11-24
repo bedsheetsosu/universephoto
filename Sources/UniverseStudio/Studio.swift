@@ -57,6 +57,10 @@ struct BrushPreset: Codable, Identifiable {
     @Published var shapeParameter = 6.0
     @Published var shapeFill = false
     @Published var brushTip = BrushTip.round
+    /// Brush dynamics (round brush), 0…1, kept between launches.
+    @Published var brushScatter = UserDefaults.standard.double(forKey: "brushScatter") { didSet { UserDefaults.standard.set(brushScatter, forKey: "brushScatter") } }
+    @Published var brushSizeJitter = UserDefaults.standard.double(forKey: "brushSizeJitter") { didSet { UserDefaults.standard.set(brushSizeJitter, forKey: "brushSizeJitter") } }
+    @Published var brushHueJitter = UserDefaults.standard.double(forKey: "brushHueJitter") { didSet { UserDefaults.standard.set(brushHueJitter, forKey: "brushHueJitter") } }
     /// Line tool: arrow head at the end.
     @Published var lineArrow = false
     @Published var brushSize = 12.0
