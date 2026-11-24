@@ -727,6 +727,7 @@ final class ClientModel: ObservableObject {
         s.onSourceList = { [weak self] l in Task { @MainActor in self?.sourceList = l } }
         s.onPluginActions = { [weak self] l in Task { @MainActor in self?.pluginActions = l } }
         s.onToast = { [weak self] t in Task { @MainActor in self?.show(t) } }
+        s.onClientCommand = { [weak self] c in Task { @MainActor in if c == .findPencil { self?.findPencil() } } }
         s.onClipboard = { [weak self] c in Task { @MainActor in self?.receiveClipboard(c) } }
         let palette = self.palette
         palette.image = nil
@@ -984,6 +985,15 @@ final class ClientModel: ObservableObject {
     func hold(_ key: HoldKey, down: Bool) {
         guard !settings.viewOnly || !down else { return }
         session?.send(KeyEvent(hidUsage: key.rawValue, down: down))
+    }
+
+    /// "Pencil suchen": opens Find My, where Apple Pencil Pro shows its last place. (A Pencil can
+    /// only buzz while it is over this screen, so it can't be rung from afar.)
+    func findPencil() {
+        guard let url = URL(string: "findmy://") else { return }
+        UIApplication.shared.open(url) { [weak self] ok in
+            if !ok { Task { @MainActor in self?.show(Toast(text: L("Öffne „Wo ist?“ – dort steht dein Apple Pencil Pro."), seconds: 4)) } }
+        }
     }
 
     func show(_ t: Toast) {

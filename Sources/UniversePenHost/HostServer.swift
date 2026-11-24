@@ -343,6 +343,13 @@ final class HostServer {
         }
     }
 
+    /// Sends a command to the connected iPad(s); false when none is connected.
+    @discardableResult func sendClientCommand(_ c: ClientCommand) -> Bool {
+        let connected = queue.sync { control != nil || !extras.isEmpty }
+        if connected { queue.async { [self] in broadcast(.clientCommand, c) } }
+        return connected
+    }
+
     func sendToast(_ t: Toast) {
         queue.async { [self] in broadcast(.toast, t) }
     }

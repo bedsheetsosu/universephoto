@@ -42,6 +42,16 @@ import UniversePenHost
 }
 
 /// Which modules the user switched on in the setup (stored as "photo,pen").
+extension Studio {
+    /// "Find Pencil": Find My opens on the connected iPad (or on this Mac without one). A Pencil
+    /// can only buzz while it hovers over the iPad, so there is no ringing it from afar.
+    func findPencil() {
+        message = UniversePenModule.findPencil()
+            ? "Find My is opening on your iPad – Apple Pencil Pro shows its last place there."
+            : "No iPad connected, so Find My opened on this Mac. Apple Pencil Pro is listed in Find My on the iPad."
+    }
+}
+
 enum ModuleSettings {
     static let key = "studioModules", setupKey = "studioSetupDone"
     static func enabled(_ raw: String? = UserDefaults.standard.string(forKey: key)) -> [StudioModule] {

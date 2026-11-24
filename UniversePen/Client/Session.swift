@@ -27,6 +27,7 @@ final class Session: @unchecked Sendable {
     var onSourceList: ((SourceList) -> Void)?
     var onPluginActions: (([PluginActionInfo]) -> Void)?
     var onToast: ((Toast) -> Void)?
+    var onClientCommand: ((ClientCommand) -> Void)?
     var onClipboard: ((ClipboardItem) -> Void)?
     var onScreenshot: ((Data) -> Void)?
     /// Palette JPEG (empty = removed), on the network queue.
@@ -199,6 +200,8 @@ final class Session: @unchecked Sendable {
             if let l = try? JSONWire.decode([PluginActionInfo].self, f.payload) { onPluginActions?(l) }
         case .toast:
             if let t = try? JSONWire.decode(Toast.self, f.payload) { onToast?(t) }
+        case .clientCommand:
+            if let c = try? JSONWire.decode(ClientCommand.self, f.payload) { onClientCommand?(c) }
         case .clipboard:
             if let c = try? ClipboardItem(decoding: f.payload) { onClipboard?(c) }
         case .screenshot:

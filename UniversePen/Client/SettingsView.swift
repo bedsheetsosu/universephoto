@@ -388,6 +388,17 @@ struct SettingsView: View {
     }
 
     private var pencilSection: some View {
+        Group {
+            Section {
+                Button { model.findPencil() } label: { Label(L("Pencil suchen"), systemImage: "location.magnifyingglass") }
+            } footer: {
+                Text(L("Öffnet „Wo ist?“, dort steht der letzte Ort deines Apple Pencil Pro. Vibrieren lässt er sich nur, während er über dem iPad schwebt – aus der Ferne geht das nicht."))
+            }
+            pencilSettingsSection
+        }
+    }
+
+    private var pencilSettingsSection: some View {
         Section {
             Picker(L("Einstellungen für"), selection: $penTarget) {
                 Text(L("Standard (alle Apps)")).tag("")

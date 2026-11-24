@@ -54,6 +54,7 @@ struct PenCommands: Commands {
         CommandMenu("UniversePen") { Group {
             Button(L("Open UniversePen")) { UniversePenModule.showInStudio?() }
             Button(L("Pair iPad…")) { UniversePenModule.showInStudio?(); UniversePenModule.beginPairing() }.keyboardShortcut("k",modifiers:[.command,.shift])
+            Button(L("Find Pencil")) { studio.findPencil() }
             Divider()
             Button(L("Front window to the iPad")) { UniversePenModule.moveFrontWindowToIPad() }
             Button(L("Choose palette for the iPad…")) { UniversePenModule.pickPalette() }

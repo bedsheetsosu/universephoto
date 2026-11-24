@@ -31,6 +31,7 @@ public enum MessageType: UInt8, Sendable {
     case paletteMouse = 0x19   // client -> host: MouseEvent, x/y normalised inside the palette area
     case paletteCommand = 0x1A // client -> host: u8 PaletteCommand
     case hostCommand = 0x1B    // client -> host: u8 HostCommand
+    case clientCommand = 0x25 // host -> client: JSON ClientCommand (e.g. open Find My to look for the Pencil)
     case rekey = 0x24          // host -> client: JSON PairGrant with the iPad's own key (moves an older pairing off the shared key)
     case shortcut = 0x20
     case key = 0x21            // hardware keyboard key down/up (HID usage)
@@ -375,6 +376,14 @@ public struct ClipboardItem: Equatable, Sendable {
         kind = k
         data = Data(d.dropFirst())
     }
+}
+
+/// Mac → iPad: something to do on the iPad. Older iPads ignore unknown names.
+public struct ClientCommand: Codable, Equatable, Sendable {
+    public var name: String
+    public init(name: String) { self.name = name }
+    /// Open Find My on the iPad, where Apple Pencil Pro shows up.
+    public static let findPencil = ClientCommand(name: "findPencil")
 }
 
 public struct Toast: Codable, Equatable, Sendable {

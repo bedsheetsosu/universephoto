@@ -1393,6 +1393,15 @@ final class HostController: ObservableObject {
         if Theme.shared.flowPaused != pause { Theme.shared.flowPaused = pause }
     }
 
+    /// "Find Pencil": asks the connected iPad to open Find My (Apple Pencil Pro is listed there,
+    /// a Pencil can't be made to buzz from afar). Without an iPad, opens Find My on the Mac.
+    @discardableResult func findPencil() -> Bool {
+        if server.sendClientCommand(.findPencil) { return true }
+        if let url = URL(string: "findmy://") , NSWorkspace.shared.open(url) { return false }
+        if let app = NSWorkspace.shared.urlForApplication(withBundleIdentifier: "com.apple.findmy") { NSWorkspace.shared.open(app) }
+        return false
+    }
+
     private func updateFollowTimer() {
         followTimer?.invalidate()
         followTimer = nil

@@ -51,3 +51,10 @@ final class PencilPaletteTests: XCTestCase {
         XCTAssertFalse(ShortcutButton(title: "⇧", shortcut: Shortcut("a"), hold: .shift).isToolSwitch)
     }
 }
+
+final class ClientCommandTests: XCTestCase {
+    func testFindPencilRoundTrip() throws {
+        XCTAssertEqual(MessageType.clientCommand.rawValue, 0x25)
+        XCTAssertEqual(try JSONWire.decode(ClientCommand.self, JSONWire.encode(ClientCommand.findPencil)), .findPencil)
+    }
+}

@@ -16470,6 +16470,78 @@
           }
         }
       }
+    },
+    "Find Pencil": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pencil suchen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Find Pencil"
+          }
+        }
+      }
+    },
+    "Opens Find My on the iPad, where Apple Pencil Pro shows its last place": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Öffnet „Wo ist?“ auf dem iPad, dort steht der letzte Ort deines Apple Pencil Pro"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Opens Find My on the iPad, where Apple Pencil Pro shows its last place"
+          }
+        }
+      }
+    },
+    "Find My is opening on your iPad – Apple Pencil Pro shows its last place there.": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "„Wo ist?“ öffnet sich auf deinem iPad – dort steht der letzte Ort deines Apple Pencil Pro."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Find My is opening on your iPad – Apple Pencil Pro shows its last place there."
+          }
+        }
+      }
+    },
+    "No iPad connected, so Find My opened on this Mac. Apple Pencil Pro is listed in Find My on the iPad.": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kein iPad verbunden, deshalb hat sich „Wo ist?“ auf diesem Mac geöffnet. Den Apple Pencil Pro findest du in „Wo ist?“ auf dem iPad."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No iPad connected, so Find My opened on this Mac. Apple Pencil Pro is listed in Find My on the iPad."
+          }
+        }
+      }
     }
   },
   "version": "1.0"

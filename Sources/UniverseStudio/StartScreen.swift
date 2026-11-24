@@ -109,6 +109,7 @@ struct StartScreen: View {
                 case .pen:
                     Button(L("Open")) { s.enter(m) }.buttonStyle(PhotoButtonStyle(prominent: true))
                     if pen.running { Button(L("Pair iPad…")) { s.enter(m); UniversePenModule.beginPairing() }.buttonStyle(PhotoButtonStyle()) }
+                    if pen.running { Button(L("Find Pencil")) { s.findPencil() }.buttonStyle(PhotoButtonStyle()).help(L("Opens Find My on the iPad, where Apple Pencil Pro shows its last place")) }
                 }
             }
             if m == .pen {

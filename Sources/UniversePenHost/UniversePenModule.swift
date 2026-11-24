@@ -78,6 +78,8 @@ public enum UniversePenModule {
     // MARK: Commands
 
     public static func beginPairing() { controller?.beginPairing() }
+    /// True when the iPad got the request to open Find My; false when Find My opened on the Mac.
+    @discardableResult public static func findPencil() -> Bool { controller?.findPencil() ?? false }
     public static func moveFrontWindowToIPad() { controller?.moveFrontWindowToIPad() }
     public static func pickPalette() { controller?.pickPalette() }
     public static func toggleTimelapse() {
