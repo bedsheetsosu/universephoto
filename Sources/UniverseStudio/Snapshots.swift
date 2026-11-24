@@ -42,8 +42,9 @@ struct SnapshotList: View {
                 Image(systemName: "camera.shutter.button").font(.system(size: 11, weight: .semibold)).foregroundStyle(theme.accent)
                 Text(L("Snapshots")).font(.system(size: 12, weight: .semibold))
                 Spacer()
-                Button { withAnimation(PhotoMotion.select) { s.takeSnapshot() } } label: { Label(L("New snapshot"), systemImage: "plus") }
-                    .buttonStyle(PhotoButtonStyle()).help(L("Keep the document as it is now"))
+                // Icon only: the narrow inspector would wrap a text label.
+                Button { withAnimation(PhotoMotion.select) { s.takeSnapshot() } } label: { Image(systemName: "plus").frame(width: 14) }
+                    .buttonStyle(PhotoButtonStyle()).help(L("New snapshot") + " – " + L("Keep the document as it is now")).accessibilityLabel(L("New snapshot"))
             }
             if s.snapshots.isEmpty {
                 Text(L("Keep a state to come back to later, however many steps you take.")).font(.system(size: 10)).foregroundStyle(theme.secondary).fixedSize(horizontal: false, vertical: true)
