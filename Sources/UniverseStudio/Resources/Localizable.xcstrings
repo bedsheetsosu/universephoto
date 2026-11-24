@@ -14472,6 +14472,60 @@
           }
         }
       }
+    },
+    "Timeline zoom": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zeitleisten-Zoom"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Timeline zoom"
+          }
+        }
+      }
+    },
+    "Holds as length": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dauer als Länge"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Holds as length"
+          }
+        }
+      }
+    },
+    "Draw each frame as long as it is held": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jeden Frame so lang zeichnen, wie er gehalten wird"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Draw each frame as long as it is held"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

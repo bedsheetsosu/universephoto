@@ -3,6 +3,8 @@ import SwiftUI
 struct TimelinePanel: View {
     @EnvironmentObject var s: Studio
     @Environment(\.photoTheme) private var theme
+    @AppStorage("timelineZoom") private var zoom = 1.0
+    @AppStorage("timelineExposure") private var exposure = false
     @State private var markerIndex: Int?
     @State private var markerText = ""
     var body: some View {
@@ -100,8 +102,14 @@ struct TimelinePanel: View {
                 .font(.system(size: 9)).foregroundStyle(theme.secondary.opacity(0.75))
             if let a = s.audio { SoundTrackRow(track: a) }
             Spacer(minLength: 0)
+            HStack(spacing: 4) {
+                Image(systemName: "minus.magnifyingglass").font(.system(size: 9))
+                Slider(value: $zoom, in: TimelineLayout.zoomRange).controlSize(.mini).accessibilityLabel(L("Timeline zoom"))
+                Image(systemName: "plus.magnifyingglass").font(.system(size: 9))
+            }.foregroundStyle(theme.secondary).help(L("Timeline zoom"))
+            Toggle(L("Holds as length"), isOn: $exposure).toggleStyle(.checkbox).font(.system(size: 9)).foregroundStyle(theme.secondary).help(L("Draw each frame as long as it is held"))
         }
-        .padding(.horizontal, 16).padding(.top, 15).frame(width: 165, alignment: .leading)
+        .padding(.horizontal, 16).padding(.top, 15).padding(.bottom, 10).frame(width: 165, alignment: .leading)
     }
     private var frameStrip: some View {
         ScrollViewReader { reader in
@@ -136,14 +144,18 @@ struct TimelinePanel: View {
                     Text(String(format: "%02d", index + 1)).font(.system(size: 9, weight: selected ? .semibold : .regular, design: .monospaced))
                     if s.hold(index) > 1 { Text("×\(s.hold(index))").font(.system(size: 8, weight: .semibold, design: .rounded)).padding(.horizontal, 4).padding(.vertical, 1).background(theme.accentSoft, in: Capsule()).foregroundStyle(theme.accent) }
                 }.foregroundStyle(selected ? theme.accent : theme.secondary)
-                FrameThumbnail(layers: s.composite(selected ? s.layers : layers), width: s.width, height: s.height)
-                    .frame(width: 82, height: 53).padding(3)
+                HStack(spacing: 0) {
+                    FrameThumbnail(layers: s.composite(selected ? s.layers : layers), width: s.width, height: s.height)
+                        .frame(width: TimelineLayout.thumbWidth * zoom, height: TimelineLayout.thumbHeight * zoom)
+                    let tail = TimelineLayout.tail(hold: s.hold(index), zoom: zoom, exposure: exposure)
+                    if tail > 0 { HoldTail(hold: s.hold(index)).frame(width: tail, height: TimelineLayout.thumbHeight * zoom) }
+                }.padding(3)
                     .background(Color.white.opacity(0.95), in: RoundedRectangle(cornerRadius: 7))
                     .clipShape(RoundedRectangle(cornerRadius: 7))
                     .overlay(RoundedRectangle(cornerRadius: 7).strokeBorder(selected ? AnyShapeStyle(theme.accentGradient) : AnyShapeStyle(theme.outline), lineWidth: selected ? 2 : 1))
                     .shadow(color: selected ? theme.accent.opacity(0.15) : .clear, radius: 6, y: 2)
                     .opacity(s.inPlayRange(index) ? 1 : 0.4)
-                    .overlay(alignment: .bottom) { if s.audio != nil { FrameWaveform(index: index).frame(width: 82, height: 12).offset(y: 18) } }
+                    .overlay(alignment: .bottom) { if s.audio != nil { FrameWaveform(index: index).frame(width: TimelineLayout.cellWidth(hold: s.hold(index), zoom: zoom, exposure: exposure), height: 12).offset(y: 18) } }
                     .overlay(alignment: .topLeading) { if !s.label(index).isEmpty { Text(s.label(index)).font(.system(size: 8, weight: .semibold, design: .rounded)).lineLimit(1).padding(.horizontal, 5).padding(.vertical, 1.5).background(theme.accentGradient, in: Capsule()).foregroundStyle(theme.onAccent).frame(maxWidth: 80, alignment: .leading).offset(x: -3, y: -6).help(L("Marker")) } }
                     .overlay(alignment: .topTrailing) { if s.referenceFrame == index { Image(systemName: "pin.fill").font(.system(size: 8)).foregroundStyle(.white).padding(3).background(Color(cgColor: Studio.referenceColor), in: Circle()).offset(x: 4, y: -4).help(L("Reference frame")) } }
                     .overlay(alignment: .bottom) { if let r = Playback.clamp(s.playRange, count: s.frames.count), r.lowerBound == index || r.upperBound == index { Capsule().fill(theme.accent).frame(width: 30, height: 3).offset(y: 5) } }
@@ -273,5 +285,33 @@ struct SoundTrackRow: View {
             }
             .font(.system(size: 11)).padding(14).frame(width: 270)
         }
+    }
+}
+
+/// Sizes in the frame strip: zoom, and with "holds as length" each extra hold adds a tail.
+enum TimelineLayout {
+    static let thumbWidth = 82.0, thumbHeight = 53.0
+    static let zoomRange = 0.6...1.8
+    static func tail(hold: Int, zoom: Double, exposure: Bool) -> Double {
+        guard exposure, hold > 1 else { return 0 }
+        return min(Double(hold - 1) * 0.45, 3) * thumbWidth * zoom
+    }
+    static func cellWidth(hold: Int, zoom: Double, exposure: Bool) -> Double { thumbWidth * zoom + tail(hold: hold, zoom: zoom, exposure: exposure) }
+}
+
+/// The held part of a frame: light stripes, one notch per extra tick.
+struct HoldTail: View {
+    @Environment(\.photoTheme) private var theme
+    let hold: Int
+    var body: some View {
+        Canvas { ctx, size in
+            ctx.fill(Path(CGRect(origin: .zero, size: size)), with: .color(theme.accent.opacity(0.10)))
+            let ticks = hold - 1, step = size.width / CGFloat(max(1, ticks))
+            for i in 0..<ticks {
+                let x = CGFloat(i) * step
+                ctx.fill(Path(CGRect(x: x, y: size.height * 0.35, width: 1, height: size.height * 0.3)), with: .color(theme.accent.opacity(0.45)))
+            }
+        }
+        .accessibilityHidden(true)
     }
 }
