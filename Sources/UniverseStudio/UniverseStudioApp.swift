@@ -224,6 +224,12 @@ struct StudioCommands: Commands {
                     } label: { Label(L(c.title), systemImage: c.symbol) }
                 }
             }.help(L("A virtual camera zooms, pans or shakes over the whole picture"))
+            Menu(L("Weather")) {
+                ForEach(Weather.allCases) { w in
+                    Menu { if studio.frames.count > 1 { Button(L("Over all frames")) { studio.addWeather(w, count: 0) } } else { ForEach([1.0, 2.0], id: \.self) { sec in Button(LF("%@ s", String(Int(sec)))) { studio.addWeather(w, count: max(2, Int((studio.fps * sec).rounded()))) } } } }
+                    label: { Label(L(w.title), systemImage: w.symbol) }
+                }
+            }.help(L("Snow, rain or sparkles on a new layer, as a seamless loop"))
             Menu(L("Follow path")) {
                 ForEach([1.0, 2.0, 4.0], id: \.self) { sec in Button(LF("%@ s", String(Int(sec)))) { studio.followPath(count: max(2, Int((studio.fps * sec).rounded())), eased: true, orient: false) } }
                 Divider()
