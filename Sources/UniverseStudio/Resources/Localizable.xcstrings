@@ -13680,6 +13680,24 @@
           }
         }
       }
+    },
+    "Sprite sheet · PNG + JSON": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spritesheet · PNG + JSON"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sprite sheet · PNG + JSON"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
