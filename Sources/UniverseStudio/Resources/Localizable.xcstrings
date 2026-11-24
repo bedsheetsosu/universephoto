@@ -14886,6 +14886,24 @@
           }
         }
       }
+    },
+    "PSD · Frames as layers": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "PSD · Frames als Ebenen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "PSD · Frames as layers"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
