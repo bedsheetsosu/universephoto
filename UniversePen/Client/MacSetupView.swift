@@ -12,7 +12,8 @@ struct MacSetupView: View {
     let host: HostInfo
 
     enum Step: Int, CaseIterable { case start, light, firm, curve, click, hover, gestures, fingers, done }
-    @State private var step: Step = .start
+    /// `-debugMacSetupStep N` opens the setup on step N (UI checks).
+    @State private var step: Step = Step(rawValue: UserDefaults.standard.integer(forKey: "debugMacSetupStep")) ?? .start
     @State private var forward = true
 
     // Start pad
@@ -43,8 +44,14 @@ struct MacSetupView: View {
     @State private var fingersDown: [Int: (CGPoint, Date)] = [:]
     @State private var maxFingers = 0
 
+    // Finale: three taps and the setup bursts into the app.
+    @State private var tapsDone = 0
+    @State private var exploded = false
+    @State private var shake = 0.0
+
     var body: some View {
         ZStack {
+          ZStack {
             ThemeBackground().ignoresSafeArea()
             VStack(spacing: 0) {
                 header
@@ -59,6 +66,13 @@ struct MacSetupView: View {
                 .padding(.horizontal, 28)
                 footer
             }
+          }
+          // The setup flies apart on the third tap.
+          .scaleEffect(exploded ? 1.35 : 1)
+          .blur(radius: exploded ? 22 : 0)
+          .opacity(exploded ? 0 : 1)
+          .animation(.easeIn(duration: 0.45), value: exploded)
+          if exploded { Sparks().allowsHitTesting(false) }
         }
         .animation(Ultra.smooth, value: step)
         .sensoryFeedback(.selection, trigger: step)
@@ -91,8 +105,8 @@ struct MacSetupView: View {
                 Button { go(-1) } label: { Label(L("Zurück"), systemImage: "chevron.left") }
                     .buttonStyle(UltraQuiet())
                 Spacer()
-                Button {
-                    if step == .done { model.finishMacSetup() } else { go(1) }
+                if step != .done { Button {
+                    go(1)
                 } label: {
                     HStack(spacing: 8) {
                         Text(step == .done ? L("Los geht’s") : L("Weiter"))
@@ -105,7 +119,7 @@ struct MacSetupView: View {
                 }
                 .buttonStyle(UltraPress())
                 .disabled(!canContinue)
-                .opacity(canContinue ? 1 : 0.4)
+                .opacity(canContinue ? 1 : 0.4) }
             }
             .frame(maxWidth: 760)
             .padding(.horizontal, 28).padding(.bottom, 26)
@@ -467,10 +481,8 @@ struct MacSetupView: View {
     // MARK: Done
 
     private var donePage: some View {
-        VStack(spacing: 24) {
+        VStack(spacing: 22) {
             Spacer()
-            Image(systemName: "checkmark.seal.fill").font(.system(size: 64)).foregroundStyle(Brand.mint)
-                .symbolEffect(.bounce, value: step)
             title(L("Fertig für %@", host.hostName), L("Diese Einstellungen gelten jetzt nur für diesen Mac und kommen automatisch, sobald er verbunden ist. Ändern kannst du sie jederzeit unter Einstellungen → Pencil."))
             VStack(alignment: .leading, spacing: 8) {
                 Label(model.settings.tipThreshold == 0 ? L("Klick ab Druck: sofort") : L("Klick ab Druck: %d %%", Int(model.settings.tipThreshold * 100)), systemImage: "hand.tap")
@@ -479,8 +491,81 @@ struct MacSetupView: View {
                 Label(L("Squeeze: %@", model.settings.squeeze.display), systemImage: "applepencil.squeeze")
             }
             .font(.callout).foregroundStyle(.secondary)
+            finaleButton.padding(.top, 10)
+            Text(tapsDone == 0 ? L("Dreimal drauftippen, um loszulegen") : L("Noch %d×", 3 - tapsDone))
+                .font(.headline).foregroundStyle(Brand.mint)
+                .contentTransition(.numericText())
+                .animation(.spring(response: 0.25), value: tapsDone)
             Spacer()
         }
+    }
+
+    /// The big seal: each tap makes it jump and send out a ring, a bit more each time; the third
+    /// one bursts the setup and opens the app.
+    private var finaleButton: some View {
+        ZStack {
+            ForEach(0..<3, id: \.self) { i in
+                Circle().stroke(Brand.mint.opacity(tapsDone > i ? 0 : 0.7), lineWidth: 3)
+                    .frame(width: 130, height: 130)
+                    .scaleEffect(tapsDone > i ? 2.4 : 1)
+                    .animation(.easeOut(duration: 0.6), value: tapsDone)
+            }
+            Circle().fill(Ultra.accentFill)
+                .frame(width: 130, height: 130)
+                .shadow(color: Brand.mint.opacity(0.4 + 0.2 * Double(tapsDone)), radius: 20 + 10 * Double(tapsDone))
+            Image(systemName: "checkmark.seal.fill").font(.system(size: 58, weight: .semibold)).foregroundStyle(Brand.slateDeep)
+                .symbolEffect(.bounce, value: tapsDone)
+        }
+        .scaleEffect(1 + 0.08 * Double(tapsDone))
+        .rotationEffect(.degrees(sin(shake * .pi * 6) * 4 * Double(tapsDone)))
+        .contentShape(Circle())
+        .onTapGesture { tapFinale() }
+        .sensoryFeedback(trigger: tapsDone) { _, n in n >= 3 ? .impact(weight: .heavy, intensity: 1) : .impact(weight: .medium, intensity: 0.5 + 0.2 * Double(n)) }
+        .accessibilityLabel(L("Dreimal drauftippen, um loszulegen"))
+        .accessibilityAddTraits(.isButton)
+    }
+
+    private func tapFinale() {
+        guard !exploded else { return }
+        withAnimation(.spring(response: 0.25, dampingFraction: 0.4)) { tapsDone += 1 }
+        shake = 0
+        withAnimation(.easeOut(duration: 0.35)) { shake = 1 }
+        guard tapsDone >= 3 else { return }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
+            exploded = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.75) { model.finishMacSetup() }
+        }
+    }
+}
+
+/// Sparks flying out from the centre when the setup bursts.
+private struct Sparks: View {
+    @State private var out = false
+    private let sparks: [(angle: Double, dist: Double, size: Double, delay: Double)] = (0..<42).map { i in
+        let a = Double(i) / 42 * 2 * .pi + Double((i * 37) % 11) / 11 * 0.3
+        return (a, 220 + Double((i * 53) % 9) * 55, 5 + Double((i * 29) % 7) * 2, Double(i % 5) * 0.02)
+    }
+
+    var body: some View {
+        GeometryReader { g in
+            let c = CGPoint(x: g.size.width / 2, y: g.size.height * 0.62)
+            ZStack {
+                Circle().fill(Brand.mint.opacity(out ? 0 : 0.6))
+                    .frame(width: 140, height: 140).scaleEffect(out ? 9 : 1)
+                    .position(c)
+                ForEach(0..<sparks.count, id: \.self) { i in
+                    let s = sparks[i]
+                    Circle().fill(i % 3 == 0 ? Color.white : Brand.mint)
+                        .frame(width: s.size, height: s.size)
+                        .position(x: c.x + (out ? cos(s.angle) * s.dist : 0), y: c.y + (out ? sin(s.angle) * s.dist : 0))
+                        .opacity(out ? 0 : 1)
+                        .animation(.easeOut(duration: 0.8).delay(s.delay), value: out)
+                }
+            }
+            .animation(.easeOut(duration: 0.7), value: out)
+        }
+        .ignoresSafeArea()
+        .onAppear { out = true }
     }
 }
 

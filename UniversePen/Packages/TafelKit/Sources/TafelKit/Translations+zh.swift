@@ -291,6 +291,8 @@ extension Translations {
         "Einstellungen für": "设置对象",
         "Pipette": "吸管",
         "Radialmenü": "径向菜单",
+        "Dreimal drauftippen, um loszulegen": "轻点三次即可开始",
+        "Noch %d×": "还差 %d 次",
         "Dein Pencil schwebt – fahr knapp über dem Display über die drei Punkte.": "你的 Pencil 正在悬停——贴近屏幕从三个点上方划过。",
         "Dein leichter Strich ergibt etwa ein Viertel, dein kräftiger fast vollen Druck. Probier es unten aus.": "轻的笔画现在约为四分之一，用力的笔画接近满压力。在下方试试。",
         "Deine Druckkurve": "你的压力曲线",

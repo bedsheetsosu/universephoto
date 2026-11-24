@@ -291,6 +291,8 @@ extension Translations {
         "Einstellungen für": "Ajustes para",
         "Pipette": "Cuentagotas",
         "Radialmenü": "Menú radial",
+        "Dreimal drauftippen, um loszulegen": "Tócalo tres veces para empezar",
+        "Noch %d×": "Faltan %d",
         "Dein Pencil schwebt – fahr knapp über dem Display über die drei Punkte.": "Tu lápiz flota: pásalo justo por encima de la pantalla sobre los tres puntos.",
         "Dein leichter Strich ergibt etwa ein Viertel, dein kräftiger fast vollen Druck. Probier es unten aus.": "Tu trazo suave da ahora un cuarto de presión y el fuerte casi la presión máxima. Pruébalo abajo.",
         "Deine Druckkurve": "Tu curva de presión",

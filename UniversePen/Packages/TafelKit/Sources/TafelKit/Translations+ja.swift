@@ -291,6 +291,8 @@ extension Translations {
         "Einstellungen für": "設定の対象",
         "Pipette": "スポイト",
         "Radialmenü": "ラジアルメニュー",
+        "Dreimal drauftippen, um loszulegen": "3 回タップして始めましょう",
+        "Noch %d×": "あと %d 回",
         "Dein Pencil schwebt – fahr knapp über dem Display über die drei Punkte.": "ペンシルがホバーしています。画面のすぐ上で 3 つの点の上をなぞってください。",
         "Dein leichter Strich ergibt etwa ein Viertel, dein kräftiger fast vollen Druck. Probier es unten aus.": "軽い線はおよそ 4 分の 1、強い線はほぼ最大の筆圧になります。下で試してください。",
         "Deine Druckkurve": "あなたの筆圧カーブ",

@@ -291,6 +291,8 @@ extension Translations {
         "Einstellungen für": "सेटिंग्स इसके लिए",
         "Pipette": "आईड्रॉपर",
         "Radialmenü": "रेडियल मेनू",
+        "Dreimal drauftippen, um loszulegen": "शुरू करने के लिए तीन बार टैप करें",
+        "Noch %d×": "%d× और",
         "Dein Pencil schwebt – fahr knapp über dem Display über die drei Punkte.": "आपकी पेंसिल होवर करती है – स्क्रीन के ठीक ऊपर तीनों बिंदुओं पर से गुज़रें।",
         "Dein leichter Strich ergibt etwa ein Viertel, dein kräftiger fast vollen Druck. Probier es unten aus.": "आपका हल्का स्ट्रोक अब लगभग एक चौथाई और ज़ोरदार स्ट्रोक लगभग पूरा दबाव देता है। नीचे आज़माएँ।",
         "Deine Druckkurve": "आपका दबाव वक्र",

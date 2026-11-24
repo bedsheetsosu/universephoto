@@ -291,6 +291,8 @@ extension Translations {
         "Einstellungen für": "설정 대상",
         "Pipette": "스포이드",
         "Radialmenü": "원형 메뉴",
+        "Dreimal drauftippen, um loszulegen": "세 번 탭해서 시작하세요",
+        "Noch %d×": "%d번 남음",
         "Dein Pencil schwebt – fahr knapp über dem Display über die drei Punkte.": "펜슬이 호버 중입니다. 화면 바로 위로 세 점 위를 지나가 보세요.",
         "Dein leichter Strich ergibt etwa ein Viertel, dein kräftiger fast vollen Druck. Probier es unten aus.": "가벼운 선은 약 4분의 1, 강한 선은 거의 최대 압력이 됩니다. 아래에서 시험해 보세요.",
         "Deine Druckkurve": "나의 압력 곡선",

@@ -334,6 +334,8 @@ enum Translations {
         "Einstellungen für": "Settings for",
         "Pipette": "Eyedropper",
         "Radialmenü": "Radial menu",
+        "Dreimal drauftippen, um loszulegen": "Tap it three times to get going",
+        "Noch %d×": "%d× to go",
         "Dein Pencil schwebt – fahr knapp über dem Display über die drei Punkte.": "Your Pencil hovers – glide just above the screen over the three dots.",
         "Dein leichter Strich ergibt etwa ein Viertel, dein kräftiger fast vollen Druck. Probier es unten aus.": "Your light stroke now gives about a quarter, your firm one almost full pressure. Try it below.",
         "Deine Druckkurve": "Your pressure curve",
