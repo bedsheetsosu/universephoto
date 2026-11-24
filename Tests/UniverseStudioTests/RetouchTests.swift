@@ -214,4 +214,32 @@ import CoreGraphics
             XCTAssertEqual(r, r2, accuracy: 0.0001); XCTAssertEqual(g, g2, accuracy: 0.0001); XCTAssertEqual(b, b2, accuracy: 0.0001)
         }
     }
+
+    func testLoadLayerTransparencyFollowsTheLayerAndCombines() throws {
+        let s = studio()
+        fill(s, CGRect(x: 0, y: 0, width: 10, height: 10), red)
+        s.layers[s.selectedLayer].transform.x = 5            // moved 5 px right on the canvas
+        s.loadLayerTransparency()
+        var m = try XCTUnwrap(s.selectionMask())
+        XCTAssertEqual(m[5 * 40 + 6], 255); XCTAssertEqual(m[5 * 40 + 2], 0)
+        // ⌥: subtract a rectangle-shaped layer's pixels.
+        s.newLayer(); fill(s, CGRect(x: 10, y: 0, width: 10, height: 10), blue)
+        s.loadLayerTransparency(s.selectedLayer, .subtract)
+        m = try XCTUnwrap(s.selectionMask())
+        XCTAssertEqual(m[5 * 40 + 6], 255); XCTAssertEqual(m[5 * 40 + 12], 0)
+        // Intersect with nothing selected gives nothing.
+        s.selection = nil
+        s.loadLayerTransparency(s.selectedLayer, .intersect)
+        XCTAssertNil(s.selection)
+    }
+
+    func testSaveAndLoadSelection() throws {
+        let s = studio()
+        s.selection = CanvasSelection(points: [CGPoint(x: 0, y: 0), CGPoint(x: 10, y: 10)])
+        s.saveSelection(); s.selection = nil
+        XCTAssertTrue(s.hasSavedSelection)
+        s.loadSavedSelection()
+        XCTAssertEqual(try XCTUnwrap(s.selectionMask())[5 * 40 + 5], 255)
+        XCTAssertEqual(Studio.maskCombine([.shift, .option]), .intersect)
+    }
 }

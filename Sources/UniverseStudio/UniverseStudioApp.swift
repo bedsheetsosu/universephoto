@@ -102,6 +102,11 @@ struct StudioCommands: Commands {
             Button(L("Transform selection")) { studio.beginSelectionTransform() }.disabled(studio.selection == nil)
             Menu(L("Modify")) { ForEach(Studio.SelectionModify.allCases) { k in Button(L(k.title) + "…") { studio.selectionDialog = k } } }.disabled(studio.selection == nil)
             Button(L("Select color range")) { studio.selectColorRange() }
+            Divider()
+            Button(L("Load layer transparency")) { studio.loadLayerTransparency() }.disabled(studio.activeLayer?.isAdjustmentLayer != false)
+            Button(L("Save selection")) { studio.saveSelection() }.disabled(studio.selection == nil)
+            Button(L("Load selection")) { studio.loadSavedSelection() }.disabled(!studio.hasSavedSelection)
+            Divider()
             Button(L(studio.quickMaskActive ? "Leave quick mask" : "Edit in quick mask")) { studio.toggleQuickMask() }.keyboardShortcut("q",modifiers:.shift)
             Button(L("Subject")) { if !studio.selectSubject() { studio.message = "No subject found in the picture." } }
         }

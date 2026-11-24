@@ -213,6 +213,9 @@ struct InspectorPanel: View {
             }.buttonStyle(.plain).frame(width: 15).help(L("Visibility")).accessibilityLabel(L("Toggle layer visibility"))
             if layer.clipped && index > 0 { Image(systemName: "arrow.turn.left.down").font(.system(size: 9, weight: .semibold)).foregroundStyle(theme.accent).help(L("Clipping mask")).accessibilityLabel(L("Clipping mask")) }
             LayerThumbnail(layer: layer, selected: selected).frame(width: 36, height: 37).overlay(RoundedRectangle(cornerRadius: 8).strokeBorder(theme.outline))
+                // ⌘-click the thumbnail: its pixels become the selection (⇧ add, ⌥ subtract, ⇧⌥ intersect).
+                .highPriorityGesture(TapGesture().modifiers(.command).onEnded { s.loadLayerTransparency(index, Studio.maskCombine(NSEvent.modifierFlags)) })
+                .help(L("⌘-click: select this layer's pixels"))
             VStack(alignment: .leading, spacing: 4) {
                 Text(layer.name).font(.system(size: 11, weight: .medium)).lineLimit(1)
                 Text(layer.isAdjustmentLayer ? L("Adjusts layers below") : layer.mask != nil ? L("Layer + mask") : layer.imageData != nil ? LF("Raster · %d%%", Int(layer.opacity * 100)) : LC("%d stroke", "%d strokes", layer.strokes.count))

@@ -38,6 +38,7 @@ struct BrushPreset: Codable, Identifiable {
     /// Defined patterns as PNG, newest first (Edit → Define pattern).
     @Published var patterns: [Data] = Studio.loadPatterns()
     @Published var snapshotsByTab: [UUID: [HistorySnapshot]] = [:]
+    @Published var savedSelectionsByTab: [UUID: [UInt8]] = [:]
     /// Where patterns are kept; tests set nil so nothing is written.
     var patternStore: UserDefaults? = .standard
     @Published var guides: [Guide] = []
@@ -323,7 +324,7 @@ struct BrushPreset: Codable, Identifiable {
     func closeTab(_ id: UUID) {
         guard let tab = tabs.first(where: { $0.id == id }) else { return }
         if tab.dirty { let a = NSAlert(); a.messageText = L("Close unsaved document?"); a.informativeText = tab.document.title; a.addButton(withTitle: L("Cancel")); a.addButton(withTitle: L("Discard")); guard a.runModal() == .alertSecondButtonReturn else { return } }
-        if tabID == id { removeRecovery() }; tabs.removeAll { $0.id == id }; snapshotsByTab[id] = nil
+        if tabID == id { removeRecovery() }; tabs.removeAll { $0.id == id }; snapshotsByTab[id] = nil; savedSelectionsByTab[id] = nil
         if id == tabID { if let next = tabs.first { let oldID = tabID; tabID = oldID; switchTab(next.id) } else { newDocument(background: Self.preferredBackground) } }
     }
     
