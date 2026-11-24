@@ -34,7 +34,7 @@ Both need the paid **Apple Developer Program** (99 €/year) in your own name. E
 7. **Screenshots:** the iPad 13-inch size (2064 × 2752 or 2752 × 2064) is required; App Store Connect scales them for smaller iPads.
 8. **Review notes** – paste this:
 
-   > UniversePen turns the iPad into a pen display / pen tablet for a Mac. It needs the free companion app "UniversePen Host" on a Mac (macOS 15+), downloadable from https://github.com/bedsheetsosu/universepen/releases, paired with a code shown on the Mac.
+   > UniversePen turns the iPad into a pen display / pen tablet for a Mac. It needs the free companion app "UniversePen Host" on a Mac (macOS 15+), downloadable from https://github.com/bedsheetsosu/universestudio/releases, paired with a code shown on the Mac.
    > **To review without a Mac:** on the first screen tap "Try without a Mac (demo)". The demo shows drawing with pressure and tilt, the pointer, clicks and the tablet mode with an aiming exercise entirely on the iPad.
    > The app makes no internet connections and collects no data; it only connects to the user's own Mac on the local network or USB cable.
 

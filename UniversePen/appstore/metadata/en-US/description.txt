@@ -24,6 +24,6 @@ PRIVATE BY DESIGN
 • No account, no server, no analytics
 
 REQUIREMENTS
-UniversePen needs the free companion app "UniversePen Host" on a Mac with macOS 15 or later (download: github.com/bedsheetsosu/universepen). Without a Mac you can try everything in the built-in demo.
+UniversePen needs the free companion app "UniversePen Host" on a Mac with macOS 15 or later (download: github.com/bedsheetsosu/universestudio). Without a Mac you can try everything in the built-in demo.
 
 UniversePen is open source (GPL-3.0).

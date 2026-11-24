@@ -610,7 +610,7 @@ struct HostView: View {
                            detail: host.devAPIError, detailColor: .orange)
             }
             SettingRow(symbol: "book", title: L("Dokumentation (SDK, MIT-Lizenz)")) {
-                Link(destination: URL(string: "https://github.com/bedsheetsosu/universepen/tree/main/SDK")!) {
+                Link(destination: URL(string: "https://github.com/bedsheetsosu/universestudio/tree/main/UniversePen/SDK")!) {
                     Image(systemName: "arrow.up.right.square").foregroundStyle(Brand.mintBright)
                 }
                 .accessibilityLabel(L("Dokumentation (SDK, MIT-Lizenz)"))
@@ -626,7 +626,7 @@ struct HostView: View {
                 }
             }
             SettingRow(symbol: "book", title: L("Plugin-Doku")) {
-                Link(destination: URL(string: "https://github.com/bedsheetsosu/universepen/tree/main/SDK/plugins")!) {
+                Link(destination: URL(string: "https://github.com/bedsheetsosu/universestudio/tree/main/UniversePen/SDK/plugins")!) {
                     Image(systemName: "arrow.up.right.square").foregroundStyle(Brand.mintBright)
                 }
                 .accessibilityLabel(L("Plugin-Doku"))

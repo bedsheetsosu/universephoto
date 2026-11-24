@@ -24,6 +24,6 @@ UniversePen 把 Mac 屏幕显示在 iPad 上，并把每一笔作为真正的数
 • 无账户、无服务器、无分析
 
 要求
-需要在 macOS 15 或更高版本的 Mac 上安装免费配套应用“UniversePen Host”（下载：github.com/bedsheetsosu/universepen）。没有 Mac 也可以在内置演示中体验全部功能。
+需要在 macOS 15 或更高版本的 Mac 上安装免费配套应用“UniversePen Host”（下载：github.com/bedsheetsosu/universestudio）。没有 Mac 也可以在内置演示中体验全部功能。
 
 UniversePen 是开源软件（GPL-3.0）。

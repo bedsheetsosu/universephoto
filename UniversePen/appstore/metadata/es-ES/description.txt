@@ -24,6 +24,6 @@ PRIVADO DE SERIE
 • Sin cuenta, sin servidor, sin analíticas
 
 REQUISITOS
-UniversePen necesita la app gratuita «UniversePen Host» en un Mac con macOS 15 o posterior (descarga: github.com/bedsheetsosu/universepen). Sin Mac puedes probarlo todo en la demo integrada.
+UniversePen necesita la app gratuita «UniversePen Host» en un Mac con macOS 15 o posterior (descarga: github.com/bedsheetsosu/universestudio). Sin Mac puedes probarlo todo en la demo integrada.
 
 UniversePen es código abierto (GPL-3.0).

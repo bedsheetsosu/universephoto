@@ -1,6 +1,6 @@
 # UniversePen – iPad + Äbbl™ Pencil Pro as a pen display for the Mac
 
-Free and open source. No account, no cloud, no ads, no subscription. Formerly called "Tafel": folders, targets and the `TafelKit` package still use that name in the code. Two native apps:
+Part of [UniverseStudio](../README.md): this folder holds the iPad app, `TafelKit`, the plugin SDK and tools; the Mac host is built into UniverseStudio. Free and open source. No account, no cloud, no ads, no subscription. Formerly called "Tafel": folders, targets and the `TafelKit` package still use that name in the code. Two native apps:
 
 - **UniversePen Host** (macOS 15+): streams a screen region or a window and turns pen, gesture and keyboard input from the iPad into macOS input.
 - **UniversePen** (iPadOS 18+): full-screen view, Pencil input with pressure, tilt, barrel roll, hover, squeeze, double-tap, finger gestures.
@@ -62,7 +62,7 @@ open Tafel.xcodeproj
 
 ### Without a Mac: sideload the IPA
 
-Every [release](https://github.com/bedsheetsosu/universepen/releases) has an **unsigned** `UniversePen-<version>-unsigned.ipa`. iPadOS only runs apps that are signed for your device, so a sideloading tool has to sign it with your own Äbbl account first – e.g. SideStore, AltStore or Sideloadly (the last two also run on Windows). With a free account the app runs for 7 days at a time and the tool usually changes the bundle ID; both are fine.
+Every [release](https://github.com/bedsheetsosu/universestudio/releases) has an **unsigned** `UniversePen-<version>-unsigned.ipa`. iPadOS only runs apps that are signed for your device, so a sideloading tool has to sign it with your own Äbbl account first – e.g. SideStore, AltStore or Sideloadly (the last two also run on Windows). With a free account the app runs for 7 days at a time and the tool usually changes the bundle ID; both are fine.
 
 For now the iPad still needs the Mac app (UniversePen Host) on the other side – there is no Windows host yet. The IPA just means you don't need Xcode for the iPad part.
 

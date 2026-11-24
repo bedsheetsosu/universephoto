@@ -33,7 +33,7 @@ All traffic between iPad and Mac is encrypted (TLS with a key that only your two
 
 ## Contact
 
-Questions: open an issue at <https://github.com/bedsheetsosu/universepen/issues>.
+Questions: open an issue at <https://github.com/bedsheetsosu/universestudio/issues>.
 
 ---
 
@@ -43,4 +43,4 @@ Questions: open an issue at <https://github.com/bedsheetsosu/universepen/issues>
 
 Die iPad-App und die Mac-App („UniversePen Host“) sprechen **nur miteinander**, direkt über dein lokales Netzwerk oder ein USB-Kabel, nachdem du sie mit einem Code gekoppelt hast. Bild und Ton des Macs gehen zum iPad, Stift-, Touch- und Tastatureingaben gehen zum Mac – nichts davon wird gespeichert oder woandershin geschickt. Zwischenablage, Bildschirmfotos und Referenzbilder werden nur kopiert, wenn du es antippst. Einstellungen bleiben auf dem Gerät, Kopplungsschlüssel im Schlüsselbund. Die Verbindung ist verschlüsselt (TLS mit einem Schlüssel, den nur deine zwei Geräte kennen). Es sind keine Analyse-, Werbe-, Absturz- oder Tracking-Bibliotheken enthalten, und es wird keine Verbindung zu irgendeinem Server im Internet aufgebaut.
 
-Fragen: <https://github.com/bedsheetsosu/universepen/issues>
+Fragen: <https://github.com/bedsheetsosu/universestudio/issues>

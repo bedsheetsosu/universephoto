@@ -24,6 +24,6 @@ UniversePen आपकी Mac स्क्रीन iPad पर दिखात�
 • कोई अकाउंट नहीं, कोई सर्वर नहीं, कोई एनालिटिक्स नहीं
 
 ज़रूरतें
-UniversePen को macOS 15 या नए Mac पर मुफ़्त साथी ऐप "UniversePen Host" चाहिए (डाउनलोड: github.com/bedsheetsosu/universepen)। बिना Mac के आप बिल्ट-इन डेमो में सब कुछ आज़मा सकते हैं।
+UniversePen को macOS 15 या नए Mac पर मुफ़्त साथी ऐप "UniversePen Host" चाहिए (डाउनलोड: github.com/bedsheetsosu/universestudio)। बिना Mac के आप बिल्ट-इन डेमो में सब कुछ आज़मा सकते हैं।
 
 UniversePen ओपन सोर्स है (GPL-3.0)।

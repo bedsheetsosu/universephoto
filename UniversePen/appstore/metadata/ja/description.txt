@@ -24,6 +24,6 @@ UniversePen は Mac の画面を iPad に表示し、ペンシルのストロー
 • アカウントなし、サーバーなし、解析なし
 
 必要なもの
-macOS 15 以降の Mac に無料のコンパニオンアプリ「UniversePen Host」が必要です（ダウンロード：github.com/bedsheetsosu/universepen）。Mac がなくても内蔵デモですべて試せます。
+macOS 15 以降の Mac に無料のコンパニオンアプリ「UniversePen Host」が必要です（ダウンロード：github.com/bedsheetsosu/universestudio）。Mac がなくても内蔵デモですべて試せます。
 
 UniversePen はオープンソースです（GPL-3.0）。
