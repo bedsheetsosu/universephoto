@@ -73,6 +73,11 @@ final class ClientModel: ObservableObject {
     /// Radial menu open at this point (canvas/window coordinates), and the item under the Pencil.
     @Published var radialCenter: CGPoint?
     @Published var radialHighlight: Int?
+    /// The tool last picked on the Pencil palette (a one-key shortcut such as B or E), shown in
+    /// the accent circle. The iPad can't see tool changes made on the Mac itself.
+    @Published var paletteSelection: UUID? = UserDefaults.standard.string(forKey: "paletteSelection").flatMap(UUID.init(uuidString:)) {
+        didSet { UserDefaults.standard.set(paletteSelection?.uuidString, forKey: "paletteSelection") }
+    }
 
     /// The bar for the app in front, or the standard bar.
     var currentBar: [ShortcutButton] {
@@ -465,6 +470,7 @@ final class ClientModel: ObservableObject {
     func runPalette(_ index: Int) {
         let items = effectiveSettings.radialMenu
         guard items.indices.contains(index) else { return }
+        if items[index].isToolSwitch { paletteSelection = items[index].id }
         run(items[index])
     }
 

@@ -38,6 +38,14 @@ extension ShortcutButton {
         }
     }
 
+    /// A plain one-key shortcut such as B (brush) or E (eraser): picking it switches the Mac app's
+    /// tool, so the palette marks it as the current choice until another one is picked. Undo,
+    /// shortcuts with modifiers, held keys, plugins and iPad tools are not choices.
+    public var isToolSwitch: Bool {
+        tool == nil && pluginAction == nil && hold == nil && shortcut.modifiers.isEmpty
+            && (shortcut.key.count == 1 || shortcut.key == "space")
+    }
+
     /// Indices after which the arc draws a separator (where the kind changes).
     public static func paletteSeparators(_ items: [ShortcutButton]) -> [Int] {
         guard items.count > 1 else { return [] }

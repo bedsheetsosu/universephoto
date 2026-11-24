@@ -75,6 +75,10 @@ struct RootView: View {
                         guard UserDefaults.standard.bool(forKey: "debugOpenPalette") else { return }
                         try? await Task.sleep(for: .seconds(1.5))
                         model.openRadial(at: CGPoint(x: 760, y: 560))
+                        // `-debugPaletteSelect N`: mark item N as the current tool choice.
+                        let n = UserDefaults.standard.integer(forKey: "debugPaletteSelect")
+                        let items = model.effectiveSettings.radialMenu
+                        if items.indices.contains(n), n > 0 { try? await Task.sleep(for: .seconds(0.6)); model.paletteSelection = items[n].id }
                     }
                 if model.tabletEditing && model.tabletModeActive {
                     TabletAreaEditor()

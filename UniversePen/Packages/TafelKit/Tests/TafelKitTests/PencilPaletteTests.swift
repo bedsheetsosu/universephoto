@@ -43,4 +43,11 @@ final class PencilPaletteTests: XCTestCase {
         let st = RadialMenuLayout.step(count: 7)
         XCTAssertEqual(RadialMenuLayout.scrollDelta(from: 0, to: st, count: 12), -1, accuracy: 1e-9)
     }
+
+    func testToolSwitchesAreChoices() {
+        let d = InputSettings.defaultRadialMenu
+        XCTAssertEqual(d.map(\.isToolSwitch), [false, true, true, true, true, false])
+        XCTAssertFalse(ShortcutButton(title: "Lineal", shortcut: Shortcut("a"), tool: .ruler).isToolSwitch)
+        XCTAssertFalse(ShortcutButton(title: "⇧", shortcut: Shortcut("a"), hold: .shift).isToolSwitch)
+    }
 }

@@ -13,6 +13,8 @@ struct PencilPaletteView: View {
     @State private var shown = false
     @State private var scroll = 0.0
     @State private var dragAngle: Double?
+    /// The accent circle slides from the old choice to the new one.
+    @Namespace private var selection
 
     private var items: [ShortcutButton] { model.effectiveSettings.radialMenu }
 
@@ -82,7 +84,9 @@ struct PencilPaletteView: View {
                     let a = RadialMenuLayout.angle(of: i, count: n, facing: facing, scroll: scroll)
                     let op = RadialMenuLayout.opacity(of: i, count: n, scroll: scroll)
                     if op > 0.01 {
-                        PaletteIcon(item: item, highlighted: model.radialHighlight == i, active: item.tool.map(model.isOn) ?? false)
+                        let chosen = item.isToolSwitch && model.paletteSelection == item.id
+                        PaletteIcon(item: item, highlighted: model.radialHighlight == i, active: item.tool.map(model.isOn) ?? chosen,
+                                    selection: chosen ? selection : nil)
                             .position(x: shown ? c.x + r * cos(a) : c.x, y: shown ? c.y + r * sin(a) : c.y)
                             .opacity((shown ? 1 : 0) * op)
                             .scaleEffect(shown ? 1 : 0.4)
@@ -108,6 +112,7 @@ struct PencilPaletteView: View {
         }
         .ignoresSafeArea()
         .animation(.spring(response: 0.25, dampingFraction: 0.75), value: model.radialHighlight)
+        .animation(.spring(response: 0.35, dampingFraction: 0.8), value: model.paletteSelection)
         .sensoryFeedback(.alignment, trigger: model.radialHighlight) { _, new in new != nil }
         .sensoryFeedback(.selection, trigger: Int(scroll.rounded()))
         .onAppear { withAnimation(Brand.spring) { shown = true } }
@@ -137,12 +142,21 @@ private struct PaletteIcon: View {
     let item: ShortcutButton
     let highlighted: Bool
     let active: Bool
+    /// Set for the current tool choice: its circle is shared, so it slides between icons.
+    var selection: Namespace.ID? = nil
 
     var body: some View {
         ZStack {
+            // Hover: a ring in the accent colour (and a soft fill), so you see where a squeeze lands.
             Circle()
-                .fill(active ? AnyShapeStyle(Brand.mint) : AnyShapeStyle(Color.white.opacity(highlighted ? 0.16 : 0)))
+                .fill(Brand.mint.opacity(highlighted && !active ? 0.18 : 0))
+                .overlay(Circle().strokeBorder(Brand.mint.opacity(highlighted && !active ? 0.9 : 0), lineWidth: 1.5))
                 .frame(width: 44, height: 44)
+            if active {
+                let dot = Circle().fill(Brand.mint).frame(width: 44, height: 44)
+                    .shadow(color: Brand.mint.opacity(0.55), radius: 8)
+                if let selection { dot.matchedGeometryEffect(id: "choice", in: selection) } else { dot }
+            }
             Group {
                 if let s = item.tool?.symbol ?? item.paletteSymbol {
                     Image(systemName: s).font(.system(size: 19, weight: .medium))
