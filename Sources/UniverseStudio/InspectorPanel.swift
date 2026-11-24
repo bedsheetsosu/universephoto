@@ -31,7 +31,7 @@ struct InspectorPanel: View {
                     if tab == "layers" { layerPanel }
                     if tab == "brush" { brushPanel }
                     if tab == "adjust" { adjustments }
-                    if tab == "history" { history }
+                    if tab == "history" { SnapshotList();history }
                 }.padding(.horizontal, 13).padding(.bottom, 18)
             }.scrollIndicators(.hidden)
         }.foregroundStyle(theme.text)
