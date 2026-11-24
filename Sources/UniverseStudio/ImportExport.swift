@@ -157,7 +157,7 @@ enum ImageFiles {
         } catch { writer.cancelWriting(); throw error }
     }
 
-    private static func validateAnimation(frames: [[ArtLayer]], width: Int, height: Int, fps: Double) throws {
+    static func validateAnimation(frames: [[ArtLayer]], width: Int, height: Int, fps: Double) throws {
         guard !frames.isEmpty else { throw FileError.noFrames }
         try validate(width: width, height: height)
         guard fps.isFinite, (1...120).contains(fps), frames.count <= 10_000 else { throw FileError.encoder("Animation supports 1–120 FPS and up to 10,000 frames") }
