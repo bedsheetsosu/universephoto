@@ -96,14 +96,14 @@ enum ImageFiles {
 
     /// H.264 MP4, opaque over white, no audio. Each input frame occupies exactly 1/fps seconds.
     /// Call from a background task; rendering is deliberately synchronous and deterministic.
-    static func exportVideo(frames: [[ArtLayer]], width docW: Int, height docH: Int, fps: Double, scale: Double = 1, sound: (url: URL, start: Double, volume: Double)? = nil, url: URL) async throws {
+    static func exportVideo(frames: [[ArtLayer]], width docW: Int, height docH: Int, fps: Double, scale: Double = 1, sound: (url: URL, start: Double, volume: Double)? = nil, proRes: Bool = false, url: URL) async throws {
         let (width, height) = outputSize(docW, docH, scale: scale, even: abs(scale - 1) > 0.001)
         try validateAnimation(frames: frames, width: width, height: height, fps: fps)
         guard width.isMultiple(of: 2), height.isMultiple(of: 2) else { throw FileError.dimensions }
-        let staging = url.deletingLastPathComponent().appendingPathComponent(".universephoto-\(UUID().uuidString).mp4")
+        let staging = url.deletingLastPathComponent().appendingPathComponent(".universephoto-\(UUID().uuidString).\(proRes ? "mov" : "mp4")")
         defer { try? FileManager.default.removeItem(at: staging) }
-        let writer = try AVAssetWriter(outputURL: staging, fileType: .mp4)
-        let input = AVAssetWriterInput(mediaType: .video, outputSettings: [AVVideoCodecKey: AVVideoCodecType.h264, AVVideoWidthKey: width, AVVideoHeightKey: height])
+        let writer = try AVAssetWriter(outputURL: staging, fileType: proRes ? .mov : .mp4)
+        let input = AVAssetWriterInput(mediaType: .video, outputSettings: [AVVideoCodecKey: proRes ? AVVideoCodecType.proRes4444 : AVVideoCodecType.h264, AVVideoWidthKey: width, AVVideoHeightKey: height])
         input.expectsMediaDataInRealTime = false
         let adaptor = AVAssetWriterInputPixelBufferAdaptor(assetWriterInput: input, sourcePixelBufferAttributes: [
             kCVPixelBufferPixelFormatTypeKey as String: kCVPixelFormatType_32BGRA,
@@ -136,7 +136,7 @@ enum ImageFiles {
                     bitsPerComponent: 8, bytesPerRow: CVPixelBufferGetBytesPerRow(pixelBuffer),
                     space: CGColorSpace(name: CGColorSpace.sRGB)!,
                     bitmapInfo: CGBitmapInfo.byteOrder32Little.rawValue | CGImageAlphaInfo.premultipliedFirst.rawValue) else { throw FileError.encoder("MP4 drawing context") }
-                context.setFillColor(CGColor(gray: 1, alpha: 1)); context.fill(CGRect(x: 0, y: 0, width: width, height: height))
+                if proRes { context.clear(CGRect(x: 0, y: 0, width: width, height: height)) } else { context.setFillColor(CGColor(gray: 1, alpha: 1)); context.fill(CGRect(x: 0, y: 0, width: width, height: height)) }
                 context.draw(image, in: CGRect(x: 0, y: 0, width: width, height: height))
                 let time = CMTime(seconds: Double(index) / fps, preferredTimescale: 60000)
                 guard adaptor.append(pixelBuffer, withPresentationTime: time) else { throw writer.error ?? FileError.encoder("MP4 frame") }
@@ -146,9 +146,9 @@ enum ImageFiles {
             await writer.finishWriting()
             guard writer.status == .completed else { throw writer.error ?? FileError.encoder("MP4 completion") }
             if let sound {
-                let mixed = url.deletingLastPathComponent().appendingPathComponent(".universephoto-\(UUID().uuidString)-sound.mp4")
+                let mixed = url.deletingLastPathComponent().appendingPathComponent(".universephoto-\(UUID().uuidString)-sound.\(proRes ? "mov" : "mp4")")
                 defer { try? FileManager.default.removeItem(at: mixed) }
-                try await addSound(video: staging, audio: sound.url, soundStart: sound.start, volume: sound.volume, output: mixed)
+                try await addSound(video: staging, audio: sound.url, soundStart: sound.start, volume: sound.volume, keepVideo: proRes, output: mixed)
                 try FileManager.default.removeItem(at: staging); try FileManager.default.moveItem(at: mixed, to: staging)
             }
             // Save panels confirm replacement before this entry point is called.

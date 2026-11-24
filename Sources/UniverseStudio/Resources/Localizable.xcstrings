@@ -14670,6 +14670,24 @@
           }
         }
       }
+    },
+    "MOV · ProRes 4444 · Alpha": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "MOV · ProRes 4444 · Alpha"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "MOV · ProRes 4444 · Alpha"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

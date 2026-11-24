@@ -26,7 +26,7 @@ struct AudioTrack: Codable, Equatable, Sendable {
 extension ImageFiles {
     /// Lays `audio` under the finished video at `soundStart` seconds (negative = the sound's
     /// beginning is cut off) and writes the result to `output` as MP4 with AAC sound.
-    static func addSound(video: URL, audio: URL, soundStart: Double, volume: Double, output: URL) async throws {
+    static func addSound(video: URL, audio: URL, soundStart: Double, volume: Double, keepVideo: Bool = false, output: URL) async throws {
         let videoAsset = AVURLAsset(url: video), audioAsset = AVURLAsset(url: audio)
         let comp = AVMutableComposition()
         guard let vSrc = try await videoAsset.loadTracks(withMediaType: .video).first,
@@ -46,8 +46,9 @@ extension ImageFiles {
                 mix = AVMutableAudioMix(); mix?.inputParameters = [params]
             }
         }
-        guard let session = AVAssetExportSession(asset: comp, presetName: AVAssetExportPresetHighestQuality) else { throw FileError.encoder("MP4 sound") }
-        session.outputURL = output; session.outputFileType = .mp4; session.audioMix = mix
+        // ProRes keeps its frames (and alpha) untouched: passthrough into a .mov.
+        guard let session = AVAssetExportSession(asset: comp, presetName: keepVideo ? AVAssetExportPresetPassthrough : AVAssetExportPresetHighestQuality) else { throw FileError.encoder("MP4 sound") }
+        session.outputURL = output; session.outputFileType = keepVideo ? .mov : .mp4; session.audioMix = keepVideo ? nil : mix
         try? FileManager.default.removeItem(at: output)
         await withCheckedContinuation { (c: CheckedContinuation<Void, Never>) in session.exportAsynchronously { c.resume() } }
         guard session.status == .completed else { throw session.error ?? FileError.encoder("MP4 sound") }
