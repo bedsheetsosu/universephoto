@@ -137,4 +137,32 @@ import CoreGraphics
         XCTAssertFalse(s.autoContrast())
         XCTAssertFalse(s.autoTone())
     }
+
+    func testDefineAndFillWithPattern() throws {
+        let s = studio(); s.patternStore = nil; s.patterns = []
+        fill(s, CGRect(x: 0, y: 0, width: 2, height: 4), red); fill(s, CGRect(x: 2, y: 0, width: 2, height: 4), blue)
+        XCTAssertFalse(s.definePattern(), "needs a selection")
+        s.selection = CanvasSelection(points: [CGPoint(x: 0, y: 0), CGPoint(x: 4, y: 4)])
+        XCTAssertTrue(s.definePattern())
+        XCTAssertEqual(s.patterns.count, 1)
+        // Fill a fresh layer, only inside x 20…40.
+        s.newLayer()
+        s.selection = CanvasSelection(points: [CGPoint(x: 20, y: 0), CGPoint(x: 40, y: 20)])
+        XCTAssertTrue(s.fillWithPattern(0))
+        let a = try pixel(s, CGPoint(x: 20.5, y: 10.5)), b = try pixel(s, CGPoint(x: 22.5, y: 10.5))
+        XCTAssertGreaterThan(a.red, 0.9); XCTAssertGreaterThan(b.blue, 0.9)   // tiles line up with the document grid
+        XCTAssertGreaterThan(try pixel(s, CGPoint(x: 24.5, y: 2.5)).red, 0.9, "repeats every 4 px")
+        s.layers[0].visible = false
+        XCTAssertEqual(try pixel(s, CGPoint(x: 10.5, y: 10.5)).alpha, 0, "nothing outside the selection")
+    }
+
+    func testPatternsStayAtTwelve() {
+        let s = studio(); s.patternStore = nil
+        s.patterns = Array(repeating: Data([1]), count: 12)
+        fill(s, CGRect(x: 0, y: 0, width: 4, height: 4), red)
+        s.selection = CanvasSelection(points: [CGPoint(x: 0, y: 0), CGPoint(x: 4, y: 4)])
+        XCTAssertTrue(s.definePattern())
+        XCTAssertEqual(s.patterns.count, 12)
+        XCTAssertNotEqual(s.patterns[0], Data([1]), "newest first")
+    }
 }

@@ -35,6 +35,10 @@ struct BrushPreset: Codable, Identifiable {
     @Published var textBold = false
     @Published var textItalic = false
     @Published var recentColors: [CodableColor] = []
+    /// Defined patterns as PNG, newest first (Edit → Define pattern).
+    @Published var patterns: [Data] = Studio.loadPatterns()
+    /// Where patterns are kept; tests set nil so nothing is written.
+    var patternStore: UserDefaults? = .standard
     @Published var guides: [Guide] = []
     @Published var showGuides = true
     @Published var guidesLocked = false

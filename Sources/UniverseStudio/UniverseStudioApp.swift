@@ -82,6 +82,7 @@ struct StudioCommands: Commands {
             Button(L("Clear selection")) { studio.clearSelection() }.disabled(studio.selection == nil)
             Button(L("Fill selection")) { studio.fillSelection() }.keyboardShortcut(.delete,modifiers:.option).disabled(studio.selection == nil || !studio.canEdit)
             Button(L("Stroke selection") + "…") { studio.strokeSelectionDialog = true }.disabled(studio.selection == nil || !studio.canEdit)
+            PatternMenu(studio:studio)
             Button(L("Content-aware fill")) { studio.contentAwareFill() }.keyboardShortcut(.delete,modifiers:.shift).disabled(studio.selection == nil || !studio.canEdit)
         }
         CommandGroup(replacing:.undoRedo) { Button(L("Undo")) { studio.undo() }.keyboardShortcut("z").disabled(studio.undoStack.isEmpty);Button(L("Redo")) { studio.redo() }.keyboardShortcut("z",modifiers:[.command,.shift]).disabled(studio.redoStack.isEmpty) }
