@@ -196,6 +196,9 @@ struct StudioCommands: Commands {
         }
         CommandMenu(L("Animation")) {
             Button(L("Duplicate frame")) { studio.addFrame() }.keyboardShortcut("f",modifiers:.shift)
+            Button(L("Blank frame")) { studio.blankFrame() }.keyboardShortcut("f",modifiers:[.shift,.option])
+            Button(L("Hold frame longer")) { studio.nudgeHold(1) }.keyboardShortcut(.upArrow,modifiers:.option)
+            Button(L("Hold frame shorter")) { studio.nudgeHold(-1) }.keyboardShortcut(.downArrow,modifiers:.option)
             Button(L("Import frames…")) { studio.importFramesPanel() }
             AnimationPreviewButton()
             MotionPathToggle()

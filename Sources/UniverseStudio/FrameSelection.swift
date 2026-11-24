@@ -46,3 +46,17 @@ extension Studio {
         frameHolds = h; normalizeHolds(); changed()
     }
 }
+
+extension Studio {
+    /// ⌥↑ / ⌥↓ (0.96): the current frame (and any selected frames) one tick longer or shorter.
+    func nudgeHold(_ delta: Int) {
+        guard !frames.isEmpty else { return }
+        let group = framesForAction(at: frameIndex)
+        let changed = group.map { ($0, max(1, min(99, hold($0) + delta))) }.filter { hold($0.0) != $0.1 }
+        guard !changed.isEmpty else { return }
+        checkpoint("Frame hold")
+        var h = (0..<frames.count).map { hold($0) }
+        for (i, n) in changed { h[i] = n }
+        frameHolds = h; normalizeHolds(); self.changed()
+    }
+}
