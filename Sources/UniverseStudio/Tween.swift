@@ -20,7 +20,7 @@ enum Tween {
     }
 
     /// `count` frames between `from` and `to`.
-    static func frames(from: [ArtLayer], to: [ArtLayer], count: Int, eased: Bool) -> [[ArtLayer]] {
+    static func frames(from: [ArtLayer], to: [ArtLayer], count: Int, eased: Bool, morph: Bool = false) -> [[ArtLayer]] {
         guard count > 0 else { return [] }
         let target = Dictionary(to.map { ($0.id, $0) }, uniquingKeysWith: { a, _ in a })
         return (1...count).map { k in
@@ -30,6 +30,7 @@ enum Tween {
                 var l = layer
                 l.transform = blend(layer.transform, end.transform, t)
                 l.opacity = lerp(layer.opacity, end.opacity, t)
+                if morph, let blended = StrokeMorph.strokes(layer.strokes, end.strokes, t) { l.strokes = blended }
                 return l
             }
         }
@@ -40,11 +41,11 @@ extension Studio {
     static let tweenChoices = [1, 2, 3, 4, 6, 8, 12]
 
     /// Inserts in-betweens after frame `index` towards the next frame. Returns how many.
-    @discardableResult func tweenToNext(from index: Int, count: Int, eased: Bool) -> Int {
+    @discardableResult func tweenToNext(from index: Int, count: Int, eased: Bool, morph: Bool = false) -> Int {
         guard frames.indices.contains(index), frames.indices.contains(index + 1), count > 0 else { return 0 }
         stopPlayback(); checkpoint("Tween")
         frames[frameIndex] = layers
-        let made = Tween.frames(from: frames[index], to: frames[index + 1], count: count, eased: eased)
+        let made = Tween.frames(from: frames[index], to: frames[index + 1], count: count, eased: eased, morph: morph)
         metaInsert(at: index + 1, holds: Array(repeating: 1, count: made.count))
         frames.insert(contentsOf: made, at: index + 1)
         if frameIndex > index { frameIndex += made.count }

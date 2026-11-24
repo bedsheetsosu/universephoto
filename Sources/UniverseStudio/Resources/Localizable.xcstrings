@@ -14688,6 +14688,42 @@
           }
         }
       }
+    },
+    "Morph strokes": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Striche morphen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Morph strokes"
+          }
+        }
+      }
+    },
+    "Blends brush strokes and shapes point by point when both frames have the same strokes": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Überblendet Pinselstriche und Formen Punkt für Punkt, wenn beide Frames gleich viele Striche haben"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Blends brush strokes and shapes point by point when both frames have the same strokes"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
