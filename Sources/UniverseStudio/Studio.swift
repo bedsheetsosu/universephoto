@@ -5,6 +5,8 @@ import Combine
 struct OpenArtwork: Identifiable {
     var id = UUID(); var document: ArtDocument; var url: URL?; var dirty = false
     var undo: [HistoryEntry] = []; var redo: [HistoryEntry] = []; var saved: ArtDocument? = nil
+    /// Belongs to the Animate module (0.106) instead of Photo.
+    var animate = false
 }
 struct HistoryEntry { var document: ArtDocument; var label: String }
 struct BrushPreset: Codable, Identifiable {
@@ -126,6 +128,8 @@ struct BrushPreset: Codable, Identifiable {
     @Published var undoStack: [HistoryEntry] = []
     @Published var redoStack: [HistoryEntry] = []
     @Published var tabs: [OpenArtwork] = []
+    /// The document last shown in Photo (false) and Animate (true), to come back to it.
+    var lastTab: [Bool: UUID] = [:]
     @Published var tabID = UUID()
     @Published var message: String? { didSet { if message != "__localized_error" { presentedError = nil } } }
     private var presentedError:Error?
@@ -150,7 +154,7 @@ struct BrushPreset: Codable, Identifiable {
     private var penObservation: AnyCancellable?
     private var languageObservation:AnyCancellable?
     private let recoveryRoot: URL?
-    private var savedDocument: ArtDocument?
+    var savedDocument: ArtDocument?
     private var lastMutation: (String, Date)?
     var title: String { documentName }
     var eraser: Bool { get { tool == .eraser } set { tool = newValue ? .eraser : .brush } }
@@ -303,9 +307,10 @@ struct BrushPreset: Codable, Identifiable {
     func apply(_ d: ArtDocument) { selectedFrames = []; audio = d.audio; frameHolds = d.frameHolds ?? []; frameLabels = d.frameLabels ?? []; if referenceFrame.map({ $0 >= d.frames.count }) ?? false { referenceFrame = nil }; groups = d.groups ?? []; guides = d.guides ?? []; layerComps = d.layerComps ?? []; selectedIDs = []; width = d.width; height = d.height; documentName = d.title; layers = d.layers; frames = d.frames; fps = d.fps ?? 12; frameIndex = min(max(0,d.activeFrame ?? frames.firstIndex(of:d.layers) ?? 0), max(0, frames.count-1)); selectedLayer = min(selectedLayer, max(0, layers.count-1)); maskEditing = false; selection = nil }
     func syncTab() { if let i = tabs.firstIndex(where: { $0.id == tabID }) { tabs[i].document = document(); tabs[i].dirty = dirty; tabs[i].url = fileURL;tabs[i].undo = undoStack;tabs[i].redo = redoStack;tabs[i].saved = savedDocument } }
     func switchTab(_ id: UUID) { guard let tab = tabs.first(where: { $0.id == id }), id != tabID else { return }; stopPlayback(); syncTab(); tabID = id; apply(tab.document); fileURL = tab.url; dirty = tab.dirty; undoStack = tab.undo; redoStack = tab.redo; savedDocument = tab.saved ?? (tab.dirty ? nil : tab.document); fit() }
-    func newDocument(width: Int = 1200, height: Int = 800, background: CodableColor? = nil) {
+    func newDocument(width: Int = 1200, height: Int = 800, background: CodableColor? = nil, animate: Bool? = nil) {
+        let animate = animate ?? (module == .animate)
         stopPlayback(); syncTab(); tabID = UUID(); fileURL = nil; selectedLayer = background == nil ? 0 : 1; frameIndex = 0
-        apply(ArtDocument(title: L("Untitled"), width: width, height: height, layers: Self.startLayers(background: background))); dirty = false; savedDocument = document(); undoStack = []; redoStack = []; tabs.append(OpenArtwork(id: tabID, document: document(), url: nil)); fit()
+        apply(ArtDocument(title: L("Untitled"), width: width, height: height, layers: Self.startLayers(background: background))); dirty = false; savedDocument = document(); undoStack = []; redoStack = []; tabs.append(OpenArtwork(id: tabID, document: document(), url: nil, animate: animate)); fit()
     }
     func save(to url: URL? = nil) throws {
         guard let dest = url ?? fileURL else { throw StudioError.message("No save location was selected.") }
@@ -314,14 +319,16 @@ struct BrushPreset: Codable, Identifiable {
         fileURL = dest; documentName = d.title; savedDocument = d; dirty = false; syncTab(); removeRecovery()
     }
     func open(_ url: URL) throws {
-        module = .photo
         let data = try Data(contentsOf: url, options: .mappedIfSafe)
         guard data.count < 256 * 1024 * 1024 else { throw StudioError.message("The project exceeds the current 256 MB file limit.") }
         let isPSD = url.pathExtension.lowercased() == "psd"
         let d = isPSD ? try PSD.read(data, title: url.deletingPathExtension().lastPathComponent) : try JSONDecoder().decode(ArtDocument.self, from: data)
         try Self.validate(d)
         // A Photoshop file opens as a new project: saving asks for a .universephoto name.
-        stopPlayback(); syncTab(); tabID = UUID(); fileURL = isPSD ? nil : url; frameIndex = 0; apply(d); selectedLayer = max(0,layers.count-1); dirty = false; savedDocument = d; undoStack = []; redoStack = []; tabs.append(OpenArtwork(id: tabID, document: d, url: url)); fit()
+        // Opens in Animate when you're there or the file has frames; otherwise in Photo.
+        let animate = module == .animate || d.frames.count > 1
+        stopPlayback(); syncTab(); tabID = UUID(); fileURL = isPSD ? nil : url; frameIndex = 0; apply(d); selectedLayer = max(0,layers.count-1); dirty = false; savedDocument = d; undoStack = []; redoStack = []; tabs.append(OpenArtwork(id: tabID, document: d, url: url, animate: animate)); fit()
+        module = animate ? .animate : .photo
     }
     static func validate(_ d: ArtDocument) throws {
         guard (1...2).contains(d.version), (1...8192).contains(d.width), (1...8192).contains(d.height), !d.layers.isEmpty, d.layers.count <= 256, d.frames.count <= 10000 else { throw StudioError.message("Unsupported document version or invalid dimensions.") }
@@ -351,7 +358,7 @@ struct BrushPreset: Codable, Identifiable {
         guard let tab = tabs.first(where: { $0.id == id }) else { return }
         if tab.dirty { let a = NSAlert(); a.messageText = L("Close unsaved document?"); a.informativeText = tab.document.title; a.addButton(withTitle: L("Cancel")); a.addButton(withTitle: L("Discard")); guard a.runModal() == .alertSecondButtonReturn else { return } }
         if tabID == id { removeRecovery() }; tabs.removeAll { $0.id == id }; snapshotsByTab[id] = nil; savedSelectionsByTab[id] = nil
-        if id == tabID { if let next = tabs.first { let oldID = tabID; tabID = oldID; switchTab(next.id) } else { newDocument(background: Self.preferredBackground) } }
+        if id == tabID { if let next = tabs(animate: tab.animate).last { switchTab(next.id) } else { newDocument(background: Self.preferredBackground, animate: tab.animate) } }
     }
     
 }

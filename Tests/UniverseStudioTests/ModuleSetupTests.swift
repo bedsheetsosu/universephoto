@@ -6,10 +6,10 @@ import UniversePenHost
 @MainActor
 struct ModuleSetupTests {
     @Test func enabledModulesParseAndStore() {
-        #expect(ModuleSettings.enabled(nil) == [.photo])
-        #expect(ModuleSettings.enabled("pen,photo") == [.photo, .pen])
+        #expect(ModuleSettings.enabled(nil) == [.photo, .animate])
+        #expect(ModuleSettings.enabled("pen,photo") == [.photo, .animate, .pen])
         #expect(ModuleSettings.enabled("pen,video") == [.pen])
-        #expect(ModuleSettings.store([.pen, .photo]) == "photo,pen")
+        #expect(ModuleSettings.store([.pen, .photo]) == "photo,pen,!animate")
     }
 
     @Test func setupHasOneStepPerChosenModule() {
@@ -32,7 +32,7 @@ struct ModuleSetupTests {
     }
 
     @Test func penModuleIsListed() {
-        #expect(StudioModule.allCases == [.photo, .pen])
+        #expect(StudioModule.allCases == [.photo, .animate, .pen])
         #expect(StudioModule.pen.title == "UniversePen")
     }
 }

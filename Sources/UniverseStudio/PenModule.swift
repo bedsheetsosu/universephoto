@@ -45,11 +45,13 @@ import UniversePenHost
 enum ModuleSettings {
     static let key = "studioModules", setupKey = "studioSetupDone"
     static func enabled(_ raw: String? = UserDefaults.standard.string(forKey: key)) -> [StudioModule] {
-        guard let raw else { return [.photo] }
-        return StudioModule.allCases.filter { raw.split(separator: ",").map(String.init).contains($0.rawValue) }
+        guard let raw else { return [.photo, .animate] }
+        let names = raw.split(separator: ",").map(String.init)
+        // Animate came out of Photo in 0.106: whoever had Photo gets Animate unless they turned it off.
+        return StudioModule.allCases.filter { names.contains($0.rawValue) || ($0 == .animate && names.contains("photo") && !names.contains("!animate")) }
     }
     static func isEnabled(_ m: StudioModule) -> Bool { enabled().contains(m) }
-    static func store(_ ms: Set<StudioModule>) -> String { StudioModule.allCases.filter(ms.contains).map(\.rawValue).joined(separator: ",") }
+    static func store(_ ms: Set<StudioModule>) -> String { (StudioModule.allCases.filter(ms.contains).map(\.rawValue) + (ms.contains(.animate) ? [] : ["!animate"])).joined(separator: ",") }
 }
 
 /// The UniversePen module page: the host's own window content with a way back.

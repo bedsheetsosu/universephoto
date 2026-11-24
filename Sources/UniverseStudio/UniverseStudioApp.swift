@@ -36,7 +36,7 @@ import UniversePenHost
     weak var studio:Studio?
     func applicationShouldTerminate(_ sender:NSApplication) -> NSApplication.TerminateReply {
         guard let studio,studio.dirty || studio.tabs.contains(where: \.dirty) else { return .terminateNow }
-        let a = NSAlert();a.messageText = L("Unsaved documents");a.informativeText = L("Unsaved changes remain available as recovery copies.");a.addButton(withTitle:L("Cancel"));a.addButton(withTitle:L("Quit"));return a.runModal() == .alertSecondButtonReturn ? .terminateNow : .terminateCancel
+        let a = NSAlert();a.messageText = L("Unsaved documents");a.informativeText = studio.unsavedSummary() + "\n\n" + L("Unsaved changes remain available as recovery copies.");a.addButton(withTitle:L("Cancel"));a.addButton(withTitle:L("Quit"));return a.runModal() == .alertSecondButtonReturn ? .terminateNow : .terminateCancel
     }
     func application(_ application:NSApplication,open urls:[URL]) {
         for url in urls {
@@ -194,7 +194,7 @@ struct StudioCommands: Commands {
             PixelGridToggle()
             Button(L("Command search")) { studio.commandSearch = true }.keyboardShortcut("p",modifiers:[.command,.shift])
         }
-        CommandMenu(L("Animation")) {
+        CommandMenu(L("Animation")) { Group {
             Button(L("Duplicate frame")) { studio.addFrame() }.keyboardShortcut("f",modifiers:.shift)
             Button(L("Blank frame")) { studio.blankFrame() }.keyboardShortcut("f",modifiers:[.shift,.option])
             Button(L("Hold frame longer")) { studio.nudgeHold(1) }.keyboardShortcut(.upArrow,modifiers:.option)
@@ -241,6 +241,6 @@ struct StudioCommands: Commands {
             Button(L("Bake ping-pong into frames")) { studio.bakePingPong() }.disabled(studio.frames.count < 3)
             Button(L("Onion Skin")) { studio.onionSkin.toggle() }.keyboardShortcut("o",modifiers:.option)
             Button(L("Play / Pause")) { studio.togglePlayback() }.keyboardShortcut(.space,modifiers:[])
-        }
+        }.disabled(studio.module != .animate) }
     }
 }

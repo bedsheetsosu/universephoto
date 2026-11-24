@@ -3,12 +3,13 @@ import UniversePenHost
 
 /// The parts of UniverseStudio. Only modules that actually work are listed here.
 enum StudioModule: String, CaseIterable, Identifiable {
-    case photo, pen
+    case photo, animate, pen
     var id: String { rawValue }
-    var title: String { switch self { case .photo: "Photo"; case .pen: "UniversePen" } }
-    var symbol: String { switch self { case .photo: "camera.aperture"; case .pen: "applepencil.tip" } }
+    var title: String { switch self { case .photo: "Photo"; case .animate: "Animate"; case .pen: "UniversePen" } }
+    var symbol: String { switch self { case .photo: "camera.aperture"; case .animate: "play.rectangle"; case .pen: "applepencil.tip" } }
     var summary: String { switch self {
-        case .photo: "Paint, retouch and animate in layers."
+        case .photo: "Paint and retouch in layers."
+        case .animate: "Frame-by-frame animation with timeline, onion skin and sound."
         case .pen: "Your iPad and Pencil as a drawing tablet and second screen for the Mac."
     } }
 }
@@ -16,7 +17,10 @@ enum StudioModule: String, CaseIterable, Identifiable {
 extension Studio {
     /// Goes to the start screen; open documents stay open.
     func showStartScreen() { module = nil }
-    func enter(_ m: StudioModule) { module = m }
+    func enter(_ m: StudioModule) {
+        if m == .photo || m == .animate { showDocument(animate: m == .animate) }
+        module = m
+    }
 }
 
 /// Switches between the start screen and the chosen module.
@@ -27,7 +31,9 @@ struct StudioRoot: View {
         Group {
             if !setupDone { FirstRunSetup() } else {
             switch s.module {
-            case .photo: Workspace()
+            // The module you leave shrinks into the bubble top left; the other one grows in.
+            case .photo: Workspace(animate: false).id(StudioModule.photo).transition(ModuleSwap.transition)
+            case .animate: Workspace(animate: true).id(StudioModule.animate).transition(ModuleSwap.transition)
             case .pen: PenModuleView()
             case nil: StartScreen()
             }
@@ -59,7 +65,10 @@ struct StartScreen: View {
                 }
             }
             Text(L("Choose what you want to make.")).font(.system(size: 14, weight: .medium, design: .rounded)).foregroundStyle(theme.secondary)
-            HStack(alignment: .top, spacing: 16) { ForEach(ModuleSettings.enabled(modulesRaw)) { moduleCard($0) } }
+            ViewThatFits(in: .horizontal) {
+                HStack(alignment: .top, spacing: 16) { ForEach(ModuleSettings.enabled(modulesRaw)) { moduleCard($0) } }
+                LazyVGrid(columns: [GridItem(.fixed(300), spacing: 16), GridItem(.fixed(300))], spacing: 16) { ForEach(ModuleSettings.enabled(modulesRaw)) { moduleCard($0) } }
+            }
             Text(L("More modules (vector, 3D, video) appear here once they really work.")).font(.system(size: 11)).foregroundStyle(theme.secondary.opacity(0.8))
             Spacer(minLength: 20)
             HStack(spacing: 18) {
@@ -76,7 +85,7 @@ struct StartScreen: View {
         .preferredColorScheme(appearance == "system" ? nil : appearance == "dark" ? .dark : .light)
         // Menu commands that need a document go straight into the photo module.
         .onChange(of: s.showNewDocument) { if s.showNewDocument { s.enter(.photo) } }
-        .onChange(of: s.tabs.count) { s.enter(.photo) }
+        .onChange(of: s.tabs.count) { s.enter(s.currentTabIsAnimation ? .animate : .photo) }
         .onChange(of: s.commandSearch) { if s.commandSearch { s.enter(.photo) } }
         .onChange(of: s.showShortcuts) { if s.showShortcuts { s.enter(.photo) } }
         .onChange(of: s.undoStack.count) { s.enter(.photo) }
@@ -93,8 +102,8 @@ struct StartScreen: View {
             }.buttonStyle(PhotoPress())
             HStack(spacing: 8) {
                 switch m {
-                case .photo:
-                    Button(L("New document…")) { s.enter(m); s.showNewDocument = true }.buttonStyle(PhotoButtonStyle(prominent: true))
+                case .photo, .animate:
+                    Button(L("New…")) { s.enter(m); s.showNewDocument = true }.buttonStyle(PhotoButtonStyle(prominent: true))
                     Button(L("Open…")) { s.openPanel() }.buttonStyle(PhotoButtonStyle())
                     Button(L("Continue")) { s.enter(m) }.buttonStyle(PhotoButtonStyle())
                 case .pen:
@@ -109,6 +118,6 @@ struct StartScreen: View {
             }
         }
         .photoCard(padding: 20)
-        .frame(width: 340)
+        .frame(width: 300)
     }
 }
