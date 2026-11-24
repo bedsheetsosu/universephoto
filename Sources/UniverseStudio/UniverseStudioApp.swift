@@ -240,6 +240,14 @@ struct StudioCommands: Commands {
                     label: { Label(L(p.title), systemImage: p.symbol) }
                 }
             }.help(L("The layers come in one by one, each a little after the one below"))
+            Menu(L("Bend & wobble")) {
+                ForEach(DeformLoop.allCases) { d in
+                    Menu { ForEach([1.0, 2.0], id: \.self) { sec in
+                        Button(LF("%@ s", String(Int(sec)))) { studio.deformLoop(d, count: max(2, Int((studio.fps * sec).rounded()))) }
+                        Button(LF("%@ s, strong", String(Int(sec)))) { studio.deformLoop(d, count: max(2, Int((studio.fps * sec).rounded())), strength: 2) } } }
+                    label: { Label(L(d.title), systemImage: d.symbol) }
+                }
+            }.disabled(studio.activeLayer?.strokes.contains { $0.imageData == nil } != true).help(L("The drawing on the active layer waves, sways or squashes in a loop"))
             Menu(L("Follow path")) {
                 ForEach([1.0, 2.0, 4.0], id: \.self) { sec in Button(LF("%@ s", String(Int(sec)))) { studio.followPath(count: max(2, Int((studio.fps * sec).rounded())), eased: true, orient: false) } }
                 Divider()
