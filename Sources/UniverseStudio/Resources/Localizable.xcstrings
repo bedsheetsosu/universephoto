@@ -15588,6 +15588,78 @@
           }
         }
       }
+    },
+    "Colour cycle": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Farbwechsel"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Colour cycle"
+          }
+        }
+      }
+    },
+    "%@ s, rainbow": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ s, Regenbogen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ s, rainbow"
+          }
+        }
+      }
+    },
+    "%@ s, pulse to brush colour": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ s, zur Pinselfarbe pulsieren"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ s, pulse to brush colour"
+          }
+        }
+      }
+    },
+    "Strokes, shapes and text change colour in a loop; pixels keep theirs": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Striche, Formen und Text wechseln im Loop die Farbe; Pixel behalten ihre"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Strokes, shapes and text change colour in a loop; pixels keep theirs"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
