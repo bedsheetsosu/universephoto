@@ -65,6 +65,10 @@ private struct PenWindowButton: View {
     let title:String, id:String
     var body: some View { Button(title) { openWindow(id:id); NSApp.activate() } }
 }
+private struct PixelGridToggle: View {
+    @AppStorage("pixelGrid") private var on = true
+    var body: some View { Toggle(L("Pixel grid"),isOn:$on) }
+}
 private struct NavigatorToggle: View {
     @AppStorage("showNavigator") private var on = false
     var body: some View { Toggle(L("Navigator"),isOn:$on).keyboardShortcut("n",modifiers:[.command,.option]) }
@@ -116,6 +120,7 @@ struct StudioCommands: Commands {
             Button(L("Replace color") + "…") { studio.replaceColorDialog = true }.disabled(!studio.canEdit || studio.activeLayer?.isAdjustmentLayer == true)
             Button(L("Auto contrast")) { if !studio.autoContrast() { studio.message = "Nothing to adjust on this layer." } }.keyboardShortcut("l",modifiers:[.command,.option,.shift]).disabled(!studio.canEdit)
             Divider()
+            Button(L("Duplicate image")) { studio.duplicateImage() }
             Button(L("Image size…")) { studio.imageDialog = .imageSize }.keyboardShortcut("i",modifiers:[.command,.option])
             Button(L("Canvas size…")) { studio.imageDialog = .canvasSize }.keyboardShortcut("c",modifiers:[.command,.option])
             Divider()
@@ -172,6 +177,7 @@ struct StudioCommands: Commands {
             Button(L("Zoom out")) { studio.zoom = max(0.1,studio.zoom/1.2) }.keyboardShortcut("-")
             Button(L("Mirror canvas")) { studio.mirrored.toggle() }.keyboardShortcut("h",modifiers:.shift)
             NavigatorToggle()
+            PixelGridToggle()
             Button(L("Command search")) { studio.commandSearch = true }.keyboardShortcut("p",modifiers:[.command,.shift])
         }
         CommandMenu(L("Animation")) {

@@ -71,6 +71,12 @@ struct ArtworkCanvas: NSViewRepresentable {
         let rendered: CGImage?
         if let active = active ?? s.distortStroke, s.layers.indices.contains(s.selectedLayer) { if s.maskEditing || s.activeLayer?.isAdjustmentLayer == true { var previewLayers = s.composite(s.layers);previewLayers[s.selectedLayer].mask = (previewLayers[s.selectedLayer].mask ?? []) + [active];rendered = Renderer.render(layers:previewLayers,width:s.width,height:s.height,cache:layerCache) } else { rendered = Renderer.render(layers:s.composite(s.layers),width:s.width,height:s.height,preview:active,previewLayer:s.selectedLayer,cache:layerCache) } } else { rendered = committedImage() }
         if let rendered { drawImage(rendered,in:ctx,rect:doc) }
+        if Studio.pixelGridOn, let lines = Studio.pixelGridLines(visible:bounds.applying(geometry.transform.inverted()),width:s.width,height:s.height,scale:geometry.scale) {
+            ctx.saveGState(); ctx.setStrokeColor(CGColor(gray:0.5,alpha:0.35)); ctx.setLineWidth(1 / max(geometry.scale,0.01))
+            for x in lines.xs { ctx.move(to:CGPoint(x:x,y:lines.ys.first ?? 0)); ctx.addLine(to:CGPoint(x:x,y:lines.ys.last ?? 0)) }
+            for y in lines.ys { ctx.move(to:CGPoint(x:lines.xs.first ?? 0,y:y)); ctx.addLine(to:CGPoint(x:lines.xs.last ?? 0,y:y)) }
+            ctx.strokePath(); ctx.restoreGState()
+        }
         if grid { ctx.setStrokeColor(CGColor(gray:0.4,alpha:0.25)); ctx.setLineWidth(0.5 / max(geometry.scale,0.01)); for x in stride(from:0,through:s.width,by:50) { ctx.move(to:CGPoint(x:x,y:0)); ctx.addLine(to:CGPoint(x:x,y:s.height)) }; for y in stride(from:0,through:s.height,by:50) { ctx.move(to:CGPoint(x:0,y:y)); ctx.addLine(to:CGPoint(x:s.width,y:y)) }; ctx.strokePath() }
         if s.transformMode, let corners = s.transformCorners() {
             let line = 1/max(geometry.scale,0.01), h = 4*line
