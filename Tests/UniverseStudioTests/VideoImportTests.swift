@@ -33,3 +33,20 @@ struct VideoImportTests {
         s.undo(); #expect(s.document().frames.count <= 1 && s.layers.count == 2)
     }
 }
+
+struct VideoSoundTests {
+    @Test func soundComesAlongWhenThereIsOne() async throws {
+        let dir = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
+        try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: dir) }
+        let cache = try AudioCache(track: AudioTrack(name: "t", data: testWAV(), fileExtension: "wav"))
+        let f = [ArtLayer(name: "x")]
+        let withSound = dir.appendingPathComponent("a.mp4"), silent = dir.appendingPathComponent("b.mp4")
+        try await ImageFiles.exportVideo(frames: Array(repeating: f, count: 8), width: 16, height: 16, fps: 8, sound: (cache.url, 0, 1), url: withSound)
+        try await ImageFiles.exportVideo(frames: Array(repeating: f, count: 8), width: 16, height: 16, fps: 8, url: silent)
+        let data = try await VideoImport.sound(url: withSound)
+        #expect((data?.count ?? 0) > 100)
+        #expect(try AudioCache(track: AudioTrack(name: "v", data: data!, fileExtension: "m4a")).duration > 0.5)
+        #expect(try await VideoImport.sound(url: silent) == nil)
+    }
+}

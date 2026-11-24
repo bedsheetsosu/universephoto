@@ -19,6 +19,19 @@ enum VideoImport {
         return (times, added)
     }
 
+    /// The clip's sound as M4A data (nil when it has none).
+    static func sound(url: URL) async throws -> Data? {
+        let asset = AVURLAsset(url: url)
+        guard try await !asset.loadTracks(withMediaType: .audio).isEmpty,
+              let session = AVAssetExportSession(asset: asset, presetName: AVAssetExportPresetAppleM4A) else { return nil }
+        let out = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString + ".m4a")
+        defer { try? FileManager.default.removeItem(at: out) }
+        session.outputURL = out; session.outputFileType = .m4a
+        await withCheckedContinuation { (c: CheckedContinuation<Void, Never>) in session.exportAsynchronously { c.resume() } }
+        guard session.status == .completed else { return nil }
+        return try Data(contentsOf: out)
+    }
+
     static func images(url: URL, times: [Double], maxSide: Int) async throws -> [CGImage] {
         let asset = AVURLAsset(url: url)
         let gen = AVAssetImageGenerator(asset: asset)
@@ -68,8 +81,13 @@ extension Studio {
                 let duration = try await AVURLAsset(url: url).load(.duration).seconds
                 let plan = VideoImport.plan(holds: holds, fps: fps, duration: duration)
                 let images = try await VideoImport.images(url: url, times: plan.times, maxSide: side)
-                if !importVideoFrames(images, added: plan.added, name: L("Video") + " · " + url.deletingPathExtension().lastPathComponent) {
-                    report(StudioError.message("The video could not be read."))
+                let name = url.deletingPathExtension().lastPathComponent
+                if !importVideoFrames(images, added: plan.added, name: L("Video") + " · " + name) {
+                    report(StudioError.message("The video could not be read.")); return
+                }
+                // Its sound becomes the sound track (from frame 1), unless one is there already.
+                if audio == nil, let data = try await VideoImport.sound(url: url), data.count <= AudioTrack.maxBytes {
+                    setAudio(data: data, name: name, fileExtension: "m4a")
                 }
             } catch { report(error) }
         }
