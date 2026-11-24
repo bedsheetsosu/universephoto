@@ -236,6 +236,7 @@ struct OnionOptionsButton: View {
     @AppStorage("onionAfter") private var after = 0
     @AppStorage("onionOpacity") private var opacity = 0.25
     @AppStorage("onionTinted") private var tinted = true
+    @AppStorage("onionActiveOnly") private var activeOnly = false
     @State private var open = false
     var body: some View {
         Button { open.toggle() } label: { Image(systemName: "chevron.down").font(.system(size: 8, weight: .semibold)).frame(width: 18, height: 24) }
@@ -247,9 +248,10 @@ struct OnionOptionsButton: View {
                     Stepper(LF("After: %d", after), value: $after, in: 0...5)
                     HStack { Text(L("Opacity")); Slider(value: $opacity, in: 0.05...0.8); Text("\(Int(opacity * 100)) %").monospacedDigit().frame(width: 38, alignment: .trailing) }
                     Toggle(L("Tint: before red, after green"), isOn: $tinted)
+                    Toggle(L("Only the active layer"), isOn: $activeOnly)
                 }
                 .font(.system(size: 11)).padding(14).frame(width: 260)
-                .onChange(of: [Double(before), Double(after), opacity, tinted ? 1 : 0]) { _, _ in s.objectWillChange.send() }
+                .onChange(of: [Double(before), Double(after), opacity, tinted ? 1 : 0, activeOnly ? 1 : 0]) { _, _ in s.objectWillChange.send() }
             }
     }
 }

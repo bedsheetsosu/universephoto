@@ -14868,6 +14868,24 @@
           }
         }
       }
+    },
+    "Only the active layer": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nur die aktive Ebene"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Only the active layer"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

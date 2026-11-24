@@ -33,3 +33,16 @@ struct OnionSkinTests {
         #expect(b.bytes[2 * 4 + 3] == 0, "transparent stays transparent")
     }
 }
+
+struct OnionActiveLayerTests {
+    @Test func onlyTheActiveLayerWhenAsked() {
+        var hidden = ArtLayer(name: "char"); hidden.visible = false
+        let frame = [ArtLayer(name: "bg"), hidden]
+        var o = OnionSettings()
+        #expect(o.ghostLayers(frame, activeID: hidden.id).count == 2)
+        o.activeOnly = true
+        let g = o.ghostLayers(frame, activeID: hidden.id)
+        #expect(g.map(\.name) == ["char"] && !g[0].visible, "hidden stays hidden")
+        #expect(o.ghostLayers(frame, activeID: UUID()).isEmpty)
+    }
+}

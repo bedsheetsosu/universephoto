@@ -126,7 +126,7 @@ struct ArtworkCanvas: NSViewRepresentable {
         if s.onionSkin && !s.isPlaying {
             let o = OnionSettings(defaults:.standard)
             for g in o.ghosts(current:s.frameIndex,count:s.frames.count,loop:s.loop) where s.frames.indices.contains(g.index) {
-                if let ghost = onionImage(s.frames[g.index],before:g.isBefore,settings:o,studio:s) { ctx.setAlpha(g.alpha); drawImage(ghost,in:ctx,rect:doc); ctx.setAlpha(1) }
+                if let ghost = onionImage(o.ghostLayers(s.frames[g.index],activeID:s.activeLayer?.id),before:g.isBefore,settings:o,studio:s) { ctx.setAlpha(g.alpha); drawImage(ghost,in:ctx,rect:doc); ctx.setAlpha(1) }
             }
         }
         let rendered: CGImage?

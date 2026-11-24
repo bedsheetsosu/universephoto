@@ -5,6 +5,8 @@ import Foundation
 /// and green (after), fading with distance. Settings live in user defaults (Timeline → onion menu).
 struct OnionSettings: Equatable {
     var before = 1, after = 0, opacity = 0.25, tinted = true
+    /// Ghost only the active layer (0.94), so backgrounds and shared layers don't double up.
+    var activeOnly = false
 
     static let beforeColor = CGColor(srgbRed: 0.93, green: 0.30, blue: 0.36, alpha: 1)
     static let afterColor = CGColor(srgbRed: 0.22, green: 0.72, blue: 0.48, alpha: 1)
@@ -18,6 +20,13 @@ struct OnionSettings: Equatable {
         after = d.object(forKey: "onionAfter") as? Int ?? 0
         opacity = d.object(forKey: "onionOpacity") as? Double ?? 0.25
         tinted = d.object(forKey: "onionTinted") as? Bool ?? true
+        activeOnly = d.object(forKey: "onionActiveOnly") as? Bool ?? false
+    }
+
+    /// The layers drawn as a ghost: all, or just the active one (when that frame has it).
+    func ghostLayers(_ frame: [ArtLayer], activeID: UUID?) -> [ArtLayer] {
+        guard activeOnly, let activeID else { return frame }
+        return frame.filter { $0.id == activeID }.map { var l = $0; l.clipped = false; return l }
     }
 
     struct Ghost: Equatable { var index: Int; var alpha: Double; var isBefore: Bool }
