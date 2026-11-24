@@ -15300,6 +15300,60 @@
           }
         }
       }
+    },
+    "Follow path": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pfad folgen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Follow path"
+          }
+        }
+      }
+    },
+    "%@ s, turning along": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ s, mitdrehen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ s, turning along"
+          }
+        }
+      }
+    },
+    "Draw a route with the pen tool first": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zuerst mit dem Zeichenstift einen Weg zeichnen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Draw a route with the pen tool first"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

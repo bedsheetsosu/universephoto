@@ -201,6 +201,11 @@ struct StudioCommands: Commands {
             Button(L("Hold frame shorter")) { studio.nudgeHold(-1) }.keyboardShortcut(.downArrow,modifiers:.option)
             Button(L("Import frames…")) { studio.importFramesPanel() }
             Button(L("Import video for tracing…")) { studio.importVideoPanel() }
+            Menu(L("Follow path")) {
+                ForEach([1.0, 2.0, 4.0], id: \.self) { sec in Button(LF("%@ s", String(Int(sec)))) { studio.followPath(count: max(2, Int((studio.fps * sec).rounded())), eased: true, orient: false) } }
+                Divider()
+                ForEach([1.0, 2.0, 4.0], id: \.self) { sec in Button(LF("%@ s, turning along", String(Int(sec)))) { studio.followPath(count: max(2, Int((studio.fps * sec).rounded())), eased: true, orient: true) } }
+            }.disabled(studio.routePath() == nil).help(L("Draw a route with the pen tool first"))
             Menu(L("Motion preset")) {
                 ForEach(MotionPreset.allCases) { p in
                     Menu { ForEach([0.5, 1.0, 2.0], id: \.self) { sec in Button(LF("%@ s", sec == 0.5 ? "0.5" : String(Int(sec)))) { studio.applyMotionPreset(p, count: max(2, Int((studio.fps * sec).rounded()))) } } }
