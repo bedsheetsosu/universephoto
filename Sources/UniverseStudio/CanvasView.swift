@@ -12,7 +12,25 @@ struct ArtworkCanvas: NSViewRepresentable {
     weak var studio: Studio?
     override func setFrameSize(_ newSize: NSSize) {
         super.setFrameSize(newSize)
-        if let s = studio, s.canvasViewSize != newSize { DispatchQueue.main.async { s.canvasViewSize = newSize } }
+        // Published once the size has settled: during an animated layout change (focus mode, timeline)
+        // a per-frame update would re-render the whole workspace every frame.
+        sizeSettle?.cancel()
+        let work = DispatchWorkItem { [weak self] in
+            guard let self, let s = self.studio, s.canvasViewSize != self.bounds.size else { return }
+            s.canvasViewSize = self.bounds.size
+        }
+        sizeSettle = work
+        DispatchQueue.main.asyncAfter(deadline: .now() + Self.sizeSettleDelay, execute: work)
+    }
+    static let sizeSettleDelay = 0.12
+    private var sizeSettle: DispatchWorkItem?
+    /// The transparency checkerboard of the current document size, drawn once instead of per square.
+    private var checker: (size: CGSize, image: CGImage)?
+    private func checkerImage(width: Int, height: Int) -> CGImage? {
+        let size = CGSize(width: width, height: height)
+        if let checker, checker.size == size { return checker.image }
+        guard let image = Renderer.checkerboard(width: width, height: height) else { return nil }
+        checker = (size, image); return image
     }
     var grid = false; var rulers = true; var snap = false;var backdrop:NSColor = .windowBackgroundColor
     private var cachedLayers: [ArtLayer] = []; private var cachedSize = CGSize.zero
@@ -64,9 +82,9 @@ struct ArtworkCanvas: NSViewRepresentable {
         ctx.saveGState(); ctx.clip(to:doc)
         // Small reusable checker tile avoids one view per square.
         let cell = 16.0
-        ctx.setFillColor(CGColor(gray:0.97,alpha:1)); ctx.fill(doc)
-        ctx.setFillColor(CGColor(gray:0.88,alpha:1))
-        for y in stride(from:0,to:s.height,by:Int(cell)) { for x in stride(from:0,to:s.width,by:Int(cell)) where (x/Int(cell)+y/Int(cell)) % 2 == 0 { ctx.fill(CGRect(x:x,y:y,width:Int(cell),height:Int(cell))) } }
+        if let board = checkerImage(width:s.width,height:s.height) { ctx.interpolationQuality = .none; drawImage(board,in:ctx,rect:doc); ctx.interpolationQuality = .default }
+        else { ctx.setFillColor(CGColor(gray:0.97,alpha:1)); ctx.fill(doc) }
+        _ = cell
         if s.onionSkin && s.frameIndex > 0 && s.frames.indices.contains(s.frameIndex-1), let onion = Renderer.render(layers:s.composite(s.frames[s.frameIndex-1]),width:s.width,height:s.height) { ctx.setAlpha(0.2); drawImage(onion,in:ctx,rect:doc); ctx.setAlpha(1) }
         let rendered: CGImage?
         if let active = active ?? s.distortStroke, s.layers.indices.contains(s.selectedLayer) { if s.maskEditing || s.activeLayer?.isAdjustmentLayer == true { var previewLayers = s.composite(s.layers);previewLayers[s.selectedLayer].mask = (previewLayers[s.selectedLayer].mask ?? []) + [active];rendered = Renderer.render(layers:previewLayers,width:s.width,height:s.height,cache:layerCache) } else { rendered = Renderer.render(layers:s.composite(s.layers),width:s.width,height:s.height,preview:active,previewLayer:s.selectedLayer,cache:layerCache) } } else { rendered = committedImage() }

@@ -12,3 +12,15 @@ struct FocusModeTests {
         #expect(FocusMode.theme(appearance: "system", accent: "rose", systemDark: true).isDark)
     }
 }
+
+struct CheckerboardTests {
+    @Test func cachedBoardHasTwoGreysInSixteenPixelSquares() throws {
+        let img = try #require(Renderer.checkerboard(width: 40, height: 20))
+        let b = try #require(PixelOps.bitmap(img))
+        func grey(_ x: Int, _ y: Int) -> UInt8 { b.bytes[(y * 40 + x) * 4] }
+        #expect(img.width == 40 && img.height == 20)
+        #expect(grey(2, 2) != grey(18, 2), "neighbouring squares differ")
+        #expect(grey(2, 2) == grey(34, 2), "every other square matches")
+        #expect(Renderer.checkerboard(width: 0, height: 5) == nil)
+    }
+}

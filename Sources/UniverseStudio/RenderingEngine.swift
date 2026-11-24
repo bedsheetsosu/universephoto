@@ -122,6 +122,16 @@ enum Renderer {
         ctx.translateBy(x: -Double(width)/2, y: -Double(height)/2)
     }
     /// The layer picture with its transform applied, in document pixels.
+    /// Light/grey 16 px checkerboard (top-left square grey), the canvas's transparency backdrop.
+    static func checkerboard(width: Int, height: Int, cell: Int = 16) -> CGImage? {
+        guard width > 0, height > 0, let ctx = context(width: width, height: height) else { return nil }
+        ctx.setFillColor(CGColor(gray: 0.97, alpha: 1)); ctx.fill(CGRect(x: 0, y: 0, width: width, height: height))
+        ctx.setFillColor(CGColor(gray: 0.88, alpha: 1))
+        for y in stride(from: 0, to: height, by: cell) { for x in stride(from: 0, to: width, by: cell) where (x / cell + y / cell) % 2 == 0 {
+            ctx.fill(CGRect(x: x, y: y, width: cell, height: cell))
+        } }
+        return ctx.makeImage()
+    }
     static func placed(_ image: CGImage, transform: LayerTransform, width: Int, height: Int) -> CGImage? {
         if transform == LayerTransform() { return image }
         guard let ctx = context(width: width, height: height) else { return nil }

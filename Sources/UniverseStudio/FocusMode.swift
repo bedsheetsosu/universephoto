@@ -5,6 +5,7 @@ import SwiftUI
 /// that can sit anywhere – on a second screen, too. A small pill in the corner leads back.
 enum FocusMode {
     static let windowID = "focusPanels"
+    static let windowDelay = 0.4
     /// Theme from the stored appearance settings, for windows outside the workspace.
     static func theme(appearance: String, accent: String, systemDark: Bool) -> PhotoTheme {
         PhotoTheme(isDark: appearance == "dark" || (appearance == "system" && systemDark), accent: PhotoTheme.accent(accent))
@@ -18,7 +19,10 @@ struct FocusWindowSync: ViewModifier {
     @Environment(\.dismissWindow) private var dismissWindow
     func body(content: Content) -> some View {
         content.onChange(of: s.focusMode) { _, on in
-            if on { openWindow(id: FocusMode.windowID) } else { dismissWindow(id: FocusMode.windowID) }
+            if on {
+                // Opened after the layout animation, so building the window doesn't stall it.
+                DispatchQueue.main.asyncAfter(deadline: .now() + FocusMode.windowDelay) { if s.focusMode { openWindow(id: FocusMode.windowID) } }
+            } else { dismissWindow(id: FocusMode.windowID) }
         }
     }
 }
