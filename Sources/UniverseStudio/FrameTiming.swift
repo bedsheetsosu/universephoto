@@ -86,3 +86,24 @@ extension Studio {
         fps = value; changed()
     }
 }
+
+extension Studio {
+    /// Appends the frames of the play range (all without one) backwards after it – without
+    /// repeating the turning points – so exports loop forth and back like ping-pong playback.
+    @discardableResult func bakePingPong() -> Int {
+        let r = Playback.clamp(playRange, count: frames.count) ?? 0...max(0, frames.count - 1)
+        guard r.count > 2 else { return 0 }
+        stopPlayback(); checkpoint("Bake ping-pong")
+        if frames.indices.contains(frameIndex) { frames[frameIndex] = layers }
+        let back = Array(r.dropFirst().dropLast().reversed())
+        let copies = back.map { frames[$0] }, holds = back.map { hold($0) }
+        let at = r.upperBound + 1
+        metaInsert(at: at, holds: holds)
+        frames.insert(contentsOf: copies, at: at)
+        if playRange != nil { playRange = r.lowerBound...(r.upperBound + copies.count) }
+        pingPong = false
+        layers = frames[frameIndex]
+        changed()
+        return copies.count
+    }
+}

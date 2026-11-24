@@ -14724,6 +14724,42 @@
           }
         }
       }
+    },
+    "Bake ping-pong into frames": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ping-Pong in Frames umwandeln"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bake ping-pong into frames"
+          }
+        }
+      }
+    },
+    "Bake ping-pong": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ping-Pong umwandeln"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bake ping-pong"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
