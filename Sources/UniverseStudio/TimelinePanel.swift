@@ -5,6 +5,9 @@ struct TimelinePanel: View {
     @Environment(\.photoTheme) private var theme
     @AppStorage("timelineZoom") private var zoom = 1.0
     @AppStorage("timelineExposure") private var exposure = false
+    @AppStorage("fpsKeepTiming") private var keepTiming = true
+    @State private var askFPS = false
+    @State private var fpsText = ""
     @State private var markerIndex: Int?
     @State private var markerText = ""
     var body: some View {
@@ -19,6 +22,11 @@ struct TimelinePanel: View {
         }
         .background(theme.deep)
         .photoSurface(radius: 18)
+        .alert(L("Frame rate"), isPresented: $askFPS) {
+            TextField("1–120", text: $fpsText)
+            Button(L("OK")) { if let v = Double(fpsText.replacingOccurrences(of: ",", with: ".")) { s.changeFPS(v, keepTiming: keepTiming) } }
+            Button(L("Cancel"), role: .cancel) {}
+        } message: { Text(L("Frames per second, 1 to 120.")) }
         .alert(L("Frame marker"), isPresented: Binding(get: { markerIndex != nil }, set: { if !$0 { markerIndex = nil } })) {
             TextField(L("Name, e.g. walk"), text: $markerText)
             Button(L("OK")) { if let i = markerIndex { s.setLabel(markerText, for: i) }; markerIndex = nil }
@@ -48,11 +56,15 @@ struct TimelinePanel: View {
             }
             timelineToggle(L("Loop"), symbol: "repeat", value: $s.loop).help(L("Loop"))
             timelineToggle(L("Ping-pong"), symbol: "arrow.left.arrow.right", value: $s.pingPong).help(L("Play forth and back"))
-            Picker(L("Frame rate"), selection: $s.fps) {
-                ForEach([6.0, 8, 12, 15, 24, 30, 60], id: \.self) { Text(LF("%d FPS", Int($0))).tag($0) }
-            }
-            .labelsHidden().frame(width: 80).controlSize(.small)
-            .onChange(of: s.fps) { _, _ in s.stopPlayback(); s.changed() }
+            Menu {
+                ForEach(Studio.fpsChoices, id: \.self) { f in
+                    Button { s.changeFPS(f, keepTiming: keepTiming) } label: { if f == s.fps { Label(LF("%d FPS", Int(f)), systemImage: "checkmark") } else { Text(LF("%d FPS", Int(f))) } }
+                }
+                Divider()
+                Button(L("Other frame rate…")) { fpsText = String(Int(s.fps)); askFPS = true }
+                Toggle(L("Keep timing (adjust holds)"), isOn: $keepTiming)
+            } label: { Text(LF("%d FPS", Int(s.fps))).monospacedDigit() }
+            .menuStyle(.borderlessButton).fixedSize().controlSize(.small).help(L("Frame rate"))
             Rectangle().fill(theme.outline).frame(width: 1, height: 17)
             Button { s.blankFrame() } label: { Label(L("Blank"), systemImage: "plus") }
                 .buttonStyle(PhotoButtonStyle()).help(L("Blank"))

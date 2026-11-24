@@ -66,3 +66,23 @@ extension Studio {
     func firstFrame() { selectFrame(Playback.clamp(playRange, count: frames.count)?.lowerBound ?? 0) }
     func lastFrame() { selectFrame(Playback.clamp(playRange, count: frames.count)?.upperBound ?? max(0, frames.count - 1)) }
 }
+
+extension Studio {
+    static let fpsChoices: [Double] = [6, 8, 10, 12, 15, 24, 25, 30, 48, 50, 60]
+
+    /// Holds for a new frame rate so every frame keeps its length on screen (rounded, ≥ 1).
+    static func retimed(_ holds: [Int], from old: Double, to new: Double) -> [Int] {
+        holds.map { max(1, Int((Double(max(1, $0)) * new / max(1, old)).rounded())) }
+    }
+
+    /// Sets the frame rate (1…120). `keepTiming` scales the holds so the animation keeps its length.
+    func changeFPS(_ new: Double, keepTiming: Bool) {
+        let value = max(1, min(120, new.rounded()))
+        guard value != fps else { return }
+        stopPlayback(); checkpoint("Frame rate")
+        if keepTiming && !frames.isEmpty {
+            frameHolds = Self.retimed((0..<frames.count).map { hold($0) }, from: fps, to: value); normalizeHolds()
+        }
+        fps = value; changed()
+    }
+}

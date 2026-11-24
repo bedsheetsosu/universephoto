@@ -14598,6 +14598,60 @@
           }
         }
       }
+    },
+    "Other frame rate…": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Andere Bildrate …"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Other frame rate…"
+          }
+        }
+      }
+    },
+    "Keep timing (adjust holds)": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Timing behalten (Dauern anpassen)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keep timing (adjust holds)"
+          }
+        }
+      }
+    },
+    "Frames per second, 1 to 120.": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bilder pro Sekunde, 1 bis 120."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Frames per second, 1 to 120."
+          }
+        }
+      }
     }
   },
   "version": "1.0"
