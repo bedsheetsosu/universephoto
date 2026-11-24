@@ -264,6 +264,7 @@ struct ArtworkCanvas: NSViewRepresentable {
             if s.brushSizeJitter > 0 { stroke.sizeJitter = s.brushSizeJitter }
             if s.brushHueJitter > 0 { stroke.hueJitter = s.brushHueJitter }
         }
+        if s.tool == .brush && !s.eraser && !paintsMask && s.brushBlend != .normal { stroke.blend = s.brushBlend }
         if [.brush,.eraser].contains(s.tool), let code = s.symmetry.code(segments:s.symmetrySegments) {
             let c = localPoint(s.symmetryPivot); stroke.symmetry = code; stroke.symmetryX = c.x; stroke.symmetryY = c.y
         }

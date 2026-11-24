@@ -53,6 +53,8 @@ struct InkStroke: Codable, Equatable, Identifiable, Sendable {
     /// Brush dynamics (0.58), each 0…1: dabs thrown off the path (× brush size), random dab size,
     /// random hue shift (up to ±60°). Any of them makes the round brush stamp dabs.
     var scatter: Double? = nil
+    /// Brush blend mode (0.64): how the stroke mixes with the layer's pixels; nil = normal.
+    var blend: LayerBlend? = nil
     /// Gradient (0.60): colour stops; nil = colour → secondary colour, as before.
     var gradientStops: [GradientStop]? = nil
     var sizeJitter: Double? = nil

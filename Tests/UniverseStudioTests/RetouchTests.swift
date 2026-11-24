@@ -242,4 +242,17 @@ import CoreGraphics
         XCTAssertEqual(try XCTUnwrap(s.selectionMask())[5 * 40 + 5], 255)
         XCTAssertEqual(Studio.maskCombine([.shift, .option]), .intersect)
     }
+
+    func testBrushBlendModesMixWithTheLayer() throws {
+        for (mode, expect) in [(LayerBlend.normal, (0.0, 0.0, 1.0)), (.multiply, (0.0, 0.0, 0.0)), (.screen, (1.0, 0.0, 1.0))] {
+            let s = studio()
+            fill(s, CGRect(x: 0, y: 0, width: 40, height: 20), red)
+            var b = InkStroke(points: [InkPoint(x: 5, y: 10, pressure: 1), InkPoint(x: 35, y: 10, pressure: 1)], color: blue, width: 8)
+            b.blend = mode == .normal ? nil : mode
+            s.add(b)
+            let p = try pixel(s, CGPoint(x: 20, y: 10))
+            XCTAssertEqual(p.red, expect.0, accuracy: 0.03, "\(mode)"); XCTAssertEqual(p.green, expect.1, accuracy: 0.03, "\(mode)"); XCTAssertEqual(p.blue, expect.2, accuracy: 0.03, "\(mode)")
+            XCTAssertGreaterThan(try pixel(s, CGPoint(x: 20, y: 2)).red, 0.95, "outside the stroke the layer stays")
+        }
+    }
 }
