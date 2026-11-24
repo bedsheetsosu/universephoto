@@ -50,6 +50,10 @@ struct BrushPreset: Codable, Identifiable {
     @Published var textLineSpacing = 1.2
     @Published var color = CodableColor.black
     @Published var secondaryColor = CodableColor.white
+    /// Gradient tool: own colour stops, nil = foreground → background colour. Kept between launches.
+    @Published var gradientStops: [GradientStop]? = (UserDefaults.standard.data(forKey: "gradientStops")).flatMap { try? JSONDecoder().decode([GradientStop].self, from: $0) } {
+        didSet { UserDefaults.standard.set(gradientStops.flatMap { try? JSONEncoder().encode($0) }, forKey: "gradientStops") }
+    }
     /// Gradient tool: linear, radial or reflected (mirrored around the start point).
     @Published var gradientStyle = GradientStyle.linear
     /// Rectangle tool: which shape, its value (corner radius / corners / points), filled or outlined.

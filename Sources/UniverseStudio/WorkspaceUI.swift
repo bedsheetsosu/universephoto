@@ -139,6 +139,7 @@ struct Workspace: View {
             }
             if [.rectangle,.ellipse].contains(s.tool) { Toggle(L("Filled"),isOn:$s.shapeFill).toggleStyle(.checkbox).controlSize(.mini) }
             if s.tool == .line { Toggle(L("Arrow"),isOn:$s.lineArrow).toggleStyle(.checkbox).controlSize(.mini) }
+            if s.tool == .gradient { GradientButton().environmentObject(s) }
             if s.tool == .gradient { Picker(L("Gradient"),selection:$s.gradientStyle) { ForEach(GradientStyle.allCases,id:\.self) { Label(L($0.title),systemImage:$0.symbol).tag($0) } }.pickerStyle(.segmented).labelsHidden().frame(width:150).controlSize(.mini).help(L("Gradient")) }
             if s.tool == .dodge { Picker(L("Mode"),selection:$s.toneMode) { ForEach(Studio.ToneMode.allCases) { m in Image(systemName:m.symbol).help(L(m.title)).accessibilityLabel(L(m.title)).tag(m) } }.pickerStyle(.segmented).labelsHidden().frame(width:150).controlSize(.mini) }
             if s.tool == .focus { Picker(L("Mode"),selection:$s.sharpenMode) { Text(L("Blur")).tag(false);Text(L("Sharpen")).tag(true) }.pickerStyle(.segmented).labelsHidden().frame(width:130).controlSize(.mini) }

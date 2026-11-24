@@ -317,20 +317,26 @@ enum Renderer {
                 drawImage(image, in: context, rect: CGRect(x: 0, y: 0, width: image.width, height: image.height))
             }
         case "gradient", "gradientRadial", "gradientReflected":
-            let a = stroke.color.cgColor, b = (stroke.secondaryColor ?? .white).cgColor, space = CGColorSpace(name: CGColorSpace.sRGB)
+            let space = CGColorSpace(name: CGColorSpace.sRGB)
+            let stops = (stroke.gradientStops?.count ?? 0) >= 2 ? stroke.gradientStops!.sorted { $0.location < $1.location }
+                : [GradientStop(color: stroke.color, location: 0), GradientStop(color: stroke.secondaryColor ?? .white, location: 1)]
+            func gradient(_ list: [GradientStop]) -> CGGradient? {
+                CGGradient(colorsSpace: space, colors: list.map(\.color.cgColor) as CFArray, locations: list.map { CGFloat(max(0, min(1, $0.location))) })
+            }
             let both: CGGradientDrawingOptions = [.drawsBeforeStartLocation, .drawsAfterEndLocation]
             switch stroke.kind {
             case "gradientRadial":
-                if let g = CGGradient(colorsSpace: space, colors: [a, b] as CFArray, locations: [0, 1]) {
+                if let g = gradient(stops) {
                     context.drawRadialGradient(g, startCenter: p, startRadius: 0, endCenter: p, endRadius: max(1, hypot(q.x - p.x, q.y - p.y)), options: both)
                 }
             case "gradientReflected":
-                // Start colour on the drag's start, the second colour on both ends of the mirrored line.
-                if let g = CGGradient(colorsSpace: space, colors: [b, a, b] as CFArray, locations: [0, 0.5, 1]) {
+                // The stops run from the drag's start out to both ends of the mirrored line.
+                let mirrored = stops.reversed().map { GradientStop(color: $0.color, location: 0.5 - $0.location / 2) } + stops.map { GradientStop(color: $0.color, location: 0.5 + $0.location / 2) }
+                if let g = gradient(mirrored) {
                     context.drawLinearGradient(g, start: CGPoint(x: 2 * p.x - q.x, y: 2 * p.y - q.y), end: q, options: both)
                 }
             default:
-                if let g = CGGradient(colorsSpace: space, colors: [a, b] as CFArray, locations: [0, 1]) {
+                if let g = gradient(stops) {
                     context.drawLinearGradient(g, start: p, end: q, options: both)
                 }
             }

@@ -53,12 +53,15 @@ struct InkStroke: Codable, Equatable, Identifiable, Sendable {
     /// Brush dynamics (0.58), each 0…1: dabs thrown off the path (× brush size), random dab size,
     /// random hue shift (up to ±60°). Any of them makes the round brush stamp dabs.
     var scatter: Double? = nil
+    /// Gradient (0.60): colour stops; nil = colour → secondary colour, as before.
+    var gradientStops: [GradientStop]? = nil
     var sizeJitter: Double? = nil
     var hueJitter: Double? = nil
     var hasDynamics: Bool { (scatter ?? 0) > 0 || (sizeJitter ?? 0) > 0 || (hueJitter ?? 0) > 0 }
     /// Freehand kinds: the pressure brush and the retouch brushes (smoothed, every point kept).
     var isFreehand: Bool { kind == nil || ["dodge", "burn", "saturate", "desaturate", "blurBrush", "sharpenBrush", "clone", "heal", "smudge", "liquify"].contains(kind!) }
 }
+struct GradientStop: Codable, Equatable, Hashable, Sendable { var color: CodableColor; var location: Double }
 enum LayerBlend: String, Codable, CaseIterable, Sendable {
     case normal, multiply, screen, overlay, darken, lighten
     case colorBurn, linearBurn, colorDodge, linearDodge, softLight, hardLight, difference, exclusion, hue, saturation, color, luminosity
