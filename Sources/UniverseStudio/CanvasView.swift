@@ -31,6 +31,7 @@ struct ArtworkCanvas: NSViewRepresentable {
     /// Selection outline being dragged: the selection at the press and the press point.
     private var selectionDrag: (CanvasSelection, CGPoint)?
     private var selectionFrameGrab: CropGrab?
+    private var rotateStart: (Double, Double)?
     private var lastRemoteScreen: CGPoint?
     private var pointer = CGPoint.zero; private var tracking: NSTrackingArea?
     override var isFlipped: Bool { true }
@@ -105,7 +106,7 @@ struct ArtworkCanvas: NSViewRepresentable {
         }
         if let r = s.selectionFrame {
             let line = 1/max(geometry.scale,0.01), h = 4*line
-            ctx.saveGState(); ctx.setStrokeColor(NSColor(PhotoTheme.mint).cgColor); ctx.setLineWidth(1.2*line); ctx.stroke(r)
+            ctx.saveGState(); ctx.concatenate(s.selectionFrameTransform); ctx.setStrokeColor(NSColor(PhotoTheme.mint).cgColor); ctx.setLineWidth(1.2*line); ctx.stroke(r)
             ctx.setFillColor(CGColor(gray:1,alpha:1))
             for x in [r.minX,r.midX,r.maxX] { for y in [r.minY,r.midY,r.maxY] where !(x == r.midX && y == r.midY) { let q = CGRect(x:x-h,y:y-h,width:2*h,height:2*h); ctx.fill(q); ctx.stroke(q) } }
             ctx.restoreGState()
@@ -201,8 +202,14 @@ struct ArtworkCanvas: NSViewRepresentable {
     private func begin(at p:CGPoint,pressure:Double,tilt:CGPoint = .zero,rotation:Double = 0) {
         guard let s = studio,!s.isPlaying else { return }; interactionBegan = false; active = nil; originalTransform = nil; start = p; previous = p
         if let frame = s.selectionFrame {
-            let d = geometry.toDocument(p), grab = Studio.frameGrab(frame,at:d,tolerance:8/max(geometry.scale,0.01))
-            if case .new = grab { s.applySelectionTransform(); needsDisplay = true; return }
+            let d = geometry.toDocument(p), tol = 8/max(geometry.scale,0.01), grab = Studio.frameGrab(frame,at:s.frameSpace(d),tolerance:tol)
+            if case .new = grab {
+                if s.selectionRotateZone(d,tolerance:tol) {
+                    s.beginSelectionRotation()
+                    rotateStart = (s.selectionAngle, atan2(d.y-s.selectionPivot.y,d.x-s.selectionPivot.x)); interactionBegan = true; return
+                }
+                s.applySelectionTransform(); needsDisplay = true; return
+            }
             selectionFrameGrab = grab; interactionBegan = true; return
         }
         if let corners = s.distortCorners {
@@ -288,7 +295,8 @@ struct ArtworkCanvas: NSViewRepresentable {
     }
     private func drag(at p:CGPoint,pressure:Double,tilt:CGPoint = .zero,rotation:Double = 0) {
         guard let s = studio, interactionBegan else { return }
-        if let g = selectionFrameGrab { s.updateSelectionFrame(Studio.frameDrag(g,to:geometry.toDocument(p),square:NSEvent.modifierFlags.contains(.shift))); needsDisplay = true; return }
+        if let g = selectionFrameGrab { s.updateSelectionFrame(Studio.frameDrag(g,to:s.frameSpace(geometry.toDocument(p)),square:NSEvent.modifierFlags.contains(.shift))); needsDisplay = true; return }
+        if let (a0,p0) = rotateStart { let d = geometry.toDocument(p); s.rotateSelectionFrame(to:a0 + (atan2(d.y-s.selectionPivot.y,d.x-s.selectionPivot.x)-p0)*180 / .pi,snap:NSEvent.modifierFlags.contains(.shift)); needsDisplay = true; return }
         if let i = distortCorner { s.moveDistortCorner(i,to:geometry.toDocument(p)); needsDisplay = true; return }
         if s.tool == .pan { s.pan.width += p.x-previous.x;s.pan.height += p.y-previous.y;previous = p;return }
         if s.tool == .crop { if let g = cropGrab { s.cropDrag(g,to:documentPoint(p),square:NSEvent.modifierFlags.contains(.shift)) }; needsDisplay = true; return }
@@ -322,7 +330,7 @@ struct ArtworkCanvas: NSViewRepresentable {
         if stroke.kind == "liquify" { s.liquify(id:stroke.id,to:q) }
         active = stroke; needsDisplay = true
     }
-    private func finish() { guard let s = studio else { return }; penGrab = nil; cropGrab = nil; distortCorner = nil; selectionDrag = nil; selectionFrameGrab = nil; if s.cropRect.map({ $0.width < 2 || $0.height < 2 }) == true { s.cropRect = nil }; if transformDrag != nil { transformDrag = nil; s.changed() }; if let stroke = active { s.add(stroke) }; if originalTransform != nil { s.changed() }; active = nil; originalTransform = nil; interactionBegan = false; needsDisplay = true }
+    private func finish() { guard let s = studio else { return }; penGrab = nil; cropGrab = nil; distortCorner = nil; selectionDrag = nil; selectionFrameGrab = nil; rotateStart = nil; if s.cropRect.map({ $0.width < 2 || $0.height < 2 }) == true { s.cropRect = nil }; if transformDrag != nil { transformDrag = nil; s.changed() }; if let stroke = active { s.add(stroke) }; if originalTransform != nil { s.changed() }; active = nil; originalTransform = nil; interactionBegan = false; needsDisplay = true }
     private func cancelInteraction() {
         if let s = studio, originalTransform != nil { s.move(moveStart,by:.zero) }
         if let s = studio, transformDrag != nil, s.layers.indices.contains(s.selectedLayer) { s.layers[s.selectedLayer].transform = transformStart }; transformDrag = nil

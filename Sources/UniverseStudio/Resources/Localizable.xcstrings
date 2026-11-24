@@ -11214,6 +11214,24 @@
           }
         }
       }
+    },
+    "Drag just outside the frame to rotate · ⇧ in 15° steps": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Knapp außerhalb des Rahmens ziehen zum Drehen · ⇧ in 15°-Schritten"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Drag just outside the frame to rotate · ⇧ in 15° steps"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

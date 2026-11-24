@@ -186,6 +186,8 @@ struct BrushPreset: Codable, Identifiable {
     /// Transform selection: the frame (document pixels) and the selection with its box at the start.
     @Published var selectionFrame: CGRect?
     var selectionFrameOriginal: (CanvasSelection, CGRect)?
+    @Published var selectionAngle = 0.0
+    var selectionPivot = CGPoint.zero
     @Published var pressureOpacity = UserDefaults.standard.bool(forKey: "pressureOpacity") { didSet { UserDefaults.standard.set(pressureOpacity, forKey: "pressureOpacity") } }
     /// Distort: the four corners (document pixels, TL TR BR BL) while it runs, and what it warps.
     @Published var distortCorners: [CGPoint]?
