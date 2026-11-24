@@ -1,4 +1,4 @@
-# UniverseStudio™ 0.73
+# UniverseStudio™ 0.73.1
 
 *Früher UniversePhoto.* Kostenlose, quelloffene macOS-Anwendung zum Zeichnen, zur Bildbearbeitung und für Frame-Animation. UniverseStudio läuft eigenständig und lokal; UniversePen ist optional. Dieser Entwicklungsstand liefert eine benutzbare Grundlage mit neuem UltraUI und klar begrenztem Funktionsumfang.
 

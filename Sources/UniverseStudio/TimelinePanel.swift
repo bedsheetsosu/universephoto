@@ -16,8 +16,12 @@ struct TimelinePanel: View {
         .background(theme.deep)
         .photoSurface(radius: 18)
     }
+    /// Full labels when there is room, icons only (with tooltips) when the inspector makes it tight.
     private var header: some View {
-        HStack(spacing: 14) {
+        ViewThatFits(in: .horizontal) { headerRow(compact: false); headerRow(compact: true) }
+    }
+    private func headerRow(compact: Bool) -> some View {
+        HStack(spacing: compact ? 9 : 14) {
             HStack(spacing: 8) {
                 Image(systemName: "film.stack").font(.system(size: 13, weight: .medium)).foregroundStyle(theme.accent)
                 Text(L("Timeline")).font(.system(size: 12, weight: .semibold)).foregroundStyle(theme.text)
@@ -29,7 +33,7 @@ struct TimelinePanel: View {
             Spacer(minLength: 8)
             timelineToggle(L("Onion Skin"), symbol: "square.3.layers.3d", value: $s.onionSkin).help(L("Onion skinning · ⌥O"))
             OnionOptionsButton()
-            timelineToggle(L("Loop"), symbol: "repeat", value: $s.loop)
+            timelineToggle(L("Loop"), symbol: "repeat", value: $s.loop).help(L("Loop"))
             timelineToggle(L("Ping-pong"), symbol: "arrow.left.arrow.right", value: $s.pingPong).help(L("Play forth and back"))
             Picker(L("Frame rate"), selection: $s.fps) {
                 ForEach([6.0, 8, 12, 15, 24, 30, 60], id: \.self) { Text(LF("%d FPS", Int($0))).tag($0) }
@@ -38,13 +42,14 @@ struct TimelinePanel: View {
             .onChange(of: s.fps) { _, _ in s.stopPlayback(); s.changed() }
             Rectangle().fill(theme.outline).frame(width: 1, height: 17)
             Button { s.blankFrame() } label: { Label(L("Blank"), systemImage: "plus") }
-                .buttonStyle(PhotoButtonStyle())
+                .buttonStyle(PhotoButtonStyle()).help(L("Blank"))
             Button { s.addFrame() } label: { Label(L("Duplicate"), systemImage: "square.on.square") }
                 .buttonStyle(PhotoButtonStyle()).help(L("Duplicate frame · ⇧F"))
             Button { s.removeFrame() } label: { Image(systemName: "trash") }
                 .buttonStyle(PhotoButtonStyle()).disabled(s.frames.count < 2).help(L("Delete frame")).accessibilityLabel(L("Delete frame"))
         }
-        .font(.system(size: 10, weight: .medium)).padding(.horizontal, 16).frame(height: 47)
+        .font(.system(size: 10, weight: .medium)).lineLimit(1).padding(.horizontal, 16).frame(height: 47)
+        .modifier(CompactLabels(compact: compact))
     }
     private var playbackControls: some View {
         HStack(spacing: 1) {
@@ -182,5 +187,12 @@ struct OnionOptionsButton: View {
                 .font(.system(size: 11)).padding(14).frame(width: 260)
                 .onChange(of: [Double(before), Double(after), opacity, tinted ? 1 : 0]) { _, _ in s.objectWillChange.send() }
             }
+    }
+}
+
+private struct CompactLabels: ViewModifier {
+    var compact: Bool
+    func body(content: Content) -> some View {
+        if compact { content.labelStyle(.iconOnly) } else { content.labelStyle(.titleAndIcon) }
     }
 }
