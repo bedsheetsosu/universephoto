@@ -23,10 +23,14 @@ extension Studio {
         var content = layer
         content.opacity = 1; content.blend = .normal; content.visible = true; content.adjustment = .init()
         content.filters = nil; content.mask = nil; content.clipped = false; content.style = nil
+        // Rendered without its transform and moved in one go, so parts pushed off the canvas survive
+        // a bigger canvas (Reveal all, Canvas size) instead of being cut at the old edge.
+        content.transform = .init()
+        let placement = matrix(layer.transform).concatenating(g)
         var out = layer
         out.transform = .init()
         if let image = Renderer.render(layers: [content], width: width, height: height),
-           let moved = Self.remap(image, width: w, height: h, g), let data = try? Renderer.png(moved) {
+           let moved = Self.remap(image, width: w, height: h, placement), let data = try? Renderer.png(moved) {
             out.imageData = data; out.strokes = []
         }
         if let mask = layer.mask, !mask.isEmpty {
@@ -35,8 +39,7 @@ extension Studio {
             var white = InkStroke(points: [InkPoint(x: 0, y: 0, pressure: 1)], color: .white, width: 1); white.kind = "fill"
             matte.strokes = [white] + mask
             if let m = Renderer.render(layers: [matte], width: width, height: height) {
-                let placed = Renderer.placed(m, transform: layer.transform, width: width, height: height) ?? m
-                out.mask = Self.maskStrokes(Self.remap(placed, width: w, height: h, g), width: w, height: h)
+                out.mask = Self.maskStrokes(Self.remap(m, width: w, height: h, placement), width: w, height: h)
             }
         }
         return out
@@ -77,6 +80,25 @@ extension Studio {
     func resizeCanvas(width w: Int, height h: Int, anchor: CGPoint = CGPoint(x: 0.5, y: 0.5)) {
         let dx = (Double(w - width) * anchor.x).rounded(), dy = (Double(h - height) * anchor.y).rounded()
         transformDocument("Canvas size", width: w, height: h, CGAffineTransform(translationX: dx, y: dy))
+    }
+
+    /// Image → Reveal all: grows the canvas until every layer's content (also what was moved or
+    /// scaled past the edge) fits. Returns false when everything is already inside.
+    @discardableResult func revealAll() -> Bool {
+        guard let r = revealAllRect() else { return false }
+        transformDocument("Reveal all", width: Int(r.width), height: Int(r.height), CGAffineTransform(translationX: -r.minX, y: -r.minY))
+        return true
+    }
+
+    /// The canvas grown to every layer's content, in document pixels; nil when nothing sticks out.
+    func revealAllRect() -> CGRect? {
+        var r = CGRect(x: 0, y: 0, width: width, height: height)
+        for layer in frames.flatMap({ $0 }) + layers where !layer.isAdjustmentLayer && layer.transform != LayerTransform() {
+            guard let box = contentBounds(layer) else { continue }
+            r = r.union(box.applying(matrix(layer.transform)))
+        }
+        r = r.integral
+        return r == CGRect(x: 0, y: 0, width: width, height: height) ? nil : r
     }
 
     func crop(to rect: CGRect) {

@@ -13284,6 +13284,24 @@
           }
         }
       }
+    },
+    "Reveal all": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alles einblenden"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reveal all"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

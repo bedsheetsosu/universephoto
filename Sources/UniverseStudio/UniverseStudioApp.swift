@@ -129,7 +129,7 @@ struct StudioCommands: Commands {
             Button(L("Canvas size…")) { studio.imageDialog = .canvasSize }.keyboardShortcut("c",modifiers:[.command,.option])
             Divider()
             Button(L("Crop to selection")) { studio.cropToSelection() }.disabled(studio.selection == nil)
-            Button(L("Trim transparent pixels")) { studio.trim() }
+            Button(L("Reveal all")) { studio.revealAll() };Button(L("Trim transparent pixels")) { studio.trim() }
             Divider()
             Button(L("Rotate 90° clockwise")) { studio.rotateCanvas(.clockwise) }
             Button(L("Rotate 90° counter-clockwise")) { studio.rotateCanvas(.counterClockwise) }
