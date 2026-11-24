@@ -1,0 +1,7 @@
+{
+  "id": "squeeze-scroll",
+  "name": "Squeeze-Scroll",
+  "version": "1.1",
+  "description": "Hold the squeeze, put the Pencil on the glass and drag to scroll. The squeeze action (e.g. radial menu) does not run after a scroll.",
+  "main": "main.js"
+}

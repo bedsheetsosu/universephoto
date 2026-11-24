@@ -1,0 +1,127 @@
+import Foundation
+
+/// One physical key going down or up on the iPad's hardware keyboard.
+/// `hidUsage` is the USB HID usage (page 0x07) that UIKit reports as `UIKey.keyCode`.
+/// The Mac maps it to its positional virtual key code, so the Mac's own keyboard layout decides
+/// which character it produces – with the same layout on both sides, every key is where it is
+/// printed.
+public struct KeyEvent: Equatable, Sendable {
+    public var hidUsage: UInt16
+    public var down: Bool
+
+    public init(hidUsage: UInt16, down: Bool) {
+        self.hidUsage = hidUsage
+        self.down = down
+    }
+
+    public func encoded() -> Data {
+        var w = ByteWriter(capacity: 3)
+        w.u16(hidUsage)
+        w.bool(down)
+        return w.data
+    }
+
+    public init(decoding d: Data) throws {
+        var r = ByteReader(d)
+        hidUsage = try r.u16()
+        down = try r.bool()
+    }
+}
+
+/// Text typed on the iPad's on-screen keyboard (sent as text, not as key positions).
+public struct TextInput: Equatable, Sendable {
+    public var text: String
+    public init(_ text: String) { self.text = text }
+    public func encoded() -> Data { Data(text.utf8) }
+    public init(decoding d: Data) throws {
+        guard let s = String(data: d, encoding: .utf8) else { throw WireError.unknownValue("utf8") }
+        text = s
+    }
+}
+
+public enum HIDKeyMap {
+    public static let returnKey: UInt16 = 0x28
+    public static let backspace: UInt16 = 0x2A
+    /// Key left of "1" on ISO keyboards (German "^").
+    public static let grave: UInt16 = 0x35
+    /// Extra key next to left Shift on ISO keyboards (German "<").
+    public static let nonUSBackslash: UInt16 = 0x64
+
+    /// Some ISO keyboards report these two keys swapped; the iPad offers a switch.
+    public static func swapISO(_ usage: UInt16) -> UInt16 {
+        switch usage {
+        case grave: return nonUSBackslash
+        case nonUSBackslash: return grave
+        default: return usage
+        }
+    }
+
+    /// HID usage → macOS virtual key code (`kVK_*`, positional).
+    public static func macKeyCode(_ usage: UInt16) -> UInt16? { table[usage] }
+
+    public enum Modifier: Sendable { case command, shift, option, control, capsLock }
+
+    /// Modifier role of a macOS key code (nil for normal keys).
+    public static func modifier(macKeyCode: UInt16) -> Modifier? {
+        switch macKeyCode {
+        case 0x37, 0x36: return .command
+        case 0x38, 0x3C: return .shift
+        case 0x3A, 0x3D: return .option
+        case 0x3B, 0x3E: return .control
+        case 0x39: return .capsLock
+        default: return nil
+        }
+    }
+
+    /// Keys that a real Mac keyboard sends with the "fn"/"numeric pad" flags (arrows, F-keys,
+    /// navigation block). Some apps check these flags.
+    public static func needsFunctionFlag(macKeyCode: UInt16) -> Bool {
+        switch macKeyCode {
+        case 0x7B, 0x7C, 0x7D, 0x7E,                    // arrows
+             0x72, 0x73, 0x74, 0x75, 0x77, 0x79,        // help, home, page up, fwd delete, end, page down
+             0x7A, 0x78, 0x63, 0x76, 0x60, 0x61, 0x62, 0x64, 0x65, 0x6D, 0x67, 0x6F, // F1–F12
+             0x69, 0x6B, 0x71, 0x6A, 0x40, 0x4F, 0x50, 0x5A:                       // F13–F20
+            return true
+        default:
+            return false
+        }
+    }
+
+    public static func isArrow(macKeyCode: UInt16) -> Bool { (0x7B...0x7E).contains(macKeyCode) }
+
+    private static let table: [UInt16: UInt16] = [
+        // Letters
+        0x04: 0x00, 0x05: 0x0B, 0x06: 0x08, 0x07: 0x02, 0x08: 0x0E, 0x09: 0x03, 0x0A: 0x05,
+        0x0B: 0x04, 0x0C: 0x22, 0x0D: 0x26, 0x0E: 0x28, 0x0F: 0x25, 0x10: 0x2E, 0x11: 0x2D,
+        0x12: 0x1F, 0x13: 0x23, 0x14: 0x0C, 0x15: 0x0F, 0x16: 0x01, 0x17: 0x11, 0x18: 0x20,
+        0x19: 0x09, 0x1A: 0x0D, 0x1B: 0x07, 0x1C: 0x10, 0x1D: 0x06,
+        // Digits 1–0
+        0x1E: 0x12, 0x1F: 0x13, 0x20: 0x14, 0x21: 0x15, 0x22: 0x17, 0x23: 0x16, 0x24: 0x1A,
+        0x25: 0x1C, 0x26: 0x19, 0x27: 0x1D,
+        // Return, Escape, Backspace, Tab, Space
+        0x28: 0x24, 0x29: 0x35, 0x2A: 0x33, 0x2B: 0x30, 0x2C: 0x31,
+        // - = [ ] \ #(non-US) ; ' ` , . /
+        0x2D: 0x1B, 0x2E: 0x18, 0x2F: 0x21, 0x30: 0x1E, 0x31: 0x2A, 0x32: 0x2A, 0x33: 0x29,
+        0x34: 0x27, 0x35: 0x32, 0x36: 0x2B, 0x37: 0x2F, 0x38: 0x2C,
+        // Caps Lock
+        0x39: 0x39,
+        // F1–F12
+        0x3A: 0x7A, 0x3B: 0x78, 0x3C: 0x63, 0x3D: 0x76, 0x3E: 0x60, 0x3F: 0x61, 0x40: 0x62,
+        0x41: 0x64, 0x42: 0x65, 0x43: 0x6D, 0x44: 0x67, 0x45: 0x6F,
+        // Insert(=Help) Home PageUp Delete End PageDown Right Left Down Up
+        0x49: 0x72, 0x4A: 0x73, 0x4B: 0x74, 0x4C: 0x75, 0x4D: 0x77, 0x4E: 0x79,
+        0x4F: 0x7C, 0x50: 0x7B, 0x51: 0x7D, 0x52: 0x7E,
+        // Keypad
+        0x53: 0x47, 0x54: 0x4B, 0x55: 0x43, 0x56: 0x4E, 0x57: 0x45, 0x58: 0x4C, 0x59: 0x53,
+        0x5A: 0x54, 0x5B: 0x55, 0x5C: 0x56, 0x5D: 0x57, 0x5E: 0x58, 0x5F: 0x59, 0x60: 0x5B,
+        0x61: 0x5C, 0x62: 0x52, 0x63: 0x41, 0x67: 0x51, 0x85: 0x5F,
+        // ISO extra key (German "<>")
+        0x64: 0x0A,
+        // F13–F20
+        0x68: 0x69, 0x69: 0x6B, 0x6A: 0x71, 0x6B: 0x6A, 0x6C: 0x40, 0x6D: 0x4F, 0x6E: 0x50, 0x6F: 0x5A,
+        // JIS
+        0x87: 0x5E, 0x89: 0x5D, 0x90: 0x68, 0x91: 0x66,
+        // Modifiers: LCtrl LShift LAlt LCmd RCtrl RShift RAlt RCmd
+        0xE0: 0x3B, 0xE1: 0x38, 0xE2: 0x3A, 0xE3: 0x37, 0xE4: 0x3E, 0xE5: 0x3C, 0xE6: 0x3D, 0xE7: 0x36,
+    ]
+}

@@ -1,0 +1,58 @@
+name: Translation fix
+description: A text in the app is wrong, awkward or missing in your language.
+title: "[i18n] "
+labels: ["translation"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping! Most translations were machine-made, so native speakers are very welcome.
+  - type: dropdown
+    id: language
+    attributes:
+      label: Language
+      options:
+        - English
+        - Deutsch
+        - Español
+        - 日本語
+        - 中文（简体）
+        - 한국어
+        - हिन्दी
+        - Other (please name it below)
+    validations:
+      required: true
+  - type: dropdown
+    id: app
+    attributes:
+      label: App
+      options:
+        - iPad (UniversePen)
+        - Mac (UniversePen Host)
+    validations:
+      required: true
+  - type: input
+    id: where
+    attributes:
+      label: Where in the app?
+      placeholder: e.g. Settings → Finger & Multi-Touch, or first-run setup step 3
+    validations:
+      required: true
+  - type: textarea
+    id: current
+    attributes:
+      label: Current text
+      description: Copy the text exactly as the app shows it (a screenshot also helps).
+    validations:
+      required: true
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: Better translation
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes (optional)
+      description: Context, terminology, why the current text is wrong …

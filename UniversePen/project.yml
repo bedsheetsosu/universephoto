@@ -1,0 +1,124 @@
+name: Tafel
+options:
+  deploymentTarget:
+    iOS: "18.0"
+    macOS: "15.0"
+  createIntermediateGroups: true
+  developmentLanguage: en
+packages:
+  TafelKit:
+    path: Packages/TafelKit
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    MARKETING_VERSION: "1.0.0"
+    CURRENT_PROJECT_VERSION: "13"
+    # Set your own team in Xcode (Signing & Capabilities) or here.
+    DEVELOPMENT_TEAM: ""
+    CODE_SIGN_STYLE: Automatic
+targets:
+  TafelHost:
+    type: application
+    platform: macOS
+    sources:
+      - Host
+      - path: SDK/plugins/examples
+        type: folder
+        buildPhase: resources
+    dependencies:
+      - package: TafelKit
+    configFiles:
+      Debug: Config/HostSigning.xcconfig
+      Release: Config/HostSigning.xcconfig
+    settings:
+      base:
+        PRODUCT_NAME: UniversePen Host
+        PRODUCT_BUNDLE_IDENTIFIER: local.universepen.host
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        # Not sandboxed: posting tablet/keyboard events needs Accessibility, which sandboxed apps cannot use.
+        ENABLE_APP_SANDBOX: NO
+        ENABLE_HARDENED_RUNTIME: NO
+        # Only for the optional "Zweiter Bildschirm" mode (private CGVirtualDisplay API).
+        SWIFT_OBJC_BRIDGING_HEADER: Host/Private/TafelHost-Bridging-Header.h
+        GENERATE_INFOPLIST_FILE: NO
+    info:
+      path: Host/Info.plist
+      properties:
+        CFBundleDisplayName: UniversePen Host
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        CFBundleName: UniversePen Host
+        CFBundleLocalizations: [en, de, es, ja, zh-Hans, ko, hi]
+        CFBundleAllowMixedLocalizations: true
+        LSApplicationCategoryType: public.app-category.graphics-design
+        NSLocalNetworkUsageDescription: UniversePen accepts connections from your paired iPad on the local network.
+        NSBonjourServices: [_tafel._tcp, _tafelpair._tcp]
+        CFBundleURLTypes:
+          - CFBundleURLName: local.universepen.host.control
+            CFBundleURLSchemes: [universepen, tafel]
+        NSScreenCaptureUsageDescription: UniversePen shows the selected part of your screen on your iPad.
+  Tafel:
+    type: application
+    platform: iOS
+    sources: [Client]
+    configFiles:
+      Debug: Config/PadApp.xcconfig
+      Release: Config/PadApp.xcconfig
+    dependencies:
+      - package: TafelKit
+    settings:
+      base:
+        PRODUCT_NAME: Tafel
+        PRODUCT_BUNDLE_IDENTIFIER: $(PAD_BUNDLE_ID)
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        TARGETED_DEVICE_FAMILY: "2"
+        GENERATE_INFOPLIST_FILE: NO
+    info:
+      path: Client/Info.plist
+      properties:
+        CFBundleDisplayName: UniversePen
+        CFBundleLocalizations: [en, de, es, ja, zh-Hans, ko, hi]
+        CFBundleAllowMixedLocalizations: true
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        UILaunchScreen: {}
+        UIRequiresFullScreen: true
+        UIStatusBarHidden: true
+        UIApplicationSupportsIndirectInputEvents: true
+        UISupportedInterfaceOrientations~ipad:
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationPortraitUpsideDown
+        NSLocalNetworkUsageDescription: UniversePen finds your paired Mac on the local network and connects to it directly.
+        # TLS from Apple's Network framework only (OS-provided encryption): exempt from export
+        # documentation. Confirm in App Store Connect (docs/APPSTORE.md).
+        ITSAppUsesNonExemptEncryption: false
+        NSPhotoLibraryAddUsageDescription: UniversePen saves screenshots of your Mac to Photos when you ask it to.
+        NSBonjourServices: [_tafel._tcp, _tafelpair._tcp]
+  PipelineTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources:
+      - PipelineTests
+      - Host/VideoEncoder.swift
+      - Host/InputInjector.swift
+      - Host/HostServer.swift
+      - Host/DeviceKeyStore.swift
+      - Client/VideoRenderer.swift
+      - Client/Session.swift
+      - Client/AudioPlayer.swift
+    dependencies:
+      - package: TafelKit
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: local.tafel.pipelinetests
+        GENERATE_INFOPLIST_FILE: YES
+        CODE_SIGN_IDENTITY: "-"
+schemes:
+  PipelineTests:
+    build:
+      targets:
+        PipelineTests: all
+    test:
+      targets: [PipelineTests]

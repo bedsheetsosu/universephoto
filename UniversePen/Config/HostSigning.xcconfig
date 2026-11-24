@@ -1,0 +1,9 @@
+// Signing for UniversePen Host.
+// Default: ad-hoc ("Sign to Run Locally"). Downside: every rebuild gets a new signature, so macOS
+// forgets the Accessibility and Screen Recording permissions.
+// For stable permissions, create Config/HostSigning.local.xcconfig (not in git) with e.g.
+//   CODE_SIGN_IDENTITY = <SHA-1 of your "Apple Development" certificate>
+// (list them with: security find-identity -v -p codesigning)
+CODE_SIGN_IDENTITY = -
+CODE_SIGN_STYLE = Manual
+#include? "HostSigning.local.xcconfig"

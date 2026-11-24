@@ -1,0 +1,7 @@
+"Connect ${applicationName}" = "${applicationName} कनेक्ट करें";
+"Connect ${applicationName} to my Mac" = "${applicationName} को मेरे Mac से जोड़ें";
+"Toggle tablet mode in ${applicationName}" = "${applicationName} में टैबलेट मोड टॉगल करें";
+"Toggle the laser pointer in ${applicationName}" = "${applicationName} में लेज़र पॉइंटर टॉगल करें";
+"Take a Mac screenshot with ${applicationName}" = "${applicationName} से Mac स्क्रीनशॉट लें";
+"Disconnect ${applicationName}" = "${applicationName} डिस्कनेक्ट करें";
+"Toggle a tool in ${applicationName}" = "${applicationName} में टूल टॉगल करें";

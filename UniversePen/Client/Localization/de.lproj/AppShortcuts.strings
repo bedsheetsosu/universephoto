@@ -1,0 +1,7 @@
+"Connect ${applicationName}" = "${applicationName} verbinden";
+"Connect ${applicationName} to my Mac" = "${applicationName} mit meinem Mac verbinden";
+"Toggle tablet mode in ${applicationName}" = "Tablett-Modus in ${applicationName} umschalten";
+"Toggle the laser pointer in ${applicationName}" = "Laserpointer in ${applicationName} umschalten";
+"Take a Mac screenshot with ${applicationName}" = "Mac-Bildschirmfoto mit ${applicationName} aufnehmen";
+"Disconnect ${applicationName}" = "${applicationName} trennen";
+"Toggle a tool in ${applicationName}" = "Werkzeug in ${applicationName} umschalten";

@@ -1,0 +1,5 @@
+"Pair an iPad with ${applicationName}" = "用 ${applicationName} 配对 iPad";
+"Set the source in ${applicationName}" = "在 ${applicationName} 中选择来源";
+"Toggle the time-lapse in ${applicationName}" = "在 ${applicationName} 中切换延时摄影";
+"Switch the iPad profile in ${applicationName}" = "在 ${applicationName} 中切换 iPad 配置";
+"Move the front window to the iPad with ${applicationName}" = "用 ${applicationName} 把最前面的窗口移到 iPad";

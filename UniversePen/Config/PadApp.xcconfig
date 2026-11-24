@@ -1,0 +1,8 @@
+// iPad app identity. Development builds keep the old ID (settings, pairing and the free-team
+// install stay as they are). For the App Store, put your own registered ID in a gitignored
+// Config/PadApp.local.xcconfig, e.g.
+//   PAD_BUNDLE_ID = io.github.bedsheetsosu.universepen
+//   DEVELOPMENT_TEAM = <your paid team ID>
+// See docs/APPSTORE.md.
+PAD_BUNDLE_ID = local.tafel.pad
+#include? "PadApp.local.xcconfig"

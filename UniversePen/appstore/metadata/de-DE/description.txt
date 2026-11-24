@@ -1,0 +1,29 @@
+Zeichne auf deinem Mac – mit iPad und Apple Pencil.
+
+UniversePen zeigt deinen Mac-Bildschirm auf dem iPad und schickt jeden Pencil-Strich als echte Tablett-Eingabe zurück – mit Druck, Neigung, Drehung (Pencil Pro), Schweben und Squeeze. Zeichenprogramme am Mac sehen ein Grafiktablett, keine Maus.
+
+STIFTDISPLAY
+• Mac-Bildschirm, ein einzelnes Fenster oder ein Ausschnitt auf dem iPad, scharf in voller Auflösung
+• Druckkurve pro App, Glättung, Klick ab Druck
+• Sofort-Tinte: Striche erscheinen, ohne aufs Bild zu warten
+• Radialmenü per Squeeze, Kurzbefehl-Leiste, Rückgängig per Zwei-Finger-Wischen
+• Lineal für gerade Linien, Referenzbild zum Abzeichnen, lokaler Zoom
+• Laserpointer zum Präsentieren, Bildschirmfotos in voller Auflösung, Zwischenablage
+
+TABLETT-MODUS
+• Schwarze Fläche mit Punktraster und einstellbarem aktivem Bereich – wie ein Grafiktablett ohne Bildschirm, ideal für Rhythmusspiele
+• Presets pro App, Drehung, frei platzierbare Tasten auf dem Bildschirm (mehrere gleichzeitig)
+
+FÜR DICH GEMACHT
+• Profile, Einrichtung mit nur den Funktionen, die du willst, 7 Sprachen
+• Auch mit Pencils ohne Schweben (Doppeltippen zum Klicken oder mit dem Finger zielen)
+• Mehrere iPads: ein weiteres iPad wird zum Eingabe-Tablett
+
+PRIVAT VON GRUND AUF
+• iPad und Mac sprechen nur miteinander – WLAN oder USB-Kabel, verschlüsselt, per Code gekoppelt
+• Kein Konto, kein Server, keine Analyse
+
+VORAUSSETZUNGEN
+UniversePen braucht die kostenlose Begleit-App „UniversePen Host“ auf einem Mac mit macOS 15 oder neuer (Download: github.com/bedsheetsosu/universepen). Ohne Mac kannst du alles in der eingebauten Demo ausprobieren.
+
+UniversePen ist Open Source (GPL-3.0).

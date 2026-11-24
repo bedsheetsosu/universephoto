@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- Hardened runtime (needed for notarization). The plugin runtime uses JavaScriptCore;
+	     JIT keeps plugin filters fast. Nothing else needs an exception: no sandbox (posting input
+	     needs Accessibility), screen capture is a TCC permission, not an entitlement. -->
+	<key>com.apple.security.cs.allow-jit</key>
+	<true/>
+</dict>
+</plist>

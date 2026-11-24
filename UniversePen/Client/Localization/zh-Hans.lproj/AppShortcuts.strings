@@ -1,0 +1,7 @@
+"Connect ${applicationName}" = "连接 ${applicationName}";
+"Connect ${applicationName} to my Mac" = "将 ${applicationName} 连接到我的 Mac";
+"Toggle tablet mode in ${applicationName}" = "切换 ${applicationName} 的数位板模式";
+"Toggle the laser pointer in ${applicationName}" = "切换 ${applicationName} 的激光笔";
+"Take a Mac screenshot with ${applicationName}" = "用 ${applicationName} 拍摄 Mac 截图";
+"Disconnect ${applicationName}" = "断开 ${applicationName}";
+"Toggle a tool in ${applicationName}" = "切换 ${applicationName} 中的工具";

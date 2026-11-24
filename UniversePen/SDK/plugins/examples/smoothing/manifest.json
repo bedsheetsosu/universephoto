@@ -1,0 +1,7 @@
+{
+  "id": "smoothing",
+  "name": "Smoothing (EMA)",
+  "version": "1.0",
+  "description": "Exponential smoothing of the Pencil path, like OpenTabletDriver's smoothing filters. Strength in up.storage (\"strength\", 0–0.95).",
+  "main": "main.js"
+}

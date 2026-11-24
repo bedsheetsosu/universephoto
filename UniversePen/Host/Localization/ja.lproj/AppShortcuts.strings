@@ -1,0 +1,5 @@
+"Pair an iPad with ${applicationName}" = "${applicationName} で iPad をペアリング";
+"Set the source in ${applicationName}" = "${applicationName} でソースを選択";
+"Toggle the time-lapse in ${applicationName}" = "${applicationName} でタイムラプスを切り替え";
+"Switch the iPad profile in ${applicationName}" = "${applicationName} で iPad のプロファイルを切り替え";
+"Move the front window to the iPad with ${applicationName}" = "${applicationName} で最前面のウインドウを iPad へ移動";

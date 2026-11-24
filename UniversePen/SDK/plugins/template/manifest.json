@@ -1,0 +1,7 @@
+{
+  "id": "plugin-template",
+  "name": "Plugin template",
+  "version": "1.0",
+  "description": "Feature switches, an iPad action, a Pencil filter and app/gesture hooks. Copy the folder and change what you need.",
+  "main": "main.js"
+}
