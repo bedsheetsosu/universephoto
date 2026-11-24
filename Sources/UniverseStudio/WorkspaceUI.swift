@@ -13,6 +13,7 @@ struct Workspace: View {
     @AppStorage("showInspector") private var showInspector = true
     @AppStorage("showNavigator") private var showNavigator = false
     @AppStorage("showHistogram") private var showHistogram = false
+    @AppStorage("motionPath") private var motionPath = false
     @AppStorage("showTimeline") private var showTimeline = false
     @AppStorage("showRulers") private var rulers = true
     @AppStorage("showGrid") private var grid = false
@@ -46,7 +47,7 @@ struct Workspace: View {
                 VStack(spacing:0) {
                     if !s.focusMode { tabs }
                     contextbar
-                    ArtworkCanvas(studio:s,grid:grid,rulers:rulers,snap:snap,background:NSColor(theme.canvas)).clipped()
+                    ArtworkCanvas(studio:s,grid:grid,rulers:rulers,snap:snap,background:NSColor(theme.canvas),motionPath:motionPath && (workspace == "Animate" || s.frames.count > 1)).clipped()
                         .overlay(alignment:.bottomLeading) { canvasBadge.padding(14).allowsHitTesting(false) }
                         .overlay(alignment:.topLeading) { if s.focusMode { FocusPill().environmentObject(s).padding(12).transition(.scale(scale:0.9,anchor:.topLeading).combined(with:.opacity)) } }
                         .overlay(alignment:.bottomTrailing) { VStack(alignment:.trailing,spacing:10) { if showHistogram { HistogramPanel().environmentObject(s).transition(.scale(scale:0.9,anchor:.bottomTrailing).combined(with:.opacity)) }; if showNavigator { NavigatorPanel().environmentObject(s).transition(.scale(scale:0.9,anchor:.bottomTrailing).combined(with:.opacity)) } }.padding(14) }

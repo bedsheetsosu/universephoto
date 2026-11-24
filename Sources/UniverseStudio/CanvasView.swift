@@ -3,9 +3,9 @@ import SwiftUI
 
 struct ArtworkCanvas: NSViewRepresentable {
     @ObservedObject var studio: Studio
-    var grid: Bool; var rulers: Bool; var snap: Bool; var background:NSColor = .windowBackgroundColor
+    var grid: Bool; var rulers: Bool; var snap: Bool; var background:NSColor = .windowBackgroundColor; var motionPath = false
     func makeNSView(context: Context) -> ArtworkView { let v = ArtworkView(); v.clipsToBounds = true; v.studio = studio; DispatchQueue.main.async { if v.bounds.size != .zero { studio.canvasViewSize = v.bounds.size } }; return v }
-    func updateNSView(_ view: ArtworkView, context: Context) { view.studio = studio;view.backdrop = background; view.grid = grid; view.rulers = rulers; view.snap = snap; view.needsDisplay = true; studio.pen.onPen = { [weak view] sample in view?.remote(sample) }; studio.liquifyChanged = { [weak view] in view?.needsDisplay = true } }
+    func updateNSView(_ view: ArtworkView, context: Context) { view.studio = studio;view.backdrop = background; view.grid = grid; view.rulers = rulers; view.snap = snap; view.motionPath = motionPath; view.needsDisplay = true; studio.pen.onPen = { [weak view] sample in view?.remote(sample) }; studio.liquifyChanged = { [weak view] in view?.needsDisplay = true } }
 }
 
 @MainActor final class ArtworkView: NSView {
@@ -25,6 +25,24 @@ struct ArtworkCanvas: NSViewRepresentable {
     static let sizeSettleDelay = 0.12
     /// Rendered onion-skin frames, reused while those frames don't change.
     private var onionCache: [(layers: [ArtLayer], key: String, image: CGImage)] = []
+    private func drawMotionPath(_ ctx: CGContext, studio s: Studio) {
+        let pts = s.motionPathPoints()
+        guard Studio.pathMoves(pts) else { return }
+        let k = 1 / max(geometry.scale, 0.01)
+        ctx.saveGState()
+        let accent = NSColor.controlAccentColor.cgColor
+        ctx.setStrokeColor(accent.copy(alpha: 0.7) ?? accent); ctx.setLineWidth(1.5 * k); ctx.setLineDash(phase: 0, lengths: [4 * k, 3 * k])
+        var started = false
+        for p in pts { guard let p else { started = false; continue }; if started { ctx.addLine(to: p) } else { ctx.move(to: p); started = true } }
+        ctx.strokePath(); ctx.setLineDash(phase: 0, lengths: [])
+        for (i, p) in pts.enumerated() {
+            guard let p else { continue }
+            let r = (i == s.frameIndex ? 5 : 3) * k
+            ctx.setFillColor(i == s.frameIndex ? accent : CGColor(gray: 1, alpha: 0.95)); ctx.setStrokeColor(accent); ctx.setLineWidth(1.2 * k)
+            ctx.addEllipse(in: CGRect(x: p.x - r, y: p.y - r, width: 2 * r, height: 2 * r)); ctx.drawPath(using: .fillStroke)
+        }
+        ctx.restoreGState()
+    }
     private func referenceImage(_ frame: [ArtLayer], studio s: Studio) -> CGImage? {
         let key = "\(s.width)x\(s.height)-reference"
         if let hit = onionCache.first(where: { $0.key == key && $0.layers == frame }) { return hit.image }
@@ -50,7 +68,7 @@ struct ArtworkCanvas: NSViewRepresentable {
         guard let image = Renderer.checkerboard(width: width, height: height) else { return nil }
         checker = (size, image); return image
     }
-    var grid = false; var rulers = true; var snap = false;var backdrop:NSColor = .windowBackgroundColor
+    var grid = false; var rulers = true; var snap = false; var motionPath = false;var backdrop:NSColor = .windowBackgroundColor
     private var cachedLayers: [ArtLayer] = []; private var cachedSize = CGSize.zero
     private var image: CGImage?
     private let layerCache = LayerImageCache()
@@ -114,6 +132,7 @@ struct ArtworkCanvas: NSViewRepresentable {
         let rendered: CGImage?
         if let active = active ?? s.distortStroke, s.layers.indices.contains(s.selectedLayer) { if s.maskEditing || s.activeLayer?.isAdjustmentLayer == true { var previewLayers = s.composite(s.layers);previewLayers[s.selectedLayer].mask = (previewLayers[s.selectedLayer].mask ?? []) + [active];rendered = Renderer.render(layers:previewLayers,width:s.width,height:s.height,cache:layerCache) } else { rendered = Renderer.render(layers:s.composite(s.layers),width:s.width,height:s.height,preview:active,previewLayer:s.selectedLayer,cache:layerCache) } } else { rendered = committedImage() }
         if let rendered { drawImage(rendered,in:ctx,rect:doc) }
+        if motionPath && !s.isPlaying { drawMotionPath(ctx, studio: s) }
         if Studio.pixelGridOn, let lines = Studio.pixelGridLines(visible:bounds.applying(geometry.transform.inverted()),width:s.width,height:s.height,scale:geometry.scale) {
             ctx.saveGState(); ctx.setStrokeColor(CGColor(gray:0.5,alpha:0.35)); ctx.setLineWidth(1 / max(geometry.scale,0.01))
             for x in lines.xs { ctx.move(to:CGPoint(x:x,y:lines.ys.first ?? 0)); ctx.addLine(to:CGPoint(x:x,y:lines.ys.last ?? 0)) }

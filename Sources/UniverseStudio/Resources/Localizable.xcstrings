@@ -14652,6 +14652,24 @@
           }
         }
       }
+    },
+    "Motion path": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bewegungspfad"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Motion path"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

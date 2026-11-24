@@ -69,6 +69,10 @@ private struct PenWindowButton: View {
     let title:String, id:String
     var body: some View { Button(title) { openWindow(id:id); NSApp.activate() } }
 }
+private struct MotionPathToggle: View {
+    @AppStorage("motionPath") private var on = false
+    var body: some View { Toggle(L("Motion path"),isOn:$on) }
+}
 private struct PixelGridToggle: View {
     @AppStorage("pixelGrid") private var on = true
     var body: some View { Toggle(L("Pixel grid"),isOn:$on) }
@@ -194,6 +198,7 @@ struct StudioCommands: Commands {
             Button(L("Duplicate frame")) { studio.addFrame() }.keyboardShortcut("f",modifiers:.shift)
             Button(L("Import frames…")) { studio.importFramesPanel() }
             AnimationPreviewButton()
+            MotionPathToggle()
             Divider()
             Button(L("Import sound…")) { studio.importAudioPanel() }
             Button(L("Remove sound")) { studio.removeAudio() }.disabled(studio.audio == nil)
