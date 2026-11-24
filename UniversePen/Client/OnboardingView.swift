@@ -213,7 +213,7 @@ struct OnboardingView: View {
 
     private var pencilHelp: String {
         switch pencilKind {
-        case .pro: return L("Schweben, Barrel Roll, Squeeze und Haptik. Squeeze öffnet das Radialmenü an der Stiftspitze.")
+        case .pro: return L("Schweben, Barrel Roll, Squeeze und Haptik. Squeeze öffnet die Stift-Palette an der Stiftspitze.")
         case .hover: return L("Pencil 2 auf einem iPad mit Schweben: der Zeiger folgt dem Stift, bevor er aufsetzt.")
         case .noHover: return L("Ohne Schweben: Eine Berührung bewegt nur den Zeiger, sofort nochmal aufsetzen klickt bzw. zeichnet. Ein Finger zielt ohne zu klicken.")
         }
@@ -613,7 +613,7 @@ private struct ActionChoice: View {
     @Binding var action: PencilAction
 
     private let options: [(String, PencilAction)] = [
-        (L("Radialmenü"), .radialMenu), (L("Radierer"), .eraser), (L("Widerrufen"), .undo), (L("Pinsel"), .brush), (L("Hand"), .hand),
+        (L("Stift-Palette"), .radialMenu), (L("Radierer"), .eraser), (L("Widerrufen"), .undo), (L("Pinsel"), .brush), (L("Hand"), .hand),
         (L("Nichts"), .none),
     ]
 

@@ -76,7 +76,7 @@ struct RootView: View {
                         .zIndex(9)
                 }
                 if let c = model.radialCenter {
-                    RadialMenuView(center: c)
+                    PencilPaletteView(center: c)
                         .zIndex(10)
                 }
                 if let img = model.screenshot {

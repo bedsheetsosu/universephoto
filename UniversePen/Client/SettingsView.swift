@@ -22,7 +22,7 @@ struct SettingsView: View {
             case .fingers: return L("Finger & Multi-Touch")
             case .tablet: return L("Tablett-Modus")
             case .bar: return L("Shortcuts")
-            case .radial: return L("Radialmenü")
+            case .radial: return L("Stift-Palette")
             case .keyboard: return L("Tastatur & Trackpad")
             case .profiles: return L("Profile")
             }
@@ -654,9 +654,9 @@ struct SettingsView: View {
             }
             Button(L("Auf Standard zurücksetzen")) { model.settings.radialMenu = InputSettings.defaultRadialMenu }
         } header: {
-            Text(L("Radialmenü"))
+            Text(L("Stift-Palette"))
         } footer: {
-            Text(L("Squeeze oder Doppeltippen auf „Radialmenü“ stellen. Dann erscheint an der Stiftspitze ein Ring: mit dem Pencil darüber schweben und nochmal drücken, oder antippen. Mitte oder daneben tippen schließt ihn. 2 bis 8 Aktionen, oben beginnend im Uhrzeigersinn."))
+            Text(L("Squeeze oder Doppeltippen auf „Stift-Palette“ stellen. Dann öffnet sich neben der Stiftspitze ein Raster mit deinen Aktionen und bleibt offen: antippen – oder darüber schweben und drücken – führt eine Aktion aus. Schließen mit ✕, durch Drücken neben den Tasten oder durch Tippen daneben. Am Griff oben lässt sie sich verschieben. 2 bis 12 Aktionen, zeilenweise von links."))
         }
     }
 
@@ -788,7 +788,7 @@ struct ActionPicker: View {
         var label: String {
             switch self {
             case .none: return L("Keine")
-            case .radialMenu: return L("Radialmenü")
+            case .radialMenu: return L("Stift-Palette")
             case .undo: return L("Widerrufen ⌘Z")
             case .redo: return L("Wiederholen ⇧⌘Z")
             case .eraser: return L("Radierer (E)")

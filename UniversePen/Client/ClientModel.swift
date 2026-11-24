@@ -455,11 +455,17 @@ final class ClientModel: ObservableObject {
         radialHighlight = nil
     }
 
-    /// Runs the item (if one is picked) and closes the menu.
+    /// Squeeze while the palette is open: runs the button under the Pencil and keeps the palette;
+    /// over no button it closes.
     func pickRadial(_ index: Int?) {
+        if let i = index, effectiveSettings.radialMenu.indices.contains(i) { runPalette(i) } else { closeRadial() }
+    }
+
+    /// Runs a palette button; the palette stays open (close it with ✕, outside or squeeze).
+    func runPalette(_ index: Int) {
         let items = effectiveSettings.radialMenu
-        if let i = index, items.indices.contains(i) { run(items[i]) }
-        closeRadial()
+        guard items.indices.contains(index) else { return }
+        run(items[index])
     }
 
     // MARK: Cable

@@ -240,9 +240,9 @@ public struct InputSettings: Codable, Equatable, Sendable {
         ShortcutButton(title: "⌥", shortcut: Shortcut("a"), hold: .option),
     ]
 
-    /// Items of the radial menu (Pencil Pro squeeze), clockwise from the top. 2…8 items.
+    /// Items of the Pencil palette (Pencil Pro squeeze), left to right, row by row. 2…12 items.
     public var radialMenu: [ShortcutButton] = InputSettings.defaultRadialMenu
-    public static let maxRadialItems = 8
+    public static let maxRadialItems = 12
     public static var defaultRadialMenu: [ShortcutButton] {
         [
             ShortcutButton(title: "Undo", shortcut: Shortcut("z", .command)),
