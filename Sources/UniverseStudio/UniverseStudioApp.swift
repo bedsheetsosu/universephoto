@@ -217,6 +217,7 @@ struct StudioCommands: Commands {
             Divider()
             Button(L("Import sound…")) { studio.importAudioPanel() }
             Button(L("Remove sound")) { studio.removeAudio() }.disabled(studio.audio == nil)
+            Menu(L("React to sound")) { ForEach(SoundReaction.allCases) { r in Button(L(r.title)) { studio.reactToSound(r) } } }.disabled(studio.audio == nil)
             Button(L("Previous frame")) { studio.stepToFrame(max(0,studio.frameIndex-1)) }.keyboardShortcut(.leftArrow,modifiers:.option)
             Button(L("Next frame")) { studio.stepToFrame(min(studio.frames.count-1,studio.frameIndex+1)) }.keyboardShortcut(.rightArrow,modifiers:.option)
             Button(L("First frame")) { studio.firstFrame() }.keyboardShortcut(.leftArrow,modifiers:[.option,.shift])
