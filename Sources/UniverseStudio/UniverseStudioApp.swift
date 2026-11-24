@@ -216,6 +216,14 @@ struct StudioCommands: Commands {
                 Divider()
                 ForEach([1.0, 2.0], id: \.self) { sec in Button(LF("%@ s, pulse to brush colour", String(Int(sec)))) { studio.colorCycle(count: max(2, Int((studio.fps * sec).rounded())), to: studio.color) } }
             }.disabled(studio.activeLayer?.strokes.isEmpty != false).help(L("Strokes, shapes and text change colour in a loop; pixels keep theirs"))
+            Menu(L("Camera move")) {
+                ForEach(CameraMove.allCases) { c in
+                    Menu { ForEach([1.0, 2.0, 4.0], id: \.self) { sec in Button(LF("%@ s", String(Int(sec)))) { studio.cameraMove(c, count: max(2, Int((studio.fps * sec).rounded()))) } }
+                        Divider()
+                        Button(L("Over all frames")) { studio.cameraMove(c, count: 0) }.disabled(studio.frames.count < 2)
+                    } label: { Label(L(c.title), systemImage: c.symbol) }
+                }
+            }.help(L("A virtual camera zooms, pans or shakes over the whole picture"))
             Menu(L("Follow path")) {
                 ForEach([1.0, 2.0, 4.0], id: \.self) { sec in Button(LF("%@ s", String(Int(sec)))) { studio.followPath(count: max(2, Int((studio.fps * sec).rounded())), eased: true, orient: false) } }
                 Divider()
