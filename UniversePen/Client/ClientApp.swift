@@ -70,6 +70,12 @@ struct RootView: View {
                 }
                 overlay
                     .transition(.opacity)
+                    // `-debugOpenPalette YES`: open the Pencil palette once the canvas shows (UI checks).
+                    .task {
+                        guard UserDefaults.standard.bool(forKey: "debugOpenPalette") else { return }
+                        try? await Task.sleep(for: .seconds(1.5))
+                        model.openRadial(at: CGPoint(x: 760, y: 560))
+                    }
                 if model.tabletEditing && model.tabletModeActive {
                     TabletAreaEditor()
                         .transition(.opacity)

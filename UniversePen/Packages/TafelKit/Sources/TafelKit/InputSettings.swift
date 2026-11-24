@@ -434,17 +434,21 @@ public struct PenProfile: Codable, Equatable, Sendable {
 
 /// Geometry of the radial menu: which item lies under a point.
 public enum RadialMenuLayout {
-    /// Diameter of one round button.
-    public static let buttonSize: Double = 56
+    /// Room for one icon on the band (1.1: icons sit right on a dark band, like the squeeze
+    /// palettes of note apps, instead of separate round buttons).
+    public static let buttonSize: Double = 46
+    /// Thickness of the band.
+    public static let bandWidth: Double = 62
     /// Inside this distance from the Pencil tip nothing is selected (lets you back out).
-    public static let deadZone: Double = 36
-    public static let outerLimit: Double = 200
-    /// Items sit on an arc (not a full ring), like the Pencil Pro squeeze palettes: this far
-    /// apart, and the whole arc never wider than `maxSpan`.
-    static let preferredStep = 38.0 * Double.pi / 180
-    static let maxSpan = 210.0 * Double.pi / 180
+    public static let deadZone: Double = 60
+    public static let outerLimit: Double = 220
+    /// Items sit on an arc (not a full ring): this far apart, the whole arc never wider than `maxSpan`.
+    static let preferredStep = 25.0 * Double.pi / 180
+    static let maxSpan = 260.0 * Double.pi / 180
     /// Arc direction pointing up (screen coordinates: y grows downwards).
     public static let up = -Double.pi / 2
+    /// Where the arc opens when there is room: up, leaning left, so a right hand doesn't cover it.
+    public static let preferred = up - 0.4
 
     /// Angle between neighbouring items.
     public static func step(count: Int) -> Double {
@@ -454,8 +458,8 @@ public enum RadialMenuLayout {
     /// Arc radius: big enough that neighbouring buttons don't touch.
     public static func radius(count: Int) -> Double {
         let s = step(count: count)
-        guard s > 0 else { return 92 }
-        return max(92, (buttonSize / 2 + 5) / sin(s / 2))
+        guard s > 0 else { return 120 }
+        return max(120, (buttonSize / 2 + 4) / sin(s / 2))
     }
 
     /// Angle (radians, 0 = right, clockwise on screen) of item `i`; item 0 is the left end of the arc.
@@ -483,13 +487,55 @@ public enum RadialMenuLayout {
         return min(max(Int(pos.rounded()), 0), count - 1)
     }
 
+    // MARK: Scrolling arc (1.1)
+    /// At most this many items show at once; with more, the arc scrolls (drag along it) and its
+    /// ends fade out where more items wait.
+    public static let maxVisible = 7
+    public static func visible(count: Int) -> Int { min(max(count, 0), maxVisible) }
+    public static func maxScroll(count: Int) -> Double { Double(max(0, count - maxVisible)) }
+
+    /// Angle of item `i` when the arc is scrolled by `scroll` items (0 = first item at the left end).
+    public static func angle(of i: Int, count: Int, facing: Double, scroll: Double) -> Double {
+        let v = visible(count: count)
+        return facing + (Double(i) - scroll - Double(v - 1) / 2) * step(count: v)
+    }
+
+    /// How visible item `i` is (1 inside the window, fading to 0 just beyond its ends).
+    public static func opacity(of i: Int, count: Int, scroll: Double) -> Double {
+        let p = Double(i) - scroll, v = Double(visible(count: count))
+        let out = p < 0 ? -p : p > v - 1 ? p - (v - 1) : 0
+        return max(0, 1 - out / 0.7)
+    }
+
+    /// Item in direction (dx, dy) on the scrolled arc, or nil (dead zone, outside, beyond the ends).
+    public static func item(dx: Double, dy: Double, count: Int, facing: Double, scroll: Double) -> Int? {
+        guard count > 0 else { return nil }
+        let d = (dx * dx + dy * dy).squareRoot()
+        guard d >= deadZone, d <= outerLimit else { return nil }
+        let v = visible(count: count)
+        let rel = remainder(atan2(dy, dx) - facing, 2 * Double.pi)
+        let st = step(count: v)
+        let pos = v == 1 ? 0 : rel / st + Double(v - 1) / 2
+        guard pos >= -0.5, pos <= Double(v - 1) + 0.5 else { return nil }
+        let i = Int((pos + scroll).rounded())
+        return (0..<count).contains(i) ? i : nil
+    }
+
+    /// Scroll change (in items) for the finger moving from angle `a` to angle `b` along the arc.
+    public static func scrollDelta(from a: Double, to b: Double, count: Int) -> Double {
+        let st = step(count: visible(count: count))
+        guard st > 0 else { return 0 }
+        return -remainder(b - a, 2 * Double.pi) / st
+    }
+
     /// Direction that keeps the arc on screen: up, down near the top edge, sideways near the
     /// left/right edges (diagonal in the corners).
     public static func facing(x: Double, y: Double, width: Double, height: Double, count: Int) -> Double {
-        let reach = radius(count: count) + buttonSize / 2 + 12
+        let reach = radius(count: visible(count: count)) + bandWidth / 2 + 12
         var fx = 0.0, fy = -1.0
         if y < reach { fy = 1 }
         if x < reach { fx = 1 } else if x > width - reach { fx = -1 }
+        if fx == 0 && fy < 0 { return preferred }
         if fx != 0 && y >= reach && y <= height - reach { fy = 0 }
         return atan2(fy, fx)
     }

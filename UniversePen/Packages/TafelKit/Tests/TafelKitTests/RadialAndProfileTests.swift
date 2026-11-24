@@ -15,7 +15,7 @@ final class RadialAndProfileTests: XCTestCase {
 
     func testItemCentresMapBackToTheirItem() {
         for facing in [RadialMenuLayout.up, 0, .pi / 2, .pi, -.pi / 4] {
-            for n in 1...8 {
+            for n in 1...12 {
                 for i in 0..<n {
                     let o = RadialMenuLayout.offset(of: i, count: n, facing: facing)
                     XCTAssertEqual(RadialMenuLayout.item(dx: o.x, dy: o.y, count: n, facing: facing), i, "n=\(n) i=\(i) f=\(facing)")
@@ -25,17 +25,17 @@ final class RadialAndProfileTests: XCTestCase {
     }
 
     func testRadialButtonsDontOverlapAndArcStaysOpen() {
-        for n in 2...8 {
+        for n in 2...12 {
             let a = RadialMenuLayout.offset(of: 0, count: n), b = RadialMenuLayout.offset(of: 1, count: n)
             let gap = ((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y)).squareRoot()
             XCTAssertGreaterThanOrEqual(gap, RadialMenuLayout.buttonSize, "n=\(n)")
-            XCTAssertLessThanOrEqual(RadialMenuLayout.step(count: n) * Double(n - 1), 211 * .pi / 180, "n=\(n)")
+            XCTAssertLessThanOrEqual(RadialMenuLayout.step(count: n) * Double(n - 1), 261 * .pi / 180, "n=\(n)")
         }
     }
 
     func testRadialFacingKeepsArcOnScreen() {
         let f = { (x: Double, y: Double) in RadialMenuLayout.facing(x: x, y: y, width: 1180, height: 820, count: 6) }
-        XCTAssertEqual(f(600, 500), RadialMenuLayout.up, accuracy: 1e-9)
+        XCTAssertEqual(f(600, 500), RadialMenuLayout.preferred, accuracy: 1e-9)
         XCTAssertEqual(f(600, 40), .pi / 2, accuracy: 1e-9)          // near the top: opens downwards
         XCTAssertEqual(f(30, 500), 0, accuracy: 1e-9)                // near the left: opens to the right
         XCTAssertEqual(f(1160, 500), .pi, accuracy: 1e-9)            // near the right: opens to the left

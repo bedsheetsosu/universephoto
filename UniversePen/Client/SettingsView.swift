@@ -656,7 +656,7 @@ struct SettingsView: View {
         } header: {
             Text(L("Stift-Palette"))
         } footer: {
-            Text(L("Squeeze oder Doppeltippen auf „Stift-Palette“ stellen. Dann öffnet sich neben der Stiftspitze ein Raster mit deinen Aktionen und bleibt offen: antippen – oder darüber schweben und drücken – führt eine Aktion aus. Schließen mit ✕, durch Drücken neben den Tasten oder durch Tippen daneben. Am Griff oben lässt sie sich verschieben. 2 bis 12 Aktionen, zeilenweise von links."))
+            Text(L("Squeeze oder Doppeltippen auf „Stift-Palette“ stellen. Dann öffnet sich an der Stiftspitze ein Bogen mit deinen Aktionen und bleibt offen: antippen – oder darüber schweben und drücken – führt eine Aktion aus. Bei mehr als sieben Aktionen am Bogen entlang ziehen, um weiterzublättern. Drücken neben den Aktionen, Tippen auf die Spitze oder daneben schließt ihn. 2 bis 12 Aktionen, von links nach rechts."))
         }
     }
 
