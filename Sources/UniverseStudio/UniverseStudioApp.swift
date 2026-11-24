@@ -233,6 +233,13 @@ struct StudioCommands: Commands {
             Menu(L("Close loop")) {
                 ForEach(Studio.tweenChoices, id: \.self) { n in Button(LF("%d frames", n)) { studio.closeLoop(count: n) } }
             }.disabled(studio.frames.count < 2).help(L("In-betweens from the last frame back to the first, so the loop runs on without a jump"))
+            Menu(L("One after another")) {
+                ForEach(Stagger.styles) { p in
+                    Menu { ForEach([("Quick", 0.15), ("Calm", 0.35)], id: \.0) { name, sec in
+                        Button(L(name)) { studio.staggerIn(p, gap: max(1, Int((studio.fps * sec).rounded())), duration: max(2, Int((studio.fps * sec * 2).rounded())), restTicks: Int(studio.fps)) } } }
+                    label: { Label(L(p.title), systemImage: p.symbol) }
+                }
+            }.help(L("The layers come in one by one, each a little after the one below"))
             Menu(L("Follow path")) {
                 ForEach([1.0, 2.0, 4.0], id: \.self) { sec in Button(LF("%@ s", String(Int(sec)))) { studio.followPath(count: max(2, Int((studio.fps * sec).rounded())), eased: true, orient: false) } }
                 Divider()
