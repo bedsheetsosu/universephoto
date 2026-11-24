@@ -32,11 +32,11 @@ enum SpriteSheet {
         })
     }
 
-    static func render(frames: [[ArtLayer]], width w: Int, height h: Int, padding p: Int = 0) throws -> (CGImage, Layout) {
+    static func render(frames: [[ArtLayer]], width w: Int, height h: Int, padding p: Int = 0, docWidth: Int? = nil, docHeight: Int? = nil) throws -> (CGImage, Layout) {
         guard let l = layout(frames: frames.count, width: w, height: h, padding: p) else { throw ImageFiles.FileError.dimensions }
         guard let ctx = Renderer.context(width: l.width, height: l.height) else { throw ImageFiles.FileError.encoder("Sprite sheet") }
         for (i, frame) in frames.enumerated() {
-            guard let img = Renderer.render(layers: frame, width: w, height: h) else { throw ImageFiles.FileError.encoder("Frame \(i + 1)") }
+            guard let img = ImageFiles.renderFrame(frame, docWidth ?? w, docHeight ?? h, w, h) else { throw ImageFiles.FileError.encoder("Frame \(i + 1)") }
             Renderer.drawImage(img, in: ctx, rect: frameRect(i, in: l, width: w, height: h, padding: p))
         }
         guard let sheet = ctx.makeImage() else { throw ImageFiles.FileError.encoder("Sprite sheet") }
@@ -44,9 +44,10 @@ enum SpriteSheet {
     }
 
     /// Writes `url` (PNG) and the same name with .json.
-    static func export(frames: [[ArtLayer]], width w: Int, height h: Int, fps: Double, holds: [Int], loop: Bool, padding p: Int = 2, url: URL) throws {
+    static func export(frames: [[ArtLayer]], width docW: Int, height docH: Int, fps: Double, holds: [Int], loop: Bool, padding p: Int = 2, scale: Double = 1, url: URL) throws {
         guard !frames.isEmpty else { throw ImageFiles.FileError.noFrames }
-        let (sheet, l) = try render(frames: frames, width: w, height: h, padding: p)
+        let (w, h) = ImageFiles.outputSize(docW, docH, scale: scale)
+        let (sheet, l) = try render(frames: frames, width: w, height: h, padding: p, docWidth: docW, docHeight: docH)
         let json = url.deletingPathExtension().appendingPathExtension("json")
         let m = meta(image: url.lastPathComponent, layout: l, frames: frames.count, width: w, height: h, padding: p, fps: fps, holds: holds, loop: loop)
         try ImageFiles.encodedData(image: sheet, type: .png, quality: 1).write(to: url, options: .atomic)

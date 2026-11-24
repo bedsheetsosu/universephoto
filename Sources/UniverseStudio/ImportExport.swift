@@ -61,8 +61,9 @@ enum ImageFiles {
         try data.write(to: url, options: .atomic)
     }
 
-    static func exportSequence(frames: [[ArtLayer]], width: Int, height: Int, directory: URL) throws {
+    static func exportSequence(frames: [[ArtLayer]], width docW: Int, height docH: Int, scale: Double = 1, directory: URL) throws {
         guard !frames.isEmpty else { throw FileError.noFrames }
+        let (width, height) = outputSize(docW, docH, scale: scale)
         try validate(width: width, height: height)
         let files = frames.indices.map { directory.appendingPathComponent(String(format: "frame-%04d.png", $0 + 1)) }
         guard !files.contains(where: { FileManager.default.fileExists(atPath: $0.path) }) else { throw FileError.outputExists }
@@ -70,21 +71,22 @@ enum ImageFiles {
         try FileManager.default.createDirectory(at: staging, withIntermediateDirectories: false)
         defer { try? FileManager.default.removeItem(at: staging) }
         for (index, frame) in frames.enumerated() {
-            guard let image = Renderer.render(layers: frame, width: width, height: height) else { throw FileError.encoder("Frame \(index + 1)") }
+            guard let image = renderFrame(frame, docW, docH, width, height) else { throw FileError.encoder("Frame \(index + 1)") }
             try encoded(image: image, type: .png).write(to: staging.appendingPathComponent(files[index].lastPathComponent), options: .atomic)
         }
         for file in files { try FileManager.default.moveItem(at: staging.appendingPathComponent(file.lastPathComponent), to: file) }
     }
 
     /// GIF retains binary transparency. Its palette and centisecond timing are inherently lossy.
-    static func exportGIF(frames: [[ArtLayer]], width: Int, height: Int, fps: Double, url: URL) throws {
+    static func exportGIF(frames: [[ArtLayer]], width docW: Int, height docH: Int, fps: Double, scale: Double = 1, loopForever: Bool = true, url: URL) throws {
+        let (width, height) = outputSize(docW, docH, scale: scale)
         try validateAnimation(frames: frames, width: width, height: height, fps: fps)
         let data = NSMutableData()
         guard let destination = CGImageDestinationCreateWithData(data, UTType.gif.identifier as CFString, frames.count, nil) else { throw FileError.encoder("GIF") }
-        CGImageDestinationSetProperties(destination, [kCGImagePropertyGIFDictionary: [kCGImagePropertyGIFLoopCount: 0]] as CFDictionary)
+        if loopForever { CGImageDestinationSetProperties(destination, [kCGImagePropertyGIFDictionary: [kCGImagePropertyGIFLoopCount: 0]] as CFDictionary) }
         let delay = max(0.01, (100 / fps).rounded() / 100)
         for frame in frames {
-            guard let image = Renderer.render(layers: frame, width: width, height: height) else { throw FileError.encoder("GIF frame") }
+            guard let image = renderFrame(frame, docW, docH, width, height) else { throw FileError.encoder("GIF frame") }
             let properties = [kCGImagePropertyGIFDictionary: [kCGImagePropertyGIFDelayTime: delay, kCGImagePropertyGIFUnclampedDelayTime: delay]]
             CGImageDestinationAddImage(destination, image, properties as CFDictionary)
         }
@@ -94,7 +96,8 @@ enum ImageFiles {
 
     /// H.264 MP4, opaque over white, no audio. Each input frame occupies exactly 1/fps seconds.
     /// Call from a background task; rendering is deliberately synchronous and deterministic.
-    static func exportVideo(frames: [[ArtLayer]], width: Int, height: Int, fps: Double, url: URL) async throws {
+    static func exportVideo(frames: [[ArtLayer]], width docW: Int, height docH: Int, fps: Double, scale: Double = 1, url: URL) async throws {
+        let (width, height) = outputSize(docW, docH, scale: scale, even: abs(scale - 1) > 0.001)
         try validateAnimation(frames: frames, width: width, height: height, fps: fps)
         guard width.isMultiple(of: 2), height.isMultiple(of: 2) else { throw FileError.dimensions }
         let staging = url.deletingLastPathComponent().appendingPathComponent(".universephoto-\(UUID().uuidString).mp4")
@@ -122,7 +125,7 @@ enum ImageFiles {
                     try await Task.sleep(for: .milliseconds(5))
                 }
                 try Task.checkCancellation()
-                guard let image = Renderer.render(layers: frame, width: width, height: height),
+                guard let image = renderFrame(frame, docW, docH, width, height),
                       let pool = adaptor.pixelBufferPool else { throw FileError.encoder("MP4 buffer") }
                 var pixelBuffer: CVPixelBuffer?
                 guard CVPixelBufferPoolCreatePixelBuffer(kCFAllocatorDefault, pool, &pixelBuffer) == kCVReturnSuccess,
@@ -155,6 +158,23 @@ enum ImageFiles {
     }
 
     /// The picture scaled by `factor` (high-quality resampling), at least 1 × 1 pixel.
+    /// Output size of an animation export at `scale` (even numbers for video when scaled).
+    static func outputSize(_ w: Int, _ h: Int, scale: Double, even: Bool = false) -> (Int, Int) {
+        guard abs(scale - 1) > 0.001 else { return (w, h) }
+        func size(_ v: Int) -> Int { let r = max(1, Int((Double(v) * scale).rounded())); return even ? max(2, r - r % 2) : r }
+        return (size(w), size(h))
+    }
+
+    /// One frame rendered at document size and drawn at the output size.
+    static func renderFrame(_ frame: [ArtLayer], _ docW: Int, _ docH: Int, _ w: Int, _ h: Int) -> CGImage? {
+        guard let image = Renderer.render(layers: frame, width: docW, height: docH) else { return nil }
+        if w == docW && h == docH { return image }
+        guard let ctx = bitmap(width: w, height: h) else { return nil }
+        ctx.interpolationQuality = .high
+        ctx.draw(image, in: CGRect(x: 0, y: 0, width: w, height: h))
+        return ctx.makeImage()
+    }
+
     static func scaled(_ image: CGImage, by factor: Double) -> CGImage? {
         guard abs(factor - 1) > 0.001 else { return image }
         let w = max(1, Int((Double(image.width) * factor).rounded())), h = max(1, Int((Double(image.height) * factor).rounded()))

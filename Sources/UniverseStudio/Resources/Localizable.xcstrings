@@ -13860,6 +13860,42 @@
           }
         }
       }
+    },
+    "Only the play range": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nur der Abspielbereich"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Only the play range"
+          }
+        }
+      }
+    },
+    "Loop forever": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Endlos wiederholen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Loop forever"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
