@@ -6,7 +6,7 @@ Existing keys are left alone. Prints how many were added.
 """
 import json, os, sys
 
-catalog = os.path.join(os.path.dirname(__file__), "..", "Sources", "UniversePhoto", "Resources", "Localizable.xcstrings")
+catalog = os.path.join(os.path.dirname(__file__), "..", "Sources", "UniverseStudio", "Resources", "Localizable.xcstrings")
 arg = sys.argv[1]
 pairs = json.load(open(arg)) if os.path.exists(arg) else json.loads(arg)
 text = open(catalog, encoding="utf-8").read()

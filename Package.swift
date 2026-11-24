@@ -2,12 +2,12 @@
 import PackageDescription
 
 let package = Package(
-    name: "UniversePhoto",
+    name: "UniverseStudio",
     defaultLocalization: "en",
     platforms: [.macOS(.v15)],
-    products: [.executable(name: "UniversePhoto", targets: ["UniversePhoto"])],
+    products: [.executable(name: "UniverseStudio", targets: ["UniverseStudio"])],
     targets: [
-        .executableTarget(name: "UniversePhoto", resources: [.copy("Resources/Localizable.xcstrings")]),
-        .testTarget(name: "UniversePhotoTests", dependencies: ["UniversePhoto"])
+        .executableTarget(name: "UniverseStudio", resources: [.copy("Resources/Localizable.xcstrings")]),
+        .testTarget(name: "UniverseStudioTests", dependencies: ["UniverseStudio"])
     ]
 )

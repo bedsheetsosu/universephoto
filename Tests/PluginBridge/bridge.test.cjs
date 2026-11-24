@@ -4,7 +4,7 @@ const vm = require('node:vm');
 const assert = require('node:assert/strict');
 const path = require('node:path');
 const actions = new Map(), handlers = new Map(), shortcuts = [], toasts = [];
-let app = { bundleID: 'local.universephoto', name: 'UniversePhoto' };
+let app = { bundleID: 'local.universestudio', name: 'UniverseStudio' };
 const up = {
   frontApp: () => app,
   action: (spec, callback) => {
@@ -31,7 +31,7 @@ app = { bundleID: 'com.example.other', name: 'UniversePhoto Notes' };
 const before = shortcuts.length;
 actions.get('newLayer').callback();
 assert.equal(shortcuts.length, before);
-assert.equal(toasts.at(-1)[0], 'UniversePhoto ist nicht im Vordergrund');
+assert.equal(toasts.at(-1)[0], 'UniverseStudio ist nicht im Vordergrund');
 // Return to the app and reconnect without an app event.
 app = { bundleID: 'local.universephoto', name: 'UniversePhoto' };
 handlers.get('connect')();

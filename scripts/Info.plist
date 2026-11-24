@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plist version="1.0"><dict>
-<key>CFBundleName</key><string>UniversePhoto</string>
-<key>CFBundleDisplayName</key><string>UniversePhoto</string>
-<key>CFBundleIdentifier</key><string>local.universephoto</string>
-<key>CFBundleIconFile</key><string>UniversePhoto</string>
-<key>CFBundleExecutable</key><string>UniversePhoto</string>
+<key>CFBundleName</key><string>UniverseStudio</string>
+<key>CFBundleDisplayName</key><string>UniverseStudio</string>
+<key>CFBundleIdentifier</key><string>local.universestudio</string>
+<key>CFBundleIconFile</key><string>UniverseStudio</string>
+<key>CFBundleExecutable</key><string>UniverseStudio</string>
 <key>CFBundlePackageType</key><string>APPL</string>
-<key>CFBundleShortVersionString</key><string>0.47.0</string>
+<key>CFBundleShortVersionString</key><string>0.48.0</string>
 <key>CFBundleVersion</key><string>3</string>
 <key>CFBundleDevelopmentRegion</key><string>en</string>
 <key>CFBundleLocalizations</key><array><string>en</string><string>de</string></array>
@@ -14,7 +14,7 @@
 <key>NSHighResolutionCapable</key><true/>
 <key>NSPrincipalClass</key><string>NSApplication</string>
 <key>CFBundleDocumentTypes</key><array><dict>
-<key>CFBundleTypeName</key><string>UniversePhoto document</string>
+<key>CFBundleTypeName</key><string>UniverseStudio photo document</string>
 <key>CFBundleTypeRole</key><string>Editor</string>
 <key>LSItemContentTypes</key><array><string>local.universephoto.document</string></array>
 </dict><dict>
@@ -25,7 +25,7 @@
 </dict></array>
 <key>UTExportedTypeDeclarations</key><array><dict>
 <key>UTTypeIdentifier</key><string>local.universephoto.document</string>
-<key>UTTypeDescription</key><string>UniversePhoto layered document</string>
+<key>UTTypeDescription</key><string>UniverseStudio layered photo document</string>
 <key>UTTypeConformsTo</key><array><string>public.json</string></array>
 <key>UTTypeTagSpecification</key><dict><key>public.filename-extension</key><array><string>universephoto</string></array></dict>
 </dict></array>

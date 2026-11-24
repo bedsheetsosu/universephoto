@@ -5,7 +5,7 @@
 `UniversePhoto.app` liegt neben dem Projektordner `UniversePhoto`. Im Finder doppelt anklicken oder aus dem Projektordner starten:
 
 ```sh
-open build/UniversePhoto.app
+open build/UniverseStudio.app
 ```
 
 Die lokale Entwicklungs-App wird ad hoc signiert. Eine notarierte öffentliche Veröffentlichung wurde nicht erstellt.
@@ -18,7 +18,7 @@ Benötigt werden macOS 15 oder neuer, Swift 6 und die macOS-Entwicklungswerkzeug
 ./scripts/build-app.sh
 ```
 
-Das Skript erstellt einen Release-Build, erzeugt das eigene App-Icon, legt das Bundle als `build/UniversePhoto.app` an und signiert es lokal. Es installiert nichts nach `/Applications` und verändert keine Systemeinstellungen. Der Quellcode kann auch direkt mit `swift run` gestartet werden.
+Das Skript erstellt einen Release-Build, erzeugt das eigene App-Icon, legt das Bundle als `build/UniverseStudio.app` an und signiert es lokal. Es installiert nichts nach `/Applications` und verändert keine Systemeinstellungen. Der Quellcode kann auch direkt mit `swift run` gestartet werden.
 
 Automatisierte Prüfung:
 

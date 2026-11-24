@@ -3,7 +3,7 @@
 from pathlib import Path
 import json,re,sys
 root=Path(__file__).resolve().parents[1]
-source=root/'Sources/UniversePhoto'
+source=root/'Sources/UniverseStudio'
 catalog=json.loads((source/'Resources/Localizable.xcstrings').read_text())
 errors=[]
 strings=catalog['strings']

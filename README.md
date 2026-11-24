@@ -1,14 +1,14 @@
-# UniversePhoto™ 0.47
+# UniverseStudio™ 0.48
 
-Kostenlose, quelloffene macOS-Anwendung zum Zeichnen, zur Bildbearbeitung und für Frame-Animation. UniversePhoto läuft eigenständig und lokal; UniversePen ist optional. Dieser Entwicklungsstand liefert eine benutzbare Grundlage mit neuem UltraUI und klar begrenztem Funktionsumfang.
+*Früher UniversePhoto.* Kostenlose, quelloffene macOS-Anwendung zum Zeichnen, zur Bildbearbeitung und für Frame-Animation. UniverseStudio läuft eigenständig und lokal; UniversePen ist optional. Dieser Entwicklungsstand liefert eine benutzbare Grundlage mit neuem UltraUI und klar begrenztem Funktionsumfang.
 
 ## Start
 
-Die gebaute App liegt nach dem Bauen unter `build/UniversePhoto.app`. Zum eigenen Bauen werden macOS 15 oder neuer und Swift 6 benötigt:
+Die gebaute App liegt nach dem Bauen unter `build/UniverseStudio.app`. Zum eigenen Bauen werden macOS 15 oder neuer und Swift 6 benötigt:
 
 ```sh
 ./scripts/build-app.sh
-open build/UniversePhoto.app
+open build/UniverseStudio.app
 ```
 
 Für Entwicklung und Tests:
@@ -33,6 +33,7 @@ Details: [Installation](INSTALL.md), [Architektur](ARCHITECTURE.md), [Gestaltung
 - **Schnittmasken (0.4):** Ebenen → Schnittmaske (⌥⌘G) oder „Schneiden“ in den Eigenschaften: die Ebene zeigt sich nur dort, wo die nächste nicht beschnittene Ebene darunter Pixel hat – auch wenn diese verschoben, gedreht oder skaliert ist. Eine ausgeblendete Basis blendet ihre beschnittenen Ebenen mit aus.
 - **Frei transformieren und Ausrichten (0.8):** Ebenen → Frei transformieren (⌘T) legt einen Rahmen mit Anfassern um die Pixel der aktiven Ebene: Ecken skalieren, innen ziehen verschiebt, außen ziehen dreht (⇧ rastet auf 15° ein) – immer um die Mitte des Inhalts; ↩ oder Esc beendet. Transformation zurücksetzen. An Leinwand ausrichten: linke/rechte/obere/untere Kanten, horizontale und vertikale Mitten, auch für mehrere gewählte Ebenen. Text-Werkzeug mit Schriftwahl (alle installierten Schriftfamilien) und Fett.
 - **Ebenengruppen und Mehrfachauswahl (0.7):** In der Ebenenliste wählt ⌘-Klick weitere Ebenen, ⇧-Klick einen Bereich. Ebenen gruppieren (⌘G) sammelt sie in Reihenfolge in einem Ordner mit Auge, Auf-/Zuklappen, Name und Gruppen-Deckkraft; Gruppierung aufheben (⇧⌘G). Klick auf den Gruppenkopf wählt alle Ebenen der Gruppe, das Verschieben-Werkzeug bewegt alle gewählten Ebenen gemeinsam. Gruppen gelten für Leinwand, Export, Zwischenablage, Zauberstab, Stempel und Timeline. Die Gruppen-Deckkraft wirkt je Ebene (wie „Hindurchwirken“, bei überlappenden Ebenen leicht anders als eine flach zusammengesetzte Gruppe); verschachtelte Gruppen gibt es noch nicht.
+- **UniverseStudio und Startbildschirm (0.48):** Die App heißt jetzt UniverseStudio (Bundle `local.universestudio`). Beim Start wählst du das Modul; bisher gibt es nur **Foto** – Vektor, 3D und Video kommen erst dazu, wenn sie wirklich funktionieren. Die Karte bietet Neues Dokument, Öffnen und Weitermachen; das Logo oben links oder ⇧⌘H führt zurück, offene Dokumente bleiben offen. Ein Dokument aus dem Finder öffnet direkt das Foto-Modul, „Beim Start den Startbildschirm zeigen“ lässt sich abschalten. Beim ersten Start werden Einstellungen und Wiederherstellungskopien von UniversePhoto übernommen (die alten bleiben liegen). `.universephoto`-Dateien bleiben das Format des Foto-Moduls. Die iPad-Leiste in UniversePen einmal neu installieren, sie hängt an der neuen Bundle-ID.
 - **Sichtbare zusammenfügen, reduzieren, stempeln (0.47):** Ebenen → Sichtbare auf eine Ebene reduzieren (⇧⌘E) backt alle sichtbaren Ebenen an der Stelle der obersten zu einem Bild, ausgeblendete bleiben erhalten; Sichtbare als neue Ebene (⌥⇧⌘E) legt das Bild, wie es aussieht, als neue Ebene obendrauf und lässt alles andere unberührt; Auf Hintergrundebene reduzieren macht aus allem Sichtbaren eine einzige Ebene. Gruppen, Masken, Stile, Filter und Einstellungsebenen sind dabei eingerechnet; Transparenz bleibt. Grenzen: gesperrte sichtbare Ebenen verhindern das Zusammenfügen, wirkt nur auf den aktuellen Animations-Frame.
 - **Auswahl verschieben (0.44):** Mit Rechteck-, Ellipsen- oder Lasso-Auswahl in eine bestehende Auswahl klicken und ziehen verschiebt nur die Auswahlkante, nicht die Pixel (das macht weiter das Verschieben-Werkzeug). Mit einem Auswahlwerkzeug oder dem Zauberstab bewegen die Pfeiltasten die Auswahl um 1 px, mit ⇧ um 10 px. Gilt auch für Pixelauswahlen aus Zauberstab, Motiv oder Maskierungsmodus. **Seit 0.46** legt Auswahl → Auswahl transformieren einen Rahmen um die Auswahl: Kanten und Ecken skalieren sie, innen ziehen verschiebt sie; ↩, „Anwenden“ oder ein Klick außerhalb übernehmen, Esc stellt die alte Auswahl wieder her. Grenzen: ⇧/⌥ beim Klick in die Auswahl starten wie bisher eine neue Auswahl; Auswahl drehen gibt es noch nicht, Skalieren hält das Seitenverhältnis nicht fest.
 - **HSB-Farbwähler (0.43):** Die Farbkarte hat jetzt ein Feld für Sättigung (links–rechts) und Helligkeit (oben–unten) im aktuellen Farbton und darunter einen Farbton-Streifen; Ziehen setzt die Vordergrundfarbe live, ihre Deckkraft bleibt. Der Farbton bleibt auch bei Grautönen erhalten. Mit VoiceOver lässt sich der Farbton schrittweise (10°) verstellen.

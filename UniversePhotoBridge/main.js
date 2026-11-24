@@ -1,4 +1,4 @@
-// UniversePhoto Bridge 0.2 — documented UniversePen JavaScriptCore API only.
+// UniversePhoto Bridge 0.3 (for UniverseStudio) — documented UniversePen JavaScriptCore API only.
 // No network, filesystem, profile writes, sample filters, or automatic gesture overrides.
 // Assign these up.action entries to the bar, radial menu, squeeze, or double-tap in UniversePen.
 const actions = [
@@ -36,7 +36,7 @@ const actions = [
 ];
 
 function isUniversePhoto(app) {
-  return !!app && (app.bundleID === "local.universephoto" || app.name === "UniversePhoto");
+  return !!app && (app.bundleID === "local.universestudio" || app.name === "UniverseStudio" || app.bundleID === "local.universephoto" || app.name === "UniversePhoto");
 }
 function frontApp() {
   try { return up.frontApp(); }
@@ -47,7 +47,7 @@ actions.forEach(([id, title, icon, key, modifiers]) => {
   up.action({ id, title, icon }, () => {
     // Refresh for every action: the app may have changed before its queued event arrived.
     foreground = isUniversePhoto(frontApp());
-    if (!foreground) { up.toast("UniversePhoto ist nicht im Vordergrund", 1.5); return; }
+    if (!foreground) { up.toast("UniverseStudio ist nicht im Vordergrund", 1.5); return; }
     up.shortcut(key, modifiers);
   });
 });
