@@ -102,7 +102,9 @@ struct BrushPreset: Codable, Identifiable {
     /// Ping-pong playback (0.73) and the frames it covers (nil = all).
     @Published var pingPong = false
     /// Frame copied in the timeline (0.80) with its hold; pinned reference frame shown in blue.
-    var frameClipboard: (layers: [ArtLayer], hold: Int)? = nil
+    var frameClipboard: [(layers: [ArtLayer], hold: Int)]? = nil
+    /// Frames picked with ⌘/⇧-click in the timeline (0.86); the current frame always counts.
+    @Published var selectedFrames: Set<Int> = []
     @Published var referenceFrame: Int? = nil
     @Published var playRange: ClosedRange<Int>? = nil
     var playForward = true
@@ -298,7 +300,7 @@ struct BrushPreset: Codable, Identifiable {
     func fit() { zoom = 1; pan = .zero; rotation = 0; mirrored = false }
     func cycleColor() { let colors = Self.palette; let idx = colors.firstIndex(of: color) ?? -1; color = colors[(idx + 1) % colors.count] }
     static let palette = [CodableColor.black, .white, CodableColor(red: 0.47, green: 0.39, blue: 0.96, alpha: 1), CodableColor(red: 0.98, green: 0.38, blue: 0.43, alpha: 1), CodableColor(red: 1, green: 0.73, blue: 0.29, alpha: 1), CodableColor(red: 0.25, green: 0.76, blue: 0.65, alpha: 1), CodableColor(red: 0.27, green: 0.61, blue: 0.94, alpha: 1)]
-    func apply(_ d: ArtDocument) { audio = d.audio; frameHolds = d.frameHolds ?? []; frameLabels = d.frameLabels ?? []; if referenceFrame.map({ $0 >= d.frames.count }) ?? false { referenceFrame = nil }; groups = d.groups ?? []; guides = d.guides ?? []; layerComps = d.layerComps ?? []; selectedIDs = []; width = d.width; height = d.height; documentName = d.title; layers = d.layers; frames = d.frames; fps = d.fps ?? 12; frameIndex = min(max(0,d.activeFrame ?? frames.firstIndex(of:d.layers) ?? 0), max(0, frames.count-1)); selectedLayer = min(selectedLayer, max(0, layers.count-1)); maskEditing = false; selection = nil }
+    func apply(_ d: ArtDocument) { selectedFrames = []; audio = d.audio; frameHolds = d.frameHolds ?? []; frameLabels = d.frameLabels ?? []; if referenceFrame.map({ $0 >= d.frames.count }) ?? false { referenceFrame = nil }; groups = d.groups ?? []; guides = d.guides ?? []; layerComps = d.layerComps ?? []; selectedIDs = []; width = d.width; height = d.height; documentName = d.title; layers = d.layers; frames = d.frames; fps = d.fps ?? 12; frameIndex = min(max(0,d.activeFrame ?? frames.firstIndex(of:d.layers) ?? 0), max(0, frames.count-1)); selectedLayer = min(selectedLayer, max(0, layers.count-1)); maskEditing = false; selection = nil }
     func syncTab() { if let i = tabs.firstIndex(where: { $0.id == tabID }) { tabs[i].document = document(); tabs[i].dirty = dirty; tabs[i].url = fileURL;tabs[i].undo = undoStack;tabs[i].redo = redoStack;tabs[i].saved = savedDocument } }
     func switchTab(_ id: UUID) { guard let tab = tabs.first(where: { $0.id == id }), id != tabID else { return }; stopPlayback(); syncTab(); tabID = id; apply(tab.document); fileURL = tab.url; dirty = tab.dirty; undoStack = tab.undo; redoStack = tab.redo; savedDocument = tab.saved ?? (tab.dirty ? nil : tab.document); fit() }
     func newDocument(width: Int = 1200, height: Int = 800, background: CodableColor? = nil) {

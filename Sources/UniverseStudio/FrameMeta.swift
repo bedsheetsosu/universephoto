@@ -9,6 +9,7 @@ extension Studio {
     func label(_ i: Int) -> String { frameLabels.indices.contains(i) ? frameLabels[i] : "" }
 
     private func setMeta(_ h: [Int], _ l: [String]) {
+        selectedFrames = []   // indices shift: a frame selection would point at other drawings
         frameHolds = h.allSatisfy { $0 == 1 } ? [] : h
         frameLabels = l.allSatisfy(\.isEmpty) ? [] : l
     }

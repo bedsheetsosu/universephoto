@@ -58,7 +58,7 @@ struct TimelinePanel: View {
                 .buttonStyle(PhotoButtonStyle()).help(L("Blank"))
             Button { s.addFrame() } label: { Label(L("Duplicate"), systemImage: "square.on.square") }
                 .buttonStyle(PhotoButtonStyle()).help(L("Duplicate frame · ⇧F"))
-            Button { s.removeFrame() } label: { Image(systemName: "trash") }
+            Button { s.removeFrames(s.framesForAction(at: s.frameIndex)) } label: { Image(systemName: "trash") }
                 .buttonStyle(PhotoButtonStyle()).disabled(s.frames.count < 2).help(L("Delete frame")).accessibilityLabel(L("Delete frame"))
         }
         .font(.system(size: 10, weight: .medium)).lineLimit(1).padding(.horizontal, 16).frame(height: 47)
@@ -136,8 +136,9 @@ struct TimelinePanel: View {
         }
     }
     private func frameCell(index: Int, layers: [ArtLayer]) -> some View {
-        let selected = index == s.frameIndex
-        return Button { s.stepToFrame(index) } label: {
+        let selected = index == s.frameIndex, picked = s.selectedFrames.contains(index)
+        let group = s.framesForAction(at: index)
+        return Button { let m = NSEvent.modifierFlags; s.clickFrame(index, command: m.contains(.command), shift: m.contains(.shift)) } label: {
             VStack(spacing: 7) {
                 HStack(spacing: 5) {
                     Circle().fill(selected ? theme.accent : .clear).frame(width: 4, height: 4)
@@ -152,7 +153,7 @@ struct TimelinePanel: View {
                 }.padding(3)
                     .background(Color.white.opacity(0.95), in: RoundedRectangle(cornerRadius: 7))
                     .clipShape(RoundedRectangle(cornerRadius: 7))
-                    .overlay(RoundedRectangle(cornerRadius: 7).strokeBorder(selected ? AnyShapeStyle(theme.accentGradient) : AnyShapeStyle(theme.outline), lineWidth: selected ? 2 : 1))
+                    .overlay(RoundedRectangle(cornerRadius: 7).strokeBorder(selected ? AnyShapeStyle(theme.accentGradient) : picked ? AnyShapeStyle(theme.accent.opacity(0.7)) : AnyShapeStyle(theme.outline), lineWidth: selected || picked ? 2 : 1))
                     .shadow(color: selected ? theme.accent.opacity(0.15) : .clear, radius: 6, y: 2)
                     .opacity(s.inPlayRange(index) ? 1 : 0.4)
                     .overlay(alignment: .bottom) { if s.audio != nil { FrameWaveform(index: index).frame(width: TimelineLayout.cellWidth(hold: s.hold(index), zoom: zoom, exposure: exposure), height: 12).offset(y: 18) } }
@@ -162,12 +163,13 @@ struct TimelinePanel: View {
             }
         }.buttonStyle(PhotoPress()).help(LF("Frame %d", index + 1)).accessibilityLabel(LF("Frame %d", index + 1))
         .contextMenu {
-            Menu(L("Hold")) { ForEach(Studio.holdChoices, id: \.self) { n in Button { s.setHold(n, for: index) } label: { if s.hold(index) == n { Label(LF("%d frames", n), systemImage: "checkmark") } else { Text(LF("%d frames", n)) } } } }
+            Menu(group.count > 1 ? LF("Hold %d frames", group.count) : L("Hold")) { ForEach(Studio.holdChoices, id: \.self) { n in Button { s.setHold(n, for: group) } label: { if group.allSatisfy({ s.hold($0) == n }) { Label(LF("%d frames", n), systemImage: "checkmark") } else { Text(LF("%d frames", n)) } } } }
             Button(s.label(index).isEmpty ? L("Add marker…") : L("Rename marker…")) { markerText = s.label(index); markerIndex = index }
             if !s.label(index).isEmpty { Button(L("Remove marker")) { s.setLabel("", for: index) } }
             Divider()
-            Button(L("Copy frame")) { s.copyFrame(index) }
+            Button(group.count > 1 ? LF("Copy %d frames", group.count) : L("Copy frame")) { s.copyFrames(group) }
             Button(L("Paste frame after")) { s.pasteFrame(after: index) }.disabled(s.frameClipboard == nil)
+            Button(group.count > 1 ? LF("Delete %d frames", group.count) : L("Delete frame"), role: .destructive) { s.removeFrames(group) }.disabled(group.count >= s.frames.count)
             Button(s.referenceFrame == index ? L("Unpin reference") : L("Pin as reference")) { s.toggleReference(index) }
             Divider()
             Menu(L("Tween to next frame")) {
