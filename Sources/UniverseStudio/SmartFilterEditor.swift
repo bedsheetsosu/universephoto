@@ -6,7 +6,7 @@ struct SmartFilterEditor: View {
     var filters: [SmartFilter]
     var set: ([SmartFilter]) -> Void
 
-    private static let groups = ["Blur & sharpen", "Stylize", "Distort", "Colour looks"]
+    private static let groups = ["Blur & sharpen", "Noise", "Stylize", "Distort", "Colour looks"]
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {

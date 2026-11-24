@@ -15,6 +15,10 @@ struct SmartFilter: Codable, Equatable, Identifiable, Sendable {
         case edges, lineArt, comic, crystallize, pointillize, hexagons, kaleidoscope, dither
         // Distort
         case twirl, bump, pinch
+        // Noise (0.63)
+        case addNoise, dustAndScratches
+        // Stylize (0.63)
+        case emboss, threshold
         // Colour looks
         case sepia, thermal, xray, chrome, fade, instant, mono, noir, process, tonal, transfer
 
@@ -24,12 +28,15 @@ struct SmartFilter: Codable, Equatable, Identifiable, Sendable {
         case .hexagons: "Hexagons"; case .kaleidoscope: "Kaleidoscope"; case .dither: "Dither"
         case .twirl: "Twirl"; case .bump: "Bulge"; case .pinch: "Pinch"
         case .sepia: "Sepia"; case .thermal: "Thermal"; case .xray: "X-ray"; case .chrome: "Chrome"; case .fade: "Fade"; case .instant: "Instant"
-        case .mono: "Mono"; case .noir: "Noir film"; case .process: "Process"; case .tonal: "Tonal"; case .transfer: "Transfer" } }
+        case .mono: "Mono"; case .noir: "Noir film"; case .process: "Process"; case .tonal: "Tonal"; case .transfer: "Transfer"
+        case .addNoise: "Add noise"; case .dustAndScratches: "Dust & scratches"; case .emboss: "Emboss"; case .threshold: "Threshold" } }
 
         var group: String { switch self {
         case .motionBlur, .zoomBlur, .unsharpMask, .bloom, .gloom: "Blur & sharpen"
         case .edges, .lineArt, .comic, .crystallize, .pointillize, .hexagons, .kaleidoscope, .dither: "Stylize"
         case .twirl, .bump, .pinch: "Distort"
+        case .addNoise, .dustAndScratches: "Noise"
+        case .emboss, .threshold: "Stylize"
         default: "Colour looks" } }
 
         /// Range of the strength slider; nil = the filter has no strength.
@@ -37,12 +44,14 @@ struct SmartFilter: Codable, Equatable, Identifiable, Sendable {
         case .motionBlur: 0...80; case .zoomBlur: 0...60; case .unsharpMask: 0...3; case .bloom, .gloom: 0...2
         case .edges: 0...10; case .crystallize, .pointillize: 2...80; case .hexagons: 2...80; case .kaleidoscope: 2...16; case .dither: 0...1
         case .twirl: -12...12; case .bump: -1...1; case .pinch: 0...1; case .sepia: 0...1
+        case .addNoise: 0...1; case .dustAndScratches: 1...6; case .emboss: 0.2...3; case .threshold: 0.02...0.98
         default: nil } }
 
         var defaultAmount: Double { switch self {
         case .motionBlur: 20; case .zoomBlur: 12; case .unsharpMask: 1; case .bloom, .gloom: 1; case .edges: 3
         case .crystallize, .pointillize, .hexagons: 16; case .kaleidoscope: 6; case .dither: 0.5
         case .twirl: 3; case .bump: 0.6; case .pinch: 0.5; case .sepia: 0.9
+        case .addNoise: 0.25; case .dustAndScratches: 2; case .emboss: 1; case .threshold: 0.5
         default: 1 } }
     }
 
@@ -84,6 +93,25 @@ struct SmartFilter: Codable, Equatable, Identifiable, Sendable {
         case .process: return f("CIPhotoEffectProcess")
         case .tonal: return f("CIPhotoEffectTonal")
         case .transfer: return f("CIPhotoEffectTransfer")
+        case .addNoise:
+            // Grey noise blended over the picture, only where it has pixels; the same noise every render.
+            let noise = CIFilter(name: "CIRandomGenerator")?.outputImage?
+                .applyingFilter("CIColorMatrix", parameters: ["inputRVector": CIVector(x: 0.33, y: 0.33, z: 0.33, w: 0), "inputGVector": CIVector(x: 0.33, y: 0.33, z: 0.33, w: 0),
+                                                          "inputBVector": CIVector(x: 0.33, y: 0.33, z: 0.33, w: 0), "inputAVector": CIVector(x: 0, y: 0, z: 0, w: a)])
+                .cropped(to: e) ?? image
+            return noise.applyingFilter("CIOverlayBlendMode", parameters: [kCIInputBackgroundImageKey: image])
+                .applyingFilter("CISourceInCompositing", parameters: [kCIInputBackgroundImageKey: image]).cropped(to: e)
+        case .dustAndScratches:
+            var out = image.clampedToExtent()
+            for _ in 0..<Int(a.rounded()) { out = out.applyingFilter("CIMedianFilter") }
+            return out.cropped(to: e)
+        case .emboss:
+            let w = CIVector(values: [-2 * a, -a, 0, -a, 1, a, 0, a, 2 * a], count: 9)
+            return image.clampedToExtent().applyingFilter("CIConvolution3X3", parameters: ["inputWeights": w, "inputBias": 0.5]).cropped(to: e)
+                .applyingFilter("CIColorControls", parameters: [kCIInputSaturationKey: 0])
+                .applyingFilter("CISourceInCompositing", parameters: [kCIInputBackgroundImageKey: image])
+        case .threshold:
+            return f("CIColorThreshold", ["inputThreshold": a])
         }
     }
 }
