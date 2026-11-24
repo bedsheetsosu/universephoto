@@ -23,6 +23,16 @@ struct ArtworkCanvas: NSViewRepresentable {
         DispatchQueue.main.asyncAfter(deadline: .now() + Self.sizeSettleDelay, execute: work)
     }
     static let sizeSettleDelay = 0.12
+    /// Rendered onion-skin frames, reused while those frames don't change.
+    private var onionCache: [(layers: [ArtLayer], key: String, image: CGImage)] = []
+    private func onionImage(_ frame: [ArtLayer], before: Bool, settings o: OnionSettings, studio s: Studio) -> CGImage? {
+        let key = "\(s.width)x\(s.height)-\(o.tinted)-\(before)"
+        if let hit = onionCache.first(where: { $0.key == key && $0.layers == frame }) { return hit.image }
+        guard let plain = Renderer.render(layers:s.composite(frame),width:s.width,height:s.height) else { return nil }
+        let image = o.tinted ? (OnionSettings.tint(plain,color:before ? OnionSettings.beforeColor : OnionSettings.afterColor) ?? plain) : plain
+        onionCache.append((frame, key, image)); if onionCache.count > 12 { onionCache.removeFirst() }
+        return image
+    }
     private var sizeSettle: DispatchWorkItem?
     /// The transparency checkerboard of the current document size, drawn once instead of per square.
     private var checker: (size: CGSize, image: CGImage)?
@@ -85,7 +95,12 @@ struct ArtworkCanvas: NSViewRepresentable {
         if let board = checkerImage(width:s.width,height:s.height) { ctx.interpolationQuality = .none; drawImage(board,in:ctx,rect:doc); ctx.interpolationQuality = .default }
         else { ctx.setFillColor(CGColor(gray:0.97,alpha:1)); ctx.fill(doc) }
         _ = cell
-        if s.onionSkin && s.frameIndex > 0 && s.frames.indices.contains(s.frameIndex-1), let onion = Renderer.render(layers:s.composite(s.frames[s.frameIndex-1]),width:s.width,height:s.height) { ctx.setAlpha(0.2); drawImage(onion,in:ctx,rect:doc); ctx.setAlpha(1) }
+        if s.onionSkin && !s.isPlaying {
+            let o = OnionSettings(defaults:.standard)
+            for g in o.ghosts(current:s.frameIndex,count:s.frames.count,loop:s.loop) where s.frames.indices.contains(g.index) {
+                if let ghost = onionImage(s.frames[g.index],before:g.isBefore,settings:o,studio:s) { ctx.setAlpha(g.alpha); drawImage(ghost,in:ctx,rect:doc); ctx.setAlpha(1) }
+            }
+        }
         let rendered: CGImage?
         if let active = active ?? s.distortStroke, s.layers.indices.contains(s.selectedLayer) { if s.maskEditing || s.activeLayer?.isAdjustmentLayer == true { var previewLayers = s.composite(s.layers);previewLayers[s.selectedLayer].mask = (previewLayers[s.selectedLayer].mask ?? []) + [active];rendered = Renderer.render(layers:previewLayers,width:s.width,height:s.height,cache:layerCache) } else { rendered = Renderer.render(layers:s.composite(s.layers),width:s.width,height:s.height,preview:active,previewLayer:s.selectedLayer,cache:layerCache) } } else { rendered = committedImage() }
         if let rendered { drawImage(rendered,in:ctx,rect:doc) }

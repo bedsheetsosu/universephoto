@@ -28,6 +28,7 @@ struct TimelinePanel: View {
             Text(String(format: "%.2f s", s.animationDuration)).font(.system(size: 10, weight: .medium, design: .monospaced)).foregroundStyle(theme.secondary.opacity(0.8)).help(L("Length including holds"))
             Spacer(minLength: 8)
             timelineToggle(L("Onion Skin"), symbol: "square.3.layers.3d", value: $s.onionSkin).help(L("Onion skinning · ⌥O"))
+            OnionOptionsButton()
             timelineToggle(L("Loop"), symbol: "repeat", value: $s.loop)
             Picker(L("Frame rate"), selection: $s.fps) {
                 ForEach([6.0, 8, 12, 15, 24, 30, 60], id: \.self) { Text(LF("%d FPS", Int($0))).tag($0) }
@@ -146,6 +147,32 @@ struct FrameThumbnail: View {
                 let result = await Task.detached(priority: .utility) { Renderer.render(layers: l, width: w, height: h) }.value
                 guard !Task.isCancelled else { return }
                 thumbnail = result
+            }
+    }
+}
+
+/// The small menu next to the onion-skin toggle: frames before/after, opacity, colours.
+struct OnionOptionsButton: View {
+    @EnvironmentObject var s: Studio
+    @Environment(\.photoTheme) private var theme
+    @AppStorage("onionBefore") private var before = 1
+    @AppStorage("onionAfter") private var after = 0
+    @AppStorage("onionOpacity") private var opacity = 0.25
+    @AppStorage("onionTinted") private var tinted = true
+    @State private var open = false
+    var body: some View {
+        Button { open.toggle() } label: { Image(systemName: "chevron.down").font(.system(size: 8, weight: .semibold)).frame(width: 18, height: 24) }
+            .buttonStyle(PhotoPress()).foregroundStyle(theme.secondary).help(L("Onion skin options")).accessibilityLabel(L("Onion skin options"))
+            .popover(isPresented: $open, arrowEdge: .top) {
+                VStack(alignment: .leading, spacing: 10) {
+                    Text(L("Onion skin")).font(.system(size: 12, weight: .semibold))
+                    Stepper(LF("Before: %d", before), value: $before, in: 0...5)
+                    Stepper(LF("After: %d", after), value: $after, in: 0...5)
+                    HStack { Text(L("Opacity")); Slider(value: $opacity, in: 0.05...0.8); Text("\(Int(opacity * 100)) %").monospacedDigit().frame(width: 38, alignment: .trailing) }
+                    Toggle(L("Tint: before red, after green"), isOn: $tinted)
+                }
+                .font(.system(size: 11)).padding(14).frame(width: 260)
+                .onChange(of: [Double(before), Double(after), opacity, tinted ? 1 : 0]) { _, _ in s.objectWillChange.send() }
             }
     }
 }
