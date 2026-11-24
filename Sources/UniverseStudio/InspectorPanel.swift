@@ -28,7 +28,7 @@ struct InspectorPanel: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 13) {
                     colors
-                    if tab == "layers" { layerPanel }
+                    if tab == "layers" { layerPanel;LayerCompList() }
                     if tab == "brush" { brushPanel }
                     if tab == "adjust" { adjustments }
                     if tab == "history" { SnapshotList();history }

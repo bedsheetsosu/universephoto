@@ -159,6 +159,13 @@ struct ArtDocument: Codable, Equatable, Sendable {
     var groups: [LayerGroup]? = nil
     /// Guide lines (0.22).
     var guides: [Guide]? = nil
+    /// Layer comps (0.61).
+    var layerComps: [LayerComp]? = nil
+}
+/// A named state of the layers: visibility, opacity, blend mode, position and style per layer.
+struct LayerComp: Codable, Equatable, Identifiable, Sendable {
+    struct State: Codable, Equatable, Sendable { var visible: Bool; var opacity: Double; var blend: LayerBlend; var transform: LayerTransform; var style: LayerStyle? }
+    var id = UUID(); var name: String; var states: [UUID: State]
 }
 struct LayerGroup: Codable, Equatable, Identifiable, Sendable {
     var id = UUID(); var name: String; var visible = true; var opacity = 1.0; var collapsed = false
