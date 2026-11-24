@@ -48,6 +48,7 @@ struct MacSetupView: View {
     @State private var tapsDone = 0
     @State private var exploded = false
     @State private var shake = 0.0
+    @State private var sealCenter: CGPoint = .zero
 
     var body: some View {
         ZStack {
@@ -67,6 +68,11 @@ struct MacSetupView: View {
                 footer
             }
           }
+          // Cracks from the seal show the app underneath, more with every tap.
+          .overlay { Cracks(level: tapsDone, center: sealCenter).stroke(Brand.mint.opacity(0.9), style: StrokeStyle(lineWidth: 2.5, lineCap: .round, lineJoin: .round)).blur(radius: 1.5).allowsHitTesting(false) }
+          .mask {
+              Rectangle().overlay(Cracks(level: tapsDone, center: sealCenter).stroke(style: StrokeStyle(lineWidth: Double(tapsDone) * 3, lineCap: .round, lineJoin: .round)).blendMode(.destinationOut)).compositingGroup()
+          }
           // The setup flies apart on the third tap.
           .scaleEffect(exploded ? 1.35 : 1)
           .blur(radius: exploded ? 22 : 0)
@@ -74,6 +80,7 @@ struct MacSetupView: View {
           .animation(.easeIn(duration: 0.45), value: exploded)
           if exploded { Sparks().allowsHitTesting(false) }
         }
+        .coordinateSpace(name: "setupRoot")
         .animation(Ultra.smooth, value: step)
         .sensoryFeedback(.selection, trigger: step)
         .onDisappear { holdTimer?.invalidate() }
@@ -519,7 +526,8 @@ struct MacSetupView: View {
         .scaleEffect(1 + 0.08 * Double(tapsDone))
         .rotationEffect(.degrees(sin(shake * .pi * 6) * 4 * Double(tapsDone)))
         .contentShape(Circle())
-        .onTapGesture { tapFinale() }
+        .overlay { FinaleTapSurface(taps: tapsDone) { tapFinale() }.clipShape(Circle()) }
+        .background(GeometryReader { g in Color.clear.onAppear { sealCenter = CGPoint(x: g.frame(in: .named("setupRoot")).midX, y: g.frame(in: .named("setupRoot")).midY) } })
         .sensoryFeedback(trigger: tapsDone) { _, n in n >= 3 ? .impact(weight: .heavy, intensity: 1) : .impact(weight: .medium, intensity: 0.5 + 0.2 * Double(n)) }
         .accessibilityLabel(L("Dreimal drauftippen, um loszulegen"))
         .accessibilityAddTraits(.isButton)
@@ -534,6 +542,57 @@ struct MacSetupView: View {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
             exploded = true
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.75) { model.finishMacSetup() }
+        }
+    }
+}
+
+/// Jagged cracks running out from the seal; each tap adds more (fixed seed, so they don't jump).
+private struct Cracks: Shape {
+    let level: Int
+    let center: CGPoint
+    func path(in rect: CGRect) -> Path {
+        var p = Path()
+        guard level > 0 else { return p }
+        var seed: UInt64 = 0x9E3779B97F4A7C15
+        func rnd() -> Double { seed = seed &* 6364136223846793005 &+ 1442695040888963407; return Double(seed >> 11) / Double(1 << 53) }
+        let n = [0, 4, 9, 14][min(level, 3)], reach = hypot(rect.width, rect.height)
+        for i in 0..<n {
+            var a = Double(i) / Double(n) * 2 * .pi + rnd() * 0.5, r = 70.0
+            var pt = CGPoint(x: center.x + cos(a) * r, y: center.y + sin(a) * r)
+            p.move(to: pt)
+            let len = reach * (0.25 + 0.25 * Double(level)) * (0.6 + 0.4 * rnd())
+            while r < len {
+                r += 25 + rnd() * 45; a += (rnd() - 0.5) * 0.6
+                pt = CGPoint(x: center.x + cos(a) * r, y: center.y + sin(a) * r)
+                p.addLine(to: pt)
+            }
+        }
+        return p
+    }
+}
+
+/// Tap area on the seal: counts finger and Pencil taps; with Apple Pencil Pro the Pencil itself
+/// buzzes – more pulses each tap, a long one on the last. (Strength can't be set, only patterns.)
+private struct FinaleTapSurface: UIViewRepresentable {
+    let taps: Int
+    let onTap: () -> Void
+    func makeUIView(context: Context) -> V { let v = V(); v.backgroundColor = .clear; return v }
+    func updateUIView(_ v: V, context: Context) { v.onTap = onTap; v.taps = taps }
+    final class V: UIView {
+        var onTap: (() -> Void)?
+        var taps = 0
+        private lazy var haptic = UICanvasFeedbackGenerator(view: self)
+        override func touchesEnded(_ t: Set<UITouch>, with e: UIEvent?) {
+            guard let touch = t.first else { return }
+            if touch.type == .pencil {
+                let at = touch.location(in: self), pulses = taps + 2
+                for k in 0..<pulses {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + Double(k) * 0.06) { [weak self] in
+                        if self?.taps ?? 0 >= 2 && k == pulses - 1 { self?.haptic.pathCompleted(at: at) } else { self?.haptic.alignmentOccurred(at: at) }
+                    }
+                }
+            }
+            onTap?()
         }
     }
 }
