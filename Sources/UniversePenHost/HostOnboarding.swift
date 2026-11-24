@@ -8,6 +8,10 @@ struct HostOnboarding: View {
     @EnvironmentObject var host: HostController
     @ObservedObject private var l10n = L10n.shared
     @Binding var done: Bool
+    /// Inside UniverseStudio's setup: the language is already chosen (skip step 0), and "Back" on
+    /// the first step returns to the studio's previous step.
+    var firstStep = 0
+    var onBackFromStart: (() -> Void)? = nil
     /// `-debugHostOnboardingStep N` opens a step directly (UI checks).
     @State private var step = UserDefaults.standard.integer(forKey: "debugHostOnboardingStep")
     @State private var forward = true
@@ -40,7 +44,7 @@ struct HostOnboarding: View {
         .animation(Ultra.smooth, value: host.lastPaired)
         .animation(Ultra.smooth, value: host.mode)
         .sensoryFeedback(.selection, trigger: step)
-        .onAppear { pairedAtStart = host.lastPaired }
+        .onAppear { pairedAtStart = host.lastPaired; if step < firstStep { step = firstStep } }
     }
 
     @ViewBuilder private var page: some View {
@@ -55,22 +59,22 @@ struct HostOnboarding: View {
 
     private var footer: some View {
         HStack {
-            Button { go(-1) } label: {
+            Button { if step == firstStep, let back = onBackFromStart { back() } else { go(-1) } } label: {
                 Label(L("Zurück"), systemImage: "chevron.left")
             }
             .buttonStyle(UltraQuiet(compact: true))
-            .opacity(step == 0 ? 0 : 1)
-            .disabled(step == 0)
+            .opacity(step == firstStep && onBackFromStart == nil ? 0 : 1)
+            .disabled(step == firstStep && onBackFromStart == nil)
             Spacer()
             HStack(spacing: 7) {
-                ForEach(0..<steps, id: \.self) { i in
+                ForEach(firstStep..<steps, id: \.self) { i in
                     Capsule()
                         .fill(i == step ? AnyShapeStyle(Ultra.accentFill) : AnyShapeStyle(Color.white.opacity(i < step ? 0.45 : 0.2)))
                         .frame(width: i == step ? 24 : 7, height: 7)
                 }
             }
             .accessibilityElement(children: .ignore)
-            .accessibilityLabel(L("Schritt %d von %d", step + 1, steps))
+            .accessibilityLabel(L("Schritt %d von %d", step + 1 - firstStep, steps - firstStep))
             Spacer()
             Button {
                 if step == steps - 1 { host.endPairing(); done = true } else { go(1) }
@@ -90,7 +94,7 @@ struct HostOnboarding: View {
 
     private func go(_ d: Int) {
         forward = d > 0
-        step = max(0, min(steps - 1, step + d))
+        step = max(firstStep, min(steps - 1, step + d))
     }
 
     // MARK: Pages

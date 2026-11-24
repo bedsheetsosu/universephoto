@@ -11790,6 +11790,96 @@
           }
         }
       }
+    },
+    "Photo editing and your iPad as a drawing tablet, in one app. A few steps and everything is set up.": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bildbearbeitung und dein iPad als Zeichentablett in einer App. Ein paar Schritte, dann ist alles eingerichtet."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Photo editing and your iPad as a drawing tablet, in one app. A few steps and everything is set up."
+          }
+        }
+      }
+    },
+    "What do you want to use?": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Was willst du nutzen?"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What do you want to use?"
+          }
+        }
+      }
+    },
+    "Pick at least one.": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wähl mindestens eins."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pick at least one."
+          }
+        }
+      }
+    },
+    "How the studio looks and how new documents start. All of it is in the settings later, too.": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wie das Studio aussieht und wie neue Dokumente anfangen. Alles davon findest du später auch in den Einstellungen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "How the studio looks and how new documents start. All of it is in the settings later, too."
+          }
+        }
+      }
+    },
+    "Step %d of %d": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schritt %d von %d"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Step %d of %d"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

@@ -13,9 +13,10 @@ struct ModuleSetupTests {
     }
 
     @Test func setupHasOneStepPerChosenModule() {
-        #expect(FirstRunSetup.steps(for: [.photo]) == [.welcome, .photo, .done])
-        #expect(FirstRunSetup.steps(for: [.pen]) == [.welcome, .pen, .done])
-        #expect(FirstRunSetup.steps(for: [.photo, .pen]) == [.welcome, .photo, .pen, .done])
+        #expect(FirstRunSetup.steps(for: [.photo]) == [.welcome, .modules, .photo, .done])
+        #expect(FirstRunSetup.steps(for: [.pen]) == [.welcome, .modules, .pen, .done])
+        #expect(FirstRunSetup.steps(for: [.photo, .pen]) == [.welcome, .modules, .photo, .pen, .done])
+        #expect(FirstRunSetup.steps(for: []) == [.welcome, .modules, .done])
     }
 
     @Test func universePenSettingsComeOverOnce() throws {

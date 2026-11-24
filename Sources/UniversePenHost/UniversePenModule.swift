@@ -67,6 +67,10 @@ public enum UniversePenModule {
     public static func pluginsView() -> some View { Root { PluginsWindow() } }
     /// The host's own setup (permissions, source, pairing) for the studio's first-run setup.
     public static func setupView(done: Binding<Bool>) -> some View { Root { HostOnboarding(done: done) } }
+    /// The same setup inside the studio's: starts after the language, "Back" leaves to `back`.
+    public static func setupView(done: Binding<Bool>, back: @escaping () -> Void) -> some View {
+        Root { HostOnboarding(done: done, firstStep: 1, onBackFromStart: back) }
+    }
     public static var setupDone: Bool { UserDefaults.standard.bool(forKey: "hostOnboardingDone") }
 
     public static func handle(url: URL) { controller?.handle(url: url) }
