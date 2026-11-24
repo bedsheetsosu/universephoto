@@ -293,6 +293,7 @@ extension Translations {
         "Radialmenü": "원형 메뉴",
         "Squeeze oder Doppeltippen auf „Radialmenü“ stellen. Dann erscheint an der Stiftspitze ein Ring: mit dem Pencil darüber schweben und nochmal drücken, oder antippen. Mitte oder daneben tippen schließt ihn. 2 bis 8 Aktionen, oben beginnend im Uhrzeigersinn.": "스퀴즈 또는 이중 탭을 '원형 메뉴'로 설정하세요. 펜 끝에 링이 나타납니다. 항목 위에 펜을 띄운 채 다시 스퀴즈하거나 탭하세요. 가운데나 바깥을 탭하면 닫힙니다. 동작 2~8개, 위에서부터 시계 방향.",
         "UniversePen beenden": "UniversePen 종료",
+        "UniverseStudio beenden": "UniverseStudio 종료",
         "UniversePen öffnen": "UniversePen 열기",
         "Warte auf das iPad …": "iPad를 기다리는 중 …",
         "iPad-Akku: %d %%": "iPad 배터리: %d %%",

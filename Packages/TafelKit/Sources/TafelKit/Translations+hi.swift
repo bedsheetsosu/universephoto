@@ -293,6 +293,7 @@ extension Translations {
         "Radialmenü": "रेडियल मेनू",
         "Squeeze oder Doppeltippen auf „Radialmenü“ stellen. Dann erscheint an der Stiftspitze ein Ring: mit dem Pencil darüber schweben und nochmal drücken, oder antippen. Mitte oder daneben tippen schließt ihn. 2 bis 8 Aktionen, oben beginnend im Uhrzeigersinn.": "स्क्वीज़ या डबल-टैप को “रेडियल मेनू” पर सेट करें। तब पेंसिल की नोक पर एक रिंग दिखती है: किसी आइटम पर पेंसिल होवर करके फिर से स्क्वीज़ करें, या उसे टैप करें। बीच में या बाहर टैप करने से यह बंद हो जाती है। 2 से 8 क्रियाएँ, ऊपर से घड़ी की दिशा में।",
         "UniversePen beenden": "UniversePen बंद करें",
+        "UniverseStudio beenden": "UniverseStudio बंद करें",
         "UniversePen öffnen": "UniversePen खोलें",
         "Warte auf das iPad …": "iPad की प्रतीक्षा …",
         "iPad-Akku: %d %%": "iPad बैटरी: %d %%",

@@ -336,6 +336,7 @@ enum Translations {
         "Radialmenü": "Radial menu",
         "Squeeze oder Doppeltippen auf „Radialmenü“ stellen. Dann erscheint an der Stiftspitze ein Ring: mit dem Pencil darüber schweben und nochmal drücken, oder antippen. Mitte oder daneben tippen schließt ihn. 2 bis 8 Aktionen, oben beginnend im Uhrzeigersinn.": "Set squeeze or double-tap to “Radial menu”. A ring then appears at the Pencil tip: hover over an item and squeeze again, or tap it. Tap the centre or outside to close it. 2 to 8 actions, clockwise from the top.",
         "UniversePen beenden": "Quit UniversePen",
+        "UniverseStudio beenden": "Quit UniverseStudio",
         "UniversePen öffnen": "Open UniversePen",
         "Warte auf das iPad …": "Waiting for the iPad …",
         "iPad-Akku: %d %%": "iPad battery: %d %%",

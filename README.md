@@ -9,6 +9,11 @@ Target hardware: iPad Air 11" M4 + Äbbl Pencil Pro, MacBook Air M5, Affinity.
 
 ---
 
+> **Mac side now also in UniverseStudio (2026-11-24):** the UniversePen host is built into
+> [UniverseStudio](https://github.com/bedsheetsosu/universestudio) as a module, so one Mac app does
+> both. The stand-alone `TafelHost` target here still builds and works; only one of the two may run
+> at a time. The root `Package.swift` exposes `TafelKit` so UniverseStudio can depend on this repo.
+
 ## Honest status (1.0.0, 2026-11-17)
 
 | Area | Status | How it was checked |

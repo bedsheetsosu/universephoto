@@ -293,6 +293,7 @@ extension Translations {
         "Radialmenü": "Menú radial",
         "Squeeze oder Doppeltippen auf „Radialmenü“ stellen. Dann erscheint an der Stiftspitze ein Ring: mit dem Pencil darüber schweben und nochmal drücken, oder antippen. Mitte oder daneben tippen schließt ihn. 2 bis 8 Aktionen, oben beginnend im Uhrzeigersinn.": "Asigna «Menú radial» al apretón o al doble toque. Aparece un anillo en la punta del lápiz: pasa el lápiz por encima de una opción y aprieta de nuevo, o tócala. Toca el centro o fuera para cerrarlo. De 2 a 8 acciones, en sentido horario desde arriba.",
         "UniversePen beenden": "Salir de UniversePen",
+        "UniverseStudio beenden": "Salir de UniverseStudio",
         "UniversePen öffnen": "Abrir UniversePen",
         "Warte auf das iPad …": "Esperando al iPad …",
         "iPad-Akku: %d %%": "Batería del iPad: %d %%",
