@@ -135,6 +135,10 @@ struct TimelinePanel: View {
         }.buttonStyle(PhotoPress()).help(LF("Frame %d", index + 1)).accessibilityLabel(LF("Frame %d", index + 1))
         .contextMenu {
             Menu(L("Hold")) { ForEach(Studio.holdChoices, id: \.self) { n in Button { s.setHold(n, for: index) } label: { if s.hold(index) == n { Label(LF("%d frames", n), systemImage: "checkmark") } else { Text(LF("%d frames", n)) } } } }
+            Menu(L("Tween to next frame")) {
+                ForEach(Studio.tweenChoices, id: \.self) { n in Button(LF("%d frames", n)) { s.tweenToNext(from: index, count: n, eased: false) } }
+                Menu(L("Eased")) { ForEach(Studio.tweenChoices, id: \.self) { n in Button(LF("%d frames", n)) { s.tweenToNext(from: index, count: n, eased: true) } } }
+            }.disabled(index >= s.frames.count - 1)
             Divider()
             Button(L("Play from here")) { s.setPlayStart(index) }
             Button(L("Play up to here")) { s.setPlayEnd(index) }
