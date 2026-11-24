@@ -65,6 +65,8 @@ struct BrushPreset: Codable, Identifiable {
     @Published var brushTip = BrushTip.round
     /// Brush blend mode (how new strokes mix with the layer); not kept between launches, like Photoshop resets it per tool preset.
     @Published var brushBlend = LayerBlend.normal
+    @Published var cropRatio = CropRatio.free { didSet { applyCropRatio() } }
+    @Published var cropPortrait = false { didSet { applyCropRatio() } }
     /// Brush dynamics (round brush), 0…1, kept between launches.
     @Published var brushScatter = UserDefaults.standard.double(forKey: "brushScatter") { didSet { UserDefaults.standard.set(brushScatter, forKey: "brushScatter") } }
     @Published var brushSizeJitter = UserDefaults.standard.double(forKey: "brushSizeJitter") { didSet { UserDefaults.standard.set(brushSizeJitter, forKey: "brushSizeJitter") } }

@@ -53,3 +53,35 @@ struct LayerCompTests {
         #expect(s.layerComps.count == 1)
     }
 }
+
+@MainActor
+struct CropRatioTests {
+    @Test func newFrameKeepsTheRatio() {
+        let s = Studio(); s.newDocument(width: 1000, height: 800)
+        s.cropRatio = .r16x9
+        s.cropDrag(.new(CGPoint(x: 100, y: 100)), to: CGPoint(x: 260, y: 130))
+        let r = s.cropRect!
+        #expect(abs(r.width / r.height - 16.0 / 9) < 0.02 && r.width == 160)
+        s.cropPortrait = true
+        #expect(abs(s.cropRect!.width / s.cropRect!.height - 9.0 / 16) < 0.03, "swapping refits the open frame")
+    }
+
+    @Test func cornerAndSideDragsKeepTheRatio() {
+        let start = CGRect(x: 100, y: 100, width: 200, height: 100)
+        // Bottom-right corner: the top-left corner stays.
+        let c = Studio.frameDrag(.edge(left: false, right: true, top: false, bottom: true, start), to: CGPoint(x: 500, y: 150), ratio: 2)
+        #expect(c == CGRect(x: 100, y: 100, width: 400, height: 200))
+        // Top side: width follows, centred.
+        let t = Studio.frameDrag(.edge(left: false, right: false, top: true, bottom: false, start), to: CGPoint(x: 0, y: 50), ratio: 2)
+        #expect(t == CGRect(x: 50, y: 50, width: 300, height: 150))
+    }
+
+    @Test func clampedToTheCanvasStillKeepsTheRatio() {
+        let s = Studio(); s.newDocument(width: 400, height: 300)
+        s.cropRatio = .square
+        s.cropDrag(.new(CGPoint(x: 300, y: 200)), to: CGPoint(x: 600, y: 600))
+        let r = s.cropRect!
+        #expect(r.width == r.height && CGRect(x: 0, y: 0, width: 400, height: 300).contains(r))
+        #expect(Studio.fit(2, in: CGRect(x: 0, y: 0, width: 100, height: 100)) == CGRect(x: 0, y: 25, width: 100, height: 50))
+    }
+}

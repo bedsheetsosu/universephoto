@@ -160,6 +160,8 @@ struct Workspace: View {
                 }
             }
             if s.tool == .crop {
+                Picker(L("Ratio"),selection:$s.cropRatio) { ForEach(Studio.CropRatio.allCases) { Text(L($0.title)).tag($0) } }.labelsHidden().frame(width:96).controlSize(.mini).help(L("Aspect ratio"))
+                Button { s.cropPortrait.toggle() } label: { Image(systemName:s.cropPortrait ? "rectangle.portrait" : "rectangle") }.buttonStyle(PhotoPress()).disabled(s.cropRatio == .free || s.cropRatio == .square).help(L("Swap portrait and landscape")).accessibilityLabel(L("Swap portrait and landscape"))
                 if let r = s.cropRect { Text("\(Int(r.width)) × \(Int(r.height)) px").monospacedDigit().foregroundStyle(theme.secondary) }
                 Button(L("Crop")) { s.applyCrop() }.disabled(s.cropRect == nil || s.isPlaying)
                 Button(L("Cancel")) { s.cropRect = nil }.disabled(s.cropRect == nil)

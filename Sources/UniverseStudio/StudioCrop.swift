@@ -23,19 +23,61 @@ extension Studio {
         return .new(p)
     }
 
-    /// Dragging to `p`; `square` keeps a new frame square (⇧). The frame stays on the canvas.
+    enum CropRatio: String, CaseIterable, Identifiable {
+        case free, square, r4x3, r3x2, r16x9, original
+        var id: String { rawValue }
+        var title: String { switch self { case .free: "Free"; case .square: "1:1"; case .r4x3: "4:3"; case .r3x2: "3:2"; case .r16x9: "16:9"; case .original: "Original" } }
+    }
+
+    /// Width ÷ height the crop frame keeps, nil = free (⇧ makes a free frame square).
+    func cropAspect(shift: Bool = false) -> Double? {
+        let base: Double?
+        switch cropRatio {
+        case .free: base = shift ? 1 : nil
+        case .square: base = 1
+        case .r4x3: base = 4.0 / 3
+        case .r3x2: base = 3.0 / 2
+        case .r16x9: base = 16.0 / 9
+        case .original: base = Double(width) / Double(max(1, height))
+        }
+        guard let b = base else { return nil }
+        return cropPortrait && b != 1 ? 1 / b : b
+    }
+
+    /// Dragging to `p`; `square` (⇧) keeps a free frame square. The frame stays on the canvas.
     func cropDrag(_ grab: CropGrab, to p: CGPoint, square: Bool = false) {
         let canvas = CGRect(x: 0, y: 0, width: width, height: height)
-        cropRect = Self.frameDrag(grab, to: p, square: square, within: canvas).intersection(canvas).integral
+        let aspect = cropAspect(shift: square)
+        var r = Self.frameDrag(grab, to: p, ratio: aspect, within: canvas)
+        if !canvas.contains(r) { r = r.intersection(canvas); if let a = aspect { r = Self.fit(a, in: r) } }
+        cropRect = r.integral
+    }
+
+    /// The biggest rectangle of ratio `a` centred in `r`.
+    static func fit(_ a: Double, in r: CGRect) -> CGRect {
+        guard r.width > 0, r.height > 0 else { return r }
+        let w = min(r.width, r.height * a), h = w / a
+        return CGRect(x: r.midX - w / 2, y: r.midY - h / 2, width: w, height: h)
+    }
+
+    /// Picking a ratio refits an open frame (centred, as big as fits in it).
+    func applyCropRatio() {
+        guard let r = cropRect, let a = cropAspect() else { return }
+        cropRect = Self.fit(a, in: r).integral
     }
 
     /// The frame after dragging `grab` to `p`; a moved frame stays inside `within` when given.
-    static func frameDrag(_ grab: CropGrab, to p: CGPoint, square: Bool = false, within canvas: CGRect? = nil) -> CGRect {
+    /// `ratio` (width ÷ height) keeps the frame's proportions; `square` is ratio 1.
+    static func frameDrag(_ grab: CropGrab, to p: CGPoint, square: Bool = false, ratio: Double? = nil, within canvas: CGRect? = nil) -> CGRect {
+        let ratio = ratio ?? (square ? 1 : nil)
         var r: CGRect
         switch grab {
         case .new(let a):
             var q = p
-            if square { let s = max(abs(p.x - a.x), abs(p.y - a.y)); q = CGPoint(x: a.x + (p.x < a.x ? -s : s), y: a.y + (p.y < a.y ? -s : s)) }
+            if let k = ratio {
+                let w = max(abs(p.x - a.x), abs(p.y - a.y) * k), h = w / k
+                q = CGPoint(x: a.x + (p.x < a.x ? -w : w), y: a.y + (p.y < a.y ? -h : h))
+            }
             r = CGRect(x: min(a.x, q.x), y: min(a.y, q.y), width: abs(q.x - a.x), height: abs(q.y - a.y))
         case .move(let start, let a):
             r = start.offsetBy(dx: p.x - a.x, dy: p.y - a.y)
@@ -46,6 +88,17 @@ extension Studio {
         case .edge(let l, let rt, let t, let b, let s):
             var x0 = s.minX, x1 = s.maxX, y0 = s.minY, y1 = s.maxY
             if l { x0 = p.x }; if rt { x1 = p.x }; if t { y0 = p.y }; if b { y1 = p.y }
+            if let k = ratio {
+                let horizontal = l || rt, vertical = t || b
+                if horizontal {
+                    // Width from the dragged side; height follows, from the fixed edge for a corner, centred for a side.
+                    let h = abs(x1 - x0) / k
+                    if vertical { if t { y0 = y1 - h } else { y1 = y0 + h } } else { y0 = s.midY - h / 2; y1 = s.midY + h / 2 }
+                } else if vertical {
+                    let w = abs(y1 - y0) * k
+                    x0 = s.midX - w / 2; x1 = s.midX + w / 2
+                }
+            }
             r = CGRect(x: min(x0, x1), y: min(y0, y1), width: abs(x1 - x0), height: abs(y1 - y0))
         }
         return r
