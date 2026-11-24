@@ -92,6 +92,9 @@ struct BrushPreset: Codable, Identifiable {
     @Published var frameHolds: [Int] = []
     /// Per-frame marker names (0.82), parallel to `frames`; "" = none, empty = no markers.
     @Published var frameLabels: [String] = []
+    /// Sound track (0.83) and its player.
+    @Published var audio: AudioTrack? = nil
+    let audioEngine = AudioEngine()
     /// Playback: ticks the current frame has been shown.
     var holdTick = 0
     @Published var isPlaying = false
@@ -157,7 +160,7 @@ struct BrushPreset: Codable, Identifiable {
         var currentFrames = frames
         if currentFrames.indices.contains(frameIndex) { currentFrames[frameIndex] = layers }
         currentFrames = Self.syncedFrames(currentFrames, from: layers)
-        return ArtDocument(title: documentName, width: width, height: height, layers: layers, frames: currentFrames, fps: fps, activeFrame: frameIndex, groups: groups.isEmpty ? nil : groups, guides: guides.isEmpty ? nil : guides, layerComps: layerComps.isEmpty ? nil : layerComps, frameHolds: frameHolds.isEmpty ? nil : frameHolds, frameLabels: frameLabels.isEmpty ? nil : frameLabels)
+        return ArtDocument(title: documentName, width: width, height: height, layers: layers, frames: currentFrames, fps: fps, activeFrame: frameIndex, groups: groups.isEmpty ? nil : groups, guides: guides.isEmpty ? nil : guides, layerComps: layerComps.isEmpty ? nil : layerComps, frameHolds: frameHolds.isEmpty ? nil : frameHolds, frameLabels: frameLabels.isEmpty ? nil : frameLabels, audio: audio)
     }
     func checkpoint(_ label: String = "Edit") {
         lastMutation = nil
@@ -285,17 +288,17 @@ struct BrushPreset: Codable, Identifiable {
     func removeFrame() { guard frames.count > 1 else { return }; checkpoint("Delete frame"); metaRemove(at: frameIndex); frames.remove(at: frameIndex); frameIndex = min(frameIndex, frames.count - 1); layers = frames[frameIndex]; changed() }
     func togglePlayback() {
         if isPlaying { stopPlayback(); return }; guard frames.count > 1 else { return }
-        frames[frameIndex] = layers; isPlaying = true; holdTick = 0; playForward = true
+        frames[frameIndex] = layers; isPlaying = true; holdTick = 0; playForward = true; audioEngine.play(track: audio, at: soundTime(frame: frameIndex))
         playback = Timer.scheduledTimer(withTimeInterval: 1 / max(1, fps), repeats: true) { [weak self] _ in
             MainActor.assumeIsolated { guard let self else { return }; self.holdTick += 1; guard self.holdTick >= self.hold(self.frameIndex) else { return }; self.holdTick = 0
-                if let next = Playback.step(current: self.frameIndex, count: self.frames.count, range: self.playRange, loop: self.loop, pingPong: self.pingPong, forward: self.playForward) { self.playForward = next.forward; self.selectFrame(next.index) } else { self.stopPlayback() } }
+                if let next = Playback.step(current: self.frameIndex, count: self.frames.count, range: self.playRange, loop: self.loop, pingPong: self.pingPong, forward: self.playForward) { let jumped = next.index != self.frameIndex + 1; self.playForward = next.forward; self.selectFrame(next.index); if self.audio != nil && (jumped || !next.forward) { self.audioEngine.keepInSync(track: self.audio, at: self.soundTime(frame: self.frameIndex), forward: next.forward) } } else { self.stopPlayback() } }
         }
     }
-    func stopPlayback() { playback?.invalidate(); playback = nil; isPlaying = false }
+    func stopPlayback() { playback?.invalidate(); playback = nil; isPlaying = false; audioEngine.stop() }
     func fit() { zoom = 1; pan = .zero; rotation = 0; mirrored = false }
     func cycleColor() { let colors = Self.palette; let idx = colors.firstIndex(of: color) ?? -1; color = colors[(idx + 1) % colors.count] }
     static let palette = [CodableColor.black, .white, CodableColor(red: 0.47, green: 0.39, blue: 0.96, alpha: 1), CodableColor(red: 0.98, green: 0.38, blue: 0.43, alpha: 1), CodableColor(red: 1, green: 0.73, blue: 0.29, alpha: 1), CodableColor(red: 0.25, green: 0.76, blue: 0.65, alpha: 1), CodableColor(red: 0.27, green: 0.61, blue: 0.94, alpha: 1)]
-    func apply(_ d: ArtDocument) { frameHolds = d.frameHolds ?? []; frameLabels = d.frameLabels ?? []; if referenceFrame.map({ $0 >= d.frames.count }) ?? false { referenceFrame = nil }; groups = d.groups ?? []; guides = d.guides ?? []; layerComps = d.layerComps ?? []; selectedIDs = []; width = d.width; height = d.height; documentName = d.title; layers = d.layers; frames = d.frames; fps = d.fps ?? 12; frameIndex = min(max(0,d.activeFrame ?? frames.firstIndex(of:d.layers) ?? 0), max(0, frames.count-1)); selectedLayer = min(selectedLayer, max(0, layers.count-1)); maskEditing = false; selection = nil }
+    func apply(_ d: ArtDocument) { audio = d.audio; frameHolds = d.frameHolds ?? []; frameLabels = d.frameLabels ?? []; if referenceFrame.map({ $0 >= d.frames.count }) ?? false { referenceFrame = nil }; groups = d.groups ?? []; guides = d.guides ?? []; layerComps = d.layerComps ?? []; selectedIDs = []; width = d.width; height = d.height; documentName = d.title; layers = d.layers; frames = d.frames; fps = d.fps ?? 12; frameIndex = min(max(0,d.activeFrame ?? frames.firstIndex(of:d.layers) ?? 0), max(0, frames.count-1)); selectedLayer = min(selectedLayer, max(0, layers.count-1)); maskEditing = false; selection = nil }
     func syncTab() { if let i = tabs.firstIndex(where: { $0.id == tabID }) { tabs[i].document = document(); tabs[i].dirty = dirty; tabs[i].url = fileURL;tabs[i].undo = undoStack;tabs[i].redo = redoStack;tabs[i].saved = savedDocument } }
     func switchTab(_ id: UUID) { guard let tab = tabs.first(where: { $0.id == id }), id != tabID else { return }; stopPlayback(); syncTab(); tabID = id; apply(tab.document); fileURL = tab.url; dirty = tab.dirty; undoStack = tab.undo; redoStack = tab.redo; savedDocument = tab.saved ?? (tab.dirty ? nil : tab.document); fit() }
     func newDocument(width: Int = 1200, height: Int = 800, background: CodableColor? = nil) {

@@ -96,7 +96,7 @@ enum ImageFiles {
 
     /// H.264 MP4, opaque over white, no audio. Each input frame occupies exactly 1/fps seconds.
     /// Call from a background task; rendering is deliberately synchronous and deterministic.
-    static func exportVideo(frames: [[ArtLayer]], width docW: Int, height docH: Int, fps: Double, scale: Double = 1, url: URL) async throws {
+    static func exportVideo(frames: [[ArtLayer]], width docW: Int, height docH: Int, fps: Double, scale: Double = 1, sound: (url: URL, start: Double, volume: Double)? = nil, url: URL) async throws {
         let (width, height) = outputSize(docW, docH, scale: scale, even: abs(scale - 1) > 0.001)
         try validateAnimation(frames: frames, width: width, height: height, fps: fps)
         guard width.isMultiple(of: 2), height.isMultiple(of: 2) else { throw FileError.dimensions }
@@ -145,6 +145,12 @@ enum ImageFiles {
             writer.endSession(atSourceTime: CMTime(seconds: Double(frames.count) / fps, preferredTimescale: 60000))
             await writer.finishWriting()
             guard writer.status == .completed else { throw writer.error ?? FileError.encoder("MP4 completion") }
+            if let sound {
+                let mixed = url.deletingLastPathComponent().appendingPathComponent(".universephoto-\(UUID().uuidString)-sound.mp4")
+                defer { try? FileManager.default.removeItem(at: mixed) }
+                try await addSound(video: staging, audio: sound.url, soundStart: sound.start, volume: sound.volume, output: mixed)
+                try FileManager.default.removeItem(at: staging); try FileManager.default.moveItem(at: mixed, to: staging)
+            }
             // Save panels confirm replacement before this entry point is called.
             if FileManager.default.fileExists(atPath: url.path) { _ = try FileManager.default.replaceItemAt(url, withItemAt: staging) }
             else { try FileManager.default.moveItem(at: staging, to: url) }

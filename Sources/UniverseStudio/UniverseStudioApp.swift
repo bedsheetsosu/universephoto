@@ -194,8 +194,11 @@ struct StudioCommands: Commands {
             Button(L("Duplicate frame")) { studio.addFrame() }.keyboardShortcut("f",modifiers:.shift)
             Button(L("Import frames…")) { studio.importFramesPanel() }
             AnimationPreviewButton()
-            Button(L("Previous frame")) { studio.selectFrame(max(0,studio.frameIndex-1)) }.keyboardShortcut(.leftArrow,modifiers:.option)
-            Button(L("Next frame")) { studio.selectFrame(min(studio.frames.count-1,studio.frameIndex+1)) }.keyboardShortcut(.rightArrow,modifiers:.option)
+            Divider()
+            Button(L("Import sound…")) { studio.importAudioPanel() }
+            Button(L("Remove sound")) { studio.removeAudio() }.disabled(studio.audio == nil)
+            Button(L("Previous frame")) { studio.stepToFrame(max(0,studio.frameIndex-1)) }.keyboardShortcut(.leftArrow,modifiers:.option)
+            Button(L("Next frame")) { studio.stepToFrame(min(studio.frames.count-1,studio.frameIndex+1)) }.keyboardShortcut(.rightArrow,modifiers:.option)
             Button(L("First frame")) { studio.firstFrame() }.keyboardShortcut(.leftArrow,modifiers:[.option,.shift])
             Button(L("Last frame")) { studio.lastFrame() }.keyboardShortcut(.rightArrow,modifiers:[.option,.shift])
             Button(L("Reverse frames")) { studio.reverseFrames() }.disabled(studio.frames.count < 2)

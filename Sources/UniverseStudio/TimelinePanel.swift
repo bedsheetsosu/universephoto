@@ -64,14 +64,14 @@ struct TimelinePanel: View {
     }
     private var playbackControls: some View {
         HStack(spacing: 1) {
-            Button { s.selectFrame(max(0, s.frameIndex - 1)) } label: {
+            Button { s.stepToFrame(max(0, s.frameIndex - 1)) } label: {
                 Image(systemName: "backward.end.fill").font(.system(size: 9)).frame(width: 28, height: 26)
             }.help(L("Previous frame · ⌥←")).accessibilityLabel(L("Previous frame"))
             Button { s.togglePlayback() } label: {
                 Image(systemName: s.isPlaying ? "pause.fill" : "play.fill")
                     .font(.system(size: 10, weight: .semibold)).foregroundStyle(theme.accent).frame(width: 31, height: 26)
             }.disabled(s.frames.count < 2).help(L("Play or pause · Space")).accessibilityLabel(L(s.isPlaying ? "Pause" : "Play"))
-            Button { s.selectFrame(min(s.frames.count - 1, s.frameIndex + 1)) } label: {
+            Button { s.stepToFrame(min(s.frames.count - 1, s.frameIndex + 1)) } label: {
                 Image(systemName: "forward.end.fill").font(.system(size: 9)).frame(width: 28, height: 26)
             }.help(L("Next frame · ⌥→")).accessibilityLabel(L("Next frame"))
         }
@@ -98,6 +98,7 @@ struct TimelinePanel: View {
             }
             Text(L("Frame snapshots"))
                 .font(.system(size: 9)).foregroundStyle(theme.secondary.opacity(0.75))
+            if let a = s.audio { SoundTrackRow(track: a) }
             Spacer(minLength: 0)
         }
         .padding(.horizontal, 16).padding(.top, 15).frame(width: 165, alignment: .leading)
@@ -119,7 +120,7 @@ struct TimelinePanel: View {
                     ForEach(Array(s.frames.enumerated()), id: \.offset) { index, layers in
                         frameCell(index: index, layers: layers).id(index)
                     }
-                }.padding(.horizontal, 15).padding(.vertical, 11)
+                }.padding(.horizontal, 15).padding(.top, 11).padding(.bottom, s.audio != nil ? 24 : 11)
             }
             .onChange(of: s.frameIndex) { _, index in
                 withAnimation(.easeInOut(duration: 0.15)) { reader.scrollTo(index, anchor: .center) }
@@ -128,7 +129,7 @@ struct TimelinePanel: View {
     }
     private func frameCell(index: Int, layers: [ArtLayer]) -> some View {
         let selected = index == s.frameIndex
-        return Button { s.stopPlayback(); s.selectFrame(index) } label: {
+        return Button { s.stepToFrame(index) } label: {
             VStack(spacing: 7) {
                 HStack(spacing: 5) {
                     Circle().fill(selected ? theme.accent : .clear).frame(width: 4, height: 4)
@@ -142,6 +143,7 @@ struct TimelinePanel: View {
                     .overlay(RoundedRectangle(cornerRadius: 7).strokeBorder(selected ? AnyShapeStyle(theme.accentGradient) : AnyShapeStyle(theme.outline), lineWidth: selected ? 2 : 1))
                     .shadow(color: selected ? theme.accent.opacity(0.15) : .clear, radius: 6, y: 2)
                     .opacity(s.inPlayRange(index) ? 1 : 0.4)
+                    .overlay(alignment: .bottom) { if s.audio != nil { FrameWaveform(index: index).frame(width: 82, height: 12).offset(y: 18) } }
                     .overlay(alignment: .topLeading) { if !s.label(index).isEmpty { Text(s.label(index)).font(.system(size: 8, weight: .semibold, design: .rounded)).lineLimit(1).padding(.horizontal, 5).padding(.vertical, 1.5).background(theme.accentGradient, in: Capsule()).foregroundStyle(theme.onAccent).frame(maxWidth: 80, alignment: .leading).offset(x: -3, y: -6).help(L("Marker")) } }
                     .overlay(alignment: .topTrailing) { if s.referenceFrame == index { Image(systemName: "pin.fill").font(.system(size: 8)).foregroundStyle(.white).padding(3).background(Color(cgColor: Studio.referenceColor), in: Circle()).offset(x: 4, y: -4).help(L("Reference frame")) } }
                     .overlay(alignment: .bottom) { if let r = Playback.clamp(s.playRange, count: s.frames.count), r.lowerBound == index || r.upperBound == index { Capsule().fill(theme.accent).frame(width: 30, height: 3).offset(y: 5) } }
@@ -219,5 +221,57 @@ private struct CompactLabels: ViewModifier {
     var compact: Bool
     func body(content: Content) -> some View {
         if compact { content.labelStyle(.iconOnly) } else { content.labelStyle(.titleAndIcon) }
+    }
+}
+
+/// The bit of sound under one frame, as a small mirrored waveform.
+struct FrameWaveform: View {
+    @EnvironmentObject var s: Studio
+    @Environment(\.photoTheme) private var theme
+    let index: Int
+    var body: some View {
+        let cache = s.audioEngine.cache(for: s.audio)
+        let t0 = s.soundTime(frame: index), t1 = t0 + Double(s.hold(index)) / max(1, s.fps)
+        let peaks = cache.map { t1 > 0 ? $0.peaks(from: max(0, t0), to: t1, buckets: 20) : [] } ?? []
+        Canvas { ctx, size in
+            guard !peaks.isEmpty else { return }
+            let w = size.width / CGFloat(peaks.count)
+            for (i, p) in peaks.enumerated() {
+                let h = max(1, CGFloat(p) * size.height)
+                ctx.fill(Path(roundedRect: CGRect(x: CGFloat(i) * w + w * 0.2, y: (size.height - h) / 2, width: w * 0.6, height: h), cornerRadius: 1), with: .color(theme.accent.opacity(0.75)))
+            }
+        }
+        .accessibilityHidden(true)
+    }
+}
+
+/// Name of the sound plus its options (start frame, volume, snippets while stepping).
+struct SoundTrackRow: View {
+    @EnvironmentObject var s: Studio
+    @Environment(\.photoTheme) private var theme
+    @AppStorage("audioScrub") private var scrub = true
+    @State private var open = false
+    let track: AudioTrack
+    var body: some View {
+        Button { open.toggle() } label: {
+            HStack(spacing: 5) {
+                Image(systemName: "waveform").foregroundStyle(theme.accent)
+                Text(track.name).lineLimit(1)
+                Image(systemName: "chevron.down").font(.system(size: 7, weight: .semibold)).foregroundStyle(theme.secondary)
+            }.font(.system(size: 10, weight: .medium))
+        }
+        .buttonStyle(PhotoPress()).help(L("Sound options"))
+        .popover(isPresented: $open, arrowEdge: .top) {
+            VStack(alignment: .leading, spacing: 10) {
+                Text(track.name).font(.system(size: 12, weight: .semibold)).lineLimit(1)
+                Stepper(LF("Starts at frame %d", track.startFrame + 1), value: Binding(get: { track.startFrame }, set: { s.setAudioStart($0) }), in: 0...max(0, s.frames.count - 1))
+                Button(L("Start at the current frame")) { s.setAudioStart(s.frameIndex) }
+                HStack { Text(L("Volume")); Slider(value: Binding(get: { track.volume }, set: { s.setAudioVolume($0) }), in: 0...1) }
+                Toggle(L("Play a snippet when stepping through frames"), isOn: $scrub)
+                Divider()
+                Button(L("Remove sound"), role: .destructive) { open = false; s.removeAudio() }
+            }
+            .font(.system(size: 11)).padding(14).frame(width: 270)
+        }
     }
 }

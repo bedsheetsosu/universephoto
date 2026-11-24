@@ -170,6 +170,8 @@ struct ArtDocument: Codable, Equatable, Sendable {
     var frameHolds: [Int]? = nil
     /// Frame markers (0.82): a name starts a section that runs to the next marker.
     var frameLabels: [String]? = nil
+    /// Embedded sound track (0.83).
+    var audio: AudioTrack? = nil
 }
 /// A named state of the layers: visibility, opacity, blend mode, position and style per layer.
 struct LayerComp: Codable, Equatable, Identifiable, Sendable {
