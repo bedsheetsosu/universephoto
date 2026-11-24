@@ -16434,6 +16434,42 @@
           }
         }
       }
+    },
+    "Crossfade drawings": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zeichnungen überblenden"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Crossfade drawings"
+          }
+        }
+      }
+    },
+    "Drawings that can't morph fade from one into the other (the in-betweens become pixel layers)": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zeichnungen, die nicht morphen können, blenden ineinander über (die Zwischenbilder werden zu Pixelebenen)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Drawings that can't morph fade from one into the other (the in-betweens become pixel layers)"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

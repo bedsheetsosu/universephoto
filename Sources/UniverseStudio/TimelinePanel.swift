@@ -198,6 +198,8 @@ struct TimelinePanel: View {
                 Divider()
                 Menu(L("Morph strokes")) { ForEach(Studio.tweenChoices, id: \.self) { n in Button(LF("%d frames", n)) { s.tweenToNext(from: index, count: n, eased: true, morph: true) } } }
                     .help(L("Blends brush strokes and shapes point by point when both frames have the same strokes"))
+                Menu(L("Crossfade drawings")) { ForEach(Studio.tweenChoices, id: \.self) { n in Button(LF("%d frames", n)) { s.tweenToNext(from: index, count: n, eased: true, morph: true, crossfade: true) } } }
+                    .help(L("Drawings that can't morph fade from one into the other (the in-betweens become pixel layers)"))
             }.disabled(index >= s.frames.count - 1)
             Divider()
             Button(L("Play from here")) { s.setPlayStart(index) }

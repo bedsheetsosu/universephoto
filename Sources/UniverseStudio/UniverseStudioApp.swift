@@ -232,6 +232,7 @@ struct StudioCommands: Commands {
             }.help(L("Snow, rain or sparkles on a new layer, as a seamless loop"))
             Menu(L("Close loop")) {
                 ForEach(Studio.tweenChoices, id: \.self) { n in Button(LF("%d frames", n)) { studio.closeLoop(count: n) } }
+                Menu(L("Crossfade drawings")) { ForEach(Studio.tweenChoices, id: \.self) { n in Button(LF("%d frames", n)) { studio.closeLoop(count: n, crossfade: true) } } }
             }.disabled(studio.frames.count < 2).help(L("In-betweens from the last frame back to the first, so the loop runs on without a jump"))
             Menu(L("One after another")) {
                 ForEach(Stagger.styles) { p in
