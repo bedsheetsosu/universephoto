@@ -200,6 +200,7 @@ struct StudioCommands: Commands {
             Button(L("Hold frame longer")) { studio.nudgeHold(1) }.keyboardShortcut(.upArrow,modifiers:.option)
             Button(L("Hold frame shorter")) { studio.nudgeHold(-1) }.keyboardShortcut(.downArrow,modifiers:.option)
             Button(L("Import frames…")) { studio.importFramesPanel() }
+            Button(L("Import video for tracing…")) { studio.importVideoPanel() }
             AnimationPreviewButton()
             MotionPathToggle()
             Divider()
