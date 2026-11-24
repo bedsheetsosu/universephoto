@@ -105,6 +105,9 @@ struct StudioCommands: Commands {
             Button(L("Subject")) { if !studio.selectSubject() { studio.message = "No subject found in the picture." } }
         }
         CommandMenu(L("Image")) {
+            Button(L("Auto tone")) { if !studio.autoTone() { studio.message = "Nothing to adjust on this layer." } }.keyboardShortcut("l",modifiers:[.command,.shift]).disabled(!studio.canEdit)
+            Button(L("Auto contrast")) { if !studio.autoContrast() { studio.message = "Nothing to adjust on this layer." } }.keyboardShortcut("l",modifiers:[.command,.option,.shift]).disabled(!studio.canEdit)
+            Divider()
             Button(L("Image size…")) { studio.imageDialog = .imageSize }.keyboardShortcut("i",modifiers:[.command,.option])
             Button(L("Canvas size…")) { studio.imageDialog = .canvasSize }.keyboardShortcut("c",modifiers:[.command,.option])
             Divider()

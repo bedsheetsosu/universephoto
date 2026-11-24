@@ -108,4 +108,33 @@ import CoreGraphics
         XCTAssertEqual(try pixel(s, CGPoint(x: 20, y: 1)).red, 0.7, accuracy: 0.02, "between the dabs nothing changes")
         XCTAssertEqual(try pixel(s, CGPoint(x: 10, y: 10)).alpha, 1, accuracy: 0.01)
     }
+
+    func testAutoContrastStretchesToBlackAndWhite() throws {
+        let s = studio()
+        fill(s, CGRect(x: 0, y: 0, width: 20, height: 20), CodableColor(red: 0.3, green: 0.3, blue: 0.3, alpha: 1))
+        fill(s, CGRect(x: 20, y: 0, width: 20, height: 20), CodableColor(red: 0.7, green: 0.7, blue: 0.7, alpha: 1))
+        XCTAssertTrue(s.autoContrast())
+        XCTAssertLessThan(try pixel(s, CGPoint(x: 10, y: 10)).red, 0.03)
+        XCTAssertGreaterThan(try pixel(s, CGPoint(x: 30, y: 10)).red, 0.97)
+        let first = s.activeLayer!.adjustment
+        XCTAssertTrue(s.autoContrast())
+        XCTAssertEqual(s.activeLayer!.adjustment.levelsBlack, first.levelsBlack, accuracy: 0.001, "measures without its own levels: stable")
+    }
+
+    func testAutoToneRemovesAColourCast() throws {
+        let s = studio()
+        fill(s, CGRect(x: 0, y: 0, width: 20, height: 20), CodableColor(red: 0.4, green: 0.2, blue: 0.2, alpha: 1))
+        fill(s, CGRect(x: 20, y: 0, width: 20, height: 20), CodableColor(red: 0.9, green: 0.7, blue: 0.7, alpha: 1))
+        XCTAssertTrue(s.autoTone())
+        let dark = try pixel(s, CGPoint(x: 10, y: 10)), light = try pixel(s, CGPoint(x: 30, y: 10))
+        XCTAssertLessThan(abs(dark.red - dark.green), 0.04, "cast gone in the shadows")
+        XCTAssertLessThan(abs(light.red - light.green), 0.04, "and in the lights")
+        XCTAssertNotNil(s.activeLayer!.adjustment.curves?["red"])
+    }
+
+    func testAutoOnAnEmptyLayerDoesNothing() {
+        let s = studio()
+        XCTAssertFalse(s.autoContrast())
+        XCTAssertFalse(s.autoTone())
+    }
 }
