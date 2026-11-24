@@ -107,6 +107,7 @@ struct BrushPreset: Codable, Identifiable {
     @Published var module: StudioModule? = UserDefaults.standard.object(forKey: "startScreenAtLaunch") != nil && !UserDefaults.standard.bool(forKey: "startScreenAtLaunch") ? .photo : nil
     @Published var showNewDocument = false
     @Published var imageDialog: ImageDialog?
+    @Published var replaceColorDialog = false
     @Published var selectionDialog: SelectionModify?
     @Published var strokeSelectionDialog = false
     @Published var busy = false

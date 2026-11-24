@@ -183,4 +183,35 @@ import CoreGraphics
         XCTAssertNil(s.pickColor(at: CGPoint(x: 5, y: 5)))
         s.eyedropperAllLayers = true
     }
+
+    func testReplaceColorShiftsOnlyTheMatchingColour() throws {
+        let s = studio()
+        fill(s, CGRect(x: 0, y: 0, width: 20, height: 20), red); fill(s, CGRect(x: 20, y: 0, width: 20, height: 20), blue)
+        var rep = ColorReplacement(source: red); rep.hue = 120; rep.fuzziness = 30
+        XCTAssertEqual(s.replaceColor(rep), 400)
+        let a = try pixel(s, CGPoint(x: 10, y: 10)), b = try pixel(s, CGPoint(x: 30, y: 10))
+        XCTAssertGreaterThan(a.green, 0.95); XCTAssertLessThan(a.red, 0.05)   // red turned green
+        XCTAssertGreaterThan(b.blue, 0.95); XCTAssertLessThan(b.green, 0.05)  // blue untouched
+        XCTAssertEqual(try pixel(s, CGPoint(x: 10, y: 10)).alpha, 1, accuracy: 0.01)
+        s.undo()
+        XCTAssertGreaterThan(try pixel(s, CGPoint(x: 10, y: 10)).red, 0.95)
+    }
+
+    func testReplaceColorRespectsTheSelectionAndLightness() throws {
+        let s = studio()
+        fill(s, CGRect(x: 0, y: 0, width: 40, height: 20), red)
+        s.selection = CanvasSelection(points: [CGPoint(x: 0, y: 0), CGPoint(x: 10, y: 20)])
+        var rep = ColorReplacement(source: red); rep.lightness = -100
+        XCTAssertEqual(s.replaceColor(rep), 200)
+        XCTAssertLessThan(try pixel(s, CGPoint(x: 5, y: 10)).red, 0.05, "black inside")
+        XCTAssertGreaterThan(try pixel(s, CGPoint(x: 30, y: 10)).red, 0.95, "outside stays")
+        XCTAssertEqual(s.replaceColor(ColorReplacement(source: CodableColor(red: 0, green: 1, blue: 0, alpha: 1), fuzziness: 10)), 0, "nothing green")
+    }
+
+    func testHSLRoundTrip() {
+        for (r, g, b) in [(0.2, 0.5, 0.9), (1.0, 1.0, 1.0), (0.3, 0.3, 0.3), (0.9, 0.1, 0.4)] {
+            let (h, sat, l) = ColorReplacement.hsl(r, g, b), (r2, g2, b2) = ColorReplacement.rgb(h, sat, l)
+            XCTAssertEqual(r, r2, accuracy: 0.0001); XCTAssertEqual(g, g2, accuracy: 0.0001); XCTAssertEqual(b, b2, accuracy: 0.0001)
+        }
+    }
 }
