@@ -65,6 +65,10 @@ private struct PenWindowButton: View {
     let title:String, id:String
     var body: some View { Button(title) { openWindow(id:id); NSApp.activate() } }
 }
+private struct NavigatorToggle: View {
+    @AppStorage("showNavigator") private var on = false
+    var body: some View { Toggle(L("Navigator"),isOn:$on).keyboardShortcut("n",modifiers:[.command,.option]) }
+}
 struct StudioCommands: Commands {
     @ObservedObject var studio: Studio
     var body: some Commands {
@@ -144,7 +148,7 @@ struct StudioCommands: Commands {
             Button(L("Flatten image")) { studio.flattenImage() }
             Button(L("Rasterize layer")) { studio.rasterizeLayer() }
         }
-        CommandMenu(L("View")) {
+        CommandGroup(before:.toolbar) {   // into the system View menu (a second "View" menu would appear otherwise)
             Toggle(L("Show guides"),isOn:Binding(get:{ studio.showGuides },set:{ studio.showGuides = $0 })).keyboardShortcut(";",modifiers:.command)
             Toggle(L("Snap to guides"),isOn:Binding(get:{ studio.snapToGuides },set:{ studio.snapToGuides = $0 })).keyboardShortcut(";",modifiers:[.command,.shift])
             Toggle(L("Lock guides"),isOn:Binding(get:{ studio.guidesLocked },set:{ studio.guidesLocked = $0 }))
@@ -156,6 +160,7 @@ struct StudioCommands: Commands {
             Button(L("Zoom in")) { studio.zoom = min(16,studio.zoom*1.2) }.keyboardShortcut("+")
             Button(L("Zoom out")) { studio.zoom = max(0.1,studio.zoom/1.2) }.keyboardShortcut("-")
             Button(L("Mirror canvas")) { studio.mirrored.toggle() }.keyboardShortcut("h",modifiers:.shift)
+            NavigatorToggle()
             Button(L("Command search")) { studio.commandSearch = true }.keyboardShortcut("p",modifiers:[.command,.shift])
         }
         CommandMenu(L("Animation")) {

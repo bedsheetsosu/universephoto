@@ -75,6 +75,8 @@ struct BrushPreset: Codable, Identifiable {
     @Published var pan = CGSize.zero
     @Published var rotation = 0.0
     @Published var mirrored = false
+    /// Size of the canvas view (for the navigator's frame of the visible part).
+    @Published var canvasViewSize = CGSize(width: 1000, height: 700)
     @Published var onionSkin = false
     @Published var selection: CanvasSelection?
     @Published var fileURL: URL?
@@ -93,7 +95,7 @@ struct BrushPreset: Codable, Identifiable {
     @Published var commandSearch = false
     @Published var textContent = "UniverseStudio"
     /// Active part of UniverseStudio; nil shows the start screen.
-    @Published var module: StudioModule? = UserDefaults.standard.object(forKey: "startScreenAtLaunch") as? Bool == false ? .photo : nil
+    @Published var module: StudioModule? = UserDefaults.standard.object(forKey: "startScreenAtLaunch") != nil && !UserDefaults.standard.bool(forKey: "startScreenAtLaunch") ? .photo : nil
     @Published var showNewDocument = false
     @Published var imageDialog: ImageDialog?
     @Published var selectionDialog: SelectionModify?

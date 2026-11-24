@@ -4,12 +4,16 @@ import SwiftUI
 struct ArtworkCanvas: NSViewRepresentable {
     @ObservedObject var studio: Studio
     var grid: Bool; var rulers: Bool; var snap: Bool; var background:NSColor = .windowBackgroundColor
-    func makeNSView(context: Context) -> ArtworkView { let v = ArtworkView(); v.clipsToBounds = true; v.studio = studio; return v }
+    func makeNSView(context: Context) -> ArtworkView { let v = ArtworkView(); v.clipsToBounds = true; v.studio = studio; DispatchQueue.main.async { if v.bounds.size != .zero { studio.canvasViewSize = v.bounds.size } }; return v }
     func updateNSView(_ view: ArtworkView, context: Context) { view.studio = studio;view.backdrop = background; view.grid = grid; view.rulers = rulers; view.snap = snap; view.needsDisplay = true; studio.pen.onPen = { [weak view] sample in view?.remote(sample) }; studio.liquifyChanged = { [weak view] in view?.needsDisplay = true } }
 }
 
 @MainActor final class ArtworkView: NSView {
     weak var studio: Studio?
+    override func setFrameSize(_ newSize: NSSize) {
+        super.setFrameSize(newSize)
+        if let s = studio, s.canvasViewSize != newSize { DispatchQueue.main.async { s.canvasViewSize = newSize } }
+    }
     var grid = false; var rulers = true; var snap = false;var backdrop:NSColor = .windowBackgroundColor
     private var cachedLayers: [ArtLayer] = []; private var cachedSize = CGSize.zero
     private var image: CGImage?

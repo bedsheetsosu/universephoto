@@ -11880,6 +11880,24 @@
           }
         }
       }
+    },
+    "Navigator": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Navigator"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Navigator"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

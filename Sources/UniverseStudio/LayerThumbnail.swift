@@ -52,7 +52,7 @@ struct LayerThumbnail: View {
 }
 
 /// Light checkerboard for transparent thumbnails.
-private struct Checkerboard: View {
+struct Checkerboard: View {
     var body: some View {
         Canvas { ctx, size in
             let cell = 5.0

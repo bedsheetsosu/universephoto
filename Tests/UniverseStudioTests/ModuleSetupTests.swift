@@ -36,3 +36,26 @@ struct ModuleSetupTests {
         #expect(StudioModule.pen.title == "UniversePen")
     }
 }
+
+@MainActor
+struct NavigatorTests {
+    @Test func centringPutsThePointInTheMiddle() {
+        let s = Studio()
+        let v = CGSize(width: 900, height: 600)
+        s.zoom = 3; s.rotation = 30
+        s.centerView(on: CGPoint(x: 200, y: 150), viewSize: v)
+        let mid = CGPoint(x: 200, y: 150).applying(s.geometry(viewSize: v).transform)
+        #expect(abs(mid.x - 450) < 0.001 && abs(mid.y - 300) < 0.001)
+        // The visible quad is centred on that point too.
+        let q = s.visibleQuad(viewSize: v)
+        let c = CGPoint(x: q.map(\.x).reduce(0, +) / 4, y: q.map(\.y).reduce(0, +) / 4)
+        #expect(abs(c.x - 200) < 0.001 && abs(c.y - 150) < 0.001)
+    }
+
+    @Test func fittedViewShowsTheWholeDocument() {
+        let s = Studio()
+        s.zoom = 1; s.pan = .zero; s.rotation = 0
+        let q = s.visibleQuad(viewSize: CGSize(width: 1272, height: 872))
+        #expect(q[0].x <= 0 && q[0].y <= 0 && q[2].x >= Double(s.width) && q[2].y >= Double(s.height))
+    }
+}

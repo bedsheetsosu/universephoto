@@ -11,6 +11,7 @@ struct Workspace: View {
     @AppStorage("photoFlowSpeed") private var flowSpeed = 1.0
     @ObservedObject private var localization = Localization.shared
     @AppStorage("showInspector") private var showInspector = true
+    @AppStorage("showNavigator") private var showNavigator = false
     @AppStorage("showTimeline") private var showTimeline = false
     @AppStorage("showRulers") private var rulers = true
     @AppStorage("showGrid") private var grid = false
@@ -44,6 +45,7 @@ struct Workspace: View {
                     contextbar
                     ArtworkCanvas(studio:s,grid:grid,rulers:rulers,snap:snap,background:NSColor(theme.canvas)).clipped()
                         .overlay(alignment:.bottomLeading) { canvasBadge.padding(14).allowsHitTesting(false) }
+                        .overlay(alignment:.bottomTrailing) { if showNavigator { NavigatorPanel().environmentObject(s).padding(14).transition(.scale(scale:0.9,anchor:.bottomTrailing).combined(with:.opacity)) } }
                     if showTimeline || workspace == "Animate" { resizeTimeline;TimelinePanel().environmentObject(s).frame(height:timelineHeight).transition(.move(edge:.bottom).combined(with:.opacity)) }
                 }.frame(maxWidth:.infinity,maxHeight:.infinity).photoSurface(radius:20,elevated:true)
                 if showInspector { HStack(spacing:0) { resizeInspector;InspectorPanel(simple:workspace == "Simple").environmentObject(s).frame(width:inspectorWidth) }.photoChrome(radius:20).transition(.move(edge:.trailing).combined(with:.opacity)) }
@@ -55,6 +57,7 @@ struct Workspace: View {
         .environment(\.photoTheme,theme)
         .environment(\.locale,Locale(identifier:localization.language)).tint(tint).accentColor(tint).preferredColorScheme(appearance == "system" ? nil : appearance == "dark" ? .dark : .light)
         .animation(PhotoMotion.panel,value:showInspector)
+        .animation(PhotoMotion.panel,value:showNavigator)
         .animation(PhotoMotion.panel,value:workspace)
         .animation(PhotoMotion.panel,value:showTimeline)
         .onChange(of:localization.language) { _,_ in Task { @MainActor in Localization.shared.refreshNativeMenus() } }
