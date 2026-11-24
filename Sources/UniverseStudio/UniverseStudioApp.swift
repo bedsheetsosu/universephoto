@@ -112,6 +112,7 @@ struct StudioCommands: Commands {
         }
         CommandMenu(L("Image")) {
             Button(L("Auto tone")) { if !studio.autoTone() { studio.message = "Nothing to adjust on this layer." } }.keyboardShortcut("l",modifiers:[.command,.shift]).disabled(!studio.canEdit)
+            Button(L("Remove red eye")) { if studio.removeRedEye() == 0 { studio.message = "Select the pupils first (ellipse selection), then try again." } }.disabled(studio.selection == nil || !studio.canEdit)
             Button(L("Replace color") + "…") { studio.replaceColorDialog = true }.disabled(!studio.canEdit || studio.activeLayer?.isAdjustmentLayer == true)
             Button(L("Auto contrast")) { if !studio.autoContrast() { studio.message = "Nothing to adjust on this layer." } }.keyboardShortcut("l",modifiers:[.command,.option,.shift]).disabled(!studio.canEdit)
             Divider()

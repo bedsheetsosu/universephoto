@@ -255,4 +255,18 @@ import CoreGraphics
             XCTAssertGreaterThan(try pixel(s, CGPoint(x: 20, y: 2)).red, 0.95, "outside the stroke the layer stays")
         }
     }
+
+    func testRedEyeOnlyTouchesRedPupilsInTheSelection() throws {
+        let s = studio()
+        let skin = CodableColor(red: 0.85, green: 0.6, blue: 0.5, alpha: 1), pupil = CodableColor(red: 0.85, green: 0.1, blue: 0.1, alpha: 1)
+        fill(s, CGRect(x: 0, y: 0, width: 40, height: 20), skin)
+        fill(s, CGRect(x: 5, y: 5, width: 10, height: 10), pupil); fill(s, CGRect(x: 25, y: 5, width: 10, height: 10), pupil)
+        XCTAssertEqual(s.removeRedEye(), 0, "no selection")
+        s.selection = CanvasSelection(points: [CGPoint(x: 2, y: 2), CGPoint(x: 18, y: 18)])
+        XCTAssertEqual(s.removeRedEye(), 100)
+        let fixed = try pixel(s, CGPoint(x: 10, y: 10)), other = try pixel(s, CGPoint(x: 30, y: 10)), around = try pixel(s, CGPoint(x: 3, y: 3))
+        XCTAssertLessThan(fixed.red, 0.15, "red gone in the selected pupil")
+        XCTAssertGreaterThan(other.red, 0.8, "the other pupil was not selected")
+        XCTAssertEqual(around.red, 0.85, accuracy: 0.02, "skin stays")
+    }
 }
