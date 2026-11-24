@@ -30,6 +30,7 @@ struct TimelinePanel: View {
             timelineToggle(L("Onion Skin"), symbol: "square.3.layers.3d", value: $s.onionSkin).help(L("Onion skinning · ⌥O"))
             OnionOptionsButton()
             timelineToggle(L("Loop"), symbol: "repeat", value: $s.loop)
+            timelineToggle(L("Ping-pong"), symbol: "arrow.left.arrow.right", value: $s.pingPong).help(L("Play forth and back"))
             Picker(L("Frame rate"), selection: $s.fps) {
                 ForEach([6.0, 8, 12, 15, 24, 30, 60], id: \.self) { Text(LF("%d FPS", Int($0))).tag($0) }
             }
@@ -123,10 +124,17 @@ struct TimelinePanel: View {
                     .clipShape(RoundedRectangle(cornerRadius: 7))
                     .overlay(RoundedRectangle(cornerRadius: 7).strokeBorder(selected ? AnyShapeStyle(theme.accentGradient) : AnyShapeStyle(theme.outline), lineWidth: selected ? 2 : 1))
                     .shadow(color: selected ? theme.accent.opacity(0.15) : .clear, radius: 6, y: 2)
+                    .opacity(s.inPlayRange(index) ? 1 : 0.4)
+                    .overlay(alignment: .bottom) { if let r = Playback.clamp(s.playRange, count: s.frames.count), r.lowerBound == index || r.upperBound == index { Capsule().fill(theme.accent).frame(width: 30, height: 3).offset(y: 5) } }
             }
         }.buttonStyle(PhotoPress()).help(LF("Frame %d", index + 1)).accessibilityLabel(LF("Frame %d", index + 1))
         .contextMenu {
             Menu(L("Hold")) { ForEach(Studio.holdChoices, id: \.self) { n in Button { s.setHold(n, for: index) } label: { if s.hold(index) == n { Label(LF("%d frames", n), systemImage: "checkmark") } else { Text(LF("%d frames", n)) } } } }
+            Divider()
+            Button(L("Play from here")) { s.setPlayStart(index) }
+            Button(L("Play up to here")) { s.setPlayEnd(index) }
+            Button(L("Play all frames")) { s.playRange = nil }.disabled(s.playRange == nil)
+            Divider()
             Button(L("Move frame left")) { s.moveFrame(from: index, to: index - 1) }.disabled(index == 0)
             Button(L("Move frame right")) { s.moveFrame(from: index, to: index + 1) }.disabled(index >= s.frames.count - 1)
         }

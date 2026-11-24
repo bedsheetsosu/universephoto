@@ -94,6 +94,10 @@ struct BrushPreset: Codable, Identifiable {
     var holdTick = 0
     @Published var isPlaying = false
     @Published var loop = true
+    /// Ping-pong playback (0.73) and the frames it covers (nil = all).
+    @Published var pingPong = false
+    @Published var playRange: ClosedRange<Int>? = nil
+    var playForward = true
     @Published var zoom = 1.0
     @Published var pan = CGSize.zero
     @Published var rotation = 0.0
@@ -275,9 +279,10 @@ struct BrushPreset: Codable, Identifiable {
     func removeFrame() { guard frames.count > 1 else { return }; checkpoint("Delete frame"); var h = (0..<frames.count).map { hold($0) }; h.remove(at: frameIndex); frames.remove(at: frameIndex); frameHolds = h; normalizeHolds(); frameIndex = min(frameIndex, frames.count - 1); layers = frames[frameIndex]; changed() }
     func togglePlayback() {
         if isPlaying { stopPlayback(); return }; guard frames.count > 1 else { return }
-        frames[frameIndex] = layers; isPlaying = true; holdTick = 0
+        frames[frameIndex] = layers; isPlaying = true; holdTick = 0; playForward = true
         playback = Timer.scheduledTimer(withTimeInterval: 1 / max(1, fps), repeats: true) { [weak self] _ in
-            MainActor.assumeIsolated { guard let self else { return }; self.holdTick += 1; guard self.holdTick >= self.hold(self.frameIndex) else { return }; self.holdTick = 0; if self.frameIndex + 1 >= self.frames.count && !self.loop { self.stopPlayback() } else { self.selectFrame((self.frameIndex + 1) % self.frames.count) } }
+            MainActor.assumeIsolated { guard let self else { return }; self.holdTick += 1; guard self.holdTick >= self.hold(self.frameIndex) else { return }; self.holdTick = 0
+                if let next = Playback.step(current: self.frameIndex, count: self.frames.count, range: self.playRange, loop: self.loop, pingPong: self.pingPong, forward: self.playForward) { self.playForward = next.forward; self.selectFrame(next.index) } else { self.stopPlayback() } }
         }
     }
     func stopPlayback() { playback?.invalidate(); playback = nil; isPlaying = false }
