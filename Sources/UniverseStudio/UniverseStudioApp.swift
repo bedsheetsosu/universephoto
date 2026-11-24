@@ -201,6 +201,12 @@ struct StudioCommands: Commands {
             Button(L("Hold frame shorter")) { studio.nudgeHold(-1) }.keyboardShortcut(.downArrow,modifiers:.option)
             Button(L("Import frames…")) { studio.importFramesPanel() }
             Button(L("Import video for tracing…")) { studio.importVideoPanel() }
+            Menu(L("Motion preset")) {
+                ForEach(MotionPreset.allCases) { p in
+                    Menu { ForEach([0.5, 1.0, 2.0], id: \.self) { sec in Button(LF("%@ s", sec == 0.5 ? "0.5" : String(Int(sec)))) { studio.applyMotionPreset(p, count: max(2, Int((studio.fps * sec).rounded()))) } } }
+                    label: { Label(L(p.title), systemImage: p.symbol) }
+                }
+            }
             AnimationPreviewButton()
             MotionPathToggle()
             Divider()
