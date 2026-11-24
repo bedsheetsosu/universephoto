@@ -88,6 +88,10 @@ struct BrushPreset: Codable, Identifiable {
     @Published var frames: [[ArtLayer]] = []
     @Published var frameIndex = 0
     @Published var fps = 12.0
+    /// Per-frame hold, parallel to `frames`; empty = all 1.
+    @Published var frameHolds: [Int] = []
+    /// Playback: ticks the current frame has been shown.
+    var holdTick = 0
     @Published var isPlaying = false
     @Published var loop = true
     @Published var zoom = 1.0
@@ -143,7 +147,7 @@ struct BrushPreset: Codable, Identifiable {
     func document() -> ArtDocument {
         var currentFrames = frames
         if currentFrames.indices.contains(frameIndex) { currentFrames[frameIndex] = layers }
-        return ArtDocument(title: documentName, width: width, height: height, layers: layers, frames: currentFrames, fps: fps, activeFrame: frameIndex, groups: groups.isEmpty ? nil : groups, guides: guides.isEmpty ? nil : guides, layerComps: layerComps.isEmpty ? nil : layerComps)
+        return ArtDocument(title: documentName, width: width, height: height, layers: layers, frames: currentFrames, fps: fps, activeFrame: frameIndex, groups: groups.isEmpty ? nil : groups, guides: guides.isEmpty ? nil : guides, layerComps: layerComps.isEmpty ? nil : layerComps, frameHolds: frameHolds.isEmpty ? nil : frameHolds)
     }
     func checkpoint(_ label: String = "Edit") {
         lastMutation = nil
@@ -262,25 +266,25 @@ struct BrushPreset: Codable, Identifiable {
     }
     func addMask() { mutateLayer("Add mask") { $0.mask = [] }; maskEditing = true }
     func removeMask() { mutateLayer("Remove mask") { $0.mask = nil }; maskEditing = false }
-    func addFrame() { stopPlayback(); checkpoint("Duplicate frame"); if frames.isEmpty { frames = [layers] }; frames[frameIndex] = layers; frames.insert(layers, at: frameIndex + 1); frameIndex += 1; changed() }
+    func addFrame() { stopPlayback(); checkpoint("Duplicate frame"); if frames.isEmpty { frames = [layers] }; frames[frameIndex] = layers; var h = (0..<frames.count).map { hold($0) }; frames.insert(layers, at: frameIndex + 1); h.insert(1, at: min(h.count, frameIndex + 1)); frameHolds = h; normalizeHolds(); frameIndex += 1; changed() }
     func blankFrame() { addFrame(); layers = layers.map { var l = $0; l.strokes = []; l.imageData = nil; l.mask = nil; return l }; frames[frameIndex] = layers; changed() }
     func selectFrame(_ index: Int) {
         guard frames.indices.contains(index), index != frameIndex else { return }
         if frames.indices.contains(frameIndex) { frames[frameIndex] = layers }; frameIndex = index; layers = frames[index]; selectedLayer = min(selectedLayer, max(0, layers.count - 1)); selection = nil
     }
-    func removeFrame() { guard frames.count > 1 else { return }; checkpoint("Delete frame"); frames.remove(at: frameIndex); frameIndex = min(frameIndex, frames.count - 1); layers = frames[frameIndex]; changed() }
+    func removeFrame() { guard frames.count > 1 else { return }; checkpoint("Delete frame"); var h = (0..<frames.count).map { hold($0) }; h.remove(at: frameIndex); frames.remove(at: frameIndex); frameHolds = h; normalizeHolds(); frameIndex = min(frameIndex, frames.count - 1); layers = frames[frameIndex]; changed() }
     func togglePlayback() {
         if isPlaying { stopPlayback(); return }; guard frames.count > 1 else { return }
-        frames[frameIndex] = layers; isPlaying = true
+        frames[frameIndex] = layers; isPlaying = true; holdTick = 0
         playback = Timer.scheduledTimer(withTimeInterval: 1 / max(1, fps), repeats: true) { [weak self] _ in
-            MainActor.assumeIsolated { guard let self else { return }; if self.frameIndex + 1 >= self.frames.count && !self.loop { self.stopPlayback() } else { self.selectFrame((self.frameIndex + 1) % self.frames.count) } }
+            MainActor.assumeIsolated { guard let self else { return }; self.holdTick += 1; guard self.holdTick >= self.hold(self.frameIndex) else { return }; self.holdTick = 0; if self.frameIndex + 1 >= self.frames.count && !self.loop { self.stopPlayback() } else { self.selectFrame((self.frameIndex + 1) % self.frames.count) } }
         }
     }
     func stopPlayback() { playback?.invalidate(); playback = nil; isPlaying = false }
     func fit() { zoom = 1; pan = .zero; rotation = 0; mirrored = false }
     func cycleColor() { let colors = Self.palette; let idx = colors.firstIndex(of: color) ?? -1; color = colors[(idx + 1) % colors.count] }
     static let palette = [CodableColor.black, .white, CodableColor(red: 0.47, green: 0.39, blue: 0.96, alpha: 1), CodableColor(red: 0.98, green: 0.38, blue: 0.43, alpha: 1), CodableColor(red: 1, green: 0.73, blue: 0.29, alpha: 1), CodableColor(red: 0.25, green: 0.76, blue: 0.65, alpha: 1), CodableColor(red: 0.27, green: 0.61, blue: 0.94, alpha: 1)]
-    func apply(_ d: ArtDocument) { groups = d.groups ?? []; guides = d.guides ?? []; layerComps = d.layerComps ?? []; selectedIDs = []; width = d.width; height = d.height; documentName = d.title; layers = d.layers; frames = d.frames; fps = d.fps ?? 12; frameIndex = min(max(0,d.activeFrame ?? frames.firstIndex(of:d.layers) ?? 0), max(0, frames.count-1)); selectedLayer = min(selectedLayer, max(0, layers.count-1)); maskEditing = false; selection = nil }
+    func apply(_ d: ArtDocument) { frameHolds = d.frameHolds ?? []; groups = d.groups ?? []; guides = d.guides ?? []; layerComps = d.layerComps ?? []; selectedIDs = []; width = d.width; height = d.height; documentName = d.title; layers = d.layers; frames = d.frames; fps = d.fps ?? 12; frameIndex = min(max(0,d.activeFrame ?? frames.firstIndex(of:d.layers) ?? 0), max(0, frames.count-1)); selectedLayer = min(selectedLayer, max(0, layers.count-1)); maskEditing = false; selection = nil }
     func syncTab() { if let i = tabs.firstIndex(where: { $0.id == tabID }) { tabs[i].document = document(); tabs[i].dirty = dirty; tabs[i].url = fileURL;tabs[i].undo = undoStack;tabs[i].redo = redoStack;tabs[i].saved = savedDocument } }
     func switchTab(_ id: UUID) { guard let tab = tabs.first(where: { $0.id == id }), id != tabID else { return }; stopPlayback(); syncTab(); tabID = id; apply(tab.document); fileURL = tab.url; dirty = tab.dirty; undoStack = tab.undo; redoStack = tab.redo; savedDocument = tab.saved ?? (tab.dirty ? nil : tab.document); fit() }
     func newDocument(width: Int = 1200, height: Int = 800, background: CodableColor? = nil) {

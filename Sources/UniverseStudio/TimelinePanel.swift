@@ -25,6 +25,7 @@ struct TimelinePanel: View {
             playbackControls
             Text(String(format: "%03d / %03d", s.frameIndex + 1, max(s.frames.count, 1)))
                 .font(.system(size: 10, weight: .medium, design: .monospaced)).foregroundStyle(theme.secondary)
+            Text(String(format: "%.2f s", s.animationDuration)).font(.system(size: 10, weight: .medium, design: .monospaced)).foregroundStyle(theme.secondary.opacity(0.8)).help(L("Length including holds"))
             Spacer(minLength: 8)
             timelineToggle(L("Onion Skin"), symbol: "square.3.layers.3d", value: $s.onionSkin).help(L("Onion skinning · ⌥O"))
             timelineToggle(L("Loop"), symbol: "repeat", value: $s.loop)
@@ -113,6 +114,7 @@ struct TimelinePanel: View {
                 HStack(spacing: 5) {
                     Circle().fill(selected ? theme.accent : .clear).frame(width: 4, height: 4)
                     Text(String(format: "%02d", index + 1)).font(.system(size: 9, weight: selected ? .semibold : .regular, design: .monospaced))
+                    if s.hold(index) > 1 { Text("×\(s.hold(index))").font(.system(size: 8, weight: .semibold, design: .rounded)).padding(.horizontal, 4).padding(.vertical, 1).background(theme.accentSoft, in: Capsule()).foregroundStyle(theme.accent) }
                 }.foregroundStyle(selected ? theme.accent : theme.secondary)
                 FrameThumbnail(layers: s.composite(selected ? s.layers : layers), width: s.width, height: s.height)
                     .frame(width: 82, height: 53).padding(3)
@@ -122,6 +124,16 @@ struct TimelinePanel: View {
                     .shadow(color: selected ? theme.accent.opacity(0.15) : .clear, radius: 6, y: 2)
             }
         }.buttonStyle(PhotoPress()).help(LF("Frame %d", index + 1)).accessibilityLabel(LF("Frame %d", index + 1))
+        .contextMenu {
+            Menu(L("Hold")) { ForEach(Studio.holdChoices, id: \.self) { n in Button { s.setHold(n, for: index) } label: { if s.hold(index) == n { Label(LF("%d frames", n), systemImage: "checkmark") } else { Text(LF("%d frames", n)) } } } }
+            Button(L("Move frame left")) { s.moveFrame(from: index, to: index - 1) }.disabled(index == 0)
+            Button(L("Move frame right")) { s.moveFrame(from: index, to: index + 1) }.disabled(index >= s.frames.count - 1)
+        }
+        .draggable("frame:\(index)")
+        .dropDestination(for: String.self) { items, _ in
+            guard let item = items.first, item.hasPrefix("frame:"), let from = Int(item.dropFirst(6)) else { return false }
+            s.moveFrame(from: from, to: index); return true
+        }
     }
 }
 struct FrameThumbnail: View {
