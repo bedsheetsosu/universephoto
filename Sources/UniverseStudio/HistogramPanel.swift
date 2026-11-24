@@ -34,12 +34,27 @@ struct HistogramPanel: View {
 
     private var channel: HistogramChannel { HistogramChannel(rawValue: channelRaw) ?? .colors }
 
+    /// A high percentile of the bins, so one spike doesn't flatten the rest; the maximum when
+    /// only a few bins are filled (a flat colour), so they still show.
+    nonisolated static func peak(_ curves: [[Double]]) -> Double {
+        let all = curves.flatMap { $0 }.sorted()
+        let p = all.dropLast(3).last ?? 0
+        return p > 0 ? p : (all.last ?? 0)
+    }
+
+    /// The histogram is measured on a copy at most 512 px wide; this scales its counts back up.
+    nonisolated static func sampleScale(width: Int, height: Int) -> Double {
+        let w = min(512, width), h = max(1, Int(Double(height) * Double(w) / Double(max(1, width))))
+        return Double(width * height) / Double(max(1, w * h))
+    }
+
     nonisolated static func path(_ counts: [Double], in size: CGSize, peak: Double) -> Path {
         Path { p in
             guard peak > 0, counts.count > 1 else { return }
             p.move(to: CGPoint(x: 0, y: size.height))
             for (i, c) in counts.enumerated() {
-                p.addLine(to: CGPoint(x: Double(i) / Double(counts.count - 1) * size.width, y: size.height * (1 - min(1, c / peak))))
+                let y = size.height * (1 - min(1, c / peak)), bin = size.width / Double(counts.count)
+                p.addLine(to: CGPoint(x: Double(i) * bin, y: y)); p.addLine(to: CGPoint(x: Double(i + 1) * bin, y: y))
             }
             p.addLine(to: CGPoint(x: size.width, y: size.height)); p.closeSubpath()
         }
@@ -48,7 +63,7 @@ struct HistogramPanel: View {
     var body: some View {
         let shown = counts.isEmpty ? [] : channel.indices.map { counts[$0] }
         // Scale by a high percentile, so one spike (a flat background) doesn't flatten everything.
-        let peak = shown.flatMap { $0 }.sorted().dropLast(3).last ?? 0
+        let peak = Self.peak(shown)
         let tints = tintColors
         VStack(alignment: .leading, spacing: 7) {
             Picker("", selection: $channelRaw) { ForEach(HistogramChannel.allCases) { Text($0.title).tag($0.rawValue) } }
@@ -67,7 +82,7 @@ struct HistogramPanel: View {
                 let st: HistogramStats = HistogramStats(counts[channel.statsIndex])
                 Grid(alignment: .leading, horizontalSpacing: 8, verticalSpacing: 2) {
                     GridRow { stat(L("Mean"), String(format: "%.1f", st.mean)); stat(L("Median"), "\(st.median)") }
-                    GridRow { stat(L("Deviation"), String(format: "%.1f", st.deviation)); stat(L("Pixels"), "\(st.pixels)") }
+                    GridRow { stat(L("Deviation"), String(format: "%.1f", st.deviation)); stat(L("Pixels"), "\(Int((Double(st.pixels) * Self.sampleScale(width: s.width, height: s.height)).rounded()))") }
                 }
             }
         }

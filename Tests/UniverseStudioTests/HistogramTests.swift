@@ -22,3 +22,14 @@ struct HistogramTests {
         #expect(HistogramPanel.path(c, in: CGSize(width: 100, height: 40), peak: 0).isEmpty)
     }
 }
+
+struct HistogramPeakTests {
+    @Test func flatColourStillShowsAndCountsScaleUp() {
+        var c = [Double](repeating: 0, count: 256); c[255] = 900
+        #expect(HistogramPanel.peak([c]) == 900)
+        var spread = [Double](repeating: 10, count: 256); spread[0] = 5000
+        #expect(HistogramPanel.peak([spread]) == 10)
+        #expect(HistogramPanel.sampleScale(width: 1200, height: 800) == 1200.0 * 800 / (512 * 341))
+        #expect(HistogramPanel.sampleScale(width: 300, height: 200) == 1)
+    }
+}
