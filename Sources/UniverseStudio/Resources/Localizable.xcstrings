@@ -14832,6 +14832,42 @@
           }
         }
       }
+    },
+    "Time ruler": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zeitlineal"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Time ruler"
+          }
+        }
+      }
+    },
+    "Drag to scrub through the animation": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ziehen, um durch die Animation zu fahren"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Drag to scrub through the animation"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

@@ -17,7 +17,10 @@ struct TimelinePanel: View {
             HStack(spacing: 0) {
                 trackLabel
                 Rectangle().fill(theme.outline).frame(width: 1)
-                frameStrip
+                VStack(spacing: 0) {
+                    if s.frames.count > 1 { ScrubBar().padding(.horizontal, 15).padding(.top, 8) }
+                    frameStrip
+                }
             }
         }
         .background(theme.deep)
