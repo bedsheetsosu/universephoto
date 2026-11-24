@@ -21,7 +21,10 @@ enum SpriteSheet {
 
     struct Meta: Codable, Equatable {
         struct Frame: Codable, Equatable { var x: Int; var y: Int; var w: Int; var h: Int; var duration: Int }
+        struct Tag: Codable, Equatable { var name: String; var from: Int; var to: Int }
         var image: String; var size: [Int]; var fps: Double; var loop: Bool; var frames: [Frame]
+        /// Marker sections (0.82), frame indices inclusive.
+        var tags: [Tag]? = nil
     }
 
     static func meta(image: String, layout l: Layout, frames n: Int, width w: Int, height h: Int, padding p: Int, fps: Double, holds: [Int], loop: Bool) -> Meta {
@@ -44,12 +47,14 @@ enum SpriteSheet {
     }
 
     /// Writes `url` (PNG) and the same name with .json.
-    static func export(frames: [[ArtLayer]], width docW: Int, height docH: Int, fps: Double, holds: [Int], loop: Bool, padding p: Int = 2, scale: Double = 1, url: URL) throws {
+    static func export(frames: [[ArtLayer]], width docW: Int, height docH: Int, fps: Double, holds: [Int], loop: Bool, padding p: Int = 2, scale: Double = 1, labels: [String] = [], url: URL) throws {
         guard !frames.isEmpty else { throw ImageFiles.FileError.noFrames }
         let (w, h) = ImageFiles.outputSize(docW, docH, scale: scale)
         let (sheet, l) = try render(frames: frames, width: w, height: h, padding: p, docWidth: docW, docHeight: docH)
         let json = url.deletingPathExtension().appendingPathExtension("json")
-        let m = meta(image: url.lastPathComponent, layout: l, frames: frames.count, width: w, height: h, padding: p, fps: fps, holds: holds, loop: loop)
+        var m = meta(image: url.lastPathComponent, layout: l, frames: frames.count, width: w, height: h, padding: p, fps: fps, holds: holds, loop: loop)
+        let tags = Studio.sections(labels: labels, count: frames.count).map { Meta.Tag(name: $0.name, from: $0.range.lowerBound, to: $0.range.upperBound) }
+        m.tags = tags.isEmpty ? nil : tags
         try ImageFiles.encodedData(image: sheet, type: .png, quality: 1).write(to: url, options: .atomic)
         try JSONEncoder.pretty.encode(m).write(to: json, options: .atomic)
     }

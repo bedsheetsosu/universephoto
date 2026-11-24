@@ -45,10 +45,8 @@ extension Studio {
         stopPlayback(); checkpoint("Tween")
         frames[frameIndex] = layers
         let made = Tween.frames(from: frames[index], to: frames[index + 1], count: count, eased: eased)
-        var h = (0..<frames.count).map { hold($0) }
+        metaInsert(at: index + 1, holds: Array(repeating: 1, count: made.count))
         frames.insert(contentsOf: made, at: index + 1)
-        h.insert(contentsOf: Array(repeating: 1, count: made.count), at: index + 1)
-        frameHolds = h; normalizeHolds(); referenceInserted(at: index + 1, count: made.count)
         if frameIndex > index { frameIndex += made.count }
         layers = frames[frameIndex]
         changed()

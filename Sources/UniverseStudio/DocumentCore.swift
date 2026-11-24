@@ -168,6 +168,8 @@ struct ArtDocument: Codable, Equatable, Sendable {
     var layerComps: [LayerComp]? = nil
     /// How many ticks each frame stays (0.71); nil = every frame once.
     var frameHolds: [Int]? = nil
+    /// Frame markers (0.82): a name starts a section that runs to the next marker.
+    var frameLabels: [String]? = nil
 }
 /// A named state of the layers: visibility, opacity, blend mode, position and style per layer.
 struct LayerComp: Codable, Equatable, Identifiable, Sendable {

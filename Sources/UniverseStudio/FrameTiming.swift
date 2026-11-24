@@ -19,6 +19,8 @@ extension Studio {
         var h = Array(frameHolds.prefix(frames.count)).map { max(1, $0) }
         h += Array(repeating: 1, count: max(0, frames.count - h.count))
         frameHolds = h.allSatisfy { $0 == 1 } ? [] : h
+        var l = Array(frameLabels.prefix(frames.count)); l += Array(repeating: "", count: max(0, frames.count - l.count))
+        frameLabels = l.allSatisfy(\.isEmpty) ? [] : l
     }
 
     func setHold(_ n: Int, for index: Int) {
@@ -34,11 +36,8 @@ extension Studio {
         stopPlayback(); checkpoint("Move frame")
         if frames.indices.contains(frameIndex) { frames[frameIndex] = layers }
         let current = frameIndex
-        var h = (0..<frames.count).map { hold($0) }
+        metaMove(from: from, to: to)
         let f = frames.remove(at: from); frames.insert(f, at: to)
-        referenceMoved(from: from, to: to)
-        let x = h.remove(at: from); h.insert(x, at: to)
-        frameHolds = h; normalizeHolds()
         if current == from { frameIndex = to }
         else if from < current && to >= current { frameIndex = current - 1 }
         else if from > current && to <= current { frameIndex = current + 1 }
@@ -58,12 +57,9 @@ extension Studio {
         stopPlayback(); checkpoint("Reverse frames")
         if frames.indices.contains(frameIndex) { frames[frameIndex] = layers }
         let r = Playback.clamp(playRange, count: frames.count) ?? 0...(frames.count - 1)
-        var h = (0..<frames.count).map { hold($0) }
+        metaReverse(r)
         frames.replaceSubrange(r, with: frames[r].reversed())
-        h.replaceSubrange(r, with: h[r].reversed())
-        frameHolds = h; normalizeHolds()
         if r.contains(frameIndex) { frameIndex = r.lowerBound + r.upperBound - frameIndex }
-        if let ref = referenceFrame, r.contains(ref) { referenceFrame = r.lowerBound + r.upperBound - ref }
         layers = frames[frameIndex]
         changed()
     }

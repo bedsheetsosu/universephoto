@@ -17,21 +17,11 @@ extension Studio {
         if frames.isEmpty { frames = [layers] }
         frames[frameIndex] = layers
         let at = min(index + 1, frames.count)
-        var h = (0..<frames.count).map { hold($0) }
-        frames.insert(Self.syncedFrames([clip.layers], from: layers)[0], at: at); h.insert(clip.hold, at: at)
-        frameHolds = h; normalizeHolds()
-        referenceInserted(at: at, count: 1)
+        metaInsert(at: at, holds: [clip.hold])
+        frames.insert(Self.syncedFrames([clip.layers], from: layers)[0], at: at)
         frameIndex = at; layers = frames[at]; selection = nil
         changed()
         return true
-    }
-
-    /// Keeps the pinned reference on its drawing when frames are inserted, removed or moved.
-    func referenceInserted(at i: Int, count: Int) { if let r = referenceFrame, r >= i { referenceFrame = r + count } }
-    func referenceRemoved(at i: Int) { if let r = referenceFrame { referenceFrame = r == i ? nil : r > i ? r - 1 : r } }
-    func referenceMoved(from: Int, to: Int) {
-        guard let r = referenceFrame else { return }
-        if r == from { referenceFrame = to } else if from < r && to >= r { referenceFrame = r - 1 } else if from > r && to <= r { referenceFrame = r + 1 }
     }
 
     func toggleReference(_ index: Int) { referenceFrame = referenceFrame == index ? nil : index }

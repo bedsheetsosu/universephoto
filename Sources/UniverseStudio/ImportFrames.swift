@@ -56,13 +56,11 @@ extension Studio {
         if frames.isEmpty { frames = [layers] }
         frames[frameIndex] = layers
         let template = layers.map { var l = $0; l.strokes = []; l.imageData = nil; l.mask = nil; return l }
-        var h = (0..<frames.count).map { hold($0) }
-        let newHolds = ImageFiles.holds(items.map(\.delay), fps: fps)
+        metaInsert(at: frameIndex + 1, holds: ImageFiles.holds(items.map(\.delay), fps: fps))
         for (k, png) in pngs.enumerated() {
             var f = template; f[selectedLayer].imageData = png
-            frames.insert(f, at: frameIndex + 1 + k); h.insert(newHolds[k], at: frameIndex + 1 + k)
+            frames.insert(f, at: frameIndex + 1 + k)
         }
-        frameHolds = h; normalizeHolds(); referenceInserted(at: frameIndex + 1, count: pngs.count)
         frameIndex += 1; layers = frames[frameIndex]; selection = nil
         changed()
         return pngs.count

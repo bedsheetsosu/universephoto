@@ -3,6 +3,8 @@ import SwiftUI
 struct TimelinePanel: View {
     @EnvironmentObject var s: Studio
     @Environment(\.photoTheme) private var theme
+    @State private var markerIndex: Int?
+    @State private var markerText = ""
     var body: some View {
         VStack(spacing: 0) {
             header
@@ -15,6 +17,11 @@ struct TimelinePanel: View {
         }
         .background(theme.deep)
         .photoSurface(radius: 18)
+        .alert(L("Frame marker"), isPresented: Binding(get: { markerIndex != nil }, set: { if !$0 { markerIndex = nil } })) {
+            TextField(L("Name, e.g. walk"), text: $markerText)
+            Button(L("OK")) { if let i = markerIndex { s.setLabel(markerText, for: i) }; markerIndex = nil }
+            Button(L("Cancel"), role: .cancel) { markerIndex = nil }
+        } message: { Text(L("A marker starts a section that runs to the next one. Sections can be played on their own and are exported as tags in the sprite sheet.")) }
     }
     /// Full labels when there is room, icons only (with tooltips) when the inspector makes it tight.
     private var header: some View {
@@ -33,6 +40,10 @@ struct TimelinePanel: View {
             Spacer(minLength: 8)
             timelineToggle(L("Onion Skin"), symbol: "square.3.layers.3d", value: $s.onionSkin).help(L("Onion skinning · ⌥O"))
             OnionOptionsButton()
+            if !s.markerSections.isEmpty {
+                Menu { ForEach(s.markerSections, id: \.name) { sec in Button("\(sec.name)  ·  \(sec.range.lowerBound + 1)–\(sec.range.upperBound + 1)") { s.playSection(sec.name) } } }
+                label: { Label(L("Sections"), systemImage: "bookmark") }.menuStyle(.borderlessButton).fixedSize().help(L("Play a marked section"))
+            }
             timelineToggle(L("Loop"), symbol: "repeat", value: $s.loop).help(L("Loop"))
             timelineToggle(L("Ping-pong"), symbol: "arrow.left.arrow.right", value: $s.pingPong).help(L("Play forth and back"))
             Picker(L("Frame rate"), selection: $s.fps) {
@@ -131,12 +142,16 @@ struct TimelinePanel: View {
                     .overlay(RoundedRectangle(cornerRadius: 7).strokeBorder(selected ? AnyShapeStyle(theme.accentGradient) : AnyShapeStyle(theme.outline), lineWidth: selected ? 2 : 1))
                     .shadow(color: selected ? theme.accent.opacity(0.15) : .clear, radius: 6, y: 2)
                     .opacity(s.inPlayRange(index) ? 1 : 0.4)
+                    .overlay(alignment: .topLeading) { if !s.label(index).isEmpty { Text(s.label(index)).font(.system(size: 8, weight: .semibold, design: .rounded)).lineLimit(1).padding(.horizontal, 5).padding(.vertical, 1.5).background(theme.accentGradient, in: Capsule()).foregroundStyle(theme.onAccent).frame(maxWidth: 80, alignment: .leading).offset(x: -3, y: -6).help(L("Marker")) } }
                     .overlay(alignment: .topTrailing) { if s.referenceFrame == index { Image(systemName: "pin.fill").font(.system(size: 8)).foregroundStyle(.white).padding(3).background(Color(cgColor: Studio.referenceColor), in: Circle()).offset(x: 4, y: -4).help(L("Reference frame")) } }
                     .overlay(alignment: .bottom) { if let r = Playback.clamp(s.playRange, count: s.frames.count), r.lowerBound == index || r.upperBound == index { Capsule().fill(theme.accent).frame(width: 30, height: 3).offset(y: 5) } }
             }
         }.buttonStyle(PhotoPress()).help(LF("Frame %d", index + 1)).accessibilityLabel(LF("Frame %d", index + 1))
         .contextMenu {
             Menu(L("Hold")) { ForEach(Studio.holdChoices, id: \.self) { n in Button { s.setHold(n, for: index) } label: { if s.hold(index) == n { Label(LF("%d frames", n), systemImage: "checkmark") } else { Text(LF("%d frames", n)) } } } }
+            Button(s.label(index).isEmpty ? L("Add marker…") : L("Rename marker…")) { markerText = s.label(index); markerIndex = index }
+            if !s.label(index).isEmpty { Button(L("Remove marker")) { s.setLabel("", for: index) } }
+            Divider()
             Button(L("Copy frame")) { s.copyFrame(index) }
             Button(L("Paste frame after")) { s.pasteFrame(after: index) }.disabled(s.frameClipboard == nil)
             Button(s.referenceFrame == index ? L("Unpin reference") : L("Pin as reference")) { s.toggleReference(index) }
