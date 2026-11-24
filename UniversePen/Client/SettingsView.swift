@@ -389,6 +389,14 @@ struct SettingsView: View {
 
     private var pencilSection: some View {
         Group {
+            if model.hostInfo != nil {
+                Section {
+                    Button { model.startMacSetup() } label: { Label(L("Pencil-Setup für diesen Mac"), systemImage: "wand.and.stars") }
+                } footer: {
+                    Text(model.connectedMacHasSetup ? L("Dieser Mac hat eigene Pencil-Einstellungen; Änderungen hier gelten nur für ihn.")
+                                                    : L("Druck, Klick, Schweben und Gesten für diesen Mac einstellen – sie gelten dann nur für ihn."))
+                }
+            }
             Section {
                 Button { model.findPencil() } label: { Label(L("Pencil suchen"), systemImage: "location.magnifyingglass") }
             } footer: {

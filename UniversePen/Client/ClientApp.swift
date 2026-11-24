@@ -89,6 +89,11 @@ struct RootView: View {
                     PencilPaletteView(center: c)
                         .zIndex(10)
                 }
+                if let h = model.macSetupHost {
+                    MacSetupView(host: h)
+                        .transition(.opacity.combined(with: .scale(scale: 1.02)))
+                        .zIndex(20)
+                }
                 if let img = model.screenshot {
                     ScreenshotView(image: img)
                         .transition(.opacity.combined(with: .scale(scale: 0.97)))
@@ -102,6 +107,7 @@ struct RootView: View {
         .animation(.easeInOut(duration: 0.35), value: model.phase.showsCanvas)
         .animation(.easeInOut(duration: 0.3), value: model.settings.tabletMode)
         .animation(Brand.spring, value: model.radialCenter != nil)
+        .animation(Ultra.smooth, value: model.macSetupHost != nil)
         .sensoryFeedback(.pathComplete, trigger: model.radialCenter == nil) { old, new in !old && new }
         .animation(.easeInOut(duration: 0.45), value: model.onboardingDone)
         .animation(Brand.spring, value: model.demoMode)

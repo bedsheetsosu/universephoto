@@ -45,7 +45,66 @@ final class ClientModel: ObservableObject {
     @Published var discovered: [DiscoveredHost] = []
     @Published var pairable: [DiscoveredHost] = []
     @Published var paired: [PairedHost] = []
-    @Published var hostInfo: HostInfo?
+    @Published var hostInfo: HostInfo? {
+        didSet { if hostInfo?.hostID != oldValue?.hostID { macChanged(from: oldValue, to: hostInfo) } }
+    }
+
+    // MARK: Per-Mac Pencil setup (1.3)
+
+    /// Pencil settings per paired Mac (host ID), switched in when that Mac connects.
+    @Published private(set) var macSetups: [String: MacPenSetup] = ClientModel.load([String: MacPenSetup].self, "macSetups") ?? [:] {
+        didSet { save(macSetups, "macSetups") }
+    }
+    /// Mac whose Pencil setup is showing (right after pairing it, or started from the settings).
+    @Published var macSetupHost: HostInfo? {
+        didSet { if macSetupHost != nil && oldValue == nil { setupStartSettings = settings } }
+    }
+    /// Whether the Pencil settings in use are a Mac's own (survives the gap between connections).
+    private var lastAppliedOwn = UserDefaults.standard.bool(forKey: "lastAppliedOwnSetup") {
+        didSet { UserDefaults.standard.set(lastAppliedOwn, forKey: "lastAppliedOwnSetup") }
+    }
+    /// Host just paired: its setup opens as soon as it is connected. Debug: `-debugMacSetup YES`.
+    private var justPaired: String?
+
+    /// Key under which the Pencil settings for Macs without their own setup are kept.
+    private static let sharedSetupKey = "*"
+
+    private func macChanged(from old: HostInfo?, to info: HostInfo?) {
+        guard let info, info.secondary != true else { return }
+        // Leaving the shared settings for a Mac with its own: remember them for the others.
+        let fromOwn = old.map { macSetups[$0.hostID] != nil } ?? (lastAppliedOwn)
+        if !fromOwn, macSetups[info.hostID] != nil { macSetups[Self.sharedSetupKey] = MacPenSetup(settings) }
+        if let setup = macSetups[info.hostID] { setup.apply(to: &settings); lastAppliedOwn = true }
+        else if fromOwn, let shared = macSetups[Self.sharedSetupKey] { shared.apply(to: &settings); lastAppliedOwn = false }
+        else { lastAppliedOwn = false }
+        if justPaired == info.hostID || (UserDefaults.standard.bool(forKey: "debugMacSetup") && macSetupHost == nil) {
+            justPaired = nil
+            macSetupHost = info
+        }
+    }
+
+    /// Starts the Pencil setup for the connected Mac (settings → Pencil).
+    func startMacSetup() { if let h = hostInfo { macSetupHost = h } }
+    /// Settings as they were when the setup opened (to keep them for the other Macs, or to cancel).
+    var setupStartSettings: InputSettings?
+
+    /// Closes the setup without keeping its changes.
+    func cancelMacSetup() {
+        if let before = setupStartSettings { settings = before }
+        macSetupHost = nil; setupStartSettings = nil
+    }
+
+    /// Saves the current Pencil settings as this Mac's own and closes the setup.
+    func finishMacSetup() {
+        if let id = macSetupHost?.hostID {
+            if !lastAppliedOwn, macSetups[Self.sharedSetupKey] == nil, let before = setupStartSettings { macSetups[Self.sharedSetupKey] = MacPenSetup(before) }
+            macSetups[id] = MacPenSetup(settings); lastAppliedOwn = true
+        }
+        macSetupHost = nil; setupStartSettings = nil
+    }
+
+    /// True when the connected Mac has its own Pencil setup.
+    var connectedMacHasSetup: Bool { hostInfo.map { macSetups[$0.hostID] != nil } ?? false }
     /// App in front on the Mac.
     @Published var frontApp: AppInfo? {
         didSet {
@@ -252,6 +311,8 @@ final class ClientModel: ObservableObject {
             sendSettingsSnapshot()
             if settings.tabletMode != oldValue.tabletMode { sendConfig() }
             storeIntoActiveProfile()
+            // Pencil changes while a Mac with its own setup is connected belong to that Mac.
+            if let id = hostInfo?.hostID, let old = macSetups[id], MacPenSetup(settings) != old { macSetups[id] = MacPenSetup(settings) }
         }
     }
 
@@ -660,6 +721,7 @@ final class ClientModel: ObservableObject {
                                                   keyID: grant.keyID))
                     self.save(self.paired, "pairedHosts")
                     self.lastHostID = grant.hostID
+                    self.justPaired = grant.hostID
                     if let h = self.discovered.first(where: { $0.hostID == grant.hostID }) { self.connect(h) }
                 case .failure(let e):
                     self.pairingError = e.localizedDescription
