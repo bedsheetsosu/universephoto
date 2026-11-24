@@ -236,7 +236,7 @@ struct ArtworkCanvas: NSViewRepresentable {
         if s.settingSymmetryCenter, [.brush,.eraser].contains(s.tool) { s.symmetryCenter = doc; s.settingSymmetryCenter = false; interactionBegan = false; needsDisplay = true; return }
         if s.tool == .text, s.beginTextEdit(at:doc) { interactionBegan = false; needsDisplay = true; return }
         if s.tool == .text { s.editingText = nil }
-        if s.tool == .eyedropper { if let image = committedImage() { s.color = Renderer.sample(image,at:doc) }; return }
+        if s.tool == .eyedropper { if let c = s.pickColor(at:doc,from:s.eyedropperAllLayers ? committedImage() : nil) { s.color = c }; return }
         if s.tool == .crop { cropGrab = s.cropPress(at:doc,tolerance:8/max(geometry.scale,0.01)); needsDisplay = true; return }
         if s.tool == .pen { penGrab = s.penPress(at:geometry.toDocument(p),place:doc,tolerance:8/max(geometry.scale,0.01),corner:NSEvent.modifierFlags.contains(.option)); needsDisplay = true; return }
         if [.rectangleSelection,.ellipseSelection,.lasso].contains(s.tool), NSEvent.modifierFlags.isDisjoint(with:[.shift,.option,.command]), let sel = s.selection, s.selectionContains(doc) { selectionDrag = (sel,doc); return }

@@ -165,4 +165,22 @@ import CoreGraphics
         XCTAssertEqual(s.patterns.count, 12)
         XCTAssertNotEqual(s.patterns[0], Data([1]), "newest first")
     }
+
+    func testEyedropperAveragesAndCanIgnoreOtherLayers() throws {
+        let s = studio()
+        fill(s, CGRect(x: 0, y: 0, width: 20, height: 20), red); fill(s, CGRect(x: 20, y: 0, width: 20, height: 20), blue)
+        s.eyedropperAllLayers = true
+        s.eyedropperSize = 1
+        XCTAssertEqual(try XCTUnwrap(s.pickColor(at: CGPoint(x: 19.5, y: 10))).red, 1, accuracy: 0.01)
+        s.eyedropperSize = 3       // 3×3 across the edge: 2 columns red, 1 blue... centred on x 20 → 1 red, 2 blue
+        let mixed = try XCTUnwrap(s.pickColor(at: CGPoint(x: 20.5, y: 10)))
+        XCTAssertEqual(mixed.red, 1.0 / 3, accuracy: 0.02); XCTAssertEqual(mixed.blue, 2.0 / 3, accuracy: 0.02)
+        // A new empty layer on top: "all layers" still sees red, the layer alone sees nothing.
+        s.newLayer()
+        s.eyedropperSize = 1
+        XCTAssertNotNil(s.pickColor(at: CGPoint(x: 5, y: 5)))
+        s.eyedropperAllLayers = false
+        XCTAssertNil(s.pickColor(at: CGPoint(x: 5, y: 5)))
+        s.eyedropperAllLayers = true
+    }
 }

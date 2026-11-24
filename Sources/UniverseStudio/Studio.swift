@@ -154,6 +154,9 @@ struct BrushPreset: Codable, Identifiable {
     @Published var tolerance = 32.0
     @Published var contiguous = true
     @Published var sampleMerged = false
+    /// Eyedropper: square to average over (1 = one pixel) and whether it sees all layers.
+    @Published var eyedropperSize = max(1, UserDefaults.standard.integer(forKey: "eyedropperSize")) { didSet { UserDefaults.standard.set(eyedropperSize, forKey: "eyedropperSize") } }
+    @Published var eyedropperAllLayers = UserDefaults.standard.object(forKey: "eyedropperAllLayers") as? Bool ?? true { didSet { UserDefaults.standard.set(eyedropperAllLayers, forKey: "eyedropperAllLayers") } }
     /// Our last copy (document size, in place) and the pasteboard state right after it.
     var copiedPixels: CGImage?
     var copiedChangeCount = -1
