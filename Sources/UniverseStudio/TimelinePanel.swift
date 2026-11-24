@@ -83,6 +83,7 @@ struct TimelinePanel: View {
             HStack(spacing: 8) {
                 Image(systemName: "square.stack.3d.up").font(.system(size: 13)).foregroundStyle(theme.accent)
                 Text(s.activeLayer?.name ?? L("Drawing layer")).font(.system(size: 11, weight: .medium)).lineLimit(1).foregroundStyle(theme.text)
+                if s.activeLayer?.allFrames == true { Image(systemName: "film.stack.fill").font(.system(size: 10)).foregroundStyle(theme.accent).help(L("Same in all frames")) }
             }
             Text(L("Frame snapshots"))
                 .font(.system(size: 9)).foregroundStyle(theme.secondary.opacity(0.75))

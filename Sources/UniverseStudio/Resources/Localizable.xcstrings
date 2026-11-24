@@ -13788,6 +13788,24 @@
           }
         }
       }
+    },
+    "Same in all frames": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In allen Frames gleich"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Same in all frames"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

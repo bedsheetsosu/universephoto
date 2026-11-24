@@ -130,9 +130,11 @@ struct ArtLayer: Codable, Identifiable, Equatable, Sendable {
     var adjustsBelow: Bool? = nil
     /// Lock transparency (0.20): new paint only lands where the layer already has pixels.
     var lockAlpha: Bool? = nil
+    /// Same in all frames (0.77): a background or held character that edits once for the whole animation.
+    var allFrames: Bool? = nil
     var isAdjustmentLayer: Bool { adjustsBelow == true }
     init(name: String) { self.name = name }
-    enum CodingKeys: String, CodingKey { case id, name, visible, strokes, opacity, blend, locked, transform, adjustment, imageData, mask, clipped, style, groupID, filters, adjustsBelow, lockAlpha }
+    enum CodingKeys: String, CodingKey { case id, name, visible, strokes, opacity, blend, locked, transform, adjustment, imageData, mask, clipped, style, groupID, filters, adjustsBelow, lockAlpha, allFrames }
     init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         id = try c.decodeIfPresent(UUID.self, forKey: .id) ?? UUID(); name = try c.decode(String.self, forKey: .name)
@@ -151,6 +153,7 @@ struct ArtLayer: Codable, Identifiable, Equatable, Sendable {
         filters = try c.decodeIfPresent([SmartFilter].self, forKey: .filters)
         adjustsBelow = try c.decodeIfPresent(Bool.self, forKey: .adjustsBelow)
         lockAlpha = try c.decodeIfPresent(Bool.self, forKey: .lockAlpha)
+        allFrames = try c.decodeIfPresent(Bool.self, forKey: .allFrames)
     }
 }
 struct ArtDocument: Codable, Equatable, Sendable {

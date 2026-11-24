@@ -173,6 +173,8 @@ struct InspectorPanel: View {
                                 .disabled(s.selectedLayer == 0).help(L("Clipping mask")).accessibilityAddTraits(layer.clipped ? .isSelected : [])
                             Button { s.mutateLayer("Lock transparency") { $0.lockAlpha = $0.lockAlpha == true ? nil : true } } label: { Image(systemName: layer.lockAlpha == true ? "checkerboard.rectangle" : "rectangle.dashed") }
                                 .help(L("Lock transparency")).accessibilityLabel(L("Lock transparency")).accessibilityAddTraits(layer.lockAlpha == true ? .isSelected : [])
+                            Button { s.toggleAllFrames() } label: { Image(systemName: layer.allFrames == true ? "film.stack.fill" : "film.stack") }
+                                .help(L("Same in all frames")).accessibilityLabel(L("Same in all frames")).accessibilityAddTraits(layer.allFrames == true ? .isSelected : [])
                             if layer.mask != nil { Button { s.removeMask() } label: { Image(systemName: "trash") }.help(L("Remove mask")).accessibilityLabel(L("Remove mask")) }
                         }.buttonStyle(PhotoButtonStyle())
                         if s.maskEditing { Text(L("Mask active: black hides, white reveals.")).font(.system(size: 10)).foregroundStyle(theme.accent).lineSpacing(3) }
