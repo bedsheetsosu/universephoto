@@ -25,6 +25,14 @@ struct ArtworkCanvas: NSViewRepresentable {
     static let sizeSettleDelay = 0.12
     /// Rendered onion-skin frames, reused while those frames don't change.
     private var onionCache: [(layers: [ArtLayer], key: String, image: CGImage)] = []
+    private func referenceImage(_ frame: [ArtLayer], studio s: Studio) -> CGImage? {
+        let key = "\(s.width)x\(s.height)-reference"
+        if let hit = onionCache.first(where: { $0.key == key && $0.layers == frame }) { return hit.image }
+        guard let plain = Renderer.render(layers:s.composite(frame),width:s.width,height:s.height) else { return nil }
+        let image = OnionSettings.tint(plain,color:Studio.referenceColor) ?? plain
+        onionCache.append((frame, key, image)); if onionCache.count > 12 { onionCache.removeFirst() }
+        return image
+    }
     private func onionImage(_ frame: [ArtLayer], before: Bool, settings o: OnionSettings, studio s: Studio) -> CGImage? {
         let key = "\(s.width)x\(s.height)-\(o.tinted)-\(before)"
         if let hit = onionCache.first(where: { $0.key == key && $0.layers == frame }) { return hit.image }
@@ -95,6 +103,8 @@ struct ArtworkCanvas: NSViewRepresentable {
         if let board = checkerImage(width:s.width,height:s.height) { ctx.interpolationQuality = .none; drawImage(board,in:ctx,rect:doc); ctx.interpolationQuality = .default }
         else { ctx.setFillColor(CGColor(gray:0.97,alpha:1)); ctx.fill(doc) }
         _ = cell
+        if let r = s.referenceFrame, r != s.frameIndex, s.frames.indices.contains(r), !s.isPlaying,
+           let ref = referenceImage(s.frames[r], studio: s) { ctx.setAlpha(0.3); drawImage(ref,in:ctx,rect:doc); ctx.setAlpha(1) }
         if s.onionSkin && !s.isPlaying {
             let o = OnionSettings(defaults:.standard)
             for g in o.ghosts(current:s.frameIndex,count:s.frames.count,loop:s.loop) where s.frames.indices.contains(g.index) {

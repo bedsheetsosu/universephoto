@@ -62,7 +62,7 @@ extension Studio {
             var f = template; f[selectedLayer].imageData = png
             frames.insert(f, at: frameIndex + 1 + k); h.insert(newHolds[k], at: frameIndex + 1 + k)
         }
-        frameHolds = h; normalizeHolds()
+        frameHolds = h; normalizeHolds(); referenceInserted(at: frameIndex + 1, count: pngs.count)
         frameIndex += 1; layers = frames[frameIndex]; selection = nil
         changed()
         return pngs.count

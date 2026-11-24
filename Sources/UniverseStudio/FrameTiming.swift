@@ -36,6 +36,7 @@ extension Studio {
         let current = frameIndex
         var h = (0..<frames.count).map { hold($0) }
         let f = frames.remove(at: from); frames.insert(f, at: to)
+        referenceMoved(from: from, to: to)
         let x = h.remove(at: from); h.insert(x, at: to)
         frameHolds = h; normalizeHolds()
         if current == from { frameIndex = to }
@@ -62,6 +63,7 @@ extension Studio {
         h.replaceSubrange(r, with: h[r].reversed())
         frameHolds = h; normalizeHolds()
         if r.contains(frameIndex) { frameIndex = r.lowerBound + r.upperBound - frameIndex }
+        if let ref = referenceFrame, r.contains(ref) { referenceFrame = r.lowerBound + r.upperBound - ref }
         layers = frames[frameIndex]
         changed()
     }
