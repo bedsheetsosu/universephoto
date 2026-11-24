@@ -16218,6 +16218,42 @@
           }
         }
       }
+    },
+    "Close loop": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Loop schließen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Close loop"
+          }
+        }
+      }
+    },
+    "In-betweens from the last frame back to the first, so the loop runs on without a jump": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zwischenbilder vom letzten Frame zurück zum ersten, damit der Loop ohne Sprung weiterläuft"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In-betweens from the last frame back to the first, so the loop runs on without a jump"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

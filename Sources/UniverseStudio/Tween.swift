@@ -54,3 +54,20 @@ extension Studio {
         return made.count
     }
 }
+
+extension Studio {
+    /// Animation → Close loop (0.113): in-betweens after the last frame back towards the first, so
+    /// a looping animation runs on without a jump. Position, size, turn and opacity glide; strokes
+    /// morph when both frames have matching strokes. Returns how many frames were added.
+    @discardableResult func closeLoop(count: Int, eased: Bool = true) -> Int {
+        guard frames.count > 1, count > 0 else { return 0 }
+        stopPlayback(); checkpoint("Close loop")
+        frames[frameIndex] = layers
+        let made = Tween.frames(from: frames[frames.count - 1], to: frames[0], count: count, eased: eased, morph: true)
+        metaInsert(at: frames.count, holds: Array(repeating: 1, count: made.count))
+        frames.append(contentsOf: made)
+        layers = frames[frameIndex]
+        changed()
+        return made.count
+    }
+}

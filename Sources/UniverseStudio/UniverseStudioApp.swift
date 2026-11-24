@@ -230,6 +230,9 @@ struct StudioCommands: Commands {
                     label: { Label(L(w.title), systemImage: w.symbol) }
                 }
             }.help(L("Snow, rain or sparkles on a new layer, as a seamless loop"))
+            Menu(L("Close loop")) {
+                ForEach(Studio.tweenChoices, id: \.self) { n in Button(LF("%d frames", n)) { studio.closeLoop(count: n) } }
+            }.disabled(studio.frames.count < 2).help(L("In-betweens from the last frame back to the first, so the loop runs on without a jump"))
             Menu(L("Follow path")) {
                 ForEach([1.0, 2.0, 4.0], id: \.self) { sec in Button(LF("%@ s", String(Int(sec)))) { studio.followPath(count: max(2, Int((studio.fps * sec).rounded())), eased: true, orient: false) } }
                 Divider()
