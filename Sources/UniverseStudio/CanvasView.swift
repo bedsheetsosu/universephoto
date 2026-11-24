@@ -285,7 +285,7 @@ struct ArtworkCanvas: NSViewRepresentable {
             guard s.beginClone(id:stroke.id,at:doc) else { interactionBegan = false; return }
         case .smudge: stroke.kind = "smudge"; stroke.strength = s.toolStrength; s.beginSmudge(id:stroke.id,at:local)
         case .liquify: stroke.kind = "liquify"; stroke.strength = s.toolStrength; s.beginLiquify(id:stroke.id,at:local)
-        case .dodge: stroke.kind = s.burnMode ? "burn" : "dodge"; stroke.strength = s.toolStrength
+        case .dodge: stroke.kind = s.toneMode.rawValue; stroke.strength = s.toolStrength
         case .focus: stroke.kind = s.sharpenMode ? "sharpenBrush" : "blurBrush"; stroke.strength = s.toolStrength
         default: break
         }

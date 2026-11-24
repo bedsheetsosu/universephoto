@@ -158,7 +158,13 @@ struct BrushPreset: Codable, Identifiable {
     var cloneOffset: CGSize?
     @Published var cloneAligned = true
     @Published var toolStrength = 0.5
-    @Published var burnMode = false
+    /// Dodge tool mode: lighten, darken, or (sponge) more or less colour.
+    enum ToneMode: String, CaseIterable, Identifiable { case dodge, burn, saturate, desaturate
+        var id: String { rawValue }
+        var title: String { switch self { case .dodge: "Dodge"; case .burn: "Burn"; case .saturate: "Saturate"; case .desaturate: "Desaturate" } }
+        var symbol: String { switch self { case .dodge: "sun.max"; case .burn: "moon"; case .saturate: "drop.fill"; case .desaturate: "drop" } }
+    }
+    @Published var toneMode = ToneMode.dodge
     @Published var sharpenMode = false
     var smudgeState: SmudgeState?
     var liquifyState: LiquifyState?

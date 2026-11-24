@@ -352,6 +352,15 @@ enum Renderer {
             context.addPath(brushPath(stroke)); context.fillPath()
             context.setBlendMode(.destinationIn)
             drawImage(before, in: context, rect: CGRect(x: 0, y: 0, width: context.width, height: context.height))
+        case "saturate", "desaturate":
+            // Sponge: more or less colour under the brush, brightness and transparency stay.
+            guard let before = context.makeImage() else { break }
+            let strength = max(0, min(1, stroke.strength ?? 0.5)), input = CIImage(cgImage: before)
+            let output = input.applyingFilter("CIColorControls", parameters: [kCIInputSaturationKey: stroke.kind == "saturate" ? 1 + strength : 1 - strength])
+            guard let filtered = filters.createCGImage(output, from: input.extent) else { break }
+            context.addPath(brushPath(stroke)); context.clip()
+            context.setBlendMode(.copy)
+            drawImage(filtered, in: context, rect: CGRect(x: 0, y: 0, width: context.width, height: context.height))
         case "blurBrush", "sharpenBrush":
             guard let before = context.makeImage() else { break }
             let strength = max(0, min(1, stroke.strength ?? 0.5)), input = CIImage(cgImage: before)

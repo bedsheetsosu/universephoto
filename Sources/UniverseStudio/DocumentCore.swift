@@ -51,7 +51,7 @@ struct InkStroke: Codable, Equatable, Identifiable, Sendable {
     var symmetryX: Double? = nil
     var symmetryY: Double? = nil
     /// Freehand kinds: the pressure brush and the retouch brushes (smoothed, every point kept).
-    var isFreehand: Bool { kind == nil || ["dodge", "burn", "blurBrush", "sharpenBrush", "clone", "heal", "smudge", "liquify"].contains(kind!) }
+    var isFreehand: Bool { kind == nil || ["dodge", "burn", "saturate", "desaturate", "blurBrush", "sharpenBrush", "clone", "heal", "smudge", "liquify"].contains(kind!) }
 }
 enum LayerBlend: String, Codable, CaseIterable, Sendable {
     case normal, multiply, screen, overlay, darken, lighten
@@ -164,7 +164,7 @@ enum Tool: String, CaseIterable, Identifiable {
     } }
     var key: String { switch self { case .brush: "b"; case .eraser: "e"; case .eyedropper: "i"; case .move: "v"; case .crop: "h"; case .rectangleSelection: "m"; case .ellipseSelection: "u"; case .lasso: "l"; case .wand: "w"; case .fill: "g"; case .bucket: "k"; case .clone: "s"; case .heal: "j"; case .smudge: "f"; case .liquify: "q"; case .pen: "a"; case .dodge: "o"; case .focus: "y"; case .gradient: "d"; case .text: "t"; case .rectangle: "r"; case .ellipse: "c"; case .line: "n"; case .pan: "p" } }
 
-    var english: String { switch self { case .brush: "Brush"; case .eraser: "Eraser"; case .eyedropper: "Eyedropper"; case .move: "Move"; case .crop: "Crop"; case .rectangleSelection: "Rectangle selection"; case .ellipseSelection: "Ellipse selection"; case .lasso: "Lasso"; case .wand: "Magic wand"; case .fill: "Fill layer"; case .bucket: "Paint bucket"; case .clone: "Clone stamp"; case .heal: "Healing brush"; case .smudge: "Smudge"; case .liquify: "Liquify"; case .pen: "Pen"; case .dodge: "Dodge and burn"; case .focus: "Blur and sharpen"; case .gradient: "Gradient"; case .text: "Text"; case .rectangle: "Rectangle"; case .ellipse: "Ellipse"; case .line: "Line"; case .pan: "Hand" } }
+    var english: String { switch self { case .brush: "Brush"; case .eraser: "Eraser"; case .eyedropper: "Eyedropper"; case .move: "Move"; case .crop: "Crop"; case .rectangleSelection: "Rectangle selection"; case .ellipseSelection: "Ellipse selection"; case .lasso: "Lasso"; case .wand: "Magic wand"; case .fill: "Fill layer"; case .bucket: "Paint bucket"; case .clone: "Clone stamp"; case .heal: "Healing brush"; case .smudge: "Smudge"; case .liquify: "Liquify"; case .pen: "Pen"; case .dodge: "Dodge, burn and sponge"; case .focus: "Blur and sharpen"; case .gradient: "Gradient"; case .text: "Text"; case .rectangle: "Rectangle"; case .ellipse: "Ellipse"; case .line: "Line"; case .pan: "Hand" } }
 }
 struct CanvasSelection: Equatable {
     var points: [CGPoint]; var ellipse = false

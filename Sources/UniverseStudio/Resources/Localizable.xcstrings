@@ -11898,6 +11898,60 @@
           }
         }
       }
+    },
+    "Dodge, burn and sponge": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abwedeln, Nachbelichten, Schwamm"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dodge, burn and sponge"
+          }
+        }
+      }
+    },
+    "Saturate": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sättigen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saturate"
+          }
+        }
+      }
+    },
+    "Desaturate": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entsättigen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Desaturate"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

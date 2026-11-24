@@ -95,4 +95,17 @@ import CoreGraphics
         XCTAssertTrue(edge.red > 0.15 && edge.blue > 0.15, "Mixed at the edge")
         XCTAssertGreaterThan(try pixel(s, CGPoint(x: 20, y: 1)).blue, 0.95, "Sharp outside the brush")
     }
+
+    func testSpongeChangesColourOnlyUnderTheBrush() throws {
+        let muted = CodableColor(red: 0.7, green: 0.4, blue: 0.4, alpha: 1)
+        let s = studio()
+        fill(s, CGRect(x: 0, y: 0, width: 40, height: 20), muted)
+        s.add(dab("desaturate", at: CGPoint(x: 10, y: 10), width: 12, strength: 1))
+        s.add(dab("saturate", at: CGPoint(x: 30, y: 10), width: 12, strength: 1))
+        let grey = try pixel(s, CGPoint(x: 10, y: 10)), vivid = try pixel(s, CGPoint(x: 30, y: 10))
+        XCTAssertLessThan(abs(grey.red - grey.blue), 0.05, "fully desaturated is grey")
+        XCTAssertGreaterThan(vivid.red - vivid.blue, 0.35, "more colour than the 0.3 it had")
+        XCTAssertEqual(try pixel(s, CGPoint(x: 20, y: 1)).red, 0.7, accuracy: 0.02, "between the dabs nothing changes")
+        XCTAssertEqual(try pixel(s, CGPoint(x: 10, y: 10)).alpha, 1, accuracy: 0.01)
+    }
 }
