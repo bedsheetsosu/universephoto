@@ -70,6 +70,20 @@ final class ClientModel: ObservableObject {
     /// Settings in effect for the app in front on the Mac (its own Pencil profile, if any).
     var effectiveSettings: InputSettings { settings.effective(for: frontApp?.bundleID) }
 
+    /// The actions on the Pencil palette. `-debugPaletteItems N` swaps in N sample actions for a
+    /// look at a long, scrolling arc (UI checks only; never saved).
+    var paletteItems: [ShortcutButton] { Self.debugPaletteItems ?? effectiveSettings.radialMenu }
+    static let debugPaletteItems: [ShortcutButton]? = {
+        let n = UserDefaults.standard.integer(forKey: "debugPaletteItems")
+        guard n > 0 else { return nil }
+        let keys: [(String, String, ModifierSet)] = [("Undo", "z", .command), ("Pinsel", "b", []), ("Radierer", "e", []), ("Pipette", "i", []), ("Hand", "h", []),
+            ("Auswahl", "v", []), ("Lasso", "l", []), ("Text", "t", []), ("Eimer", "g", []), ("Rechteck", "m", []), ("Stift", "p", []),
+            ("Sichern", "s", .command), ("Kopieren", "c", .command), ("Einsetzen", "v", .command), ("Zoom +", "+", .command), ("Zoom −", "-", .command), ("Redo", "z", [.command, .shift])]
+        var out = keys.prefix(n).map { ShortcutButton(title: $0.0, shortcut: Shortcut($0.1, $0.2)) }
+        for t in IPadTool.allCases where out.count < n { out.append(ShortcutButton(title: t.title, shortcut: Shortcut("a"), tool: t)) }
+        return Array(out.prefix(n))
+    }()
+
     /// Radial menu open at this point (canvas/window coordinates), and the item under the Pencil.
     @Published var radialCenter: CGPoint?
     @Published var radialHighlight: Int?
@@ -463,12 +477,12 @@ final class ClientModel: ObservableObject {
     /// Squeeze while the palette is open: runs the button under the Pencil and keeps the palette;
     /// over no button it closes.
     func pickRadial(_ index: Int?) {
-        if let i = index, effectiveSettings.radialMenu.indices.contains(i) { runPalette(i) } else { closeRadial() }
+        if let i = index, paletteItems.indices.contains(i) { runPalette(i) } else { closeRadial() }
     }
 
     /// Runs a palette button; the palette stays open (close it with ✕, outside or squeeze).
     func runPalette(_ index: Int) {
-        let items = effectiveSettings.radialMenu
+        let items = paletteItems
         guard items.indices.contains(index) else { return }
         if items[index].isToolSwitch { paletteSelection = items[index].id }
         run(items[index])

@@ -11,12 +11,13 @@ struct PencilPaletteView: View {
     @EnvironmentObject var model: ClientModel
     let center: CGPoint
     @State private var shown = false
-    @State private var scroll = 0.0
+    /// `-debugPaletteScroll N` starts scrolled by N actions (UI checks).
+    @State private var scroll = Double(UserDefaults.standard.integer(forKey: "debugPaletteScroll"))
     @State private var dragAngle: Double?
     /// The accent circle slides from the old choice to the new one.
     @Namespace private var selection
 
-    private var items: [ShortcutButton] { model.effectiveSettings.radialMenu }
+    private var items: [ShortcutButton] { model.paletteItems }
 
     var body: some View {
         GeometryReader { g in
@@ -39,8 +40,7 @@ struct PencilPaletteView: View {
                     .fill(Color(white: 0.11))
                     .overlay { ArcBand(center: c, radius: r, from: from, to: to, width: RadialMenuLayout.bandWidth).stroke(.white.opacity(0.08), lineWidth: 1) }
                     .shadow(color: .black.opacity(0.35), radius: 18, y: 8)
-                    .contentShape(ArcBand(center: c, radius: r, from: from, to: to, width: RadialMenuLayout.bandWidth))
-                    .gesture(scrollGesture(center: c, count: n))
+                    .allowsHitTesting(false)
                     .scaleEffect(shown ? 1 : 0.5, anchor: UnitPoint(x: c.x / max(g.size.width, 1), y: c.y / max(g.size.height, 1)))
                     .opacity(shown ? 1 : 0)
 
@@ -96,6 +96,9 @@ struct PencilPaletteView: View {
                     }
                 }
             }
+            // Circling anywhere around the tip scrolls (on the arc or beside it); a plain tap
+            // beside it still closes.
+            .simultaneousGesture(scrollGesture(center: c, count: n))
             .onContinuousHover(coordinateSpace: .local) { phase in
                 switch phase {
                 case .active(let p):
@@ -115,14 +118,17 @@ struct PencilPaletteView: View {
         .animation(.spring(response: 0.35, dampingFraction: 0.8), value: model.paletteSelection)
         .sensoryFeedback(.alignment, trigger: model.radialHighlight) { _, new in new != nil }
         .sensoryFeedback(.selection, trigger: Int(scroll.rounded()))
+        .onAppear { scroll = min(max(0, scroll), RadialMenuLayout.maxScroll(count: items.count)) }
         .onAppear { withAnimation(Brand.spring) { shown = true } }
         .transition(.opacity)
     }
 
     /// Dragging along the band scrolls through the actions; it settles on whole items.
     private func scrollGesture(center c: CGPoint, count n: Int) -> some Gesture {
-        DragGesture(minimumDistance: 4)
+        DragGesture(minimumDistance: 8, coordinateSpace: .local)
             .onChanged { v in
+                // Right at the tip the direction jumps around: ignore that bit.
+                guard hypot(v.location.x - c.x, v.location.y - c.y) > 30 else { dragAngle = nil; return }
                 let a = atan2(v.location.y - c.y, v.location.x - c.x)
                 if let last = dragAngle {
                     scroll = min(max(0, scroll + RadialMenuLayout.scrollDelta(from: last, to: a, count: n)), RadialMenuLayout.maxScroll(count: n))
