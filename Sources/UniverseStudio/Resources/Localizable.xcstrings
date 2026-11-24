@@ -14760,6 +14760,78 @@
           }
         }
       }
+    },
+    "Line boil": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Linien-Zittern"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Line boil"
+          }
+        }
+      }
+    },
+    "%d wobbling copies": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d zitternde Kopien"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d wobbling copies"
+          }
+        }
+      }
+    },
+    "%d copies, stronger": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d Kopien, stärker"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d copies, stronger"
+          }
+        }
+      }
+    },
+    "Copies of this frame whose active layer wobbles slightly – a hand-drawn, living line": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kopien dieses Frames, deren aktive Ebene leicht zittert – ein handgezeichnet lebendiger Strich"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copies of this frame whose active layer wobbles slightly – a hand-drawn, living line"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

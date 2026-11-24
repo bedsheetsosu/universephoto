@@ -184,6 +184,11 @@ struct TimelinePanel: View {
             Button(group.count > 1 ? LF("Delete %d frames", group.count) : L("Delete frame"), role: .destructive) { s.removeFrames(group) }.disabled(group.count >= s.frames.count)
             Button(s.referenceFrame == index ? L("Unpin reference") : L("Pin as reference")) { s.toggleReference(index) }
             Divider()
+            Menu(L("Line boil")) {
+                ForEach(Studio.boilChoices, id: \.self) { n in Button(LF("%d wobbling copies", n)) { s.lineBoil(after: index, copies: n) } }
+                Divider()
+                ForEach(Studio.boilChoices, id: \.self) { n in Button(LF("%d copies, stronger", n)) { s.lineBoil(after: index, copies: n, amount: 3) } }
+            }.help(L("Copies of this frame whose active layer wobbles slightly – a hand-drawn, living line"))
             Menu(L("Tween to next frame")) {
                 ForEach(Studio.tweenChoices, id: \.self) { n in Button(LF("%d frames", n)) { s.tweenToNext(from: index, count: n, eased: false) } }
                 Menu(L("Eased")) { ForEach(Studio.tweenChoices, id: \.self) { n in Button(LF("%d frames", n)) { s.tweenToNext(from: index, count: n, eased: true) } } }
