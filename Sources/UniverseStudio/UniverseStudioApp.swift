@@ -281,6 +281,14 @@ struct StudioCommands: Commands {
                     }
                 }.disabled(studio.frames.count < 2)
                     .help(L("Moves the active layer by the same amount in every frame – the movement stays"))
+                Menu(L("Delay layer")) {
+                    ForEach([1, 2, 3], id: \.self) { n in Button(LF("%d frames later", n)) { studio.delayLayer(by: n) } }
+                    Divider()
+                    ForEach([1, 2], id: \.self) { n in Button(LF("%d frames earlier", n)) { studio.delayLayer(by: -n) } }
+                    Divider()
+                    Button(L("1 frame later, hold the start")) { studio.delayLayer(by: 1, wrap: false) }
+                }.disabled(studio.frames.count < 2)
+                    .help(L("The active layer runs a few frames behind the rest – hair or a tail that follows a moment later"))
                 Button(L("Remove layer from all frames")) { studio.removeLayerFromAllFrames() }.disabled(studio.frames.count < 2)
                     .help(L("Deletes the active layer from every frame – e.g. a rotoscope or reference underlay"))
                 Menu(L("Sway layer (rotate)")) {

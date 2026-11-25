@@ -18288,6 +18288,96 @@
           }
         }
       }
+    },
+    "Delay layer": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ebene verzögern"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delay layer"
+          }
+        }
+      }
+    },
+    "%d frames later": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d Frames später"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d frames later"
+          }
+        }
+      }
+    },
+    "%d frames earlier": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d Frames früher"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d frames earlier"
+          }
+        }
+      }
+    },
+    "1 frame later, hold the start": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 Frame später, Anfang halten"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 frame later, hold the start"
+          }
+        }
+      }
+    },
+    "The active layer runs a few frames behind the rest – hair or a tail that follows a moment later": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die aktive Ebene läuft ein paar Frames hinter dem Rest her – Haare oder ein Schwanz, die kurz nachschwingen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The active layer runs a few frames behind the rest – hair or a tail that follows a moment later"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
