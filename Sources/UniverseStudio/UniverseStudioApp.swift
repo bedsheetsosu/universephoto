@@ -316,6 +316,11 @@ struct StudioCommands: Commands {
                     ForEach(Studio.EaseMode.allCases) { m in Button(L(m.title)) { studio.easeLayerMotion(m) } }
                 }.disabled(studio.frames.count < 3)
                     .help(L("Re-times the active layer's movement – slow in, slow out or both – without adding frames"))
+                Menu(L("Mirror the motion")) {
+                    Button(L("Left ↔ right")) { studio.mirrorLayerMotion(horizontal: true) }
+                    Button(L("Up ↕ down")) { studio.mirrorLayerMotion(horizontal: false) }
+                }.disabled(studio.frames.count < 2)
+                    .help(L("The active layer's path is mirrored around its start – it moves the other way"))
                 Button(L("Copy motion to selected layers")) { studio.copyMotionToSelected() }
                     .disabled(studio.frames.count < 2 || studio.selectedIDs.subtracting([studio.activeLayer?.id].compactMap { $0 }).isEmpty)
                     .help(L("The other selected layers move like the active one, each from its own starting point"))

@@ -19764,6 +19764,96 @@
           }
         }
       }
+    },
+    "Mirror the motion": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bewegung spiegeln"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mirror the motion"
+          }
+        }
+      }
+    },
+    "Left ↔ right": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Links ↔ rechts"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Left ↔ right"
+          }
+        }
+      }
+    },
+    "Up ↕ down": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oben ↕ unten"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Up ↕ down"
+          }
+        }
+      }
+    },
+    "The active layer's path is mirrored around its start – it moves the other way": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Weg der aktiven Ebene wird um ihren Start gespiegelt – sie bewegt sich andersherum"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The active layer's path is mirrored around its start – it moves the other way"
+          }
+        }
+      }
+    },
+    "Mirror motion": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bewegung spiegeln"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mirror motion"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
