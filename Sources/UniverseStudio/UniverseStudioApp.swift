@@ -314,6 +314,11 @@ struct StudioCommands: Commands {
                     Button(L("Fade out")) { studio.fadeLayerOverFrames(fadeIn: false) }
                 }.disabled(studio.frames.count < 2)
                     .help(L("The active layer fades in or out across the existing frames – no frames added"))
+                Menu(L("Grow over the frames")) {
+                    Button(L("Grow")) { studio.growLayerOverFrames(grow: true) }
+                    Button(L("Shrink")) { studio.growLayerOverFrames(grow: false) }
+                }.disabled(studio.frames.count < 2)
+                    .help(L("The active layer grows out of nothing or shrinks away across the existing frames"))
                 Menu(L("Spin over the frames")) {
                     Button(L("Clockwise, 1 turn")) { studio.spinLayerOverFrames(turns: 1) }
                     Button(L("Clockwise, 2 turns")) { studio.spinLayerOverFrames(turns: 2) }
