@@ -361,6 +361,8 @@ struct StudioCommands: Commands {
                         Button(L("Iris open")) { studio.irisLayer(open: true) }
                         Button(L("Iris close")) { studio.irisLayer(open: false) }
                     }
+                    Divider()
+                    Button(L("Remove mask in all frames")) { studio.clearMaskAllFrames() }
                 }.disabled(studio.frames.count < 2)
                     .help(L("The active layer is revealed or wiped away from one side across the frames – done with its mask"))
                 Menu(L("Grow over the frames")) {
