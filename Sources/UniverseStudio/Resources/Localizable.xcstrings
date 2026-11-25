@@ -19656,6 +19656,114 @@
           }
         }
       }
+    },
+    "Ease the motion": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bewegung weich timen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ease the motion"
+          }
+        }
+      }
+    },
+    "Slow in and out": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Langsam an und aus"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Slow in and out"
+          }
+        }
+      }
+    },
+    "Slow start": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Langsamer Start"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Slow start"
+          }
+        }
+      }
+    },
+    "Slow end": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Langsames Ende"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Slow end"
+          }
+        }
+      }
+    },
+    "Re-times the active layer's movement – slow in, slow out or both – without adding frames": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verteilt die Bewegung der aktiven Ebene zeitlich neu – langsam an, langsam aus oder beides – ohne neue Frames"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Re-times the active layer's movement – slow in, slow out or both – without adding frames"
+          }
+        }
+      }
+    },
+    "Ease motion": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bewegung timen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ease motion"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
