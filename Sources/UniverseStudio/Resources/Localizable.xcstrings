@@ -17802,6 +17802,42 @@
           }
         }
       }
+    },
+    "Repeat animation": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Animation wiederholen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Repeat animation"
+          }
+        }
+      }
+    },
+    "Appends copies of the whole animation so it plays through several times – a longer clip": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hängt Kopien der ganzen Animation an, sodass sie mehrmals durchläuft – ein längerer Clip"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Appends copies of the whole animation so it plays through several times – a longer clip"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
