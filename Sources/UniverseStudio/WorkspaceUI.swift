@@ -6,8 +6,9 @@ struct Workspace: View {
     @EnvironmentObject var s:Studio
     /// Animate module (0.106): same canvas, but timeline, its own documents and a way back to Photo.
     var animate = false
-    @AppStorage("workspace") private var storedWorkspace = "Photo"
-    private var workspace:String { animate ? "Animate" : storedWorkspace == "Animate" ? "Photo" : storedWorkspace }
+    /// Photo and Animate are separate (0.147): Animate is always the lean "Simple" workspace
+    /// (drawing tools, layers, brush), Photo always the full one – no switch between them.
+    private var workspace:String { animate ? "Simple" : "Photo" }
     @AppStorage("appearance") private var appearance = "dark"
     @AppStorage("photoAccent") private var accent = "mint"
     @AppStorage("photoFlow") private var flow = false
@@ -38,7 +39,6 @@ struct Workspace: View {
     @AppStorage("documentBackground") private var newBackground = "white"
     @State private var newHeight = 800
     @Environment(\.colorScheme) private var systemScheme
-    @Namespace private var workspaceMotion
     @Namespace private var documentMotion
     private var theme:PhotoTheme { PhotoTheme(isDark:appearance == "dark" || (appearance == "system" && systemScheme == .dark),accent:PhotoTheme.accent(accent)) }
     private var tint:Color { theme.accent }
@@ -50,13 +50,13 @@ struct Workspace: View {
                 VStack(spacing:0) {
                     if !s.focusMode { tabs }
                     contextbar
-                    ArtworkCanvas(studio:s,grid:grid,rulers:rulers,snap:snap,background:NSColor(theme.canvas),motionPath:motionPath && (workspace == "Animate" || s.frames.count > 1)).clipped()
+                    ArtworkCanvas(studio:s,grid:grid,rulers:rulers,snap:snap,background:NSColor(theme.canvas),motionPath:motionPath && (animate || s.frames.count > 1)).clipped()
                         .overlay(alignment:.bottomLeading) { canvasBadge.padding(14).allowsHitTesting(false) }
                         .overlay(alignment:.topLeading) { if s.focusMode { FocusPill().environmentObject(s).padding(12).transition(.scale(scale:0.9,anchor:.topLeading).combined(with:.opacity)) } }
                         .overlay(alignment:.bottomTrailing) { VStack(alignment:.trailing,spacing:10) { if showHistogram { HistogramPanel().environmentObject(s).transition(.scale(scale:0.9,anchor:.bottomTrailing).combined(with:.opacity)) }; if showNavigator { NavigatorPanel().environmentObject(s).transition(.scale(scale:0.9,anchor:.bottomTrailing).combined(with:.opacity)) } }.padding(14) }
                     if animate { resizeTimeline;TimelinePanel().environmentObject(s).frame(height:timelineHeight).transition(.move(edge:.bottom).combined(with:.opacity)) }
                 }.frame(maxWidth:.infinity,maxHeight:.infinity).photoSurface(radius:20,elevated:true)
-                if showInspector && !s.focusMode { HStack(spacing:0) { resizeInspector;InspectorPanel(simple:workspace == "Simple").environmentObject(s).frame(width:inspectorWidth) }.photoChrome(radius:20).transition(.move(edge:.trailing).combined(with:.opacity)) }
+                if showInspector && !s.focusMode { HStack(spacing:0) { resizeInspector;InspectorPanel(simple:animate,animate:animate).environmentObject(s).frame(width:inspectorWidth) }.photoChrome(radius:20).transition(.move(edge:.trailing).combined(with:.opacity)) }
             }.padding(.horizontal,s.focusMode ? 6 : 12).padding(.bottom,s.focusMode ? 6 : 8).padding(.top,s.focusMode ? 30 : 0)
             if !s.focusMode { statusbar }
         }
@@ -95,12 +95,6 @@ struct Workspace: View {
         HStack(spacing:10) {
             HStack(spacing:10) { Button { s.showStartScreen() } label: { PhotoMark() }.buttonStyle(PhotoPress()).help(L("Start screen") + " · ⇧⌘H");VStack(alignment:.leading,spacing:2) { Text("UniverseStudio").font(.system(size:16,weight:.bold,design:.rounded));Text(L(animate ? "ANIMATE" : "PHOTO")).lineLimit(1).font(.system(size:7.5,weight:.semibold)).tracking(1.6).foregroundStyle(theme.secondary) };iconButton("arrow.up.left.and.arrow.down.right",L("Focus mode") + " · ⌥⌘F") { withAnimation(PhotoMotion.panel) { s.focusMode = true } };if s.returnTab(animate:!animate) != nil { ModuleBubble(animate:!animate) } }.padding(.leading,68)
             Spacer(minLength:6)
-            if !animate {
-            HStack(spacing:3) { ForEach(["Simple","Photo"],id:\.self) { mode in
-                let selected = workspace == mode
-                Button { withAnimation(PhotoMotion.select) { storedWorkspace = mode } } label: { HStack(spacing:5) { Image(systemName:mode == "Simple" ? "pencil.tip" : mode == "Photo" ? "camera.aperture" : "play.rectangle").font(.system(size:10,weight:.semibold));Text(L(mode)).font(.system(size:11,weight:.semibold,design:.rounded)) }.frame(width:88,height:31).foregroundStyle(selected ? theme.onAccent : theme.secondary).background { if selected { Capsule().fill(theme.accentGradient).matchedGeometryEffect(id:"workspace",in:workspaceMotion).shadow(color:tint.opacity(0.18),radius:6,y:2) } }.contentShape(Capsule()) }.buttonStyle(PhotoPress()).accessibilityAddTraits(selected ? .isSelected : [])
-            } }.padding(4).background(theme.deep.opacity(0.5),in:Capsule()).overlay(Capsule().strokeBorder(theme.outline,lineWidth:0.75))
-            }
             if ModuleSettings.isEnabled(animate ? .photo : .animate) { PushButton(toAnimate:!animate) }
             Spacer(minLength:6)
             iconButton("magnifyingglass",L("Command search · ⇧⌘P")) { s.commandSearch = true }

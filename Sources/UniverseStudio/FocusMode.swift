@@ -51,7 +51,6 @@ struct FocusPanelsWindow: View {
     @EnvironmentObject var s: Studio
     @AppStorage("appearance") private var appearance = "dark"
     @AppStorage("photoAccent") private var accent = "mint"
-    @AppStorage("workspace") private var workspace = "Photo"
     @Environment(\.colorScheme) private var systemScheme
     @Environment(\.dismiss) private var dismiss
 
@@ -59,7 +58,7 @@ struct FocusPanelsWindow: View {
         let theme = FocusMode.theme(appearance: appearance, accent: accent, systemDark: systemScheme == .dark)
         VStack(spacing: 10) {
             FocusToolGrid().padding(10).photoChrome(radius: 16)
-            InspectorPanel(simple: workspace == "Simple").photoChrome(radius: 16)
+            InspectorPanel(simple: s.module == .animate, animate: s.module == .animate).photoChrome(radius: 16)
         }
         .padding(10)
         .frame(minWidth: 260, idealWidth: 290, minHeight: 420, idealHeight: 760)

@@ -5,6 +5,8 @@ struct InspectorPanel: View {
     @EnvironmentObject var s: Studio
     @Environment(\.photoTheme) private var theme
     var simple = false
+    /// Animate (0.147): the simple inspector plus what animation needs (same-in-all-frames toggle).
+    var animate = false
     @State private var tab = "layers"
     @State private var hoveringLayer: UUID?
     @State private var histogram: [Double] = []
@@ -183,6 +185,9 @@ struct InspectorPanel: View {
                         Button { s.mergeDown() } label: { Label(L("Merge down"), systemImage: "square.3.layers.3d.down.right").frame(maxWidth: .infinity) }
                             .buttonStyle(PhotoButtonStyle()).disabled(s.selectedLayer == 0 || layer.locked)
                         Button { s.importPanel() } label: { Label(L("Import image as layer"), systemImage: "photo.badge.plus").frame(maxWidth: .infinity) }.buttonStyle(PhotoButtonStyle())
+                    } else if animate {
+                        Button { s.toggleAllFrames() } label: { Label(L("Same in all frames"), systemImage: layer.allFrames == true ? "film.stack.fill" : "film.stack").frame(maxWidth: .infinity) }
+                            .buttonStyle(PhotoButtonStyle()).help(L("Same in all frames")).accessibilityAddTraits(layer.allFrames == true ? .isSelected : [])
                     }
                 }.photoCard()
             }
