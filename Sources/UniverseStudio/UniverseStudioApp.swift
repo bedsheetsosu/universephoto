@@ -200,173 +200,182 @@ struct StudioCommands: Commands {
             Button(L("Blank frame")) { studio.blankFrame() }.keyboardShortcut("f",modifiers:[.shift,.option])
             Button(L("Hold frame longer")) { studio.nudgeHold(1) }.keyboardShortcut(.upArrow,modifiers:.option)
             Button(L("Hold frame shorter")) { studio.nudgeHold(-1) }.keyboardShortcut(.downArrow,modifiers:.option)
-            Button(L("Import frames…")) { studio.importFramesPanel() }
-            Button(L("Import video for tracing…")) { studio.importVideoPanel() }
-            Menu(L("Typewriter")) {
-                Button(L("Letter by letter")) { studio.typewriter(byWord: false, restTicks: Int(studio.fps)) }
-                Button(L("Two letters at a time")) { studio.typewriter(byWord: false, perStep: 2, restTicks: Int(studio.fps)) }
-                Button(L("Word by word")) { studio.typewriter(byWord: true, restTicks: Int(studio.fps)) }
-            }.disabled(studio.activeLayer?.strokes.contains { $0.kind == "text" } != true).help(L("The text on the active layer appears bit by bit"))
-            Menu(L("Draw on")) {
-                Button(L("Stroke by stroke")) { studio.drawOn(count: 0, byStroke: true, restTicks: Int(studio.fps)) }
-                Divider()
-                ForEach([1.0, 2.0, 4.0], id: \.self) { sec in Button(LF("%@ s, smooth", String(Int(sec)))) { studio.drawOn(count: max(2, Int((studio.fps * sec).rounded())), byStroke: false, restTicks: Int(studio.fps)) } }
-            }.disabled(studio.activeLayer?.strokes.contains(where: DrawOn.drawable) != true).help(L("The drawing on the active layer draws itself"))
-            Menu(L("Colour cycle")) {
-                ForEach([1.0, 2.0, 4.0], id: \.self) { sec in Button(LF("%@ s, rainbow", String(Int(sec)))) { studio.colorCycle(count: max(2, Int((studio.fps * sec).rounded()))) } }
-                Divider()
-                ForEach([1.0, 2.0], id: \.self) { sec in Button(LF("%@ s, pulse to brush colour", String(Int(sec)))) { studio.colorCycle(count: max(2, Int((studio.fps * sec).rounded())), to: studio.color) } }
-                Divider()
-                Button(L("Rainbow over existing frames")) { studio.rainbowAllFrames() }.disabled(studio.frames.count < 2)
-            }.disabled(studio.activeLayer?.strokes.isEmpty != false).help(L("Strokes, shapes and text change colour in a loop; pixels keep theirs"))
-            Menu(L("Camera move")) {
-                ForEach(CameraMove.allCases) { c in
-                    Menu { ForEach([1.0, 2.0, 4.0], id: \.self) { sec in Button(LF("%@ s", String(Int(sec)))) { studio.cameraMove(c, count: max(2, Int((studio.fps * sec).rounded()))) } }
-                        Divider()
-                        Button(L("Over all frames")) { studio.cameraMove(c, count: 0) }.disabled(studio.frames.count < 2)
-                    } label: { Label(L(c.title), systemImage: c.symbol) }
-                }
-            }.help(L("A virtual camera zooms, pans or shakes over the whole picture"))
-            Menu(L("Weather")) {
-                ForEach(Weather.allCases) { w in
-                    Menu { if studio.frames.count > 1 { Button(L("Over all frames")) { studio.addWeather(w, count: 0) } } else { ForEach([1.0, 2.0], id: \.self) { sec in Button(LF("%@ s", String(Int(sec)))) { studio.addWeather(w, count: max(2, Int((studio.fps * sec).rounded()))) } } } }
-                    label: { Label(L(w.title), systemImage: w.symbol) }
-                }
-            }.help(L("Snow, rain or sparkles on a new layer, as a seamless loop"))
-            Menu(L("Close loop")) {
-                ForEach(Studio.tweenChoices, id: \.self) { n in Button(LF("%d frames", n)) { studio.closeLoop(count: n) } }
-                Menu(L("Crossfade drawings")) { ForEach(Studio.tweenChoices, id: \.self) { n in Button(LF("%d frames", n)) { studio.closeLoop(count: n, crossfade: true) } } }
-            }.disabled(studio.frames.count < 2).help(L("In-betweens from the last frame back to the first, so the loop runs on without a jump"))
-            Menu(L("One after another")) {
-                ForEach(Stagger.styles) { p in
-                    Menu { ForEach([("Quick", 0.15), ("Calm", 0.35)], id: \.0) { name, sec in
-                        Button(L(name)) { studio.staggerIn(p, gap: max(1, Int((studio.fps * sec).rounded())), duration: max(2, Int((studio.fps * sec * 2).rounded())), restTicks: Int(studio.fps)) } } }
-                    label: { Label(L(p.title), systemImage: p.symbol) }
-                }
-            }.help(L("The layers come in one by one, each a little after the one below"))
-            Menu(L("Bend & wobble")) {
-                ForEach(DeformLoop.allCases) { d in
-                    Menu { ForEach([1.0, 2.0], id: \.self) { sec in
-                        Button(LF("%@ s", String(Int(sec)))) { studio.deformLoop(d, count: max(2, Int((studio.fps * sec).rounded()))) }
-                        Button(LF("%@ s, strong", String(Int(sec)))) { studio.deformLoop(d, count: max(2, Int((studio.fps * sec).rounded())), strength: 2) } } }
-                    label: { Label(L(d.title), systemImage: d.symbol) }
-                }
-            }.disabled(studio.activeLayer?.strokes.contains { $0.imageData == nil } != true).help(L("The drawing on the active layer waves, sways or squashes in a loop"))
-            Menu(L("Follow path")) {
-                ForEach([1.0, 2.0, 4.0], id: \.self) { sec in Button(LF("%@ s", String(Int(sec)))) { studio.followPath(count: max(2, Int((studio.fps * sec).rounded())), eased: true, orient: false) } }
-                Divider()
-                ForEach([1.0, 2.0, 4.0], id: \.self) { sec in Button(LF("%@ s, turning along", String(Int(sec)))) { studio.followPath(count: max(2, Int((studio.fps * sec).rounded())), eased: true, orient: true) } }
-            }.disabled(studio.routePath() == nil).help(L("Draw a route with the pen tool first"))
-            Menu(L("Motion preset")) {
-                ForEach(MotionPreset.allCases) { p in
-                    Menu { ForEach([0.5, 1.0, 2.0], id: \.self) { sec in Button(LF("%@ s", sec == 0.5 ? "0.5" : String(Int(sec)))) { studio.applyMotionPreset(p, count: max(2, Int((studio.fps * sec).rounded()))) } } }
-                    label: { Label(L(p.title), systemImage: p.symbol) }
-                }
-            }
-            AnimationPreviewButton()
-            MotionPathToggle()
-            Divider()
-            Button(L("Import sound…")) { studio.importAudioPanel() }
-            Button(L("Remove sound")) { studio.removeAudio() }.disabled(studio.audio == nil)
-            Menu(L("React to sound")) { ForEach(SoundReaction.allCases) { r in Button(L(r.title)) { studio.reactToSound(r) } } }.disabled(studio.audio == nil)
             Button(L("Previous frame")) { studio.stepToFrame(max(0,studio.frameIndex-1)) }.keyboardShortcut(.leftArrow,modifiers:.option)
             Button(L("Next frame")) { studio.stepToFrame(min(studio.frames.count-1,studio.frameIndex+1)) }.keyboardShortcut(.rightArrow,modifiers:.option)
             Button(L("First frame")) { studio.firstFrame() }.keyboardShortcut(.leftArrow,modifiers:[.option,.shift])
             Button(L("Last frame")) { studio.lastFrame() }.keyboardShortcut(.rightArrow,modifiers:[.option,.shift])
-            Button(L("Reverse frames")) { studio.reverseFrames() }.disabled(studio.frames.count < 2)
-            Button(L("Merge identical frames")) { studio.mergeIdenticalFrames() }.disabled(studio.frames.count < 2)
-                .help(L("Runs of frames with the same drawing become one held frame – same motion, fewer frames"))
-            Menu(L("Tween all frames")) {
-                ForEach(Studio.tweenChoices, id: \.self) { n in Button(LF("%d between each", n)) { studio.tweenAll(count: n, curve: .smooth) } }
-                Menu(L("Morph strokes")) { ForEach(Studio.tweenChoices, id: \.self) { n in Button(LF("%d between each", n)) { studio.tweenAll(count: n, curve: .smooth, morph: true) } } }
-                    .help(L("Blends brush strokes and shapes point by point when both frames have the same strokes"))
-            }.disabled(studio.frames.count < 2)
-                .help(L("Inserts in-betweens between every pair of frames at once – a whole animation turns smooth"))
-            Button(L("Remove empty frames")) { studio.removeEmptyFrames() }.disabled(studio.frames.count < 2)
-                .help(L("Deletes every frame in which nothing is drawn"))
-            Button(L("Pin layer state to all frames")) { studio.pinLayerStateToAllFrames() }.disabled(studio.frames.count < 2)
-                .help(L("Copies the active layer's position, size, turn and opacity from this frame into every frame"))
-            Button(L("Remove layer from all frames")) { studio.removeLayerFromAllFrames() }.disabled(studio.frames.count < 2)
-                .help(L("Deletes the active layer from every frame – e.g. a rotoscope or reference underlay"))
-            Menu(L("Repeat animation")) {
-                ForEach([2, 3, 4], id: \.self) { n in Button(LF("%d×", n)) { studio.repeatAnimation(times: n) } }
-            }.disabled(studio.frames.count < 2)
-                .help(L("Appends copies of the whole animation so it plays through several times – a longer clip"))
-            Menu(L("Sway layer (rotate)")) {
-                Button(L("Gentle")) { studio.swayLayer(degrees: 6) }
-                Button(L("Strong")) { studio.swayLayer(degrees: 16) }
-            }.disabled(studio.frames.count < 2)
-                .help(L("Rocks the active layer back and forth across the frames – a gentle swing"))
-            Menu(L("Pulse size")) {
-                Button(L("Subtle")) { studio.scalePulseLayer(amount: 0.08) }
-                Button(L("Strong")) { studio.scalePulseLayer(amount: 0.22) }
-            }.disabled(studio.frames.count < 2)
-                .help(L("Grows and shrinks the active layer across the frames – a gentle breathing or heartbeat"))
-            Menu(L("Float layer (drift)")) {
-                Button(L("Up and down, gentle")) { studio.floatLayer(amplitude: 18, horizontal: false) }
-                Button(L("Up and down, strong")) { studio.floatLayer(amplitude: 44, horizontal: false) }
-                Divider()
-                Button(L("Side to side, gentle")) { studio.floatLayer(amplitude: 18, horizontal: true) }
-                Button(L("Side to side, strong")) { studio.floatLayer(amplitude: 44, horizontal: true) }
-            }.disabled(studio.frames.count < 2)
-                .help(L("A soft, seamless drift over the whole animation – gentle secondary motion"))
-            Menu(L("Pulse layer (glow)")) {
-                Button(L("Subtle")) { studio.pulseLayer(floor: 0.45) }
-                Button(L("Strong")) { studio.pulseLayer(floor: 0.1) }
-                Divider()
-                Button(L("None")) { studio.unpulseLayer() }
-            }.disabled(studio.frames.count < 2)
-                .help(L("Fades the active layer up and down across the frames – a soft glow or breathing"))
-            Menu(L("Blink layer")) {
-                Button(L("Every frame")) { studio.blinkLayer(period: 1) }
-                Button(L("Every 2 frames")) { studio.blinkLayer(period: 2) }
-                Button(L("Every 3 frames")) { studio.blinkLayer(period: 3) }
-                Divider()
-                Button(L("Steady (show always)")) { studio.steadyLayer() }
-            }.disabled(studio.frames.count < 2)
-                .help(L("Switches the active layer on and off across the frames – a blinking light or sign"))
-            Menu(L("Flip layer in all frames")) {
-                Button(L("Horizontally")) { studio.flipLayerAllFrames(horizontal: true) }
-                Button(L("Vertically")) { studio.flipLayerAllFrames(horizontal: false) }
-            }.disabled(studio.frames.count < 2)
-                .help(L("Mirrors the active layer's drawing in every frame – turn a cycle to face the other way"))
-            Menu(L("Boil all frames")) {
-                Button(L("Normal")) { studio.boilAllFrames(amount: 1.5) }
-                Button(L("Stronger")) { studio.boilAllFrames(amount: 3) }
-            }.disabled(studio.frames.count < 2)
-                .help(L("Wobbles the active layer a little in every frame – a living, hand-drawn line across the whole animation"))
-            Menu(L("Retime")) {
-                Button(L("Slow motion (2×)")) { studio.retimeRange(factor: 2) }
-                Button(L("Slow motion (3×)")) { studio.retimeRange(factor: 3) }
-                Button(L("Fast forward (½×)")) { studio.retimeRange(factor: 0.5) }
-                Divider()
-                Button(L("Slow start (ease in)")) { studio.rampTiming(slowStart: true) }
-                Button(L("Slow end (ease out)")) { studio.rampTiming(slowStart: false) }
-                Button(L("Reset timing (all on ones)")) { studio.resetTiming() }
-                Divider()
-                Menu(L("Set total length")) {
-                    ForEach([1.0, 2.0, 3.0, 5.0, 10.0], id: \.self) { sec in
-                        Button(LF("%@ s", String(Int(sec)))) { studio.fitToDuration(seconds: sec) }
-                    }
-                }.help(L("Scales all holds so the whole animation runs about this long"))
-            }.disabled(studio.frames.isEmpty)
-                .help(L("Slows down or speeds up by scaling how long each frame holds – no frames added or removed"))
-            Menu(L("Thin frames")) {
-                Button(L("On twos")) { studio.thinFrames(every: 2) }
-                Button(L("On threes")) { studio.thinFrames(every: 3) }
-                Button(L("On fours")) { studio.thinFrames(every: 4) }
-            }.disabled(studio.frames.count < 2)
-                .help(L("Keeps every 2nd/3rd/4th drawing and holds it for the gap – same length, fewer frames"))
-            Menu(L("Motion echo")) {
-                ForEach([2, 3, 4], id: \.self) { n in Button(LF("%d ghosts", n)) { studio.motionEcho(count: n) } }
-                Menu(L("Stronger")) { ForEach([2, 3, 4], id: \.self) { n in Button(LF("%d ghosts", n)) { studio.motionEcho(count: n, strong: true) } } }
-                Divider()
-                Button(L("None")) { studio.motionEcho(count: 0) }
-            }.disabled(studio.frames.count < 2)
-                .help(L("Fading ghosts of the active layer from the frames before it – a motion trail"))
-            Button(L("Bake ping-pong into frames")) { studio.bakePingPong() }.disabled(studio.frames.count < 3)
             Button(L("Onion Skin")) { studio.onionSkin.toggle() }.keyboardShortcut("o",modifiers:.option)
             Button(L("Play / Pause")) { studio.togglePlayback() }.keyboardShortcut(.space,modifiers:[])
+            AnimationPreviewButton()
+            MotionPathToggle()
+            Divider()
+            Menu(L("Effects")) { Group {
+                Menu(L("Typewriter")) {
+                    Button(L("Letter by letter")) { studio.typewriter(byWord: false, restTicks: Int(studio.fps)) }
+                    Button(L("Two letters at a time")) { studio.typewriter(byWord: false, perStep: 2, restTicks: Int(studio.fps)) }
+                    Button(L("Word by word")) { studio.typewriter(byWord: true, restTicks: Int(studio.fps)) }
+                }.disabled(studio.activeLayer?.strokes.contains { $0.kind == "text" } != true).help(L("The text on the active layer appears bit by bit"))
+                Menu(L("Draw on")) {
+                    Button(L("Stroke by stroke")) { studio.drawOn(count: 0, byStroke: true, restTicks: Int(studio.fps)) }
+                    Divider()
+                    ForEach([1.0, 2.0, 4.0], id: \.self) { sec in Button(LF("%@ s, smooth", String(Int(sec)))) { studio.drawOn(count: max(2, Int((studio.fps * sec).rounded())), byStroke: false, restTicks: Int(studio.fps)) } }
+                }.disabled(studio.activeLayer?.strokes.contains(where: DrawOn.drawable) != true).help(L("The drawing on the active layer draws itself"))
+                Menu(L("Colour cycle")) {
+                    ForEach([1.0, 2.0, 4.0], id: \.self) { sec in Button(LF("%@ s, rainbow", String(Int(sec)))) { studio.colorCycle(count: max(2, Int((studio.fps * sec).rounded()))) } }
+                    Divider()
+                    ForEach([1.0, 2.0], id: \.self) { sec in Button(LF("%@ s, pulse to brush colour", String(Int(sec)))) { studio.colorCycle(count: max(2, Int((studio.fps * sec).rounded())), to: studio.color) } }
+                    Divider()
+                    Button(L("Rainbow over existing frames")) { studio.rainbowAllFrames() }.disabled(studio.frames.count < 2)
+                }.disabled(studio.activeLayer?.strokes.isEmpty != false).help(L("Strokes, shapes and text change colour in a loop; pixels keep theirs"))
+                Menu(L("Camera move")) {
+                    ForEach(CameraMove.allCases) { c in
+                        Menu { ForEach([1.0, 2.0, 4.0], id: \.self) { sec in Button(LF("%@ s", String(Int(sec)))) { studio.cameraMove(c, count: max(2, Int((studio.fps * sec).rounded()))) } }
+                            Divider()
+                            Button(L("Over all frames")) { studio.cameraMove(c, count: 0) }.disabled(studio.frames.count < 2)
+                        } label: { Label(L(c.title), systemImage: c.symbol) }
+                    }
+                }.help(L("A virtual camera zooms, pans or shakes over the whole picture"))
+                Menu(L("Weather")) {
+                    ForEach(Weather.allCases) { w in
+                        Menu { if studio.frames.count > 1 { Button(L("Over all frames")) { studio.addWeather(w, count: 0) } } else { ForEach([1.0, 2.0], id: \.self) { sec in Button(LF("%@ s", String(Int(sec)))) { studio.addWeather(w, count: max(2, Int((studio.fps * sec).rounded()))) } } } }
+                        label: { Label(L(w.title), systemImage: w.symbol) }
+                    }
+                }.help(L("Snow, rain or sparkles on a new layer, as a seamless loop"))
+                Menu(L("One after another")) {
+                    ForEach(Stagger.styles) { p in
+                        Menu { ForEach([("Quick", 0.15), ("Calm", 0.35)], id: \.0) { name, sec in
+                            Button(L(name)) { studio.staggerIn(p, gap: max(1, Int((studio.fps * sec).rounded())), duration: max(2, Int((studio.fps * sec * 2).rounded())), restTicks: Int(studio.fps)) } } }
+                        label: { Label(L(p.title), systemImage: p.symbol) }
+                    }
+                }.help(L("The layers come in one by one, each a little after the one below"))
+                Menu(L("Bend & wobble")) {
+                    ForEach(DeformLoop.allCases) { d in
+                        Menu { ForEach([1.0, 2.0], id: \.self) { sec in
+                            Button(LF("%@ s", String(Int(sec)))) { studio.deformLoop(d, count: max(2, Int((studio.fps * sec).rounded()))) }
+                            Button(LF("%@ s, strong", String(Int(sec)))) { studio.deformLoop(d, count: max(2, Int((studio.fps * sec).rounded())), strength: 2) } } }
+                        label: { Label(L(d.title), systemImage: d.symbol) }
+                    }
+                }.disabled(studio.activeLayer?.strokes.contains { $0.imageData == nil } != true).help(L("The drawing on the active layer waves, sways or squashes in a loop"))
+                Menu(L("Follow path")) {
+                    ForEach([1.0, 2.0, 4.0], id: \.self) { sec in Button(LF("%@ s", String(Int(sec)))) { studio.followPath(count: max(2, Int((studio.fps * sec).rounded())), eased: true, orient: false) } }
+                    Divider()
+                    ForEach([1.0, 2.0, 4.0], id: \.self) { sec in Button(LF("%@ s, turning along", String(Int(sec)))) { studio.followPath(count: max(2, Int((studio.fps * sec).rounded())), eased: true, orient: true) } }
+                }.disabled(studio.routePath() == nil).help(L("Draw a route with the pen tool first"))
+                Menu(L("Motion preset")) {
+                    ForEach(MotionPreset.allCases) { p in
+                        Menu { ForEach([0.5, 1.0, 2.0], id: \.self) { sec in Button(LF("%@ s", sec == 0.5 ? "0.5" : String(Int(sec)))) { studio.applyMotionPreset(p, count: max(2, Int((studio.fps * sec).rounded()))) } } }
+                        label: { Label(L(p.title), systemImage: p.symbol) }
+                    }
+                }
+            } }.help(L("Ready-made animations that create new frames"))
+            Menu(L("Layer across frames")) { Group {
+                Button(L("Pin layer state to all frames")) { studio.pinLayerStateToAllFrames() }.disabled(studio.frames.count < 2)
+                    .help(L("Copies the active layer's position, size, turn and opacity from this frame into every frame"))
+                Button(L("Remove layer from all frames")) { studio.removeLayerFromAllFrames() }.disabled(studio.frames.count < 2)
+                    .help(L("Deletes the active layer from every frame – e.g. a rotoscope or reference underlay"))
+                Menu(L("Sway layer (rotate)")) {
+                    Button(L("Gentle")) { studio.swayLayer(degrees: 6) }
+                    Button(L("Strong")) { studio.swayLayer(degrees: 16) }
+                }.disabled(studio.frames.count < 2)
+                    .help(L("Rocks the active layer back and forth across the frames – a gentle swing"))
+                Menu(L("Pulse size")) {
+                    Button(L("Subtle")) { studio.scalePulseLayer(amount: 0.08) }
+                    Button(L("Strong")) { studio.scalePulseLayer(amount: 0.22) }
+                }.disabled(studio.frames.count < 2)
+                    .help(L("Grows and shrinks the active layer across the frames – a gentle breathing or heartbeat"))
+                Menu(L("Float layer (drift)")) {
+                    Button(L("Up and down, gentle")) { studio.floatLayer(amplitude: 18, horizontal: false) }
+                    Button(L("Up and down, strong")) { studio.floatLayer(amplitude: 44, horizontal: false) }
+                    Divider()
+                    Button(L("Side to side, gentle")) { studio.floatLayer(amplitude: 18, horizontal: true) }
+                    Button(L("Side to side, strong")) { studio.floatLayer(amplitude: 44, horizontal: true) }
+                }.disabled(studio.frames.count < 2)
+                    .help(L("A soft, seamless drift over the whole animation – gentle secondary motion"))
+                Menu(L("Pulse layer (glow)")) {
+                    Button(L("Subtle")) { studio.pulseLayer(floor: 0.45) }
+                    Button(L("Strong")) { studio.pulseLayer(floor: 0.1) }
+                    Divider()
+                    Button(L("None")) { studio.unpulseLayer() }
+                }.disabled(studio.frames.count < 2)
+                    .help(L("Fades the active layer up and down across the frames – a soft glow or breathing"))
+                Menu(L("Blink layer")) {
+                    Button(L("Every frame")) { studio.blinkLayer(period: 1) }
+                    Button(L("Every 2 frames")) { studio.blinkLayer(period: 2) }
+                    Button(L("Every 3 frames")) { studio.blinkLayer(period: 3) }
+                    Divider()
+                    Button(L("Steady (show always)")) { studio.steadyLayer() }
+                }.disabled(studio.frames.count < 2)
+                    .help(L("Switches the active layer on and off across the frames – a blinking light or sign"))
+                Menu(L("Flip layer in all frames")) {
+                    Button(L("Horizontally")) { studio.flipLayerAllFrames(horizontal: true) }
+                    Button(L("Vertically")) { studio.flipLayerAllFrames(horizontal: false) }
+                }.disabled(studio.frames.count < 2)
+                    .help(L("Mirrors the active layer's drawing in every frame – turn a cycle to face the other way"))
+                Menu(L("Boil all frames")) {
+                    Button(L("Normal")) { studio.boilAllFrames(amount: 1.5) }
+                    Button(L("Stronger")) { studio.boilAllFrames(amount: 3) }
+                }.disabled(studio.frames.count < 2)
+                    .help(L("Wobbles the active layer a little in every frame – a living, hand-drawn line across the whole animation"))
+                Menu(L("Motion echo")) {
+                    ForEach([2, 3, 4], id: \.self) { n in Button(LF("%d ghosts", n)) { studio.motionEcho(count: n) } }
+                    Menu(L("Stronger")) { ForEach([2, 3, 4], id: \.self) { n in Button(LF("%d ghosts", n)) { studio.motionEcho(count: n, strong: true) } } }
+                    Divider()
+                    Button(L("None")) { studio.motionEcho(count: 0) }
+                }.disabled(studio.frames.count < 2)
+                    .help(L("Fading ghosts of the active layer from the frames before it – a motion trail"))
+            } }.help(L("Animate or change the active layer in every frame"))
+            Menu(L("Edit frames")) { Group {
+                Button(L("Reverse frames")) { studio.reverseFrames() }.disabled(studio.frames.count < 2)
+                Button(L("Merge identical frames")) { studio.mergeIdenticalFrames() }.disabled(studio.frames.count < 2)
+                    .help(L("Runs of frames with the same drawing become one held frame – same motion, fewer frames"))
+                Menu(L("Tween all frames")) {
+                    ForEach(Studio.tweenChoices, id: \.self) { n in Button(LF("%d between each", n)) { studio.tweenAll(count: n, curve: .smooth) } }
+                    Menu(L("Morph strokes")) { ForEach(Studio.tweenChoices, id: \.self) { n in Button(LF("%d between each", n)) { studio.tweenAll(count: n, curve: .smooth, morph: true) } } }
+                        .help(L("Blends brush strokes and shapes point by point when both frames have the same strokes"))
+                }.disabled(studio.frames.count < 2)
+                    .help(L("Inserts in-betweens between every pair of frames at once – a whole animation turns smooth"))
+                Menu(L("Close loop")) {
+                    ForEach(Studio.tweenChoices, id: \.self) { n in Button(LF("%d frames", n)) { studio.closeLoop(count: n) } }
+                    Menu(L("Crossfade drawings")) { ForEach(Studio.tweenChoices, id: \.self) { n in Button(LF("%d frames", n)) { studio.closeLoop(count: n, crossfade: true) } } }
+                }.disabled(studio.frames.count < 2).help(L("In-betweens from the last frame back to the first, so the loop runs on without a jump"))
+                Button(L("Remove empty frames")) { studio.removeEmptyFrames() }.disabled(studio.frames.count < 2)
+                    .help(L("Deletes every frame in which nothing is drawn"))
+                Menu(L("Repeat animation")) {
+                    ForEach([2, 3, 4], id: \.self) { n in Button(LF("%d×", n)) { studio.repeatAnimation(times: n) } }
+                }.disabled(studio.frames.count < 2)
+                    .help(L("Appends copies of the whole animation so it plays through several times – a longer clip"))
+                Menu(L("Retime")) {
+                    Button(L("Slow motion (2×)")) { studio.retimeRange(factor: 2) }
+                    Button(L("Slow motion (3×)")) { studio.retimeRange(factor: 3) }
+                    Button(L("Fast forward (½×)")) { studio.retimeRange(factor: 0.5) }
+                    Divider()
+                    Button(L("Slow start (ease in)")) { studio.rampTiming(slowStart: true) }
+                    Button(L("Slow end (ease out)")) { studio.rampTiming(slowStart: false) }
+                    Button(L("Reset timing (all on ones)")) { studio.resetTiming() }
+                    Divider()
+                    Menu(L("Set total length")) {
+                        ForEach([1.0, 2.0, 3.0, 5.0, 10.0], id: \.self) { sec in
+                            Button(LF("%@ s", String(Int(sec)))) { studio.fitToDuration(seconds: sec) }
+                        }
+                    }.help(L("Scales all holds so the whole animation runs about this long"))
+                }.disabled(studio.frames.isEmpty)
+                    .help(L("Slows down or speeds up by scaling how long each frame holds – no frames added or removed"))
+                Menu(L("Thin frames")) {
+                    Button(L("On twos")) { studio.thinFrames(every: 2) }
+                    Button(L("On threes")) { studio.thinFrames(every: 3) }
+                    Button(L("On fours")) { studio.thinFrames(every: 4) }
+                }.disabled(studio.frames.count < 2)
+                    .help(L("Keeps every 2nd/3rd/4th drawing and holds it for the gap – same length, fewer frames"))
+                Button(L("Bake ping-pong into frames")) { studio.bakePingPong() }.disabled(studio.frames.count < 3)
+            } }.help(L("Reorder, smooth, loop and retime the frames"))
+            Divider()
+            Menu(L("Import & sound")) { Group {
+                Button(L("Import frames…")) { studio.importFramesPanel() }
+                Button(L("Import video for tracing…")) { studio.importVideoPanel() }
+                Button(L("Import sound…")) { studio.importAudioPanel() }
+                Button(L("Remove sound")) { studio.removeAudio() }.disabled(studio.audio == nil)
+                Menu(L("React to sound")) { ForEach(SoundReaction.allCases) { r in Button(L(r.title)) { studio.reactToSound(r) } } }.disabled(studio.audio == nil)
+            } }.help(L("Bring in frames, video or sound"))
         }.disabled(studio.module != .animate) }
     }
 }
