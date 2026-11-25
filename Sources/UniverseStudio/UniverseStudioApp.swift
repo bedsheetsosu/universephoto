@@ -335,6 +335,9 @@ struct StudioCommands: Commands {
                     ForEach([1, 2, 3], id: \.self) { n in Button(LF("%d frames apart", n)) { studio.followInChain(step: n) } }
                 }.disabled(studio.frames.count < 2 || studio.selectedIDs.subtracting([studio.activeLayer?.id].compactMap { $0 }).isEmpty)
                     .help(L("The other selected layers repeat the active layer's movement one after another – a wave through a tail or chain"))
+                Button(L("Out of step")) { studio.desyncSelectedLayers() }
+                    .disabled(studio.frames.count < 2 || studio.selectedIDs.count < 2)
+                    .help(L("Gives every selected layer its own time offset, so copies of one animation stop moving in lockstep"))
                 Button(L("Reverse this layer only")) { studio.reverseLayerOnly() }.disabled(studio.frames.count < 2)
                     .help(L("The active layer plays backwards while everything else runs forward"))
                 Button(L("Remove layer from all frames")) { studio.removeLayerFromAllFrames() }.disabled(studio.frames.count < 2)

@@ -20016,6 +20016,42 @@
           }
         }
       }
+    },
+    "Out of step": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zeitlich versetzen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Out of step"
+          }
+        }
+      }
+    },
+    "Gives every selected layer its own time offset, so copies of one animation stop moving in lockstep": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gibt jeder ausgewählten Ebene ihren eigenen Zeitversatz, damit Kopien einer Animation nicht im Gleichschritt laufen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gives every selected layer its own time offset, so copies of one animation stop moving in lockstep"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
