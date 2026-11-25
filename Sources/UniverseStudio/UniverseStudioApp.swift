@@ -446,6 +446,10 @@ struct StudioCommands: Commands {
                     ForEach([2, 3, 4], id: \.self) { n in Button(LF("%d×", n)) { studio.repeatPlayRange(times: n) } }
                 }.disabled(studio.playRange == nil)
                     .help(L("Copies the frames of the play range right behind it – one passage happens several times"))
+                Menu(L("Pause at the end")) {
+                    ForEach([0.5, 1.0, 2.0], id: \.self) { sec in Button(LF("%@ s", sec == 0.5 ? "0.5" : String(Int(sec)))) { studio.addPauseAtEnd(seconds: sec) } }
+                }.disabled(studio.frames.isEmpty)
+                    .help(L("The last frame holds longer, so a loop rests a moment before it starts again"))
                 Menu(L("Retime")) {
                     Button(L("Slow motion (2×)")) { studio.retimeRange(factor: 2) }
                     Button(L("Slow motion (3×)")) { studio.retimeRange(factor: 3) }

@@ -19620,6 +19620,42 @@
           }
         }
       }
+    },
+    "Pause at the end": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pause am Ende"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pause at the end"
+          }
+        }
+      }
+    },
+    "The last frame holds longer, so a loop rests a moment before it starts again": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der letzte Frame hält länger, damit eine Schleife kurz ruht, bevor sie neu beginnt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The last frame holds longer, so a loop rests a moment before it starts again"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
