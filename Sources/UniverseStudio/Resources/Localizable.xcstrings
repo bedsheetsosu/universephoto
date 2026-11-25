@@ -19422,6 +19422,96 @@
           }
         }
       }
+    },
+    "Bounce over the frames": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Über die Frames hüpfen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bounce over the frames"
+          }
+        }
+      }
+    },
+    "One big jump": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein großer Sprung"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "One big jump"
+          }
+        }
+      }
+    },
+    "Ball, 3 hops": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ball, 3 Hüpfer"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ball, 3 hops"
+          }
+        }
+      }
+    },
+    "Small hops": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kleine Hüpfer"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Small hops"
+          }
+        }
+      }
+    },
+    "The active layer hops across the frames, each hop lower, and lands where it started": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die aktive Ebene hüpft über die Frames, jeder Hüpfer niedriger, und landet wieder am Start"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The active layer hops across the frames, each hop lower, and lands where it started"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

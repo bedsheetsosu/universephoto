@@ -365,6 +365,12 @@ struct StudioCommands: Commands {
                     Button(L("Small circle, other way")) { studio.orbitLayer(radius: 20, clockwise: false) }
                 }.disabled(studio.frames.count < 2)
                     .help(L("The active layer runs on a circle that starts at its position – a seamless loop"))
+                Menu(L("Bounce over the frames")) {
+                    Button(L("One big jump")) { studio.bounceLayer(height: Double(studio.height) * 0.3, bounces: 1) }
+                    Button(L("Ball, 3 hops")) { studio.bounceLayer(height: Double(studio.height) * 0.3, bounces: 3) }
+                    Button(L("Small hops")) { studio.bounceLayer(height: Double(studio.height) * 0.08, bounces: 4, decay: 0.85) }
+                }.disabled(studio.frames.count < 2)
+                    .help(L("The active layer hops across the frames, each hop lower, and lands where it started"))
                 Menu(L("Sway layer (rotate)")) {
                     Button(L("Gentle")) { studio.swayLayer(degrees: 6) }
                     Button(L("Strong")) { studio.swayLayer(degrees: 16) }
