@@ -18486,6 +18486,60 @@
           }
         }
       }
+    },
+    "Smooth motion": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bewegung glätten"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Smooth motion"
+          }
+        }
+      }
+    },
+    "As a loop": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Als Schleife"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "As a loop"
+          }
+        }
+      }
+    },
+    "Takes the jitter out of the active layer's movement – averages each frame with its neighbours": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nimmt das Zittern aus der Bewegung der aktiven Ebene – mittelt jeden Frame mit seinen Nachbarn"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Takes the jitter out of the active layer's movement – averages each frame with its neighbours"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

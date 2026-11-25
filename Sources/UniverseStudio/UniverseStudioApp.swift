@@ -297,6 +297,13 @@ struct StudioCommands: Commands {
                     Button(L("Half (0.5×)")) { studio.amplifyMotion(factor: 0.5) }
                 }.disabled(studio.frames.count < 2)
                     .help(L("Makes the active layer's movement bigger or smaller around its middle – same timing"))
+                Menu(L("Smooth motion")) {
+                    Button(L("Gentle")) { studio.smoothMotion(passes: 1) }
+                    Button(L("Strong")) { studio.smoothMotion(passes: 4) }
+                    Divider()
+                    Button(L("As a loop")) { studio.smoothMotion(passes: 2, loop: true) }
+                }.disabled(studio.frames.count < 3)
+                    .help(L("Takes the jitter out of the active layer's movement – averages each frame with its neighbours"))
                 Button(L("Remove layer from all frames")) { studio.removeLayerFromAllFrames() }.disabled(studio.frames.count < 2)
                     .help(L("Deletes the active layer from every frame – e.g. a rotoscope or reference underlay"))
                 Menu(L("Sway layer (rotate)")) {
