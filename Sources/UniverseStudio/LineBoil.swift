@@ -43,6 +43,28 @@ enum LineBoil {
 extension Studio {
     static let boilChoices = [2, 3, 4]
 
+    /// Animate → Boil all frames (0.131): wobbles the active layer in place in every frame, each
+    /// with its own seed, so the whole animation shimmers with a living, hand-drawn line – no frames
+    /// added. Works on the play range if one is set, otherwise all. One undo step; it stacks if run
+    /// again. Returns how many frames were touched.
+    @discardableResult func boilAllFrames(amount: Double = 1.5) -> Int {
+        guard !frames.isEmpty, amount > 0, let id = activeLayer?.id, activeLayer?.allFrames != true else { return 0 }
+        stopPlayback()
+        if frames.indices.contains(frameIndex) { frames[frameIndex] = layers }
+        let r = Playback.clamp(playRange, count: frames.count) ?? 0...(frames.count - 1)
+        var newFrames = frames, touched = 0
+        for i in r where newFrames[i].contains(where: { $0.id == id }) {
+            newFrames[i] = newFrames[i].map { $0.id == id ? LineBoil.boiled($0, amount: amount, seed: UInt64(i) &* 2654435761 &+ 1) : $0 }
+            touched += 1
+        }
+        guard touched > 0 else { return 0 }
+        checkpoint("Boil all frames")
+        frames = newFrames
+        layers = frames[frameIndex]
+        changed()
+        return touched
+    }
+
     /// Inserts `copies` wobbled copies after frame `index` (active layer only). Returns how many.
     @discardableResult func lineBoil(after index: Int, copies: Int, amount: Double = 1.5) -> Int {
         guard frames.indices.contains(index) || (frames.isEmpty && index == 0), copies > 0, let id = activeLayer?.id else { return 0 }

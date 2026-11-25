@@ -280,6 +280,11 @@ struct StudioCommands: Commands {
                     .help(L("Blends brush strokes and shapes point by point when both frames have the same strokes"))
             }.disabled(studio.frames.count < 2)
                 .help(L("Inserts in-betweens between every pair of frames at once – a whole animation turns smooth"))
+            Menu(L("Boil all frames")) {
+                Button(L("Normal")) { studio.boilAllFrames(amount: 1.5) }
+                Button(L("Stronger")) { studio.boilAllFrames(amount: 3) }
+            }.disabled(studio.frames.count < 2)
+                .help(L("Wobbles the active layer a little in every frame – a living, hand-drawn line across the whole animation"))
             Menu(L("Retime")) {
                 Button(L("Slow motion (2×)")) { studio.retimeRange(factor: 2) }
                 Button(L("Slow motion (3×)")) { studio.retimeRange(factor: 3) }

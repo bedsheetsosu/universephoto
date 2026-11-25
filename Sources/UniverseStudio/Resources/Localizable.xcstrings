@@ -17244,6 +17244,42 @@
           }
         }
       }
+    },
+    "Boil all frames": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Boil über alle Frames"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Boil all frames"
+          }
+        }
+      }
+    },
+    "Wobbles the active layer a little in every frame – a living, hand-drawn line across the whole animation": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lässt die aktive Ebene in jedem Frame leicht wackeln – eine lebendige, handgezeichnete Linie über die ganze Animation"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wobbles the active layer a little in every frame – a living, hand-drawn line across the whole animation"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
