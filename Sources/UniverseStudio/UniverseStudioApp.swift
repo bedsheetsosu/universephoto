@@ -335,6 +335,12 @@ struct StudioCommands: Commands {
                     Button(L("Counter-clockwise, 1 turn")) { studio.spinLayerOverFrames(turns: -1) }
                 }.disabled(studio.frames.count < 2)
                     .help(L("The active layer turns full circles across the existing frames – a seamless loop"))
+                Menu(L("Shake layer")) {
+                    Button(L("Trembling")) { studio.shakeLayer(amount: 3) }
+                    Button(L("Shaking")) { studio.shakeLayer(amount: 10) }
+                    Button(L("Rattling, with turn")) { studio.shakeLayer(amount: 8, turn: true) }
+                }.disabled(studio.frames.count < 2)
+                    .help(L("Small random jolts of the active layer in every frame – fear, cold or an impact"))
                 Menu(L("Sway layer (rotate)")) {
                     Button(L("Gentle")) { studio.swayLayer(degrees: 6) }
                     Button(L("Strong")) { studio.swayLayer(degrees: 16) }

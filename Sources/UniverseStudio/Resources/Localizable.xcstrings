@@ -18972,6 +18972,96 @@
           }
         }
       }
+    },
+    "Shake layer": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ebene zittern"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shake layer"
+          }
+        }
+      }
+    },
+    "Trembling": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zittern"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trembling"
+          }
+        }
+      }
+    },
+    "Shaking": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wackeln"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shaking"
+          }
+        }
+      }
+    },
+    "Rattling, with turn": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rattern, mit Drehung"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rattling, with turn"
+          }
+        }
+      }
+    },
+    "Small random jolts of the active layer in every frame – fear, cold or an impact": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kleine Zufallsstöße der aktiven Ebene in jedem Frame – Angst, Kälte oder ein Aufprall"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Small random jolts of the active layer in every frame – fear, cold or an impact"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
