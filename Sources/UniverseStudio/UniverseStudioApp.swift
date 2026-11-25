@@ -334,6 +334,9 @@ struct StudioCommands: Commands {
                 Menu(L("Grow over the frames")) {
                     Button(L("Grow")) { studio.growLayerOverFrames(grow: true) }
                     Button(L("Shrink")) { studio.growLayerOverFrames(grow: false) }
+                    Divider()
+                    Button(L("Pop in (overshoot)")) { studio.growLayerOverFrames(grow: true, pop: true) }
+                    Button(L("Pop out (overshoot)")) { studio.growLayerOverFrames(grow: false, pop: true) }
                 }.disabled(studio.frames.count < 2)
                     .help(L("The active layer grows out of nothing or shrinks away across the existing frames"))
                 Menu(L("Spin over the frames")) {
