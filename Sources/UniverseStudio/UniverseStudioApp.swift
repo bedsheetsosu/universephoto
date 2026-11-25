@@ -280,6 +280,11 @@ struct StudioCommands: Commands {
                     .help(L("Blends brush strokes and shapes point by point when both frames have the same strokes"))
             }.disabled(studio.frames.count < 2)
                 .help(L("Inserts in-betweens between every pair of frames at once – a whole animation turns smooth"))
+            Menu(L("Flip layer in all frames")) {
+                Button(L("Horizontally")) { studio.flipLayerAllFrames(horizontal: true) }
+                Button(L("Vertically")) { studio.flipLayerAllFrames(horizontal: false) }
+            }.disabled(studio.frames.count < 2)
+                .help(L("Mirrors the active layer's drawing in every frame – turn a cycle to face the other way"))
             Menu(L("Boil all frames")) {
                 Button(L("Normal")) { studio.boilAllFrames(amount: 1.5) }
                 Button(L("Stronger")) { studio.boilAllFrames(amount: 3) }

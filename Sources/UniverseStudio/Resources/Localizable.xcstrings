@@ -17280,6 +17280,78 @@
           }
         }
       }
+    },
+    "Flip layer in all frames": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ebene in allen Frames spiegeln"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Flip layer in all frames"
+          }
+        }
+      }
+    },
+    "Horizontally": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Horizontal"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Horizontally"
+          }
+        }
+      }
+    },
+    "Vertically": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vertikal"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vertically"
+          }
+        }
+      }
+    },
+    "Mirrors the active layer's drawing in every frame – turn a cycle to face the other way": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spiegelt die Zeichnung der aktiven Ebene in jedem Frame – dreht einen Zyklus in die andere Richtung"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mirrors the active layer's drawing in every frame – turn a cycle to face the other way"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

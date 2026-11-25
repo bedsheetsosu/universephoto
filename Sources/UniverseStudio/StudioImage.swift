@@ -141,6 +141,27 @@ extension Studio {
         boundsCache.removeAll()
     }
 
+    /// Animate → Flip layer in all frames (0.132): mirrors the active layer's drawing in every frame
+    /// – a quick way to turn a walk or turn cycle around to face the other way. The layer becomes a
+    /// pixel layer in each frame. Works on the play range if one is set, otherwise all. One undo.
+    @discardableResult func flipLayerAllFrames(horizontal: Bool) -> Int {
+        guard !frames.isEmpty, let id = activeLayer?.id else { return 0 }
+        stopPlayback()
+        if frames.indices.contains(frameIndex) { frames[frameIndex] = layers }
+        let m = Self.flip(horizontal: horizontal, width: width, height: height)
+        let r = Playback.clamp(playRange, count: frames.count) ?? 0...(frames.count - 1)
+        var nf = frames, touched = 0
+        for i in r {
+            for j in nf[i].indices where nf[i][j].id == id {
+                nf[i][j] = baked(nf[i][j], width: width, height: height, m); touched += 1
+            }
+        }
+        guard touched > 0 else { return 0 }
+        checkpoint("Flip layer in all frames")
+        frames = nf; layers = frames[frameIndex]; boundsCache.removeAll(); changed()
+        return touched
+    }
+
     /// Layer mask from the selection: `reveal` shows only the selection, otherwise hides it.
     func maskFromSelection(reveal: Bool) {
         guard let layer = activeLayer, !layer.locked, let sel = selectionMask(),
