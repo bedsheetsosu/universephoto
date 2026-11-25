@@ -19296,6 +19296,132 @@
           }
         }
       }
+    },
+    "Orbit": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kreisen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Orbit"
+          }
+        }
+      }
+    },
+    "Small circle": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kleiner Kreis"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Small circle"
+          }
+        }
+      }
+    },
+    "Big circle": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Großer Kreis"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Big circle"
+          }
+        }
+      }
+    },
+    "Flat ellipse": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Flache Ellipse"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Flat ellipse"
+          }
+        }
+      }
+    },
+    "Small circle, other way": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kleiner Kreis, andersherum"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Small circle, other way"
+          }
+        }
+      }
+    },
+    "The active layer circles around its position over the frames – a seamless loop": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die aktive Ebene kreist über die Frames um ihre Position – eine nahtlose Schleife"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The active layer circles around its position over the frames – a seamless loop"
+          }
+        }
+      }
+    },
+    "The active layer runs on a circle that starts at its position – a seamless loop": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die aktive Ebene läuft auf einem Kreis, der an ihrer Position beginnt – eine nahtlose Schleife"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The active layer runs on a circle that starts at its position – a seamless loop"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

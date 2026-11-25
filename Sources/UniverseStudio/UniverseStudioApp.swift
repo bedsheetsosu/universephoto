@@ -357,6 +357,14 @@ struct StudioCommands: Commands {
                     }
                 }.disabled(studio.frames.count < 2)
                     .help(L("The active layer crosses the whole canvas over the existing frames – its own motion stays"))
+                Menu(L("Orbit")) {
+                    Button(L("Small circle")) { studio.orbitLayer(radius: 20) }
+                    Button(L("Big circle")) { studio.orbitLayer(radius: 80) }
+                    Button(L("Flat ellipse")) { studio.orbitLayer(radius: 80, squash: 0.35) }
+                    Divider()
+                    Button(L("Small circle, other way")) { studio.orbitLayer(radius: 20, clockwise: false) }
+                }.disabled(studio.frames.count < 2)
+                    .help(L("The active layer runs on a circle that starts at its position – a seamless loop"))
                 Menu(L("Sway layer (rotate)")) {
                     Button(L("Gentle")) { studio.swayLayer(degrees: 6) }
                     Button(L("Strong")) { studio.swayLayer(degrees: 16) }
