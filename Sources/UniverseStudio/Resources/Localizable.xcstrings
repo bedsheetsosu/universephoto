@@ -18684,6 +18684,114 @@
           }
         }
       }
+    },
+    "Spin over the frames": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Über die Frames drehen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spin over the frames"
+          }
+        }
+      }
+    },
+    "Clockwise, 1 turn": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Im Uhrzeigersinn, 1 Umdrehung"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clockwise, 1 turn"
+          }
+        }
+      }
+    },
+    "Clockwise, 2 turns": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Im Uhrzeigersinn, 2 Umdrehungen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clockwise, 2 turns"
+          }
+        }
+      }
+    },
+    "Counter-clockwise, 1 turn": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gegen den Uhrzeigersinn, 1 Umdrehung"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Counter-clockwise, 1 turn"
+          }
+        }
+      }
+    },
+    "The active layer turns full circles across the existing frames – a seamless loop": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die aktive Ebene dreht sich über die vorhandenen Frames im Kreis – eine nahtlose Schleife"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The active layer turns full circles across the existing frames – a seamless loop"
+          }
+        }
+      }
+    },
+    "Spin layer": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ebene drehen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spin layer"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
