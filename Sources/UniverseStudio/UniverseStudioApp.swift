@@ -275,78 +275,86 @@ struct StudioCommands: Commands {
                 }
             } }.help(L("Ready-made animations that create new frames"))
             Menu(L("Layer motion")) { Group {
-                Button(L("Pin layer state to all frames")) { studio.pinLayerStateToAllFrames() }.disabled(studio.frames.count < 2)
-                    .help(L("Copies the active layer's position, size, turn and opacity from this frame into every frame"))
-                Button(L("Copy drawing to all frames")) { studio.copyDrawingToAllFrames() }.disabled(studio.frames.count < 2)
-                    .help(L("Puts this frame's drawing of the active layer into every frame – each frame keeps its own position"))
-                Menu(L("Shift in all frames")) {
-                    ForEach([10.0, 50.0], id: \.self) { d in
-                        Button(LF("Left %@ px", String(Int(d)))) { studio.shiftLayerAllFrames(dx: -d, dy: 0) }
-                        Button(LF("Right %@ px", String(Int(d)))) { studio.shiftLayerAllFrames(dx: d, dy: 0) }
-                        Button(LF("Up %@ px", String(Int(d)))) { studio.shiftLayerAllFrames(dx: 0, dy: -d) }
-                        Button(LF("Down %@ px", String(Int(d)))) { studio.shiftLayerAllFrames(dx: 0, dy: d) }
+                Section(L("Timing")) {
+                    Menu(L("Delay layer")) {
+                        ForEach([1, 2, 3], id: \.self) { n in Button(LF("%d frames later", n)) { studio.delayLayer(by: n) } }
                         Divider()
-                    }
-                }.disabled(studio.frames.count < 2)
-                    .help(L("Moves the active layer by the same amount in every frame – the movement stays"))
-                Menu(L("Delay layer")) {
-                    ForEach([1, 2, 3], id: \.self) { n in Button(LF("%d frames later", n)) { studio.delayLayer(by: n) } }
-                    Divider()
-                    ForEach([1, 2], id: \.self) { n in Button(LF("%d frames earlier", n)) { studio.delayLayer(by: -n) } }
-                    Divider()
-                    Button(L("1 frame later, hold the start")) { studio.delayLayer(by: 1, wrap: false) }
-                }.disabled(studio.frames.count < 2)
-                    .help(L("The active layer runs a few frames behind the rest – hair or a tail that follows a moment later"))
-                Menu(L("Motion strength")) {
-                    Button(L("Stronger (1.5×)")) { studio.amplifyMotion(factor: 1.5) }
-                    Button(L("Much stronger (2×)")) { studio.amplifyMotion(factor: 2) }
-                    Divider()
-                    Button(L("Calmer (0.7×)")) { studio.amplifyMotion(factor: 0.7) }
-                    Button(L("Half (0.5×)")) { studio.amplifyMotion(factor: 0.5) }
-                }.disabled(studio.frames.count < 2)
-                    .help(L("Makes the active layer's movement bigger or smaller around its middle – same timing"))
-                Menu(L("Smooth motion")) {
-                    Button(L("Gentle")) { studio.smoothMotion(passes: 1) }
-                    Button(L("Strong")) { studio.smoothMotion(passes: 4) }
-                    Divider()
-                    Button(L("As a loop")) { studio.smoothMotion(passes: 2, loop: true) }
-                }.disabled(studio.frames.count < 3)
-                    .help(L("Takes the jitter out of the active layer's movement – averages each frame with its neighbours"))
-                Menu(L("Ease the motion")) {
-                    ForEach(Studio.EaseMode.allCases) { m in Button(L(m.title)) { studio.easeLayerMotion(m) } }
-                }.disabled(studio.frames.count < 3)
-                    .help(L("Re-times the active layer's movement – slow in, slow out or both – without adding frames"))
-                Menu(L("Step the motion")) {
-                    Button(L("On twos")) { studio.stepLayerMotion(every: 2) }
-                    Button(L("On threes")) { studio.stepLayerMotion(every: 3) }
-                }.disabled(studio.frames.count < 2)
-                    .help(L("The active layer only moves every 2nd or 3rd frame – a stop-motion look for one layer"))
-                Menu(L("Mirror the motion")) {
-                    Button(L("Left ↔ right")) { studio.mirrorLayerMotion(horizontal: true) }
-                    Button(L("Up ↕ down")) { studio.mirrorLayerMotion(horizontal: false) }
-                }.disabled(studio.frames.count < 2)
-                    .help(L("The active layer's path is mirrored around its start – it moves the other way"))
-                Button(L("Remove drift")) { studio.removeDrift() }.disabled(studio.frames.count < 2)
-                    .help(L("Takes out the active layer's net travel – a walk cycle walks on the spot, wiggles stay"))
-                Button(L("Copy motion to selected layers")) { studio.copyMotionToSelected() }
-                    .disabled(studio.frames.count < 2 || studio.selectedIDs.subtracting([studio.activeLayer?.id].compactMap { $0 }).isEmpty)
-                    .help(L("The other selected layers move like the active one, each from its own starting point"))
-                Menu(L("Follow in a chain")) {
-                    ForEach([1, 2, 3], id: \.self) { n in Button(LF("%d frames apart", n)) { studio.followInChain(step: n) } }
-                }.disabled(studio.frames.count < 2 || studio.selectedIDs.subtracting([studio.activeLayer?.id].compactMap { $0 }).isEmpty)
-                    .help(L("The other selected layers repeat the active layer's movement one after another – a wave through a tail or chain"))
-                Button(L("Out of step")) { studio.desyncSelectedLayers() }
-                    .disabled(studio.frames.count < 2 || studio.selectedIDs.count < 2)
-                    .help(L("Gives every selected layer its own time offset, so copies of one animation stop moving in lockstep"))
-                Button(L("Reverse this layer only")) { studio.reverseLayerOnly() }.disabled(studio.frames.count < 2)
-                    .help(L("The active layer plays backwards while everything else runs forward"))
-                Button(L("Remove layer from all frames")) { studio.removeLayerFromAllFrames() }.disabled(studio.frames.count < 2)
-                    .help(L("Deletes the active layer from every frame – e.g. a rotoscope or reference underlay"))
-                Menu(L("Flip layer in all frames")) {
-                    Button(L("Horizontally")) { studio.flipLayerAllFrames(horizontal: true) }
-                    Button(L("Vertically")) { studio.flipLayerAllFrames(horizontal: false) }
-                }.disabled(studio.frames.count < 2)
-                    .help(L("Mirrors the active layer's drawing in every frame – turn a cycle to face the other way"))
+                        ForEach([1, 2], id: \.self) { n in Button(LF("%d frames earlier", n)) { studio.delayLayer(by: -n) } }
+                        Divider()
+                        Button(L("1 frame later, hold the start")) { studio.delayLayer(by: 1, wrap: false) }
+                    }.disabled(studio.frames.count < 2)
+                        .help(L("The active layer runs a few frames behind the rest – hair or a tail that follows a moment later"))
+                    Menu(L("Ease the motion")) {
+                        ForEach(Studio.EaseMode.allCases) { m in Button(L(m.title)) { studio.easeLayerMotion(m) } }
+                    }.disabled(studio.frames.count < 3)
+                        .help(L("Re-times the active layer's movement – slow in, slow out or both – without adding frames"))
+                    Menu(L("Step the motion")) {
+                        Button(L("On twos")) { studio.stepLayerMotion(every: 2) }
+                        Button(L("On threes")) { studio.stepLayerMotion(every: 3) }
+                    }.disabled(studio.frames.count < 2)
+                        .help(L("The active layer only moves every 2nd or 3rd frame – a stop-motion look for one layer"))
+                    Button(L("Reverse this layer only")) { studio.reverseLayerOnly() }.disabled(studio.frames.count < 2)
+                        .help(L("The active layer plays backwards while everything else runs forward"))
+                }
+                Section(L("Path")) {
+                    Menu(L("Shift in all frames")) {
+                        ForEach([10.0, 50.0], id: \.self) { d in
+                            Button(LF("Left %@ px", String(Int(d)))) { studio.shiftLayerAllFrames(dx: -d, dy: 0) }
+                            Button(LF("Right %@ px", String(Int(d)))) { studio.shiftLayerAllFrames(dx: d, dy: 0) }
+                            Button(LF("Up %@ px", String(Int(d)))) { studio.shiftLayerAllFrames(dx: 0, dy: -d) }
+                            Button(LF("Down %@ px", String(Int(d)))) { studio.shiftLayerAllFrames(dx: 0, dy: d) }
+                            Divider()
+                        }
+                    }.disabled(studio.frames.count < 2)
+                        .help(L("Moves the active layer by the same amount in every frame – the movement stays"))
+                    Menu(L("Motion strength")) {
+                        Button(L("Stronger (1.5×)")) { studio.amplifyMotion(factor: 1.5) }
+                        Button(L("Much stronger (2×)")) { studio.amplifyMotion(factor: 2) }
+                        Divider()
+                        Button(L("Calmer (0.7×)")) { studio.amplifyMotion(factor: 0.7) }
+                        Button(L("Half (0.5×)")) { studio.amplifyMotion(factor: 0.5) }
+                    }.disabled(studio.frames.count < 2)
+                        .help(L("Makes the active layer's movement bigger or smaller around its middle – same timing"))
+                    Menu(L("Smooth motion")) {
+                        Button(L("Gentle")) { studio.smoothMotion(passes: 1) }
+                        Button(L("Strong")) { studio.smoothMotion(passes: 4) }
+                        Divider()
+                        Button(L("As a loop")) { studio.smoothMotion(passes: 2, loop: true) }
+                    }.disabled(studio.frames.count < 3)
+                        .help(L("Takes the jitter out of the active layer's movement – averages each frame with its neighbours"))
+                    Menu(L("Mirror the motion")) {
+                        Button(L("Left ↔ right")) { studio.mirrorLayerMotion(horizontal: true) }
+                        Button(L("Up ↕ down")) { studio.mirrorLayerMotion(horizontal: false) }
+                    }.disabled(studio.frames.count < 2)
+                        .help(L("The active layer's path is mirrored around its start – it moves the other way"))
+                    Button(L("Remove drift")) { studio.removeDrift() }.disabled(studio.frames.count < 2)
+                        .help(L("Takes out the active layer's net travel – a walk cycle walks on the spot, wiggles stay"))
+                }
+                Section(L("Other layers")) {
+                    Button(L("Copy motion to selected layers")) { studio.copyMotionToSelected() }
+                        .disabled(studio.frames.count < 2 || studio.selectedIDs.subtracting([studio.activeLayer?.id].compactMap { $0 }).isEmpty)
+                        .help(L("The other selected layers move like the active one, each from its own starting point"))
+                    Menu(L("Follow in a chain")) {
+                        ForEach([1, 2, 3], id: \.self) { n in Button(LF("%d frames apart", n)) { studio.followInChain(step: n) } }
+                    }.disabled(studio.frames.count < 2 || studio.selectedIDs.subtracting([studio.activeLayer?.id].compactMap { $0 }).isEmpty)
+                        .help(L("The other selected layers repeat the active layer's movement one after another – a wave through a tail or chain"))
+                    Button(L("Out of step")) { studio.desyncSelectedLayers() }
+                        .disabled(studio.frames.count < 2 || studio.selectedIDs.count < 2)
+                        .help(L("Gives every selected layer its own time offset, so copies of one animation stop moving in lockstep"))
+                }
+                Section(L("Whole layer")) {
+                    Button(L("Pin layer state to all frames")) { studio.pinLayerStateToAllFrames() }.disabled(studio.frames.count < 2)
+                        .help(L("Copies the active layer's position, size, turn and opacity from this frame into every frame"))
+                    Button(L("Copy drawing to all frames")) { studio.copyDrawingToAllFrames() }.disabled(studio.frames.count < 2)
+                        .help(L("Puts this frame's drawing of the active layer into every frame – each frame keeps its own position"))
+                    Menu(L("Flip layer in all frames")) {
+                        Button(L("Horizontally")) { studio.flipLayerAllFrames(horizontal: true) }
+                        Button(L("Vertically")) { studio.flipLayerAllFrames(horizontal: false) }
+                    }.disabled(studio.frames.count < 2)
+                        .help(L("Mirrors the active layer's drawing in every frame – turn a cycle to face the other way"))
+                    Button(L("Remove layer from all frames")) { studio.removeLayerFromAllFrames() }.disabled(studio.frames.count < 2)
+                        .help(L("Deletes the active layer from every frame – e.g. a rotoscope or reference underlay"))
+                }
             } }.help(L("Rework the movement the active layer already has, across all frames"))
             Menu(L("Layer effects")) { Group {
                 Section(L("Move")) {
