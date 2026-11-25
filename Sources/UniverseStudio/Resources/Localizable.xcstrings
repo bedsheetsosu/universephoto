@@ -19908,6 +19908,60 @@
           }
         }
       }
+    },
+    "Step the motion": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bewegung stufen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Step the motion"
+          }
+        }
+      }
+    },
+    "The active layer only moves every 2nd or 3rd frame – a stop-motion look for one layer": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die aktive Ebene bewegt sich nur jeden 2. oder 3. Frame – Stop-Motion-Look für eine Ebene"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The active layer only moves every 2nd or 3rd frame – a stop-motion look for one layer"
+          }
+        }
+      }
+    },
+    "Step motion": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bewegung stufen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Step motion"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

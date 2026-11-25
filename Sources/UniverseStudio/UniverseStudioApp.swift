@@ -316,6 +316,11 @@ struct StudioCommands: Commands {
                     ForEach(Studio.EaseMode.allCases) { m in Button(L(m.title)) { studio.easeLayerMotion(m) } }
                 }.disabled(studio.frames.count < 3)
                     .help(L("Re-times the active layer's movement – slow in, slow out or both – without adding frames"))
+                Menu(L("Step the motion")) {
+                    Button(L("On twos")) { studio.stepLayerMotion(every: 2) }
+                    Button(L("On threes")) { studio.stepLayerMotion(every: 3) }
+                }.disabled(studio.frames.count < 2)
+                    .help(L("The active layer only moves every 2nd or 3rd frame – a stop-motion look for one layer"))
                 Menu(L("Mirror the motion")) {
                     Button(L("Left ↔ right")) { studio.mirrorLayerMotion(horizontal: true) }
                     Button(L("Up ↕ down")) { studio.mirrorLayerMotion(horizontal: false) }
