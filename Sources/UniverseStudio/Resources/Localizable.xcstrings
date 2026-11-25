@@ -19890,6 +19890,24 @@
           }
         }
       }
+    },
+    "Quick motion": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schnelle Bewegung"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quick motion"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

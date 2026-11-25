@@ -188,6 +188,7 @@ struct InspectorPanel: View {
                     } else if animate {
                         Button { s.toggleAllFrames() } label: { Label(L("Same in all frames"), systemImage: layer.allFrames == true ? "film.stack.fill" : "film.stack").frame(maxWidth: .infinity) }
                             .buttonStyle(PhotoButtonStyle()).help(L("Same in all frames")).accessibilityAddTraits(layer.allFrames == true ? .isSelected : [])
+                        if s.frames.count >= 2 && layer.allFrames != true { QuickMotionRow() }
                     }
                 }.photoCard()
             }
@@ -419,5 +420,32 @@ struct InspectorPanel: View {
     private func exportPresets() {
         let p = NSSavePanel(); p.allowedContentTypes = [.json]; p.nameFieldStringValue = L("UniverseStudio-Brushes") + ".json"; p.title = L("Export brush presets"); p.prompt = L("Export")
         if p.runModal() == .OK, let url = p.url { do { try JSONEncoder.pretty.encode(s.presets).write(to: url, options: .atomic) } catch { s.report(error) } }
+    }
+}
+
+/// Quick motion (0.172): the most used layer effects as one row of buttons in the Animate
+/// inspector, so they are found without the menu. Each works on the active layer over the existing
+/// frames (or the play range) and is one undo step – same as the Animation menu entries.
+struct QuickMotionRow: View {
+    @EnvironmentObject var s: Studio
+    @Environment(\.photoTheme) private var theme
+    private var items: [(String, String, () -> Void)] {[
+        ("Bounce", "arrow.up.and.down", { s.bounceLayer(height: Double(s.height) * 0.3, bounces: 3) }),
+        ("Spin", "arrow.clockwise", { s.spinLayerOverFrames(turns: 1) }),
+        ("Pop in", "sparkle", { s.growLayerOverFrames(grow: true, pop: true) }),
+        ("Fade in", "circle.lefthalf.filled", { s.fadeLayerOverFrames(fadeIn: true) }),
+        ("Shake", "waveform.path", { s.shakeLayer(amount: 10) }),
+        ("Smooth motion", "scribble.variable", { s.smoothMotion(passes: 2) }),
+    ]}
+    var body: some View {
+        VStack(alignment: .leading, spacing: 5) {
+            Text(L("Quick motion")).font(.system(size: 9, weight: .semibold)).foregroundStyle(theme.secondary)
+            HStack(spacing: 4) {
+                ForEach(items, id: \.0) { title, symbol, run in
+                    Button(action: run) { Image(systemName: symbol).frame(maxWidth: .infinity) }
+                        .buttonStyle(PhotoButtonStyle()).help(L(title)).accessibilityLabel(L(title))
+                }
+            }
+        }
     }
 }
