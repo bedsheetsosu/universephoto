@@ -190,7 +190,10 @@ struct InspectorPanel: View {
                     } else if animate {
                         Button { s.toggleAllFrames() } label: { Label(L("Same in all frames"), systemImage: layer.allFrames == true ? "film.stack.fill" : "film.stack").frame(maxWidth: .infinity) }
                             .buttonStyle(PhotoButtonStyle()).help(L("Same in all frames")).accessibilityAddTraits(layer.allFrames == true ? .isSelected : [])
-                        if s.frames.count >= 2 && layer.allFrames != true { QuickMotionRow() }
+                        if layer.allFrames != true {
+                            RecipeMenuButton()
+                            if s.frames.count >= 2 { QuickMotionRow() }
+                        }
                     }
                 }.photoCard()
             }
@@ -449,5 +452,19 @@ struct QuickMotionRow: View {
                 }
             }
         }
+    }
+}
+
+/// Recipes in the Animate inspector (0.200): one button with the whole-animation recipes, shown
+/// from the very first frame – draw something, pick a recipe, done.
+struct RecipeMenuButton: View {
+    @EnvironmentObject var s: Studio
+    var body: some View {
+        Menu {
+            ForEach(Recipe.allCases) { r in Button { s.applyRecipe(r) } label: { Label(L(r.title), systemImage: r.symbol) } }
+        } label: { Label(L("Animate with a recipe"), systemImage: "wand.and.stars").frame(maxWidth: .infinity) }
+            .menuStyle(.button).menuIndicator(.hidden).buttonStyle(PhotoButtonStyle(prominent: true))
+            .help(L("A whole little animation for the active layer in one click – from a single frame too"))
+            .accessibilityLabel(L("Animate with a recipe"))
     }
 }

@@ -21384,6 +21384,24 @@
           }
         }
       }
+    },
+    "Animate with a recipe": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mit Rezept animieren"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Animate with a recipe"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
