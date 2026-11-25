@@ -20898,6 +20898,42 @@
           }
         }
       }
+    },
+    "Speed lines": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tempo-Striche"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Speed lines"
+          }
+        }
+      }
+    },
+    "Comic-style streaks behind the active layer, from how fast it actually moves – on a new layer below it": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comic-Striche hinter der aktiven Ebene, je nach ihrem tatsächlichen Tempo – auf einer neuen Ebene darunter"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comic-style streaks behind the active layer, from how fast it actually moves – on a new layer below it"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
