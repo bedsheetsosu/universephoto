@@ -18648,6 +18648,42 @@
           }
         }
       }
+    },
+    "Fade over the frames": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Über die Frames blenden"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fade over the frames"
+          }
+        }
+      }
+    },
+    "The active layer fades in or out across the existing frames – no frames added": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die aktive Ebene blendet über die vorhandenen Frames ein oder aus – ohne neue Frames"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The active layer fades in or out across the existing frames – no frames added"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

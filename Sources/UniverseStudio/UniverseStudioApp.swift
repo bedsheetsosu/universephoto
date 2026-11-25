@@ -309,6 +309,11 @@ struct StudioCommands: Commands {
                     .help(L("The other selected layers move like the active one, each from its own starting point"))
                 Button(L("Reverse this layer only")) { studio.reverseLayerOnly() }.disabled(studio.frames.count < 2)
                     .help(L("The active layer plays backwards while everything else runs forward"))
+                Menu(L("Fade over the frames")) {
+                    Button(L("Fade in")) { studio.fadeLayerOverFrames(fadeIn: true) }
+                    Button(L("Fade out")) { studio.fadeLayerOverFrames(fadeIn: false) }
+                }.disabled(studio.frames.count < 2)
+                    .help(L("The active layer fades in or out across the existing frames – no frames added"))
                 Button(L("Remove layer from all frames")) { studio.removeLayerFromAllFrames() }.disabled(studio.frames.count < 2)
                     .help(L("Deletes the active layer from every frame – e.g. a rotoscope or reference underlay"))
                 Menu(L("Sway layer (rotate)")) {
