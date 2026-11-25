@@ -212,6 +212,13 @@ struct StudioCommands: Commands {
                 .keyboardShortcut(.delete,modifiers:[.option,.command]).disabled(studio.frames.count < 2)
             Button(L("Onion Skin")) { studio.onionSkin.toggle() }.keyboardShortcut("o",modifiers:.option)
             Button(L("Play / Pause")) { studio.togglePlayback() }.keyboardShortcut(.space,modifiers:[])
+            Menu(L("Play range")) {
+                Button(L("Play from here")) { studio.setPlayStart(studio.frameIndex) }.keyboardShortcut("[",modifiers:.option)
+                Button(L("Play up to here")) { studio.setPlayEnd(studio.frameIndex) }.keyboardShortcut("]",modifiers:.option)
+                Button(L("Selected frames")) { studio.playRangeFromSelection() }.disabled(studio.selectedFrames.isEmpty)
+                Divider()
+                Button(L("Play all frames")) { studio.playRange = nil }.keyboardShortcut("\\",modifiers:.option).disabled(studio.playRange == nil)
+            }.help(L("The layer effects and most frame commands work on the play range"))
             AnimationPreviewButton()
             MotionPathToggle()
             Divider()

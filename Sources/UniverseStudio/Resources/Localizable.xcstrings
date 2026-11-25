@@ -21060,6 +21060,60 @@
           }
         }
       }
+    },
+    "Play range": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abspielbereich"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Play range"
+          }
+        }
+      }
+    },
+    "Selected frames": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ausgewählte Frames"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Selected frames"
+          }
+        }
+      }
+    },
+    "The layer effects and most frame commands work on the play range": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Ebenen-Effekte und die meisten Frame-Befehle wirken auf den Abspielbereich"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The layer effects and most frame commands work on the play range"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
