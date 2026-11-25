@@ -22,7 +22,14 @@ struct PhotoTheme {
         accentHue = Double(h); accentSat = Double(s)
         baseHue = (Double(h)+0.205).truncatingRemainder(dividingBy:1)
         baseSat = s < 0.12 ? 0.25 : 1
+        if PhotoTheme.plainStyle() != "off" { baseSat = 0 }   // plain background: neutral greys, no indigo tint (0.202)
         if !isDark { self.accent = Color(red:c.redComponent*0.68,green:c.greenComponent*0.68,blue:c.blueComponent*0.68) } else { self.accent = accent }
+    }
+    /// Plain background (0.201/0.202): "off", "grey" (flat dark grey) or "white". The 0.201 switch
+    /// (a Bool under "photoPlainBackground") counts as "grey".
+    static func plainStyle(_ d:UserDefaults = .standard)->String {
+        if let s = d.string(forKey:"photoPlainStyle"), ["off","grey","white"].contains(s) { return s }
+        return d.bool(forKey:"photoPlainBackground") ? "grey" : "off"
     }
     var accentSoft:Color { accent.opacity(isDark ? 0.16 : 0.12) }
     var text:Color { isDark ? Color.white.opacity(0.95) : Color(hue:baseHue,saturation:0.55*baseSat,brightness:0.22) }
@@ -31,8 +38,8 @@ struct PhotoTheme {
     var onAccent:Color { Color(hue:baseHue,saturation:0.7*baseSat,brightness:0.11) }
     var deep:Color { isDark ? onAccent : Color(hue:baseHue,saturation:0.08*baseSat,brightness:0.93) }
     var card:Color { isDark ? Color.white.opacity(0.06) : Color.white.opacity(0.56) }
-    var outline:Color { isDark ? Color.white.opacity(0.09) : Color(hue:baseHue,saturation:0.5,brightness:0.3).opacity(0.12) }
-    var canvas:Color { isDark ? Color(hue:baseHue,saturation:0.45*baseSat,brightness:0.09) : Color(hue:baseHue,saturation:0.05,brightness:0.8) }
+    var outline:Color { isDark ? Color.white.opacity(0.09) : Color(hue:baseHue,saturation:0.5*baseSat,brightness:0.3).opacity(0.12) }
+    var canvas:Color { isDark ? Color(hue:baseHue,saturation:0.45*baseSat,brightness:0.09) : Color(hue:baseHue,saturation:0.05*baseSat,brightness:0.8) }
     var accentBright:Color { let c = NSColor(accent).usingColorSpace(.sRGB) ?? NSColor(PhotoTheme.mint);return Color(red:(c.redComponent+1)/2,green:(c.greenComponent+1)/2,blue:(c.blueComponent+1)/2) }
     /// Fill of anything that is "on" (UltraUI's accentFill: bright at the top).
     var accentGradient:LinearGradient { LinearGradient(colors:[accentBright,accent],startPoint:.top,endPoint:.bottom) }
@@ -55,15 +62,19 @@ struct PhotoAmbient:View {
     @AppStorage("photoFlow") private var flow = false
     @AppStorage("photoFlowSpeed") private var speed = 1.0
     /// Plain background (0.201): one flat dark grey, no gradient, no motion – wins over the flow.
-    @AppStorage("photoPlainBackground") private var plain = false
+    @AppStorage("photoPlainBackground") private var plainOld = false
+    @AppStorage("photoPlainStyle") private var plainStyle = ""
     static let plainGrey = Color(white: 0.15)
+    private var plain:String { ["grey","white"].contains(plainStyle) ? plainStyle : plainStyle == "off" ? "off" : (plainOld ? "grey" : "off") }
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     /// False while another app is in front: the flow stands still then (no GPU work in the background).
     @Environment(\.appearsActive) private var appearsActive
     @State private var clock = FlowClock()
     var body:some View {
         Group {
-            if plain {
+            if plain == "white" {
+                Color.white
+            } else if plain == "grey" {
                 Self.plainGrey
             } else if flow && theme.isDark {
                 // Reduce Motion: same colours, standing still.

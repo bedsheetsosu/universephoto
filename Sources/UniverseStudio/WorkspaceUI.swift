@@ -13,7 +13,9 @@ struct Workspace: View {
     @AppStorage("photoAccent") private var accent = "mint"
     @AppStorage("photoFlow") private var flow = false
     @AppStorage("photoFlowSpeed") private var flowSpeed = 1.0
-    @AppStorage("photoPlainBackground") private var plainBackground = false
+    @AppStorage("photoPlainBackground") private var plainBackgroundOld = false
+    @AppStorage("photoPlainStyle") private var plainStyle = ""
+    private var plain:String { PhotoTheme.plainStyle() }
     @ObservedObject private var localization = Localization.shared
     @AppStorage("showInspector") private var showInspector = true
     @AppStorage("showNavigator") private var showNavigator = false
@@ -255,10 +257,21 @@ struct Workspace: View {
                 }.padding(8).frame(maxWidth:.infinity).background(appearance == mode ? theme.accentSoft : theme.card,in:RoundedRectangle(cornerRadius:12)).overlay(RoundedRectangle(cornerRadius:12).strokeBorder(appearance == mode ? theme.accent.opacity(0.6) : theme.outline,lineWidth:1)) }.buttonStyle(PhotoPress())
             } }
             HStack(spacing:12) { Text(L("Accent")).font(.system(size:10)).foregroundStyle(theme.secondary);Spacer();ForEach(PhotoTheme.accentKeys,id:\.self) { key in Button { withAnimation(PhotoMotion.select) { accent = key } } label: { Circle().fill(PhotoTheme.accent(key)).frame(width:25,height:25).overlay(Circle().strokeBorder(theme.text.opacity(accent == key ? 0.9 : 0.1),lineWidth:accent == key ? 2.5 : 1)).scaleEffect(accent == key ? 1.08 : 1) }.buttonStyle(PhotoPress()).help(L(key.capitalized)).accessibilityLabel(L(key.capitalized)) } }
-            Toggle(isOn:$plainBackground.animation(PhotoMotion.panel)) { Text(L("Plain dark grey background")).font(.system(size:11)) }.toggleStyle(.switch).controlSize(.mini).tint(tint)
-                .help(L("One flat dark grey behind everything – no gradient, no motion"))
-            Toggle(isOn:$flow.animation(PhotoMotion.panel)) { Text(L("Flowing background")).font(.system(size:11)) }.toggleStyle(.switch).controlSize(.mini).tint(tint).disabled(plainBackground)
-            if flow && !plainBackground { HStack(spacing:10) { Text(L("Speed")).font(.system(size:10)).foregroundStyle(theme.secondary);Slider(value:$flowSpeed,in:0.25...2).controlSize(.mini).accessibilityLabel(L("Speed")) } }
+            HStack {
+                Text(L("Background")).font(.system(size:11))
+                Spacer()
+                Picker("", selection:Binding(get:{ plain }, set:{ v in
+                    withAnimation(PhotoMotion.panel) {
+                        plainStyle = v; plainBackgroundOld = false
+                        // A plain white or grey background brings the matching panels along.
+                        if v == "white" { appearance = "light" } else if v == "grey" { appearance = "dark" }
+                    }
+                })) {
+                    Text(L("Gradient")).tag("off"); Text(L("Dark grey")).tag("grey"); Text(L("White")).tag("white")
+                }.pickerStyle(.segmented).labelsHidden().frame(width:230)
+            }.help(L("Gradient, or one flat colour behind everything – no tint, no motion"))
+            Toggle(isOn:$flow.animation(PhotoMotion.panel)) { Text(L("Flowing background")).font(.system(size:11)) }.toggleStyle(.switch).controlSize(.mini).tint(tint).disabled(plain != "off")
+            if flow && plain == "off" { HStack(spacing:10) { Text(L("Speed")).font(.system(size:10)).foregroundStyle(theme.secondary);Slider(value:$flowSpeed,in:0.25...2).controlSize(.mini).accessibilityLabel(L("Speed")) } }
         }.photoCard()
         HStack { Text(L("Language")).font(.system(size:10));Spacer();Picker("",selection:$localization.language) { Text(L("German")).tag("de");Text(L("English")).tag("en") }.labelsHidden().pickerStyle(.segmented).frame(width:180) }.photoCard()
         VStack(alignment:.leading,spacing:10) {

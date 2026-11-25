@@ -21438,6 +21438,42 @@
           }
         }
       }
+    },
+    "Dark grey": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dunkelgrau"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dark grey"
+          }
+        }
+      }
+    },
+    "Gradient, or one flat colour behind everything – no tint, no motion": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verlauf oder eine flache Farbe hinter allem – ohne Tönung, ohne Bewegung"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gradient, or one flat colour behind everything – no tint, no motion"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
