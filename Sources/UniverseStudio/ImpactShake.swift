@@ -27,7 +27,7 @@ extension Studio {
         }
         checkpoint("Impact shake")
         for (i, o) in offset {
-            for j in frames[i].indices where !frames[i][j].locked {
+            for j in frames[i].indices where !frames[i][j].locked && frames[i][j].allFrames != true {   // shared layers stay one drawing
                 frames[i][j].transform.x += o.0; frames[i][j].transform.y += o.1
             }
         }

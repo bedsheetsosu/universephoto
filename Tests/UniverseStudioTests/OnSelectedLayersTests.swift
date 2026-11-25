@@ -30,3 +30,18 @@ struct OnSelectedLayersTests {
         #expect(s.document().frames[0][0].opacity == 1)
     }
 }
+
+@MainActor
+struct SharedLayerEffectTests {
+    @Test func sharedLayersAreLeftAlone() {
+        let s = Studio(recoveryRoot: FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString))
+        s.newDocument(width: 10, height: 10, background: .white)
+        s.addFrame(); s.addFrame()
+        s.selectedLayer = 0; s.toggleAllFrames()                     // shared background
+        #expect(s.onSelectedLayers { s.fadeLayerOverFrames(fadeIn: true) } == 0)
+        s.selectedLayer = 1
+        s.selectedIDs = [s.layers[0].id, s.layers[1].id]
+        #expect(s.onSelectedLayers { s.fadeLayerOverFrames(fadeIn: true) } == 2)
+        #expect(s.document().frames.allSatisfy { $0[0].opacity == 1 })
+    }
+}

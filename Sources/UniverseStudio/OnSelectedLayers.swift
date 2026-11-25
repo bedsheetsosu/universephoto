@@ -6,9 +6,11 @@ import Foundation
 /// layer as before. The active layer stays active afterwards.
 extension Studio {
     @discardableResult func onSelectedLayers(_ effect: () -> Int) -> Int {
+        // Layers marked "Same in all frames" are one drawing for every frame: a per-frame effect
+        // would collapse to the current frame's version, so they are left out (0.198).
         guard let active = activeLayer?.id else { return 0 }
-        let ids = layers.map(\.id).filter { selectedIDs.contains($0) }
-        guard ids.count > 1, ids.contains(active) else { return effect() }
+        let ids = layers.filter { selectedIDs.contains($0.id) && $0.allFrames != true }.map(\.id)
+        guard ids.count > 1, ids.contains(active) else { return activeLayer?.allFrames == true ? 0 : effect() }
         let start = undoStack.count, keepIDs = selectedIDs
         var total = 0
         for id in ids {
