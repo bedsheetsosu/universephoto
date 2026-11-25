@@ -17676,6 +17676,42 @@
           }
         }
       }
+    },
+    "Pulse size": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ebene pumpen (Größe)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pulse size"
+          }
+        }
+      }
+    },
+    "Grows and shrinks the active layer across the frames – a gentle breathing or heartbeat": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lässt die aktive Ebene über die Frames wachsen und schrumpfen – ein sanftes Atmen oder Herzschlag"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Grows and shrinks the active layer across the frames – a gentle breathing or heartbeat"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
