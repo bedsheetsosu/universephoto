@@ -67,3 +67,14 @@ struct SquashRenderTests {
         #expect(s.document().frames.allSatisfy { $0[1].transform.y == 0 && $0[1].transform.stretch == nil })
     }
 }
+
+@MainActor
+struct StretchValidationTests {
+    @Test func brokenStretchIsRejectedOnLoad() throws {
+        let s = Studio(recoveryRoot: FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString))
+        s.newDocument(width: 10, height: 10, background: .white)
+        var doc = s.document()
+        doc.layers[1].transform.stretch = -1
+        #expect(throws: (any Error).self) { try Studio.validate(doc) }
+    }
+}

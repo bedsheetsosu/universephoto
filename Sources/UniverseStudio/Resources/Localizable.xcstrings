@@ -20376,6 +20376,42 @@
           }
         }
       }
+    },
+    "Stretch": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Strecken"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stretch"
+          }
+        }
+      }
+    },
+    "Taller and thinner above 100 %, flatter and wider below – the area stays the same": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Über 100 % höher und schmaler, darunter flacher und breiter – die Fläche bleibt gleich"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Taller and thinner above 100 %, flatter and wider below – the area stays the same"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

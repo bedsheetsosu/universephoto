@@ -168,6 +168,8 @@ struct InspectorPanel: View {
                         }
                         valueSlider(L("Scale"), value: layer.transform.scale, range: 0.1...3, suffix: "%", multiplier: 100) { v in s.mutateLayer("Scale layer") { $0.transform.scale = v } }
                         valueSlider(L("Rotation"), value: layer.transform.rotation, range: -180...180, suffix: "°") { v in s.mutateLayer("Rotate layer") { $0.transform.rotation = v } }
+                        valueSlider(L("Stretch"), value: layer.transform.stretch ?? 1, range: 0.5...2, suffix: "%", multiplier: 100) { v in s.mutateLayer("Squash & stretch") { $0.transform.stretch = abs(v - 1) < 0.005 ? nil : v } }
+                            .help(L("Taller and thinner above 100 %, flatter and wider below – the area stays the same"))
                         Divider().overlay(theme.outline)
                         HStack {
                             Button { s.addMask() } label: { Label(L("Mask"), systemImage: "circle.lefthalf.filled") }.disabled(layer.mask != nil)
