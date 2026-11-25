@@ -282,6 +282,11 @@ struct StudioCommands: Commands {
                     .help(L("Blends brush strokes and shapes point by point when both frames have the same strokes"))
             }.disabled(studio.frames.count < 2)
                 .help(L("Inserts in-betweens between every pair of frames at once – a whole animation turns smooth"))
+            Menu(L("Sway layer (rotate)")) {
+                Button(L("Gentle")) { studio.swayLayer(degrees: 6) }
+                Button(L("Strong")) { studio.swayLayer(degrees: 16) }
+            }.disabled(studio.frames.count < 2)
+                .help(L("Rocks the active layer back and forth across the frames – a gentle swing"))
             Menu(L("Pulse size")) {
                 Button(L("Subtle")) { studio.scalePulseLayer(amount: 0.08) }
                 Button(L("Strong")) { studio.scalePulseLayer(amount: 0.22) }

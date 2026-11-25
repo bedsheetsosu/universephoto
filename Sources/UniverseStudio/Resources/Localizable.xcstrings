@@ -17712,6 +17712,60 @@
           }
         }
       }
+    },
+    "Sway layer (rotate)": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ebene wiegen (Drehen)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sway layer (rotate)"
+          }
+        }
+      }
+    },
+    "Gentle": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sanft"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gentle"
+          }
+        }
+      }
+    },
+    "Rocks the active layer back and forth across the frames – a gentle swing": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wiegt die aktive Ebene über die Frames hin und her – ein sanftes Schaukeln"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rocks the active layer back and forth across the frames – a gentle swing"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
