@@ -20610,6 +20610,114 @@
           }
         }
       }
+    },
+    "Arc the path": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Weg zum Bogen biegen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arc the path"
+          }
+        }
+      }
+    },
+    "Gentle arc, one side": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leichter Bogen, eine Seite"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gentle arc, one side"
+          }
+        }
+      }
+    },
+    "Strong arc, one side": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Starker Bogen, eine Seite"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Strong arc, one side"
+          }
+        }
+      }
+    },
+    "Gentle arc, other side": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leichter Bogen, andere Seite"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gentle arc, other side"
+          }
+        }
+      }
+    },
+    "Strong arc, other side": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Starker Bogen, andere Seite"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Strong arc, other side"
+          }
+        }
+      }
+    },
+    "Bends the active layer's straight movement into an arc – natural motion rarely runs straight": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Biegt die gerade Bewegung der aktiven Ebene zum Bogen – natürliche Bewegung läuft selten gerade"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bends the active layer's straight movement into an arc – natural motion rarely runs straight"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

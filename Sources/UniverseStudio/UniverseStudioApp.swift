@@ -329,6 +329,14 @@ struct StudioCommands: Commands {
                         .help(L("The active layer's path is mirrored around its start – it moves the other way"))
                     Button(L("Remove drift")) { studio.removeDrift() }.disabled(studio.frames.count < 2)
                         .help(L("Takes out the active layer's net travel – a walk cycle walks on the spot, wiggles stay"))
+                    Menu(L("Arc the path")) {
+                        Button(L("Gentle arc, one side")) { studio.arcLayerPath(amount: 0.15) }
+                        Button(L("Strong arc, one side")) { studio.arcLayerPath(amount: 0.35) }
+                        Divider()
+                        Button(L("Gentle arc, other side")) { studio.arcLayerPath(amount: -0.15) }
+                        Button(L("Strong arc, other side")) { studio.arcLayerPath(amount: -0.35) }
+                    }.disabled(studio.frames.count < 3)
+                        .help(L("Bends the active layer's straight movement into an arc – natural motion rarely runs straight"))
                 }
                 Section(L("Other layers")) {
                     Button(L("Copy motion to selected layers")) { studio.copyMotionToSelected() }
