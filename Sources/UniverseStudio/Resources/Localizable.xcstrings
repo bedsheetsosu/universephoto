@@ -17496,6 +17496,60 @@
           }
         }
       }
+    },
+    "Pulse layer (glow)": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ebene pulsieren (Glühen)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pulse layer (glow)"
+          }
+        }
+      }
+    },
+    "Subtle": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dezent"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Subtle"
+          }
+        }
+      }
+    },
+    "Fades the active layer up and down across the frames – a soft glow or breathing": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Blendet die aktive Ebene über die Frames auf und ab – ein sanftes Glühen oder Atmen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fades the active layer up and down across the frames – a soft glow or breathing"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

@@ -280,6 +280,13 @@ struct StudioCommands: Commands {
                     .help(L("Blends brush strokes and shapes point by point when both frames have the same strokes"))
             }.disabled(studio.frames.count < 2)
                 .help(L("Inserts in-betweens between every pair of frames at once – a whole animation turns smooth"))
+            Menu(L("Pulse layer (glow)")) {
+                Button(L("Subtle")) { studio.pulseLayer(floor: 0.45) }
+                Button(L("Strong")) { studio.pulseLayer(floor: 0.1) }
+                Divider()
+                Button(L("None")) { studio.unpulseLayer() }
+            }.disabled(studio.frames.count < 2)
+                .help(L("Fades the active layer up and down across the frames – a soft glow or breathing"))
             Menu(L("Blink layer")) {
                 Button(L("Every frame")) { studio.blinkLayer(period: 1) }
                 Button(L("Every 2 frames")) { studio.blinkLayer(period: 2) }
