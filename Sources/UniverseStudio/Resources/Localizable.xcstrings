@@ -18792,6 +18792,42 @@
           }
         }
       }
+    },
+    "Repeat play range": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abspielbereich wiederholen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Repeat play range"
+          }
+        }
+      }
+    },
+    "Copies the frames of the play range right behind it – one passage happens several times": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kopiert die Frames des Abspielbereichs direkt dahinter – eine Passage passiert mehrmals"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copies the frames of the play range right behind it – one passage happens several times"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

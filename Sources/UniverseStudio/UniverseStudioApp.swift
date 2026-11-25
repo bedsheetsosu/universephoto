@@ -394,6 +394,10 @@ struct StudioCommands: Commands {
                     ForEach([2, 3, 4], id: \.self) { n in Button(LF("%d×", n)) { studio.repeatAnimation(times: n) } }
                 }.disabled(studio.frames.count < 2)
                     .help(L("Appends copies of the whole animation so it plays through several times – a longer clip"))
+                Menu(L("Repeat play range")) {
+                    ForEach([2, 3, 4], id: \.self) { n in Button(LF("%d×", n)) { studio.repeatPlayRange(times: n) } }
+                }.disabled(studio.playRange == nil)
+                    .help(L("Copies the frames of the play range right behind it – one passage happens several times"))
                 Menu(L("Retime")) {
                     Button(L("Slow motion (2×)")) { studio.retimeRange(factor: 2) }
                     Button(L("Slow motion (3×)")) { studio.retimeRange(factor: 3) }
