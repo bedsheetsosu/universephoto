@@ -1,11 +1,14 @@
-# UniverseStudio License 1.0
+# UniverseStudio License (USL) 1.0
 
 Copyright (c) 2026 the UniverseStudio authors.
 
 This is a **source-available, non-commercial copyleft** license. It is deliberately
 **not** an OSI "open source" license, because it forbids selling. In plain words:
 you may use, study, change and fork UniverseStudio freely; every fork must stay
-open under these same terms; nobody may sell it.
+open under these same terms; nobody may sell it or lock any of it behind a price,
+a subscription or a "premium" tier.
+
+This license may be referred to as the **USL**, and this version as **USL 1.0**.
 
 ## 1. Definitions
 
@@ -14,10 +17,12 @@ open under these same terms; nobody may sell it.
 - **"Fork"** / **"Derivative"** means any work based on or containing part of the
   Software, in any form (a changed copy, a port, a larger work that includes it).
 - **"Sell"** means to charge money or other payment for the Software or a Derivative,
-  or for access to it — including selling it, licensing it for a fee, bundling it in
-  a paid product or paid service, or putting it behind a paywall or a required
-  purchase. Accepting voluntary donations that are not a condition of access is not
-  selling.
+  or for access to it or any part of its functionality — including selling it,
+  licensing it for a fee, bundling it in a paid product or paid service, putting it
+  behind a paywall or a required purchase, charging a subscription or recurring fee,
+  gating any feature behind a paid tier, "premium", "pro" or paid unlock, or selling
+  in-app purchases, add-ons or upgrades for it. Accepting voluntary donations that
+  are not a condition of access and unlock nothing is not selling.
 
 ## 2. What you may do
 
@@ -38,8 +43,11 @@ non-exclusive license to:
    license**, version 1.0. You may not add terms that restrict the rights granted
    here, and you may not relicense it (no MIT, no proprietary, no sublicensing).
 
-2. **No selling.** You may not Sell the Software or any Derivative. You may not charge
-   for it, for access to it, or for a product or service whose main value is it.
+2. **No selling, no paid tiers.** You may not Sell the Software or any Derivative. In
+   particular, a fork may not add premium features, paid tiers, subscriptions, in-app
+   purchases, or any paid unlock: every feature of a distributed fork must be
+   available to every user at no charge. You may not charge for it, for access to it,
+   or for a product or service whose main value is it.
 
 3. **Keep the notices.** Keep this license, the copyright notice, and the author
    credits intact in all copies and Derivatives. State prominently if you changed

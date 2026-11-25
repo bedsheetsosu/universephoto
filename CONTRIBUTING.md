@@ -19,7 +19,7 @@ können KI-gestützt sein und sind entsprechend gekennzeichnet.)*
 ## 2. Lizenz des Beitrags
 
 Mit dem Einreichen eines Beitrags stimmst du zu, dass er unter der
-[UniverseStudio License 1.0](LICENSE) steht — source-available, nicht verkaufbar,
+[UniverseStudio License (USL) 1.0](LICENSE) steht — source-available, nicht verkaufbar,
 Forks müssen offen bleiben. Siehe die Lizenz für die genauen Bedingungen.
 
 ## Ablauf

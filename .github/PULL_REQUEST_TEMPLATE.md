@@ -11,7 +11,7 @@
   KI-Assistenten (ChatGPT, Claude, Copilot, Cursor, Gemini o. Ä.) erzeugt oder
   wesentlich mitgeschrieben. Mir ist klar: ohne diese Bestätigung wird der PR nicht
   gemergt, und bei Verstoß wird er geschlossen.
-- [ ] **Lizenz.** Mein Beitrag steht unter der [UniverseStudio License 1.0](../LICENSE)
+- [ ] **Lizenz.** Mein Beitrag steht unter der [UniverseStudio License (USL) 1.0](../LICENSE)
   (source-available, nicht verkaufbar, Forks bleiben offen).
 
 ## Checks

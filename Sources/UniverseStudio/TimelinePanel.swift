@@ -206,6 +206,11 @@ struct TimelinePanel: View {
                 Menu(L("Crossfade drawings")) { ForEach(Studio.tweenChoices, id: \.self) { n in Button(LF("%d frames", n)) { s.tweenToNext(from: index, count: n, curve: .smooth, morph: true, crossfade: true) } } }
                     .help(L("Drawings that can't morph fade from one into the other (the in-betweens become pixel layers)"))
             }.disabled(index >= s.frames.count - 1)
+            Menu(L("Flash frame")) {
+                Button(L("White")) { s.insertFlash(after: index, color: .white) }
+                Button(L("Black")) { s.insertFlash(after: index, color: .black) }
+                Button(L("Brush colour")) { s.insertFlash(after: index, color: s.color) }
+            }.help(L("Drops a solid-colour frame in after this one – an impact or camera flash"))
             Divider()
             Button(L("Play from here")) { s.setPlayStart(index) }
             Button(L("Play up to here")) { s.setPlayEnd(index) }
