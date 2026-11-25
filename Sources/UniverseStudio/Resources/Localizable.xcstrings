@@ -20970,6 +20970,42 @@
           }
         }
       }
+    },
+    "Turn holds into frames": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Haltezeiten in Frames umwandeln"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Turn holds into frames"
+          }
+        }
+      }
+    },
+    "Every held frame becomes that many real frames – same timing, smoother layer effects": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jeder gehaltene Frame wird zu entsprechend vielen echten Frames – gleiches Timing, flüssigere Ebenen-Effekte"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Every held frame becomes that many real frames – same timing, smoother layer effects"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

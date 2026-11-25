@@ -558,6 +558,8 @@ struct StudioCommands: Commands {
                     Button(L("On fours")) { studio.thinFrames(every: 4) }
                 }.disabled(studio.frames.count < 2)
                     .help(L("Keeps every 2nd/3rd/4th drawing and holds it for the gap – same length, fewer frames"))
+                Button(L("Turn holds into frames")) { studio.expandHolds() }.disabled(studio.frames.isEmpty)
+                    .help(L("Every held frame becomes that many real frames – same timing, smoother layer effects"))
                 Button(L("Bake ping-pong into frames")) { studio.bakePingPong() }.disabled(studio.frames.count < 3)
             } }.help(L("Reorder, smooth, loop and retime the frames"))
             Divider()
