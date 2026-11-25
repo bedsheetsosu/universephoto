@@ -277,6 +277,8 @@ struct StudioCommands: Commands {
             Menu(L("Layer motion")) { Group {
                 Button(L("Pin layer state to all frames")) { studio.pinLayerStateToAllFrames() }.disabled(studio.frames.count < 2)
                     .help(L("Copies the active layer's position, size, turn and opacity from this frame into every frame"))
+                Button(L("Copy drawing to all frames")) { studio.copyDrawingToAllFrames() }.disabled(studio.frames.count < 2)
+                    .help(L("Puts this frame's drawing of the active layer into every frame – each frame keeps its own position"))
                 Menu(L("Shift in all frames")) {
                     ForEach([10.0, 50.0], id: \.self) { d in
                         Button(LF("Left %@ px", String(Int(d)))) { studio.shiftLayerAllFrames(dx: -d, dy: 0) }

@@ -19512,6 +19512,60 @@
           }
         }
       }
+    },
+    "Copy drawing to all frames": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zeichnung in alle Frames kopieren"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copy drawing to all frames"
+          }
+        }
+      }
+    },
+    "Puts this frame's drawing of the active layer into every frame – each frame keeps its own position": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Legt die Zeichnung der aktiven Ebene aus diesem Frame in jeden Frame – jeder Frame behält seine Position"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Puts this frame's drawing of the active layer into every frame – each frame keeps its own position"
+          }
+        }
+      }
+    },
+    "Copy drawing": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zeichnung kopieren"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copy drawing"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
