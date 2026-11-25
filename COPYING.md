@@ -15,3 +15,5 @@ The application uses the macOS SDK system frameworks. It includes no paid API,
 cloud service, external Swift package, bundled proprietary artwork, or telemetry.
 
 Contributions are accepted only without AI involvement — see CONTRIBUTING.md.
+
+Third-party credits and notices: see NOTICE.md.
