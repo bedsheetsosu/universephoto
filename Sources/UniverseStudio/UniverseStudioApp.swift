@@ -271,6 +271,16 @@ struct StudioCommands: Commands {
             Menu(L("Layer across frames")) { Group {
                 Button(L("Pin layer state to all frames")) { studio.pinLayerStateToAllFrames() }.disabled(studio.frames.count < 2)
                     .help(L("Copies the active layer's position, size, turn and opacity from this frame into every frame"))
+                Menu(L("Shift in all frames")) {
+                    ForEach([10.0, 50.0], id: \.self) { d in
+                        Button(LF("Left %@ px", String(Int(d)))) { studio.shiftLayerAllFrames(dx: -d, dy: 0) }
+                        Button(LF("Right %@ px", String(Int(d)))) { studio.shiftLayerAllFrames(dx: d, dy: 0) }
+                        Button(LF("Up %@ px", String(Int(d)))) { studio.shiftLayerAllFrames(dx: 0, dy: -d) }
+                        Button(LF("Down %@ px", String(Int(d)))) { studio.shiftLayerAllFrames(dx: 0, dy: d) }
+                        Divider()
+                    }
+                }.disabled(studio.frames.count < 2)
+                    .help(L("Moves the active layer by the same amount in every frame – the movement stays"))
                 Button(L("Remove layer from all frames")) { studio.removeLayerFromAllFrames() }.disabled(studio.frames.count < 2)
                     .help(L("Deletes the active layer from every frame – e.g. a rotoscope or reference underlay"))
                 Menu(L("Sway layer (rotate)")) {
