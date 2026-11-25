@@ -17892,6 +17892,42 @@
           }
         }
       }
+    },
+    "Crop to play range": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Auf Abspielbereich zuschneiden"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Crop to play range"
+          }
+        }
+      }
+    },
+    "Keeps only the frames in the play range and deletes the rest": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Behält nur die Frames im Abspielbereich und löscht den Rest"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keeps only the frames in the play range and deletes the rest"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

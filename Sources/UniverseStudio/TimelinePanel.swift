@@ -223,6 +223,8 @@ struct TimelinePanel: View {
             Button(L("Play from here")) { s.setPlayStart(index) }
             Button(L("Play up to here")) { s.setPlayEnd(index) }
             Button(L("Play all frames")) { s.playRange = nil }.disabled(s.playRange == nil)
+            Button(L("Crop to play range")) { s.cropToPlayRange() }.disabled(s.playRange == nil)
+                .help(L("Keeps only the frames in the play range and deletes the rest"))
             Divider()
             Button(L("Move frame left")) { s.moveFrame(from: index, to: index - 1) }.disabled(index == 0)
             Button(L("Move frame right")) { s.moveFrame(from: index, to: index + 1) }.disabled(index >= s.frames.count - 1)
