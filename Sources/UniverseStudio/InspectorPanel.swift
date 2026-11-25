@@ -430,7 +430,7 @@ struct QuickMotionRow: View {
     @EnvironmentObject var s: Studio
     @Environment(\.photoTheme) private var theme
     private var items: [(String, String, () -> Void)] {[
-        ("Bounce", "arrow.up.and.down", { s.bounceLayer(height: Double(s.height) * 0.3, bounces: 3) }),
+        ("Bounce", "arrow.up.and.down", { s.bounceWithSquash(height: Double(s.height) * 0.3, bounces: 3) }),
         ("Spin", "arrow.clockwise", { s.spinLayerOverFrames(turns: 1) }),
         ("Pop in", "sparkle", { s.growLayerOverFrames(grow: true, pop: true) }),
         ("Fade in", "circle.lefthalf.filled", { s.fadeLayerOverFrames(fadeIn: true) }),

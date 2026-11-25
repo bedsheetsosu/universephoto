@@ -20340,6 +20340,42 @@
           }
         }
       }
+    },
+    "Ball, 3 hops, squashy": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ball, 3 Hüpfer, gummiartig"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ball, 3 hops, squashy"
+          }
+        }
+      }
+    },
+    "One big jump, squashy": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein großer Sprung, gummiartig"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "One big jump, squashy"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

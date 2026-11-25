@@ -408,6 +408,9 @@ struct StudioCommands: Commands {
                     Button(L("One big jump")) { studio.bounceLayer(height: Double(studio.height) * 0.3, bounces: 1) }
                     Button(L("Ball, 3 hops")) { studio.bounceLayer(height: Double(studio.height) * 0.3, bounces: 3) }
                     Button(L("Small hops")) { studio.bounceLayer(height: Double(studio.height) * 0.08, bounces: 4, decay: 0.85) }
+                    Divider()
+                    Button(L("Ball, 3 hops, squashy")) { studio.bounceWithSquash(height: Double(studio.height) * 0.3, bounces: 3) }
+                    Button(L("One big jump, squashy")) { studio.bounceWithSquash(height: Double(studio.height) * 0.3, bounces: 1) }
                 }.disabled(studio.frames.count < 2)
                     .help(L("The active layer hops across the frames, each hop lower, and lands where it started"))
                 Menu(L("Squash & stretch")) {

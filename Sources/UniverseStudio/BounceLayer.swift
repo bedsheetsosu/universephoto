@@ -28,4 +28,14 @@ extension Studio {
         frames = nf; layers = frames[frameIndex]; changed()
         return touched
     }
+
+    /// Bounce with squash & stretch (0.180) as one undo step.
+    @discardableResult func bounceWithSquash(height: Double, bounces: Int) -> Int {
+        let n = bounceLayer(height: height, bounces: bounces)
+        guard n > 0 else { return 0 }
+        let before = undoStack.count
+        squashStretch(amount: 1.4)
+        if undoStack.count > before { undoStack.removeLast() }   // one step with the bounce
+        return n
+    }
 }
