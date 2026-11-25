@@ -17010,6 +17010,78 @@
           }
         }
       }
+    },
+    "Smear to next": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schmierer zum nächsten"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Smear to next"
+          }
+        }
+      }
+    },
+    "%d copies": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d Kopien"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d copies"
+          }
+        }
+      }
+    },
+    "Smear": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schmierer"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Smear"
+          }
+        }
+      }
+    },
+    "A single frame showing the active layer spread from here to the next pose – a motion smear": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein einzelner Frame, der die aktive Ebene von hier zur nächsten Pose aufgefächert zeigt – ein Bewegungsschmierer"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A single frame showing the active layer spread from here to the next pose – a motion smear"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

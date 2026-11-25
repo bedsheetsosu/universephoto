@@ -211,6 +211,10 @@ struct TimelinePanel: View {
                 Button(L("Black")) { s.insertFlash(after: index, color: .black) }
                 Button(L("Brush colour")) { s.insertFlash(after: index, color: s.color) }
             }.help(L("Drops a solid-colour frame in after this one – an impact or camera flash"))
+            Menu(L("Smear to next")) {
+                ForEach([3, 4, 5, 6], id: \.self) { n in Button(LF("%d copies", n)) { s.insertSmear(after: index, copies: n) } }
+            }.disabled(index >= s.frames.count - 1)
+                .help(L("A single frame showing the active layer spread from here to the next pose – a motion smear"))
             Divider()
             Button(L("Play from here")) { s.setPlayStart(index) }
             Button(L("Play up to here")) { s.setPlayEnd(index) }
