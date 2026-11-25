@@ -21168,6 +21168,222 @@
           }
         }
       }
+    },
+    "Recipes": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rezepte"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recipes"
+          }
+        }
+      }
+    },
+    "Bouncing entrance": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hüpfender Auftritt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bouncing entrance"
+          }
+        }
+      }
+    },
+    "Pop-in title": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Titel aufploppen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pop-in title"
+          }
+        }
+      }
+    },
+    "Wind-up exit": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abgang mit Ausholen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wind-up exit"
+          }
+        }
+      }
+    },
+    "Happy idle": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fröhliches Warten"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Happy idle"
+          }
+        }
+      }
+    },
+    "Heavy drop": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schwerer Fall"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Heavy drop"
+          }
+        }
+      }
+    },
+    "Hops in from the left with squash, stretch and dust": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hüpft von links herein, mit Stauchen, Strecken und Staub"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hops in from the left with squash, stretch and dust"
+          }
+        }
+      }
+    },
+    "Pops up with an overshoot, fades in and wobbles": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ploppt mit Überschwinger auf, blendet ein und wabbelt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pops up with an overshoot, fades in and wobbles"
+          }
+        }
+      }
+    },
+    "Winds up, then shoots off to the right with speed lines": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Holt aus und schießt mit Tempo-Strichen nach rechts davon"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Winds up, then shoots off to the right with speed lines"
+          }
+        }
+      }
+    },
+    "Breathes and bobs gently as a loop": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Atmet und wippt sanft als Schleife"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Breathes and bobs gently as a loop"
+          }
+        }
+      }
+    },
+    "Falls in from above, squashes and shakes the picture": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fällt von oben herein, staucht sich und lässt das Bild wackeln"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Falls in from above, squashes and shakes the picture"
+          }
+        }
+      }
+    },
+    "A whole little animation for the active layer in one click – from a single frame too": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eine ganze kleine Animation für die aktive Ebene mit einem Klick – auch aus einem einzigen Frame"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A whole little animation for the active layer in one click – from a single frame too"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

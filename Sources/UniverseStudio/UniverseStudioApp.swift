@@ -223,6 +223,11 @@ struct StudioCommands: Commands {
             MotionPathToggle()
             Divider()
             Menu(L("Effects")) { Group {
+                Menu(L("Recipes")) {
+                    ForEach(Recipe.allCases) { r in Button { studio.applyRecipe(r) } label: { Label(L(r.title), systemImage: r.symbol) }.help(L(r.hint)) }
+                }.disabled(studio.activeLayer == nil || studio.activeLayer?.allFrames == true)
+                    .help(L("A whole little animation for the active layer in one click – from a single frame too"))
+                Divider()
                 Menu(L("Typewriter")) {
                     Button(L("Letter by letter")) { studio.typewriter(byWord: false, restTicks: Int(studio.fps)) }
                     Button(L("Two letters at a time")) { studio.typewriter(byWord: false, perStep: 2, restTicks: Int(studio.fps)) }
