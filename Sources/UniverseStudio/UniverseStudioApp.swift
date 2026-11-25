@@ -302,6 +302,12 @@ struct StudioCommands: Commands {
                 Button(L("Slow motion (2×)")) { studio.retimeRange(factor: 2) }
                 Button(L("Slow motion (3×)")) { studio.retimeRange(factor: 3) }
                 Button(L("Fast forward (½×)")) { studio.retimeRange(factor: 0.5) }
+                Divider()
+                Menu(L("Set total length")) {
+                    ForEach([1.0, 2.0, 3.0, 5.0, 10.0], id: \.self) { sec in
+                        Button(LF("%@ s", String(Int(sec)))) { studio.fitToDuration(seconds: sec) }
+                    }
+                }.help(L("Scales all holds so the whole animation runs about this long"))
             }.disabled(studio.frames.isEmpty)
                 .help(L("Slows down or speeds up by scaling how long each frame holds – no frames added or removed"))
             Menu(L("Thin frames")) {

@@ -17460,6 +17460,42 @@
           }
         }
       }
+    },
+    "Set total length": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gesamtlänge setzen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Set total length"
+          }
+        }
+      }
+    },
+    "Scales all holds so the whole animation runs about this long": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skaliert alle Haltedauern, sodass die ganze Animation etwa so lang läuft"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scales all holds so the whole animation runs about this long"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
