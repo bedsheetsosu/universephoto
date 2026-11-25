@@ -18594,6 +18594,60 @@
           }
         }
       }
+    },
+    "Reverse this layer only": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nur diese Ebene rückwärts"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reverse this layer only"
+          }
+        }
+      }
+    },
+    "The active layer plays backwards while everything else runs forward": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die aktive Ebene spielt rückwärts, alles andere läuft vorwärts"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The active layer plays backwards while everything else runs forward"
+          }
+        }
+      }
+    },
+    "Reverse layer": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ebene rückwärts"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reverse layer"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

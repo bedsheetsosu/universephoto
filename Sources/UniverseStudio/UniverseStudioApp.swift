@@ -307,6 +307,8 @@ struct StudioCommands: Commands {
                 Button(L("Copy motion to selected layers")) { studio.copyMotionToSelected() }
                     .disabled(studio.frames.count < 2 || studio.selectedIDs.subtracting([studio.activeLayer?.id].compactMap { $0 }).isEmpty)
                     .help(L("The other selected layers move like the active one, each from its own starting point"))
+                Button(L("Reverse this layer only")) { studio.reverseLayerOnly() }.disabled(studio.frames.count < 2)
+                    .help(L("The active layer plays backwards while everything else runs forward"))
                 Button(L("Remove layer from all frames")) { studio.removeLayerFromAllFrames() }.disabled(studio.frames.count < 2)
                     .help(L("Deletes the active layer from every frame – e.g. a rotoscope or reference underlay"))
                 Menu(L("Sway layer (rotate)")) {
