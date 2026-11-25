@@ -89,11 +89,6 @@ struct RootView: View {
                     PencilPaletteView(center: c)
                         .zIndex(10)
                 }
-                if let h = model.macSetupHost {
-                    MacSetupView(host: h)
-                        .transition(.opacity.combined(with: .scale(scale: 1.02)))
-                        .zIndex(20)
-                }
                 if let img = model.screenshot {
                     ScreenshotView(image: img)
                         .transition(.opacity.combined(with: .scale(scale: 0.97)))
@@ -102,6 +97,12 @@ struct RootView: View {
             } else {
                 ConnectView(openSettings: { showSettings = true })
                     .transition(.opacity.combined(with: .scale(scale: 1.03)))
+            }
+            // Outside the canvas branch: a short connection drop no longer throws the setup away.
+            if let h = model.macSetupHost {
+                MacSetupView(host: h)
+                    .transition(.opacity.combined(with: .scale(scale: 1.02)))
+                    .zIndex(20)
             }
         }
         .animation(.easeInOut(duration: 0.35), value: model.phase.showsCanvas)
