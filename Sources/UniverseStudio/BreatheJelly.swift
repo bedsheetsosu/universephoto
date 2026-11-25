@@ -25,7 +25,7 @@ extension Studio {
             let f = jelly ? Studio.jellyStretch(k, of: r.count, amount: amount) : Studio.breatheStretch(k, of: r.count, amount: amount)
             guard abs(f - 1) > 1e-9 else { continue }
             for j in nf[i].indices where nf[i][j].id == id && !nf[i][j].locked {
-                nf[i][j].transform.stretch = max(0.3, min(3, (nf[i][j].transform.stretch ?? 1) * f)); touched += 1
+                pivotEdit(&nf[i][j], .bottom) { $0.stretch = max(0.3, min(3, ($0.stretch ?? 1) * f)) }; touched += 1
             }
         }
         guard touched > 0 else { return 0 }

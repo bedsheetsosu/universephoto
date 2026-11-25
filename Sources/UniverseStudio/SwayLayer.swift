@@ -23,7 +23,7 @@ extension Studio {
             let off = Studio.swayDegrees(frameIndexInRange: k, count: n, degrees: degrees)
             guard abs(off) > 1e-9 else { continue }
             for j in nf[i].indices where nf[i][j].id == id {
-                nf[i][j].transform.rotation += off
+                pivotEdit(&nf[i][j], .centre) { $0.rotation += off }
                 changedAny = true
             }
         }

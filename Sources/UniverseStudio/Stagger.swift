@@ -38,8 +38,9 @@ extension Studio {
                 var m = l
                 guard t >= 0 else { m.opacity = 0; return m }
                 let p = style.pose(t, w: w, h: h)
-                m.transform.x += p.dx; m.transform.y += p.dy; m.transform.rotation += p.rot
-                m.transform.scale *= p.scale; m.opacity *= p.alpha
+                m.transform.x += p.dx; m.transform.y += p.dy
+                self.pivotEdit(&m, .centre) { $0.rotation += p.rot; $0.scale *= p.scale }   // around the drawing (0.191)
+                m.opacity *= p.alpha
                 return m
             }
         }

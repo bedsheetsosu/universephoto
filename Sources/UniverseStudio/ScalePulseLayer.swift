@@ -22,7 +22,7 @@ extension Studio {
             let f = Studio.scalePulseFactor(frameIndexInRange: k, count: n, amount: amount)
             guard abs(f - 1) > 1e-9 else { continue }
             for j in nf[i].indices where nf[i][j].id == id {
-                nf[i][j].transform.scale *= f
+                pivotEdit(&nf[i][j], .centre) { $0.scale *= f }
                 changedAny = true
             }
         }

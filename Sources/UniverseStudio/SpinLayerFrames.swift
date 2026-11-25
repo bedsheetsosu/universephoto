@@ -14,7 +14,7 @@ extension Studio {
         for (k, i) in r.enumerated() {
             let add = 360 * turns * Double(k) / Double(r.count)
             guard add != 0 else { continue }
-            for j in nf[i].indices where nf[i][j].id == id { nf[i][j].transform.rotation += add; touched += 1 }
+            for j in nf[i].indices where nf[i][j].id == id { pivotEdit(&nf[i][j], .centre) { $0.rotation += add }; touched += 1 }
         }
         guard touched > 0 else { return 0 }
         checkpoint("Spin layer")

@@ -31,7 +31,7 @@ extension Studio {
         var nf = frames, touched = 0
         for (k, (i, j)) in slots.enumerated() where !nf[i][j].locked {
             let v = abs(curve[k] - 1) < 1e-6 ? nil : curve[k]
-            if nf[i][j].transform.stretch != v { nf[i][j].transform.stretch = v; touched += 1 }
+            if nf[i][j].transform.stretch != v { pivotEdit(&nf[i][j], .bottom) { $0.stretch = v }; touched += 1 }
         }
         guard touched > 0 else { return 0 }
         checkpoint("Squash & stretch")
@@ -45,7 +45,7 @@ extension Studio {
         stopPlayback()
         if frames.indices.contains(frameIndex) { frames[frameIndex] = layers }
         var nf = frames, touched = 0
-        for i in nf.indices { for j in nf[i].indices where nf[i][j].id == id && nf[i][j].transform.stretch != nil { nf[i][j].transform.stretch = nil; touched += 1 } }
+        for i in nf.indices { for j in nf[i].indices where nf[i][j].id == id && nf[i][j].transform.stretch != nil { pivotEdit(&nf[i][j], .bottom) { $0.stretch = nil }; touched += 1 } }
         guard touched > 0 else { return 0 }
         checkpoint("Squash & stretch")
         frames = nf; layers = frames[frameIndex]; changed()

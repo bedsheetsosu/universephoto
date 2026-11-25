@@ -64,8 +64,9 @@ extension Studio {
             return source.map { l in
                 guard l.id == id else { return l }
                 var m = l
-                m.transform.x += pose.dx; m.transform.y += pose.dy; m.transform.rotation += pose.rot
-                m.transform.scale *= pose.scale; m.opacity *= pose.alpha
+                m.transform.x += pose.dx; m.transform.y += pose.dy
+                self.pivotEdit(&m, .centre) { $0.rotation += pose.rot; $0.scale *= pose.scale }   // around the drawing (0.191)
+                m.opacity *= pose.alpha
                 return m
             }
         }

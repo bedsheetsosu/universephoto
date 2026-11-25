@@ -22,7 +22,7 @@ extension Studio {
             let f = max(0.01, pop ? Studio.popRamp(grow ? k : r.count - 1 - k, of: r.count) : Studio.fadeRamp(k, of: r.count, fadeIn: grow))
             for j in nf[i].indices where nf[i][j].id == id {
                 let s = nf[i][j].transform.scale * f
-                if nf[i][j].transform.scale != s { nf[i][j].transform.scale = s; touched += 1 }
+                if nf[i][j].transform.scale != s { pivotEdit(&nf[i][j], .centre) { $0.scale = s }; touched += 1 }
             }
         }
         guard touched > 0 else { return 0 }
