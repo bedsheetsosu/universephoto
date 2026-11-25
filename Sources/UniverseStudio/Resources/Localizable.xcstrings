@@ -21114,6 +21114,60 @@
           }
         }
       }
+    },
+    "Impact shake": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aufprall-Wackler"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Impact shake"
+          }
+        }
+      }
+    },
+    "Heavy": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schwer"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Heavy"
+          }
+        }
+      }
+    },
+    "The whole picture jolts where the active layer lands – a heavy landing or a stomp": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das ganze Bild wackelt, wo die aktive Ebene landet – eine schwere Landung oder ein Stampfen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The whole picture jolts where the active layer lands – a heavy landing or a stomp"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

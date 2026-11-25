@@ -264,6 +264,11 @@ struct StudioCommands: Commands {
                     .help(L("Comic-style streaks behind the active layer, from how fast it actually moves – on a new layer below it"))
                 Button(L("Landing dust")) { studio.addLandingDust() }.disabled(studio.frames.count < 3)
                     .help(L("A little dust cloud where the active layer touches down – pairs with Bounce"))
+                Menu(L("Impact shake")) {
+                    Button(L("Light")) { studio.impactShake(strength: 4) }
+                    Button(L("Heavy")) { studio.impactShake(strength: 12) }
+                }.disabled(studio.frames.count < 3)
+                    .help(L("The whole picture jolts where the active layer lands – a heavy landing or a stomp"))
                 Menu(L("One after another")) {
                     ForEach(Stagger.styles) { p in
                         Menu { ForEach([("Quick", 0.15), ("Calm", 0.35)], id: \.0) { name, sec in
