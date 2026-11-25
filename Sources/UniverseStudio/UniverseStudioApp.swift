@@ -280,6 +280,12 @@ struct StudioCommands: Commands {
                     .help(L("Blends brush strokes and shapes point by point when both frames have the same strokes"))
             }.disabled(studio.frames.count < 2)
                 .help(L("Inserts in-betweens between every pair of frames at once – a whole animation turns smooth"))
+            Menu(L("Retime")) {
+                Button(L("Slow motion (2×)")) { studio.retimeRange(factor: 2) }
+                Button(L("Slow motion (3×)")) { studio.retimeRange(factor: 3) }
+                Button(L("Fast forward (½×)")) { studio.retimeRange(factor: 0.5) }
+            }.disabled(studio.frames.isEmpty)
+                .help(L("Slows down or speeds up by scaling how long each frame holds – no frames added or removed"))
             Menu(L("Thin frames")) {
                 Button(L("On twos")) { studio.thinFrames(every: 2) }
                 Button(L("On threes")) { studio.thinFrames(every: 3) }

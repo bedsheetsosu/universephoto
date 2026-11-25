@@ -17154,6 +17154,96 @@
           }
         }
       }
+    },
+    "Retime": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tempo ändern"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Retime"
+          }
+        }
+      }
+    },
+    "Slow motion (2×)": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zeitlupe (2×)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Slow motion (2×)"
+          }
+        }
+      }
+    },
+    "Slow motion (3×)": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zeitlupe (3×)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Slow motion (3×)"
+          }
+        }
+      }
+    },
+    "Fast forward (½×)": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zeitraffer (½×)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fast forward (½×)"
+          }
+        }
+      }
+    },
+    "Slows down or speeds up by scaling how long each frame holds – no frames added or removed": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verlangsamt oder beschleunigt, indem die Haltedauer jedes Frames skaliert wird – ohne Frames hinzuzufügen oder zu entfernen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Slows down or speeds up by scaling how long each frame holds – no frames added or removed"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
