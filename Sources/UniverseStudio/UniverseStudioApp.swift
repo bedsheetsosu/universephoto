@@ -354,6 +354,11 @@ struct StudioCommands: Commands {
                     Button(L("Fade out")) { studio.fadeLayerOverFrames(fadeIn: false) }
                 }.disabled(studio.frames.count < 2)
                     .help(L("The active layer fades in or out across the existing frames – no frames added"))
+                Menu(L("Wipe")) {
+                    Section(L("Reveal")) { ForEach(Studio.WipeDirection.allCases) { d in Button(L(d.title)) { studio.wipeLayer(d, reveal: true) } } }
+                    Section(L("Wipe away")) { ForEach(Studio.WipeDirection.allCases) { d in Button(L(d.title)) { studio.wipeLayer(d, reveal: false) } } }
+                }.disabled(studio.frames.count < 2)
+                    .help(L("The active layer is revealed or wiped away from one side across the frames – done with its mask"))
                 Menu(L("Grow over the frames")) {
                     Button(L("Grow")) { studio.growLayerOverFrames(grow: true) }
                     Button(L("Shrink")) { studio.growLayerOverFrames(grow: false) }

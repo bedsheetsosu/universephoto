@@ -20052,6 +20052,186 @@
           }
         }
       }
+    },
+    "Wipe": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wischen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wipe"
+          }
+        }
+      }
+    },
+    "Reveal": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aufdecken"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reveal"
+          }
+        }
+      }
+    },
+    "Wipe away": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wegwischen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wipe away"
+          }
+        }
+      }
+    },
+    "From the left": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Von links"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "From the left"
+          }
+        }
+      }
+    },
+    "From the right": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Von rechts"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "From the right"
+          }
+        }
+      }
+    },
+    "From the top": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Von oben"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "From the top"
+          }
+        }
+      }
+    },
+    "From the bottom": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Von unten"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "From the bottom"
+          }
+        }
+      }
+    },
+    "The active layer is revealed or wiped away from one side across the frames – done with its mask": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die aktive Ebene wird über die Frames von einer Seite aufgedeckt oder weggewischt – über ihre Maske"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The active layer is revealed or wiped away from one side across the frames – done with its mask"
+          }
+        }
+      }
+    },
+    "Wipe in": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aufdecken"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wipe in"
+          }
+        }
+      }
+    },
+    "Wipe out": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wegwischen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wipe out"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
