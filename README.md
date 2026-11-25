@@ -1,4 +1,4 @@
-# UniverseStudio™ 0.121
+# UniverseStudio™ 0.122
 
 *Früher UniversePhoto.* Kostenlose, quelloffene macOS-Anwendung zum Zeichnen, zur Bildbearbeitung und für Frame-Animation. UniverseStudio läuft eigenständig und lokal; UniversePen ist optional. Dieser Entwicklungsstand liefert eine benutzbare Grundlage mit neuem UltraUI und klar begrenztem Funktionsumfang.
 
@@ -23,6 +23,7 @@ Details: [Installation](INSTALL.md), [Architektur](ARCHITECTURE.md), [Gestaltung
 
 ## Implementiert
 
+- **Beschleunigungskurven für Zwischenbilder (0.122, Animieren):** Rechtsklick auf einen Frame → Zwischenbilder → „Beschleunigung“ lässt die Bewegung beschleunigen, abbremsen, erst kurz zurückziehen (Anlauf) oder übers Ziel hinausschießen und zurückfedern (Überschwingen) – neben linear und weich. Nur die Ebenen-Transformationen bewegen sich entsprechend; Überblendungen und Deckkraft bleiben sauber in ihren Grenzen.
 - **UltraUI im UniversePen-Stil:** Mint-Akzent und Indigo-Hintergrund wie UniversePen (dieselben Akzent-Presets), optional fließender Mesh-Hintergrund mit einstellbarem Tempo (steht bei „Bewegung reduzieren“ still), schwebende Werkzeugpalette, Dokument-Tabs mit Änderungsanzeige, kontextbezogene Optionen, Inspector-Karten, Befehlssuche und Simple/Photo/Animate. Dunkler, heller und Systemmodus, fünf Akzentfarben sowie Deutsch/Englisch. Inspector und Timeline sind einblendbar und skalierbar; Werkzeugpositionen lassen sich über das Kontextmenü ändern.
 - **24 Werkzeuge:** Pinsel, Radierer, Pipette, Ebenenverschiebung, Freistellen, Rechteckauswahl, Ellipsenauswahl, Lasso, Zauberstab, Flächenfüllung, Farbeimer, Farbverlauf, Kopierstempel, Reparaturpinsel, Wischfinger, Verflüssigen, Zeichenstift, Abwedler/Nachbelichter, Weichzeichner/Scharfzeichner, Text, Rechteck, Ellipse, Linie und Handwerkzeug.
 - **Retusche (0.5):** Kopierstempel (S) und Reparaturpinsel (J): ⌥-Klick setzt die Quelle, ein Fadenkreuz zeigt beim Malen, woher kopiert wird; „Ausgerichtet“ behält den Abstand über mehrere Striche, „Alle Ebenen“ kopiert aus dem sichtbaren Bild. Der Reparaturpinsel übernimmt die Struktur der Quelle mit Helligkeit und Farbe des Ziels (Quelle + Weichzeichnung(Ziel) − Weichzeichnung(Quelle)). Wischfinger (F) schiebt Farbe mit weicher Kante live über die Ebene. Abwedler/Nachbelichter (O) hellt auf oder dunkelt ab, Weichzeichner/Scharfzeichner (Y) wirkt nur unter dem Pinsel; beide mit Stärke und ohne neue Pixel auf leeren Flächen. Alle Retuschestriche sind je ein Undo-Schritt; Stempel, Reparatur und Wischfinger werden beim Loslassen zu Bitmap-Strichen.

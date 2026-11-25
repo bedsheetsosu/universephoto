@@ -193,12 +193,17 @@ struct TimelinePanel: View {
                 ForEach(Studio.boilChoices, id: \.self) { n in Button(LF("%d copies, stronger", n)) { s.lineBoil(after: index, copies: n, amount: 3) } }
             }.help(L("Copies of this frame whose active layer wobbles slightly – a hand-drawn, living line"))
             Menu(L("Tween to next frame")) {
-                ForEach(Studio.tweenChoices, id: \.self) { n in Button(LF("%d frames", n)) { s.tweenToNext(from: index, count: n, eased: false) } }
-                Menu(L("Eased")) { ForEach(Studio.tweenChoices, id: \.self) { n in Button(LF("%d frames", n)) { s.tweenToNext(from: index, count: n, eased: true) } } }
+                ForEach(Studio.tweenChoices, id: \.self) { n in Button(LF("%d frames", n)) { s.tweenToNext(from: index, count: n, curve: .linear) } }
+                Menu(L("Eased")) { ForEach(Studio.tweenChoices, id: \.self) { n in Button(LF("%d frames", n)) { s.tweenToNext(from: index, count: n, curve: .smooth) } } }
+                Menu(L("Speed curve")) {
+                    ForEach([Easing.accelerate, .decelerate, .anticipate, .overshoot], id: \.self) { c in
+                        Menu(L(c.menuTitle)) { ForEach(Studio.tweenChoices, id: \.self) { n in Button(LF("%d frames", n)) { s.tweenToNext(from: index, count: n, curve: c) } } }
+                    }
+                }.help(L("Accelerate, brake, pull back before moving, or fly past and settle"))
                 Divider()
-                Menu(L("Morph strokes")) { ForEach(Studio.tweenChoices, id: \.self) { n in Button(LF("%d frames", n)) { s.tweenToNext(from: index, count: n, eased: true, morph: true) } } }
+                Menu(L("Morph strokes")) { ForEach(Studio.tweenChoices, id: \.self) { n in Button(LF("%d frames", n)) { s.tweenToNext(from: index, count: n, curve: .smooth, morph: true) } } }
                     .help(L("Blends brush strokes and shapes point by point when both frames have the same strokes"))
-                Menu(L("Crossfade drawings")) { ForEach(Studio.tweenChoices, id: \.self) { n in Button(LF("%d frames", n)) { s.tweenToNext(from: index, count: n, eased: true, morph: true, crossfade: true) } } }
+                Menu(L("Crossfade drawings")) { ForEach(Studio.tweenChoices, id: \.self) { n in Button(LF("%d frames", n)) { s.tweenToNext(from: index, count: n, curve: .smooth, morph: true, crossfade: true) } } }
                     .help(L("Drawings that can't morph fade from one into the other (the in-betweens become pixel layers)"))
             }.disabled(index >= s.frames.count - 1)
             Divider()

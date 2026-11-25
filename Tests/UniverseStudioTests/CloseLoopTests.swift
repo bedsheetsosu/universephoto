@@ -11,7 +11,7 @@ struct CloseLoopTests {
         s.layers[1].transform.x = 0
         s.addFrame()
         s.layers[1].transform.x = 40; s.changed()
-        #expect(s.closeLoop(count: 3, eased: false) == 3)
+        #expect(s.closeLoop(count: 3, curve: .linear) == 3)
         let xs = s.document().frames.map { $0[1].transform.x }
         #expect(xs.count == 5 && xs[2] == 30 && xs[3] == 20 && xs[4] == 10)
         #expect(s.hold(4) == 1)
@@ -43,7 +43,7 @@ struct CrossfadeTests {
         s.layers[1].strokes = [InkStroke(points: [InkPoint(x: 5, y: 30, pressure: 1), InkPoint(x: 20, y: 5, pressure: 1)], color: .black, width: 4),
                                InkStroke(points: [InkPoint(x: 20, y: 5, pressure: 1), InkPoint(x: 35, y: 30, pressure: 1)], color: .black, width: 4)]
         s.changed()
-        #expect(s.tweenToNext(from: 0, count: 2, eased: false, morph: true, crossfade: true) == 2)
+        #expect(s.tweenToNext(from: 0, count: 2, curve: .linear, morph: true, crossfade: true) == 2)
         let f = s.document().frames
         #expect(f[1][1].strokes.isEmpty && f[1][1].imageData != nil && f[0][1].strokes.count == 1)
         #expect(f[1][0].imageData == f[0][0].imageData)   // unchanged background left alone

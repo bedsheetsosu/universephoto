@@ -30,10 +30,10 @@ struct StrokeMorphTests {
         s.layers[1].strokes = [line([(0, 0), (10, 0)])]
         s.addFrame(); s.layers[1].strokes = [line([(0, 10), (10, 10)])]
         s.selectFrame(0)
-        #expect(s.tweenToNext(from: 0, count: 1, eased: false, morph: true) == 1)
+        #expect(s.tweenToNext(from: 0, count: 1, curve: .linear, morph: true) == 1)
         #expect(s.document().frames[1][1].strokes[0].points.map(\.y) == [5, 5])
         s.undo()
-        #expect(s.tweenToNext(from: 0, count: 1, eased: false, morph: false) == 1)
+        #expect(s.tweenToNext(from: 0, count: 1, curve: .linear, morph: false) == 1)
         #expect(s.document().frames[1][1].strokes[0].points.map(\.y) == [0, 0], "without morph the first drawing stays")
     }
 }
