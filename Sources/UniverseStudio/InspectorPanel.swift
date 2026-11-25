@@ -432,12 +432,12 @@ struct QuickMotionRow: View {
     @EnvironmentObject var s: Studio
     @Environment(\.photoTheme) private var theme
     private var items: [(String, String, () -> Void)] {[
-        ("Bounce", "arrow.up.and.down", { s.bounceWithSquash(height: Double(s.height) * 0.3, bounces: 3) }),
-        ("Spin", "arrow.clockwise", { s.spinLayerOverFrames(turns: 1) }),
-        ("Pop in", "sparkle", { s.growLayerOverFrames(grow: true, pop: true) }),
-        ("Fade in", "circle.lefthalf.filled", { s.fadeLayerOverFrames(fadeIn: true) }),
-        ("Shake", "waveform.path", { s.shakeLayer(amount: 10) }),
-        ("Smooth motion", "scribble.variable", { s.smoothMotion(passes: 2) }),
+        ("Bounce", "arrow.up.and.down", { s.onSelectedLayers { s.bounceWithSquash(height: Double(s.height) * 0.3, bounces: 3) } }),
+        ("Spin", "arrow.clockwise", { s.onSelectedLayers { s.spinLayerOverFrames(turns: 1) } }),
+        ("Pop in", "sparkle", { s.onSelectedLayers { s.growLayerOverFrames(grow: true, pop: true) } }),
+        ("Fade in", "circle.lefthalf.filled", { s.onSelectedLayers { s.fadeLayerOverFrames(fadeIn: true) } }),
+        ("Shake", "waveform.path", { s.onSelectedLayers { s.shakeLayer(amount: 10) } }),
+        ("Smooth motion", "scribble.variable", { s.onSelectedLayers { s.smoothMotion(passes: 2) } }),
     ]}
     var body: some View {
         VStack(alignment: .leading, spacing: 5) {
