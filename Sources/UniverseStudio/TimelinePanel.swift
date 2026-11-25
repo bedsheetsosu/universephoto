@@ -200,6 +200,10 @@ struct TimelinePanel: View {
                         Menu(L(c.menuTitle)) { ForEach(Studio.tweenChoices, id: \.self) { n in Button(LF("%d frames", n)) { s.tweenToNext(from: index, count: n, curve: c) } } }
                     }
                 }.help(L("Accelerate, brake, pull back before moving, or fly past and settle"))
+                Menu(L("Arc")) {
+                    Menu(L("Arc one way")) { ForEach(Studio.tweenChoices, id: \.self) { n in Button(LF("%d frames", n)) { s.tweenToNext(from: index, count: n, curve: .smooth, arc: 0.3) } } }
+                    Menu(L("Arc the other way")) { ForEach(Studio.tweenChoices, id: \.self) { n in Button(LF("%d frames", n)) { s.tweenToNext(from: index, count: n, curve: .smooth, arc: -0.3) } } }
+                }.help(L("The layer moves along a curved path instead of a straight line – a natural arc"))
                 Divider()
                 Menu(L("Morph strokes")) { ForEach(Studio.tweenChoices, id: \.self) { n in Button(LF("%d frames", n)) { s.tweenToNext(from: index, count: n, curve: .smooth, morph: true) } } }
                     .help(L("Blends brush strokes and shapes point by point when both frames have the same strokes"))

@@ -17082,6 +17082,78 @@
           }
         }
       }
+    },
+    "Arc": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bogen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arc"
+          }
+        }
+      }
+    },
+    "Arc one way": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bogen in eine Richtung"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arc one way"
+          }
+        }
+      }
+    },
+    "Arc the other way": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bogen in die andere Richtung"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arc the other way"
+          }
+        }
+      }
+    },
+    "The layer moves along a curved path instead of a straight line – a natural arc": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Ebene bewegt sich auf einer gebogenen Bahn statt gerade – ein natürlicher Bogen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The layer moves along a curved path instead of a straight line – a natural arc"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

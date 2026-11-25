@@ -46,9 +46,19 @@ enum Tween {
         LayerTransform(x: lerp(a.x, b.x, t), y: lerp(a.y, b.y, t), scale: lerp(a.scale, b.scale, t), rotation: lerpAngle(a.rotation, b.rotation, t))
     }
 
+    /// Position on an arc (0.129): a bulge sideways to the straight A→B line, peaking at the middle.
+    /// `arc` is the bulge height as a fraction of the move length, signed (+ one way, − the other).
+    static func arcOffset(_ a: LayerTransform, _ b: LayerTransform, _ t: Double, arc: Double) -> (dx: Double, dy: Double) {
+        guard arc != 0 else { return (0, 0) }
+        let vx = b.x - a.x, vy = b.y - a.y, len = (vx * vx + vy * vy).squareRoot()
+        guard len > 0.0001 else { return (0, 0) }
+        let bulge = sin(.pi * min(1, max(0, t))) * arc * len
+        return (dx: -vy / len * bulge, dy: vx / len * bulge)   // along the normal
+    }
+
     /// `count` frames between `from` and `to`.
     static func frames(from: [ArtLayer], to: [ArtLayer], count: Int, curve: Easing, morph: Bool = false,
-                       crossfade: (width: Int, height: Int)? = nil) -> [[ArtLayer]] {
+                       arc: Double = 0, crossfade: (width: Int, height: Int)? = nil) -> [[ArtLayer]] {
         guard count > 0 else { return [] }
         let target = Dictionary(to.map { ($0.id, $0) }, uniquingKeysWith: { a, _ in a })
         // Crossfade (0.116): layers whose drawing differs and can't morph get both drawings,
@@ -69,6 +79,8 @@ enum Tween {
                 guard let end = target[layer.id] else { return layer }
                 var l = layer
                 l.transform = blend(layer.transform, end.transform, t)
+                let off = arcOffset(layer.transform, end.transform, t, arc: arc)
+                l.transform.x += off.dx; l.transform.y += off.dy
                 l.opacity = lerp(layer.opacity, end.opacity, ct)
                 if morph, let blended = StrokeMorph.strokes(layer.strokes, end.strokes, ct) { l.strokes = blended }
                 if let pair = faded[layer.id], let size = crossfade, let img = mix(pair.0, pair.1, ct, size), let png = try? Renderer.png(img) {
@@ -103,11 +115,11 @@ extension Studio {
     static let tweenChoices = [1, 2, 3, 4, 6, 8, 12]
 
     /// Inserts in-betweens after frame `index` towards the next frame. Returns how many.
-    @discardableResult func tweenToNext(from index: Int, count: Int, curve: Easing, morph: Bool = false, crossfade: Bool = false) -> Int {
+    @discardableResult func tweenToNext(from index: Int, count: Int, curve: Easing, morph: Bool = false, arc: Double = 0, crossfade: Bool = false) -> Int {
         guard frames.indices.contains(index), frames.indices.contains(index + 1), count > 0 else { return 0 }
         stopPlayback(); checkpoint("Tween")
         frames[frameIndex] = layers
-        let made = Tween.frames(from: frames[index], to: frames[index + 1], count: count, curve: curve, morph: morph, crossfade: crossfade ? (width, height) : nil)
+        let made = Tween.frames(from: frames[index], to: frames[index + 1], count: count, curve: curve, morph: morph, arc: arc, crossfade: crossfade ? (width, height) : nil)
         metaInsert(at: index + 1, holds: Array(repeating: 1, count: made.count))
         frames.insert(contentsOf: made, at: index + 1)
         if frameIndex > index { frameIndex += made.count }
