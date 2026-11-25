@@ -6,22 +6,34 @@ import Foundation
 /// drawings stay. Works on the play range if set. One undo step. Returns frames changed.
 extension Studio {
     enum EaseMode: String, CaseIterable, Identifiable {
-        case inOut, slowIn, slowOut
+        case inOut, slowIn, slowOut, anticipate, overshoot, both
         var id: String { rawValue }
-        var title: String { switch self { case .inOut: "Slow in and out"; case .slowIn: "Slow start"; case .slowOut: "Slow end" } }
+        var title: String { switch self { case .inOut: "Slow in and out"; case .slowIn: "Slow start"; case .slowOut: "Slow end"
+            case .anticipate: "Wind up first (anticipation)"; case .overshoot: "Overshoot and settle"; case .both: "Wind up and overshoot" } }
         func apply(_ t: Double) -> Double {
             switch self {
-            case .inOut: t * t * (3 - 2 * t)
-            case .slowIn: t * t
-            case .slowOut: 1 - (1 - t) * (1 - t)
+            case .inOut: return t * t * (3 - 2 * t)
+            case .slowIn: return t * t
+            case .slowOut: return 1 - (1 - t) * (1 - t)
+            // Back easings (0.186): dip below 0 at the start / rise past 1 at the end.
+            case .anticipate: let c = 1.70158; return (c + 1) * t * t * t - c * t * t
+            case .overshoot: let c = 1.70158, u = t - 1; return 1 + (c + 1) * u * u * u + c * u * u
+            case .both:
+                let c = 1.70158 * 1.525
+                return t < 0.5 ? (pow(2 * t, 2) * ((c + 1) * 2 * t - c)) / 2
+                               : (pow(2 * t - 2, 2) * ((c + 1) * (t * 2 - 2) + c) + 2) / 2
             }
         }
     }
 
     static func sampled(_ v: [Double], at p: Double) -> Double {
         guard let last = v.indices.last else { return 0 }
-        let q = min(max(p, 0), Double(last)), a = Int(q.rounded(.down)), b = min(a + 1, last), f = q - Double(a)
-        return v[a] + (v[b] - v[a]) * f
+        guard last > 0 else { return v[0] }
+        // Outside the frames (back easings): continue the first / last step in a straight line.
+        if p < 0 { return v[0] + (v[1] - v[0]) * p }
+        if p > Double(last) { return v[last] + (v[last] - v[last - 1]) * (p - Double(last)) }
+        let a = min(Int(p.rounded(.down)), last - 1), f = p - Double(a)
+        return v[a] + (v[a + 1] - v[a]) * f
     }
 
     @discardableResult func easeLayerMotion(_ mode: EaseMode) -> Int {

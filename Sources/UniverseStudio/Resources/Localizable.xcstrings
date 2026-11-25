@@ -20718,6 +20718,60 @@
           }
         }
       }
+    },
+    "Wind up first (anticipation)": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Erst ausholen (Antizipation)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wind up first (anticipation)"
+          }
+        }
+      }
+    },
+    "Overshoot and settle": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Überschießen und einpendeln"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Overshoot and settle"
+          }
+        }
+      }
+    },
+    "Wind up and overshoot": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ausholen und überschießen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wind up and overshoot"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
