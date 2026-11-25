@@ -20934,6 +20934,42 @@
           }
         }
       }
+    },
+    "Landing dust": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Staubwolke bei Landung"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Landing dust"
+          }
+        }
+      }
+    },
+    "A little dust cloud where the active layer touches down – pairs with Bounce": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eine kleine Staubwolke, wo die aktive Ebene aufkommt – passt zu Hüpfen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A little dust cloud where the active layer touches down – pairs with Bounce"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

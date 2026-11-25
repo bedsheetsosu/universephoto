@@ -255,6 +255,8 @@ struct StudioCommands: Commands {
                 }.help(L("A one-off pop of confetti or sparks from the middle of the active layer, on a new layer"))
                 Button(L("Speed lines")) { studio.addSpeedLines() }.disabled(studio.frames.count < 2)
                     .help(L("Comic-style streaks behind the active layer, from how fast it actually moves – on a new layer below it"))
+                Button(L("Landing dust")) { studio.addLandingDust() }.disabled(studio.frames.count < 3)
+                    .help(L("A little dust cloud where the active layer touches down – pairs with Bounce"))
                 Menu(L("One after another")) {
                     ForEach(Stagger.styles) { p in
                         Menu { ForEach([("Quick", 0.15), ("Calm", 0.35)], id: \.0) { name, sec in
