@@ -268,7 +268,7 @@ struct StudioCommands: Commands {
                     }
                 }
             } }.help(L("Ready-made animations that create new frames"))
-            Menu(L("Layer across frames")) { Group {
+            Menu(L("Layer motion")) { Group {
                 Button(L("Pin layer state to all frames")) { studio.pinLayerStateToAllFrames() }.disabled(studio.frames.count < 2)
                     .help(L("Copies the active layer's position, size, turn and opacity from this frame into every frame"))
                 Menu(L("Shift in all frames")) {
@@ -309,6 +309,15 @@ struct StudioCommands: Commands {
                     .help(L("The other selected layers move like the active one, each from its own starting point"))
                 Button(L("Reverse this layer only")) { studio.reverseLayerOnly() }.disabled(studio.frames.count < 2)
                     .help(L("The active layer plays backwards while everything else runs forward"))
+                Button(L("Remove layer from all frames")) { studio.removeLayerFromAllFrames() }.disabled(studio.frames.count < 2)
+                    .help(L("Deletes the active layer from every frame – e.g. a rotoscope or reference underlay"))
+                Menu(L("Flip layer in all frames")) {
+                    Button(L("Horizontally")) { studio.flipLayerAllFrames(horizontal: true) }
+                    Button(L("Vertically")) { studio.flipLayerAllFrames(horizontal: false) }
+                }.disabled(studio.frames.count < 2)
+                    .help(L("Mirrors the active layer's drawing in every frame – turn a cycle to face the other way"))
+            } }.help(L("Rework the movement the active layer already has, across all frames"))
+            Menu(L("Layer effects")) { Group {
                 Menu(L("Fade over the frames")) {
                     Button(L("Fade in")) { studio.fadeLayerOverFrames(fadeIn: true) }
                     Button(L("Fade out")) { studio.fadeLayerOverFrames(fadeIn: false) }
@@ -326,8 +335,6 @@ struct StudioCommands: Commands {
                     Button(L("Counter-clockwise, 1 turn")) { studio.spinLayerOverFrames(turns: -1) }
                 }.disabled(studio.frames.count < 2)
                     .help(L("The active layer turns full circles across the existing frames – a seamless loop"))
-                Button(L("Remove layer from all frames")) { studio.removeLayerFromAllFrames() }.disabled(studio.frames.count < 2)
-                    .help(L("Deletes the active layer from every frame – e.g. a rotoscope or reference underlay"))
                 Menu(L("Sway layer (rotate)")) {
                     Button(L("Gentle")) { studio.swayLayer(degrees: 6) }
                     Button(L("Strong")) { studio.swayLayer(degrees: 16) }
@@ -361,11 +368,6 @@ struct StudioCommands: Commands {
                     Button(L("Steady (show always)")) { studio.steadyLayer() }
                 }.disabled(studio.frames.count < 2)
                     .help(L("Switches the active layer on and off across the frames – a blinking light or sign"))
-                Menu(L("Flip layer in all frames")) {
-                    Button(L("Horizontally")) { studio.flipLayerAllFrames(horizontal: true) }
-                    Button(L("Vertically")) { studio.flipLayerAllFrames(horizontal: false) }
-                }.disabled(studio.frames.count < 2)
-                    .help(L("Mirrors the active layer's drawing in every frame – turn a cycle to face the other way"))
                 Menu(L("Boil all frames")) {
                     Button(L("Normal")) { studio.boilAllFrames(amount: 1.5) }
                     Button(L("Stronger")) { studio.boilAllFrames(amount: 3) }
@@ -378,7 +380,7 @@ struct StudioCommands: Commands {
                     Button(L("None")) { studio.motionEcho(count: 0) }
                 }.disabled(studio.frames.count < 2)
                     .help(L("Fading ghosts of the active layer from the frames before it – a motion trail"))
-            } }.help(L("Animate or change the active layer in every frame"))
+            } }.help(L("Give the active layer a new movement across the existing frames"))
             Menu(L("Edit frames")) { Group {
                 Button(L("Reverse frames")) { studio.reverseFrames() }.disabled(studio.frames.count < 2)
                 Button(L("Merge identical frames")) { studio.mergeIdenticalFrames() }.disabled(studio.frames.count < 2)
