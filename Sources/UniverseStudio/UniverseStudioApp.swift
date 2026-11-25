@@ -282,6 +282,14 @@ struct StudioCommands: Commands {
                     .help(L("Blends brush strokes and shapes point by point when both frames have the same strokes"))
             }.disabled(studio.frames.count < 2)
                 .help(L("Inserts in-betweens between every pair of frames at once – a whole animation turns smooth"))
+            Menu(L("Float layer (drift)")) {
+                Button(L("Up and down, gentle")) { studio.floatLayer(amplitude: 18, horizontal: false) }
+                Button(L("Up and down, strong")) { studio.floatLayer(amplitude: 44, horizontal: false) }
+                Divider()
+                Button(L("Side to side, gentle")) { studio.floatLayer(amplitude: 18, horizontal: true) }
+                Button(L("Side to side, strong")) { studio.floatLayer(amplitude: 44, horizontal: true) }
+            }.disabled(studio.frames.count < 2)
+                .help(L("A soft, seamless drift over the whole animation – gentle secondary motion"))
             Menu(L("Pulse layer (glow)")) {
                 Button(L("Subtle")) { studio.pulseLayer(floor: 0.45) }
                 Button(L("Strong")) { studio.pulseLayer(floor: 0.1) }

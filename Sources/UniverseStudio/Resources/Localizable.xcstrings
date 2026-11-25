@@ -17568,6 +17568,114 @@
           }
         }
       }
+    },
+    "Float layer (drift)": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ebene schweben (Drift)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Float layer (drift)"
+          }
+        }
+      }
+    },
+    "Up and down, gentle": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Auf und ab, dezent"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Up and down, gentle"
+          }
+        }
+      }
+    },
+    "Up and down, strong": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Auf und ab, stark"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Up and down, strong"
+          }
+        }
+      }
+    },
+    "Side to side, gentle": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hin und her, dezent"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Side to side, gentle"
+          }
+        }
+      }
+    },
+    "Side to side, strong": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hin und her, stark"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Side to side, strong"
+          }
+        }
+      }
+    },
+    "A soft, seamless drift over the whole animation – gentle secondary motion": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein sanfter, nahtloser Drift über die ganze Animation – dezente Sekundärbewegung"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A soft, seamless drift over the whole animation – gentle secondary motion"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
