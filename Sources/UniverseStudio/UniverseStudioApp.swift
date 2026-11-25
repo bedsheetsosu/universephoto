@@ -280,6 +280,13 @@ struct StudioCommands: Commands {
                     .help(L("Blends brush strokes and shapes point by point when both frames have the same strokes"))
             }.disabled(studio.frames.count < 2)
                 .help(L("Inserts in-betweens between every pair of frames at once – a whole animation turns smooth"))
+            Menu(L("Motion echo")) {
+                ForEach([2, 3, 4], id: \.self) { n in Button(LF("%d ghosts", n)) { studio.motionEcho(count: n) } }
+                Menu(L("Stronger")) { ForEach([2, 3, 4], id: \.self) { n in Button(LF("%d ghosts", n)) { studio.motionEcho(count: n, strong: true) } } }
+                Divider()
+                Button(L("None")) { studio.motionEcho(count: 0) }
+            }.disabled(studio.frames.count < 2)
+                .help(L("Fading ghosts of the active layer from the frames before it – a motion trail"))
             Button(L("Bake ping-pong into frames")) { studio.bakePingPong() }.disabled(studio.frames.count < 3)
             Button(L("Onion Skin")) { studio.onionSkin.toggle() }.keyboardShortcut("o",modifiers:.option)
             Button(L("Play / Pause")) { studio.togglePlayback() }.keyboardShortcut(.space,modifiers:[])
