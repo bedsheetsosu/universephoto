@@ -4,21 +4,31 @@ import Foundation
 /// Every particle travels a whole number of canvas heights per loop, so the effect repeats without
 /// a seam. From one frame it makes new frames; on an animation it covers the frames already there.
 enum Weather: String, CaseIterable, Identifiable {
-    case snow, rain, sparkle
+    case snow, rain, sparkle, confetti, bubbles, fireflies   // the last three since 0.187
     var id: String { rawValue }
-    var title: String { switch self { case .snow: "Snow"; case .rain: "Rain"; case .sparkle: "Sparkles" } }
-    var symbol: String { switch self { case .snow: "snowflake"; case .rain: "cloud.rain"; case .sparkle: "sparkles" } }
+    var title: String { switch self {
+        case .snow: "Snow"; case .rain: "Rain"; case .sparkle: "Sparkles"
+        case .confetti: "Confetti"; case .bubbles: "Bubbles"; case .fireflies: "Fireflies" } }
+    var symbol: String { switch self {
+        case .snow: "snowflake"; case .rain: "cloud.rain"; case .sparkle: "sparkles"
+        case .confetti: "party.popper"; case .bubbles: "bubbles.and.sparkles"; case .fireflies: "light.min" } }
+
+    static let confettiColors: [CodableColor] = [
+        CodableColor(red: 0.98, green: 0.36, blue: 0.42, alpha: 1), CodableColor(red: 1, green: 0.78, blue: 0.25, alpha: 1),
+        CodableColor(red: 0.35, green: 0.8, blue: 0.6, alpha: 1), CodableColor(red: 0.38, green: 0.58, blue: 1, alpha: 1),
+        CodableColor(red: 0.72, green: 0.45, blue: 1, alpha: 1)]
 
     struct Particle { var x: Double; var y: Double; var size: Double; var speed: Int; var phase: Double }
 
     /// Fixed particles for a canvas (same seed → same weather, so undo/redo and tests agree).
     static func particles(_ w: Weather, width: Double, height: Double, seed: UInt64 = 7) -> [Particle] {
         var g = SplitMix(seed)
-        let n = max(8, Int(width * height / (w == .rain ? 9000 : w == .snow ? 7000 : 16000)))
+        let density: Double = switch w { case .rain: 9000; case .snow: 7000; case .confetti: 9000; case .bubbles: 22000; case .fireflies: 30000; case .sparkle: 16000 }
+        let n = max(8, Int(width * height / density))
         return (0..<n).map { _ in
             Particle(x: g.next() * width, y: g.next() * height,
-                     size: w == .rain ? 1 + g.next() * 1.5 : w == .snow ? 2 + g.next() * 5 : 2 + g.next() * 4,
-                     speed: w == .rain ? 2 + Int(g.next() * 2) : w == .snow ? 1 : 0, phase: g.next())
+                     size: w == .rain ? 1 + g.next() * 1.5 : w == .snow ? 2 + g.next() * 5 : w == .bubbles ? 4 + g.next() * 12 : w == .confetti ? 3 + g.next() * 4 : 2 + g.next() * 4,
+                     speed: w == .rain ? 2 + Int(g.next() * 2) : w == .snow || w == .confetti || w == .bubbles ? 1 : 0, phase: g.next())
         }
     }
 
@@ -42,6 +52,28 @@ enum Weather: String, CaseIterable, Identifiable {
                 guard glow > 0.05 else { return nil }
                 return InkStroke(points: [pt(p.x, p.y), pt(p.x + 0.01, p.y)],
                                  color: CodableColor(red: 1, green: 0.95, blue: 0.7, alpha: glow), width: p.size * (0.4 + glow))
+            case .confetti:
+                // Falls one canvas height per loop, swaying and tumbling (whole turns, so it loops).
+                let y = (p.y + t * height).truncatingRemainder(dividingBy: height)
+                let x = p.x + sin((t + p.phase) * 2 * .pi) * 14
+                let a = (t * 3 + p.phase) * 2 * .pi, len = p.size * 1.6 * (0.35 + 0.65 * abs(cos(a)))
+                let c = confettiColors[Int(p.phase * Double(confettiColors.count)) % confettiColors.count]
+                return InkStroke(points: [pt(x - len / 2, y), pt(x + len / 2, y + sin(a) * 2)], color: c, width: max(1.5, p.size * 0.6))
+            case .bubbles:
+                // Rise one canvas height per loop, wobbling sideways; drawn as thin rings.
+                let r = p.size
+                var y = (p.y - t * (height + 2 * r)).truncatingRemainder(dividingBy: height + 2 * r)
+                if y < -r { y += height + 2 * r }
+                let x = p.x + sin((t * 2 + p.phase) * 2 * .pi) * 6
+                var ring = InkStroke(points: [pt(x - r, y - r), pt(x + r, y + r)], color: CodableColor(red: 0.8, green: 0.93, blue: 1, alpha: 0.75), width: 1.4)
+                ring.kind = "ellipse"
+                return ring
+            case .fireflies:
+                // Wander on a small loop and glow up and down.
+                let x = p.x + cos((t + p.phase) * 2 * .pi) * 24
+                let y = p.y + sin((t * 2 + p.phase) * 2 * .pi) * 12
+                let glow = 0.25 + 0.75 * max(0, sin((t * 2 + p.phase * 3) * 2 * .pi))
+                return InkStroke(points: [pt(x, y), pt(x + 0.01, y)], color: CodableColor(red: 0.85, green: 1, blue: 0.45, alpha: glow), width: p.size * (0.8 + glow))
             }
         }
     }
