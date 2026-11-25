@@ -336,6 +336,9 @@ struct StudioCommands: Commands {
                 Button(L("Slow motion (3×)")) { studio.retimeRange(factor: 3) }
                 Button(L("Fast forward (½×)")) { studio.retimeRange(factor: 0.5) }
                 Divider()
+                Button(L("Slow start (ease in)")) { studio.rampTiming(slowStart: true) }
+                Button(L("Slow end (ease out)")) { studio.rampTiming(slowStart: false) }
+                Divider()
                 Menu(L("Set total length")) {
                     ForEach([1.0, 2.0, 3.0, 5.0, 10.0], id: \.self) { sec in
                         Button(LF("%@ s", String(Int(sec)))) { studio.fitToDuration(seconds: sec) }

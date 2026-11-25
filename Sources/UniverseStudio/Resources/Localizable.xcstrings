@@ -17838,6 +17838,42 @@
           }
         }
       }
+    },
+    "Slow start (ease in)": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Langsamer Start (Ease-in)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Slow start (ease in)"
+          }
+        }
+      }
+    },
+    "Slow end (ease out)": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Langsames Ende (Ease-out)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Slow end (ease out)"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
