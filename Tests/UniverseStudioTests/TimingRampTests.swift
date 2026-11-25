@@ -26,6 +26,14 @@ struct TimingRampTests {
         #expect((0..<4).map { s.hold($0) } == [1, 2, 3, 4])
     }
 
+    @Test func resetPutsEveryFrameBackOnOnes() {
+        let s = frames(4)
+        s.rampTiming(slowStart: true, extra: 3)
+        #expect(s.resetTiming())
+        #expect((0..<4).allSatisfy { s.hold($0) == 1 })
+        #expect(!s.resetTiming())                       // nothing left to reset, no extra undo step
+    }
+
     @Test func oneUndoStep() {
         let s = frames(4)
         s.rampTiming(slowStart: true)

@@ -12,6 +12,22 @@ extension Studio {
         return Int((Double(extra) * (slowStart ? 1 - u : u)).rounded())
     }
 
+    /// Animate → Retime → Reset timing (0.144): every frame back to one tick ("on ones"), e.g. after
+    /// trying slow motion or ramps. Works on the play range if one is set, otherwise all. One undo.
+    @discardableResult func resetTiming() -> Bool {
+        guard !frames.isEmpty else { return false }
+        stopPlayback()
+        if frames.indices.contains(frameIndex) { frames[frameIndex] = layers }
+        let r = Playback.clamp(playRange, count: frames.count) ?? 0...(frames.count - 1)
+        let old = (0..<frames.count).map { hold($0) }
+        var h = old
+        for i in r { h[i] = 1 }
+        guard h != old else { return false }
+        checkpoint("Reset timing")
+        frameHolds = h; normalizeHolds(); changed()
+        return true
+    }
+
     @discardableResult func rampTiming(slowStart: Bool, extra: Int = 3) -> Bool {
         guard frames.count >= 2, extra > 0 else { return false }
         stopPlayback()

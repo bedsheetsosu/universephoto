@@ -338,6 +338,7 @@ struct StudioCommands: Commands {
                 Divider()
                 Button(L("Slow start (ease in)")) { studio.rampTiming(slowStart: true) }
                 Button(L("Slow end (ease out)")) { studio.rampTiming(slowStart: false) }
+                Button(L("Reset timing (all on ones)")) { studio.resetTiming() }
                 Divider()
                 Menu(L("Set total length")) {
                     ForEach([1.0, 2.0, 3.0, 5.0, 10.0], id: \.self) { sec in
