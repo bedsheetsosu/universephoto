@@ -18540,6 +18540,60 @@
           }
         }
       }
+    },
+    "Copy motion to selected layers": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bewegung auf ausgewählte Ebenen übertragen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copy motion to selected layers"
+          }
+        }
+      }
+    },
+    "The other selected layers move like the active one, each from its own starting point": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die anderen ausgewählten Ebenen bewegen sich wie die aktive, jede von ihrem eigenen Startpunkt aus"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The other selected layers move like the active one, each from its own starting point"
+          }
+        }
+      }
+    },
+    "Copy motion": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bewegung übertragen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Copy motion"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

@@ -304,6 +304,9 @@ struct StudioCommands: Commands {
                     Button(L("As a loop")) { studio.smoothMotion(passes: 2, loop: true) }
                 }.disabled(studio.frames.count < 3)
                     .help(L("Takes the jitter out of the active layer's movement – averages each frame with its neighbours"))
+                Button(L("Copy motion to selected layers")) { studio.copyMotionToSelected() }
+                    .disabled(studio.frames.count < 2 || studio.selectedIDs.subtracting([studio.activeLayer?.id].compactMap { $0 }).isEmpty)
+                    .help(L("The other selected layers move like the active one, each from its own starting point"))
                 Button(L("Remove layer from all frames")) { studio.removeLayerFromAllFrames() }.disabled(studio.frames.count < 2)
                     .help(L("Deletes the active layer from every frame – e.g. a rotoscope or reference underlay"))
                 Menu(L("Sway layer (rotate)")) {
