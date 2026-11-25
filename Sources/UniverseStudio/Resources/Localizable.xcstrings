@@ -21402,6 +21402,42 @@
           }
         }
       }
+    },
+    "Plain dark grey background": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schlichter dunkelgrauer Hintergrund"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plain dark grey background"
+          }
+        }
+      }
+    },
+    "One flat dark grey behind everything – no gradient, no motion": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein flaches Dunkelgrau hinter allem – kein Verlauf, keine Bewegung"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "One flat dark grey behind everything – no gradient, no motion"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
