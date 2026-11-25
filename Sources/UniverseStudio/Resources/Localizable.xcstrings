@@ -20826,6 +20826,78 @@
           }
         }
       }
+    },
+    "Burst": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Explosion"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Burst"
+          }
+        }
+      }
+    },
+    "Confetti burst": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Konfetti-Explosion"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Confetti burst"
+          }
+        }
+      }
+    },
+    "Spark burst": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Funken-Explosion"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spark burst"
+          }
+        }
+      }
+    },
+    "A one-off pop of confetti or sparks from the middle of the active layer, on a new layer": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein einmaliger Knall aus Konfetti oder Funken aus der Mitte der aktiven Ebene, auf einer neuen Ebene"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A one-off pop of confetti or sparks from the middle of the active layer, on a new layer"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

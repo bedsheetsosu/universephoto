@@ -23,11 +23,11 @@ enum Weather: String, CaseIterable, Identifiable {
     /// Fixed particles for a canvas (same seed → same weather, so undo/redo and tests agree).
     static func particles(_ w: Weather, width: Double, height: Double, seed: UInt64 = 7) -> [Particle] {
         var g = SplitMix(seed)
-        let density: Double = switch w { case .rain: 9000; case .snow: 7000; case .confetti: 9000; case .bubbles: 22000; case .fireflies: 30000; case .sparkle: 16000 }
+        let density: Double = switch w { case .rain: 9000; case .snow: 7000; case .confetti: 4200; case .bubbles: 22000; case .fireflies: 30000; case .sparkle: 16000 }
         let n = max(8, Int(width * height / density))
         return (0..<n).map { _ in
             Particle(x: g.next() * width, y: g.next() * height,
-                     size: w == .rain ? 1 + g.next() * 1.5 : w == .snow ? 2 + g.next() * 5 : w == .bubbles ? 4 + g.next() * 12 : w == .confetti ? 3 + g.next() * 4 : 2 + g.next() * 4,
+                     size: w == .rain ? 1 + g.next() * 1.5 : w == .snow ? 2 + g.next() * 5 : w == .bubbles ? 4 + g.next() * 12 : w == .confetti ? 3 + g.next() * 4 : w == .fireflies ? 3 + g.next() * 4 : 2 + g.next() * 4,
                      speed: w == .rain ? 2 + Int(g.next() * 2) : w == .snow || w == .confetti || w == .bubbles ? 1 : 0, phase: g.next())
         }
     }
