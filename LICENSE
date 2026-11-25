@@ -2,17 +2,23 @@
 
 Copyright (c) 2026 the UniverseStudio authors.
 
-This is a **source-available, non-commercial copyleft** license. It is deliberately
-**not** an OSI "open source" license, because it forbids selling. In plain words:
-you may use, study, change and fork UniverseStudio freely; every fork must stay
-open under these same terms; nobody may sell it or lock any of it behind a price,
-a subscription or a "premium" tier.
+This is a **source-available copyleft** license with a no-sale term. It is
+deliberately **not** an OSI "open source" license, because it forbids selling. In
+plain words: you may use UniverseStudio for anything — **including commercial work**,
+such as a photographer or studio using it on paid jobs — and you may study, change
+and fork it freely; every fork must stay open under these same terms; but nobody may
+**sell** the software itself or lock any of it behind a price, a subscription or a
+"premium" tier. The limit is on selling the software, not on what you make with it.
 
 This license may be referred to as the **USL**, and this version as **USL 1.0**.
 
 ## 1. Definitions
 
-- **"Software"** means UniverseStudio and everything in this repository.
+- **"Software"** means UniverseStudio and the contents of this repository, **except**
+  any component that carries its own separate license. Separately-licensed components
+  are not covered by this license and keep their own terms — in particular the
+  UniversePen SDK and its API documentation (MIT), and any third-party code noted in
+  NOTICE.md. Where such a component is present, its own license governs it.
 - **"You"** means anyone exercising the rights in this license.
 - **"Fork"** / **"Derivative"** means any work based on or containing part of the
   Software, in any form (a changed copy, a port, a larger work that includes it).
@@ -29,7 +35,8 @@ This license may be referred to as the **USL**, and this version as **USL 1.0**.
 Subject to the conditions below, you are granted a worldwide, royalty-free,
 non-exclusive license to:
 
-- run and use the Software for any **non-commercial** purpose;
+- run and use the Software for **any purpose, including commercial work** (for example
+  editing images for paying clients) — using it is never restricted;
 - study and modify its source;
 - fork it and make Derivatives;
 - share the Software and your Derivatives with anyone, for free.
