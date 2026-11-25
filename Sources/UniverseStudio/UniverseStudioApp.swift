@@ -280,6 +280,14 @@ struct StudioCommands: Commands {
                     .help(L("Blends brush strokes and shapes point by point when both frames have the same strokes"))
             }.disabled(studio.frames.count < 2)
                 .help(L("Inserts in-betweens between every pair of frames at once – a whole animation turns smooth"))
+            Menu(L("Blink layer")) {
+                Button(L("Every frame")) { studio.blinkLayer(period: 1) }
+                Button(L("Every 2 frames")) { studio.blinkLayer(period: 2) }
+                Button(L("Every 3 frames")) { studio.blinkLayer(period: 3) }
+                Divider()
+                Button(L("Steady (show always)")) { studio.steadyLayer() }
+            }.disabled(studio.frames.count < 2)
+                .help(L("Switches the active layer on and off across the frames – a blinking light or sign"))
             Menu(L("Flip layer in all frames")) {
                 Button(L("Horizontally")) { studio.flipLayerAllFrames(horizontal: true) }
                 Button(L("Vertically")) { studio.flipLayerAllFrames(horizontal: false) }
