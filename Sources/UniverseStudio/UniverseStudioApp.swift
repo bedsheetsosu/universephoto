@@ -357,6 +357,10 @@ struct StudioCommands: Commands {
                 Menu(L("Wipe")) {
                     Section(L("Reveal")) { ForEach(Studio.WipeDirection.allCases) { d in Button(L(d.title)) { studio.wipeLayer(d, reveal: true) } } }
                     Section(L("Wipe away")) { ForEach(Studio.WipeDirection.allCases) { d in Button(L(d.title)) { studio.wipeLayer(d, reveal: false) } } }
+                    Section(L("Circle")) {
+                        Button(L("Iris open")) { studio.irisLayer(open: true) }
+                        Button(L("Iris close")) { studio.irisLayer(open: false) }
+                    }
                 }.disabled(studio.frames.count < 2)
                     .help(L("The active layer is revealed or wiped away from one side across the frames – done with its mask"))
                 Menu(L("Grow over the frames")) {
