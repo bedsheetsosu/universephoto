@@ -349,132 +349,138 @@ struct StudioCommands: Commands {
                     .help(L("Mirrors the active layer's drawing in every frame – turn a cycle to face the other way"))
             } }.help(L("Rework the movement the active layer already has, across all frames"))
             Menu(L("Layer effects")) { Group {
-                Menu(L("Fade over the frames")) {
-                    Button(L("Fade in")) { studio.fadeLayerOverFrames(fadeIn: true) }
-                    Button(L("Fade out")) { studio.fadeLayerOverFrames(fadeIn: false) }
-                }.disabled(studio.frames.count < 2)
-                    .help(L("The active layer fades in or out across the existing frames – no frames added"))
-                Menu(L("Wipe")) {
-                    Section(L("Reveal")) { ForEach(Studio.WipeDirection.allCases) { d in Button(L(d.title)) { studio.wipeLayer(d, reveal: true) } } }
-                    Section(L("Wipe away")) { ForEach(Studio.WipeDirection.allCases) { d in Button(L(d.title)) { studio.wipeLayer(d, reveal: false) } } }
-                    Section(L("Circle")) {
-                        Button(L("Iris open")) { studio.irisLayer(open: true) }
-                        Button(L("Iris close")) { studio.irisLayer(open: false) }
-                    }
-                    Divider()
-                    Button(L("Remove mask in all frames")) { studio.clearMaskAllFrames() }
-                }.disabled(studio.frames.count < 2)
-                    .help(L("The active layer is revealed or wiped away from one side across the frames – done with its mask"))
-                Menu(L("Grow over the frames")) {
-                    Button(L("Grow")) { studio.growLayerOverFrames(grow: true) }
-                    Button(L("Shrink")) { studio.growLayerOverFrames(grow: false) }
-                    Divider()
-                    Button(L("Pop in (overshoot)")) { studio.growLayerOverFrames(grow: true, pop: true) }
-                    Button(L("Pop out (overshoot)")) { studio.growLayerOverFrames(grow: false, pop: true) }
-                }.disabled(studio.frames.count < 2)
-                    .help(L("The active layer grows out of nothing or shrinks away across the existing frames"))
-                Menu(L("Spin over the frames")) {
-                    Button(L("Clockwise, 1 turn")) { studio.spinLayerOverFrames(turns: 1) }
-                    Button(L("Clockwise, 2 turns")) { studio.spinLayerOverFrames(turns: 2) }
-                    Divider()
-                    Button(L("Counter-clockwise, 1 turn")) { studio.spinLayerOverFrames(turns: -1) }
-                }.disabled(studio.frames.count < 2)
-                    .help(L("The active layer turns full circles across the existing frames – a seamless loop"))
-                Menu(L("Shake layer")) {
-                    Button(L("Trembling")) { studio.shakeLayer(amount: 3) }
-                    Button(L("Shaking")) { studio.shakeLayer(amount: 10) }
-                    Button(L("Rattling, with turn")) { studio.shakeLayer(amount: 8, turn: true) }
-                }.disabled(studio.frames.count < 2)
-                    .help(L("Small random jolts of the active layer in every frame – fear, cold or an impact"))
-                Menu(L("Travel over the frames")) {
-                    ForEach([false, true], id: \.self) { eased in
-                        Button(L(eased ? "Left to right, soft" : "Left to right")) { studio.travelLayer(dx: Double(studio.width), dy: 0, eased: eased) }
-                        Button(L(eased ? "Right to left, soft" : "Right to left")) { studio.travelLayer(dx: -Double(studio.width), dy: 0, eased: eased) }
-                        Button(L(eased ? "Up, soft" : "Up")) { studio.travelLayer(dx: 0, dy: -Double(studio.height), eased: eased) }
-                        Button(L(eased ? "Down, soft" : "Down")) { studio.travelLayer(dx: 0, dy: Double(studio.height), eased: eased) }
+                Section(L("Move")) {
+                    Menu(L("Travel over the frames")) {
+                        ForEach([false, true], id: \.self) { eased in
+                            Button(L(eased ? "Left to right, soft" : "Left to right")) { studio.travelLayer(dx: Double(studio.width), dy: 0, eased: eased) }
+                            Button(L(eased ? "Right to left, soft" : "Right to left")) { studio.travelLayer(dx: -Double(studio.width), dy: 0, eased: eased) }
+                            Button(L(eased ? "Up, soft" : "Up")) { studio.travelLayer(dx: 0, dy: -Double(studio.height), eased: eased) }
+                            Button(L(eased ? "Down, soft" : "Down")) { studio.travelLayer(dx: 0, dy: Double(studio.height), eased: eased) }
+                            Divider()
+                        }
+                    }.disabled(studio.frames.count < 2)
+                        .help(L("The active layer crosses the whole canvas over the existing frames – its own motion stays"))
+                    Menu(L("Orbit")) {
+                        Button(L("Small circle")) { studio.orbitLayer(radius: 20) }
+                        Button(L("Big circle")) { studio.orbitLayer(radius: 80) }
+                        Button(L("Flat ellipse")) { studio.orbitLayer(radius: 80, squash: 0.35) }
                         Divider()
-                    }
-                }.disabled(studio.frames.count < 2)
-                    .help(L("The active layer crosses the whole canvas over the existing frames – its own motion stays"))
-                Menu(L("Orbit")) {
-                    Button(L("Small circle")) { studio.orbitLayer(radius: 20) }
-                    Button(L("Big circle")) { studio.orbitLayer(radius: 80) }
-                    Button(L("Flat ellipse")) { studio.orbitLayer(radius: 80, squash: 0.35) }
-                    Divider()
-                    Button(L("Small circle, other way")) { studio.orbitLayer(radius: 20, clockwise: false) }
-                }.disabled(studio.frames.count < 2)
-                    .help(L("The active layer runs on a circle that starts at its position – a seamless loop"))
-                Menu(L("Bounce over the frames")) {
-                    Button(L("One big jump")) { studio.bounceLayer(height: Double(studio.height) * 0.3, bounces: 1) }
-                    Button(L("Ball, 3 hops")) { studio.bounceLayer(height: Double(studio.height) * 0.3, bounces: 3) }
-                    Button(L("Small hops")) { studio.bounceLayer(height: Double(studio.height) * 0.08, bounces: 4, decay: 0.85) }
-                    Divider()
-                    Button(L("Ball, 3 hops, squashy")) { studio.bounceWithSquash(height: Double(studio.height) * 0.3, bounces: 3) }
-                    Button(L("One big jump, squashy")) { studio.bounceWithSquash(height: Double(studio.height) * 0.3, bounces: 1) }
-                }.disabled(studio.frames.count < 2)
-                    .help(L("The active layer hops across the frames, each hop lower, and lands where it started"))
-                Menu(L("Squash & stretch")) {
-                    Button(L("Normal")) { studio.squashStretch(amount: 1) }
-                    Button(L("Cartoony")) { studio.squashStretch(amount: 1.8) }
-                    Divider()
-                    Button(L("None")) { studio.clearSquashStretch() }
-                }.disabled(studio.frames.count < 3)
-                    .help(L("Stretches the active layer while it moves fast and squashes it where it lands – pairs with Bounce"))
-                Menu(L("Breathe")) {
-                    Button(L("Calm")) { studio.stretchEffect(jelly: false, amount: 0.04) }
-                    Button(L("Deep")) { studio.stretchEffect(jelly: false, amount: 0.1) }
-                }.disabled(studio.frames.count < 2)
-                    .help(L("A calm stretch in and out as a loop – an idle character or a sleeping animal"))
-                Menu(L("Jelly")) {
-                    Button(L("Soft")) { studio.stretchEffect(jelly: true, amount: 0.2) }
-                    Button(L("Wobbly")) { studio.stretchEffect(jelly: true, amount: 0.4) }
-                }.disabled(studio.frames.count < 2)
-                    .help(L("A damped wobble that starts strong and settles – after a landing or a poke"))
-                Menu(L("Sway layer (rotate)")) {
-                    Button(L("Gentle")) { studio.swayLayer(degrees: 6) }
-                    Button(L("Strong")) { studio.swayLayer(degrees: 16) }
-                }.disabled(studio.frames.count < 2)
-                    .help(L("Rocks the active layer back and forth across the frames – a gentle swing"))
-                Menu(L("Pulse size")) {
-                    Button(L("Subtle")) { studio.scalePulseLayer(amount: 0.08) }
-                    Button(L("Strong")) { studio.scalePulseLayer(amount: 0.22) }
-                }.disabled(studio.frames.count < 2)
-                    .help(L("Grows and shrinks the active layer across the frames – a gentle breathing or heartbeat"))
-                Menu(L("Float layer (drift)")) {
-                    Button(L("Up and down, gentle")) { studio.floatLayer(amplitude: 18, horizontal: false) }
-                    Button(L("Up and down, strong")) { studio.floatLayer(amplitude: 44, horizontal: false) }
-                    Divider()
-                    Button(L("Side to side, gentle")) { studio.floatLayer(amplitude: 18, horizontal: true) }
-                    Button(L("Side to side, strong")) { studio.floatLayer(amplitude: 44, horizontal: true) }
-                }.disabled(studio.frames.count < 2)
-                    .help(L("A soft, seamless drift over the whole animation – gentle secondary motion"))
-                Menu(L("Pulse layer (glow)")) {
-                    Button(L("Subtle")) { studio.pulseLayer(floor: 0.45) }
-                    Button(L("Strong")) { studio.pulseLayer(floor: 0.1) }
-                    Divider()
-                    Button(L("None")) { studio.unpulseLayer() }
-                }.disabled(studio.frames.count < 2)
-                    .help(L("Fades the active layer up and down across the frames – a soft glow or breathing"))
-                Menu(L("Blink layer")) {
-                    Button(L("Every frame")) { studio.blinkLayer(period: 1) }
-                    Button(L("Every 2 frames")) { studio.blinkLayer(period: 2) }
-                    Button(L("Every 3 frames")) { studio.blinkLayer(period: 3) }
-                    Divider()
-                    Button(L("Steady (show always)")) { studio.steadyLayer() }
-                }.disabled(studio.frames.count < 2)
-                    .help(L("Switches the active layer on and off across the frames – a blinking light or sign"))
-                Menu(L("Boil all frames")) {
-                    Button(L("Normal")) { studio.boilAllFrames(amount: 1.5) }
-                    Button(L("Stronger")) { studio.boilAllFrames(amount: 3) }
-                }.disabled(studio.frames.count < 2)
-                    .help(L("Wobbles the active layer a little in every frame – a living, hand-drawn line across the whole animation"))
-                Menu(L("Motion echo")) {
-                    ForEach([2, 3, 4], id: \.self) { n in Button(LF("%d ghosts", n)) { studio.motionEcho(count: n) } }
-                    Menu(L("Stronger")) { ForEach([2, 3, 4], id: \.self) { n in Button(LF("%d ghosts", n)) { studio.motionEcho(count: n, strong: true) } } }
-                    Divider()
-                    Button(L("None")) { studio.motionEcho(count: 0) }
-                }.disabled(studio.frames.count < 2)
-                    .help(L("Fading ghosts of the active layer from the frames before it – a motion trail"))
+                        Button(L("Small circle, other way")) { studio.orbitLayer(radius: 20, clockwise: false) }
+                    }.disabled(studio.frames.count < 2)
+                        .help(L("The active layer runs on a circle that starts at its position – a seamless loop"))
+                    Menu(L("Bounce over the frames")) {
+                        Button(L("One big jump")) { studio.bounceLayer(height: Double(studio.height) * 0.3, bounces: 1) }
+                        Button(L("Ball, 3 hops")) { studio.bounceLayer(height: Double(studio.height) * 0.3, bounces: 3) }
+                        Button(L("Small hops")) { studio.bounceLayer(height: Double(studio.height) * 0.08, bounces: 4, decay: 0.85) }
+                        Divider()
+                        Button(L("Ball, 3 hops, squashy")) { studio.bounceWithSquash(height: Double(studio.height) * 0.3, bounces: 3) }
+                        Button(L("One big jump, squashy")) { studio.bounceWithSquash(height: Double(studio.height) * 0.3, bounces: 1) }
+                    }.disabled(studio.frames.count < 2)
+                        .help(L("The active layer hops across the frames, each hop lower, and lands where it started"))
+                    Menu(L("Shake layer")) {
+                        Button(L("Trembling")) { studio.shakeLayer(amount: 3) }
+                        Button(L("Shaking")) { studio.shakeLayer(amount: 10) }
+                        Button(L("Rattling, with turn")) { studio.shakeLayer(amount: 8, turn: true) }
+                    }.disabled(studio.frames.count < 2)
+                        .help(L("Small random jolts of the active layer in every frame – fear, cold or an impact"))
+                    Menu(L("Sway layer (rotate)")) {
+                        Button(L("Gentle")) { studio.swayLayer(degrees: 6) }
+                        Button(L("Strong")) { studio.swayLayer(degrees: 16) }
+                    }.disabled(studio.frames.count < 2)
+                        .help(L("Rocks the active layer back and forth across the frames – a gentle swing"))
+                    Menu(L("Float layer (drift)")) {
+                        Button(L("Up and down, gentle")) { studio.floatLayer(amplitude: 18, horizontal: false) }
+                        Button(L("Up and down, strong")) { studio.floatLayer(amplitude: 44, horizontal: false) }
+                        Divider()
+                        Button(L("Side to side, gentle")) { studio.floatLayer(amplitude: 18, horizontal: true) }
+                        Button(L("Side to side, strong")) { studio.floatLayer(amplitude: 44, horizontal: true) }
+                    }.disabled(studio.frames.count < 2)
+                        .help(L("A soft, seamless drift over the whole animation – gentle secondary motion"))
+                    Menu(L("Spin over the frames")) {
+                        Button(L("Clockwise, 1 turn")) { studio.spinLayerOverFrames(turns: 1) }
+                        Button(L("Clockwise, 2 turns")) { studio.spinLayerOverFrames(turns: 2) }
+                        Divider()
+                        Button(L("Counter-clockwise, 1 turn")) { studio.spinLayerOverFrames(turns: -1) }
+                    }.disabled(studio.frames.count < 2)
+                        .help(L("The active layer turns full circles across the existing frames – a seamless loop"))
+                }
+                Section(L("Shape")) {
+                    Menu(L("Squash & stretch")) {
+                        Button(L("Normal")) { studio.squashStretch(amount: 1) }
+                        Button(L("Cartoony")) { studio.squashStretch(amount: 1.8) }
+                        Divider()
+                        Button(L("None")) { studio.clearSquashStretch() }
+                    }.disabled(studio.frames.count < 3)
+                        .help(L("Stretches the active layer while it moves fast and squashes it where it lands – pairs with Bounce"))
+                    Menu(L("Breathe")) {
+                        Button(L("Calm")) { studio.stretchEffect(jelly: false, amount: 0.04) }
+                        Button(L("Deep")) { studio.stretchEffect(jelly: false, amount: 0.1) }
+                    }.disabled(studio.frames.count < 2)
+                        .help(L("A calm stretch in and out as a loop – an idle character or a sleeping animal"))
+                    Menu(L("Jelly")) {
+                        Button(L("Soft")) { studio.stretchEffect(jelly: true, amount: 0.2) }
+                        Button(L("Wobbly")) { studio.stretchEffect(jelly: true, amount: 0.4) }
+                    }.disabled(studio.frames.count < 2)
+                        .help(L("A damped wobble that starts strong and settles – after a landing or a poke"))
+                    Menu(L("Grow over the frames")) {
+                        Button(L("Grow")) { studio.growLayerOverFrames(grow: true) }
+                        Button(L("Shrink")) { studio.growLayerOverFrames(grow: false) }
+                        Divider()
+                        Button(L("Pop in (overshoot)")) { studio.growLayerOverFrames(grow: true, pop: true) }
+                        Button(L("Pop out (overshoot)")) { studio.growLayerOverFrames(grow: false, pop: true) }
+                    }.disabled(studio.frames.count < 2)
+                        .help(L("The active layer grows out of nothing or shrinks away across the existing frames"))
+                    Menu(L("Pulse size")) {
+                        Button(L("Subtle")) { studio.scalePulseLayer(amount: 0.08) }
+                        Button(L("Strong")) { studio.scalePulseLayer(amount: 0.22) }
+                    }.disabled(studio.frames.count < 2)
+                        .help(L("Grows and shrinks the active layer across the frames – a gentle breathing or heartbeat"))
+                    Menu(L("Boil all frames")) {
+                        Button(L("Normal")) { studio.boilAllFrames(amount: 1.5) }
+                        Button(L("Stronger")) { studio.boilAllFrames(amount: 3) }
+                    }.disabled(studio.frames.count < 2)
+                        .help(L("Wobbles the active layer a little in every frame – a living, hand-drawn line across the whole animation"))
+                }
+                Section(L("Appear")) {
+                    Menu(L("Fade over the frames")) {
+                        Button(L("Fade in")) { studio.fadeLayerOverFrames(fadeIn: true) }
+                        Button(L("Fade out")) { studio.fadeLayerOverFrames(fadeIn: false) }
+                    }.disabled(studio.frames.count < 2)
+                        .help(L("The active layer fades in or out across the existing frames – no frames added"))
+                    Menu(L("Wipe")) {
+                        Section(L("Reveal")) { ForEach(Studio.WipeDirection.allCases) { d in Button(L(d.title)) { studio.wipeLayer(d, reveal: true) } } }
+                        Section(L("Wipe away")) { ForEach(Studio.WipeDirection.allCases) { d in Button(L(d.title)) { studio.wipeLayer(d, reveal: false) } } }
+                        Section(L("Circle")) {
+                            Button(L("Iris open")) { studio.irisLayer(open: true) }
+                            Button(L("Iris close")) { studio.irisLayer(open: false) }
+                        }
+                        Divider()
+                        Button(L("Remove mask in all frames")) { studio.clearMaskAllFrames() }
+                    }.disabled(studio.frames.count < 2)
+                        .help(L("The active layer is revealed or wiped away from one side across the frames – done with its mask"))
+                    Menu(L("Pulse layer (glow)")) {
+                        Button(L("Subtle")) { studio.pulseLayer(floor: 0.45) }
+                        Button(L("Strong")) { studio.pulseLayer(floor: 0.1) }
+                        Divider()
+                        Button(L("None")) { studio.unpulseLayer() }
+                    }.disabled(studio.frames.count < 2)
+                        .help(L("Fades the active layer up and down across the frames – a soft glow or breathing"))
+                    Menu(L("Blink layer")) {
+                        Button(L("Every frame")) { studio.blinkLayer(period: 1) }
+                        Button(L("Every 2 frames")) { studio.blinkLayer(period: 2) }
+                        Button(L("Every 3 frames")) { studio.blinkLayer(period: 3) }
+                        Divider()
+                        Button(L("Steady (show always)")) { studio.steadyLayer() }
+                    }.disabled(studio.frames.count < 2)
+                        .help(L("Switches the active layer on and off across the frames – a blinking light or sign"))
+                    Menu(L("Motion echo")) {
+                        ForEach([2, 3, 4], id: \.self) { n in Button(LF("%d ghosts", n)) { studio.motionEcho(count: n) } }
+                        Menu(L("Stronger")) { ForEach([2, 3, 4], id: \.self) { n in Button(LF("%d ghosts", n)) { studio.motionEcho(count: n, strong: true) } } }
+                        Divider()
+                        Button(L("None")) { studio.motionEcho(count: 0) }
+                    }.disabled(studio.frames.count < 2)
+                        .help(L("Fading ghosts of the active layer from the frames before it – a motion trail"))
+                }
             } }.help(L("Give the active layer a new movement across the existing frames"))
             Menu(L("Edit frames")) { Group {
                 Button(L("Reverse frames")) { studio.reverseFrames() }.disabled(studio.frames.count < 2)

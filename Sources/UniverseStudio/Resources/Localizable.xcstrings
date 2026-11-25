@@ -20520,6 +20520,24 @@
           }
         }
       }
+    },
+    "Appear": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Erscheinen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Appear"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
