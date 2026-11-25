@@ -560,6 +560,9 @@ struct StudioCommands: Commands {
                     .help(L("Keeps every 2nd/3rd/4th drawing and holds it for the gap – same length, fewer frames"))
                 Button(L("Turn holds into frames")) { studio.expandHolds() }.disabled(studio.frames.isEmpty)
                     .help(L("Every held frame becomes that many real frames – same timing, smoother layer effects"))
+                Menu(L("Extend")) {
+                    ForEach([0.5, 1.0, 2.0], id: \.self) { sec in Button(LF("%@ s", sec == 0.5 ? "0.5" : String(Int(sec)))) { studio.extendAnimation(by: max(1, Int((studio.fps * sec).rounded()))) } }
+                }.help(L("Appends copies of the last frame and selects them as the play range – room for a layer effect"))
                 Button(L("Bake ping-pong into frames")) { studio.bakePingPong() }.disabled(studio.frames.count < 3)
             } }.help(L("Reorder, smooth, loop and retime the frames"))
             Divider()

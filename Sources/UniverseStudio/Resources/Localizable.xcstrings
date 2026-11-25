@@ -21006,6 +21006,60 @@
           }
         }
       }
+    },
+    "Extend": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verlängern"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Extend"
+          }
+        }
+      }
+    },
+    "Appends copies of the last frame and selects them as the play range – room for a layer effect": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hängt Kopien des letzten Frames an und wählt sie als Abspielbereich – Platz für einen Ebenen-Effekt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Appends copies of the last frame and selects them as the play range – room for a layer effect"
+          }
+        }
+      }
+    },
+    "Extend animation": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Animation verlängern"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Extend animation"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
