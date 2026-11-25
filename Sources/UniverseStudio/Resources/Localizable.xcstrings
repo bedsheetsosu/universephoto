@@ -16686,6 +16686,60 @@
           }
         }
       }
+    },
+    "Tween all frames": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zwischenbilder über alle Frames"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tween all frames"
+          }
+        }
+      }
+    },
+    "%d between each": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d zwischen je zwei"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d between each"
+          }
+        }
+      }
+    },
+    "Inserts in-betweens between every pair of frames at once – a whole animation turns smooth": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fügt auf einmal zwischen jedem Frame-Paar Zwischenbilder ein – eine ganze Animation wird flüssig"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inserts in-betweens between every pair of frames at once – a whole animation turns smooth"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
