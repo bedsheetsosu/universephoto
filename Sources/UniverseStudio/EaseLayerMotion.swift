@@ -36,8 +36,9 @@ extension Studio {
         var nf = frames, touched = 0
         for (k, (i, j)) in slots.enumerated() {
             let p = mode.apply(Double(k) / n) * n
-            let v = LayerTransform(x: Studio.sampled(xs, at: p), y: Studio.sampled(ys, at: p),
+            var v = LayerTransform(x: Studio.sampled(xs, at: p), y: Studio.sampled(ys, at: p),
                                    scale: Studio.sampled(ss, at: p), rotation: Studio.sampled(rs, at: p))
+            v.stretch = nf[i][j].transform.stretch
             if nf[i][j].transform != v { nf[i][j].transform = v; touched += 1 }
         }
         guard touched > 0 else { return 0 }

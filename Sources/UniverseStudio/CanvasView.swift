@@ -259,7 +259,7 @@ struct ArtworkCanvas: NSViewRepresentable {
         guard let id = draggingGuide, let s = studio, let g = s.guides.first(where: { $0.id == id }) else { return draggingGuide != nil }
         let d = geometry.toDocument(p); s.moveGuide(id, to: g.vertical ? d.x : d.y); needsDisplay = true; return true
     }
-    private func localPoint(_ p: CGPoint) -> CGPoint { guard let s = studio, let t = s.activeLayer?.transform else { return p }; let transform = CGAffineTransform(translationX:t.x+Double(s.width)/2,y:t.y+Double(s.height)/2).rotated(by:t.rotation * .pi/180).scaledBy(x:t.scale,y:t.scale).translatedBy(x:-Double(s.width)/2,y:-Double(s.height)/2); return p.applying(transform.inverted()) }
+    private func localPoint(_ p: CGPoint) -> CGPoint { guard let s = studio, let t = s.activeLayer?.transform else { return p }; let transform = CGAffineTransform(translationX:t.x+Double(s.width)/2,y:t.y+Double(s.height)/2).rotated(by:t.rotation * .pi/180).scaledBy(x:t.scaleX,y:t.scaleY).translatedBy(x:-Double(s.width)/2,y:-Double(s.height)/2); return p.applying(transform.inverted()) }
     private func isDuplicate(_ e: NSEvent) -> Bool {
         // UniversePen tags its injected Pencil CGEvents with this device ID (Host/InputInjector).
         // Claim only that route after a validated subscription; ordinary mice and tablets remain usable.

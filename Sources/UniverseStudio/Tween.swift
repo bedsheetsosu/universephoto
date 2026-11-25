@@ -43,7 +43,9 @@ enum Tween {
     }
 
     static func blend(_ a: LayerTransform, _ b: LayerTransform, _ t: Double) -> LayerTransform {
-        LayerTransform(x: lerp(a.x, b.x, t), y: lerp(a.y, b.y, t), scale: lerp(a.scale, b.scale, t), rotation: lerpAngle(a.rotation, b.rotation, t))
+        var m = LayerTransform(x: lerp(a.x, b.x, t), y: lerp(a.y, b.y, t), scale: lerp(a.scale, b.scale, t), rotation: lerpAngle(a.rotation, b.rotation, t))
+        if a.stretch != nil || b.stretch != nil { m.stretch = lerp(a.stretch ?? 1, b.stretch ?? 1, t) }
+        return m
     }
 
     /// Position on an arc (0.129): a bulge sideways to the straight A→B line, peaking at the middle.

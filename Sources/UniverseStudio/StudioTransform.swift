@@ -6,7 +6,7 @@ extension Studio {
     /// Layer coordinates → document coordinates (the pivot is the document centre).
     func matrix(_ t: LayerTransform) -> CGAffineTransform {
         CGAffineTransform(translationX: t.x + Double(width) / 2, y: t.y + Double(height) / 2)
-            .rotated(by: t.rotation * .pi / 180).scaledBy(x: t.scale, y: t.scale)
+            .rotated(by: t.rotation * .pi / 180).scaledBy(x: t.scaleX, y: t.scaleY)
             .translatedBy(x: -Double(width) / 2, y: -Double(height) / 2)
     }
 

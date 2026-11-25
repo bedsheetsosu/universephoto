@@ -20304,6 +20304,42 @@
           }
         }
       }
+    },
+    "Cartoony": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cartoonig"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cartoony"
+          }
+        }
+      }
+    },
+    "Stretches the active layer while it moves fast and squashes it where it lands – pairs with Bounce": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Streckt die aktive Ebene bei schneller Bewegung und staucht sie bei der Landung – passt zu Hüpfen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stretches the active layer while it moves fast and squashes it where it lands – pairs with Bounce"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

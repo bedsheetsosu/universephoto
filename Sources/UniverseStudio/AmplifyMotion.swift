@@ -24,7 +24,8 @@ extension Studio {
         let ss = Studio.amplified(t.map(\.scale), factor: factor).map { max(0.01, $0) }
         var nf = frames, touched = 0
         for (k, (i, j)) in slots.enumerated() {
-            let n = LayerTransform(x: xs[k], y: ys[k], scale: ss[k], rotation: rs[k])
+            var n = LayerTransform(x: xs[k], y: ys[k], scale: ss[k], rotation: rs[k])
+            n.stretch = nf[i][j].transform.stretch
             if nf[i][j].transform != n { nf[i][j].transform = n; touched += 1 }
         }
         guard touched > 0 else { return 0 }

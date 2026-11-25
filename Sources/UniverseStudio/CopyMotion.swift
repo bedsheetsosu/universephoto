@@ -20,9 +20,10 @@ extension Studio {
             guard let s = frames[i].first(where: { $0.id == sid })?.transform else { continue }
             for j in nf[i].indices {
                 guard let b = base[nf[i][j].id], !nf[i][j].locked else { continue }
-                let n = LayerTransform(x: b.x + s.x - s0.x, y: b.y + s.y - s0.y,
+                var n = LayerTransform(x: b.x + s.x - s0.x, y: b.y + s.y - s0.y,
                                        scale: b.scale * (s0.scale == 0 ? 1 : s.scale / s0.scale),
                                        rotation: b.rotation + s.rotation - s0.rotation)
+                n.stretch = s.stretch
                 if nf[i][j].transform != n { nf[i][j].transform = n; touched += 1 }
             }
         }

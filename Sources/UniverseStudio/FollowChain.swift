@@ -27,9 +27,10 @@ extension Studio {
                 let src = Studio.delaySource(i, offset: (m + 1) * step, in: r, wrap: true)
                 guard let s = frames[src].first(where: { $0.id == sid })?.transform,
                       let j = nf[i].firstIndex(where: { $0.id == tid }), !nf[i][j].locked else { continue }
-                let n = LayerTransform(x: b.x + s.x - s0.x, y: b.y + s.y - s0.y,
+                var n = LayerTransform(x: b.x + s.x - s0.x, y: b.y + s.y - s0.y,
                                        scale: b.scale * (s0.scale == 0 ? 1 : s.scale / s0.scale),
                                        rotation: b.rotation + s.rotation - s0.rotation)
+                n.stretch = s.stretch
                 if nf[i][j].transform != n { nf[i][j].transform = n; touched += 1 }
             }
         }

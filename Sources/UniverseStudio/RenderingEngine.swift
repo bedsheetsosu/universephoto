@@ -118,7 +118,7 @@ enum Renderer {
     static func apply(_ t: LayerTransform, to ctx: CGContext, width: Int, height: Int) {
         ctx.translateBy(x: t.x + Double(width)/2, y: t.y + Double(height)/2)
         ctx.rotate(by: t.rotation * .pi / 180)
-        ctx.scaleBy(x: t.scale, y: t.scale)
+        ctx.scaleBy(x: t.scaleX, y: t.scaleY)
         ctx.translateBy(x: -Double(width)/2, y: -Double(height)/2)
     }
     /// The layer picture with its transform applied, in document pixels.

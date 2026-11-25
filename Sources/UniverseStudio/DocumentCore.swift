@@ -75,6 +75,10 @@ enum LayerBlend: String, Codable, CaseIterable, Sendable {
 }
 struct LayerTransform: Codable, Equatable, Sendable {
     var x = 0.0; var y = 0.0; var scale = 1.0; var rotation = 0.0
+    /// Squash & stretch (0.179): > 1 taller and thinner, < 1 flatter and wider, volume kept. nil = 1.
+    var stretch: Double? = nil
+    var scaleX: Double { scale / max(0.05, stretch ?? 1) }
+    var scaleY: Double { scale * max(0.05, stretch ?? 1) }
 }
 struct LayerAdjustment: Codable, Equatable, Sendable {
     var brightness = 0.0; var contrast = 1.0; var saturation = 1.0; var exposure = 0.0; var blur = 0.0; var inverted = false

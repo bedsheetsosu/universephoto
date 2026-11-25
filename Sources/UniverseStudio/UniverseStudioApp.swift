@@ -410,6 +410,13 @@ struct StudioCommands: Commands {
                     Button(L("Small hops")) { studio.bounceLayer(height: Double(studio.height) * 0.08, bounces: 4, decay: 0.85) }
                 }.disabled(studio.frames.count < 2)
                     .help(L("The active layer hops across the frames, each hop lower, and lands where it started"))
+                Menu(L("Squash & stretch")) {
+                    Button(L("Normal")) { studio.squashStretch(amount: 1) }
+                    Button(L("Cartoony")) { studio.squashStretch(amount: 1.8) }
+                    Divider()
+                    Button(L("None")) { studio.clearSquashStretch() }
+                }.disabled(studio.frames.count < 3)
+                    .help(L("Stretches the active layer while it moves fast and squashes it where it lands – pairs with Bounce"))
                 Menu(L("Sway layer (rotate)")) {
                     Button(L("Gentle")) { studio.swayLayer(degrees: 6) }
                     Button(L("Strong")) { studio.swayLayer(degrees: 16) }
