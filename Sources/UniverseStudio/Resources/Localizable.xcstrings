@@ -19062,6 +19062,204 @@
           }
         }
       }
+    },
+    "Travel over the frames": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Über die Frames wandern"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Travel over the frames"
+          }
+        }
+      }
+    },
+    "Left to right": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Von links nach rechts"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Left to right"
+          }
+        }
+      }
+    },
+    "Left to right, soft": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Von links nach rechts, weich"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Left to right, soft"
+          }
+        }
+      }
+    },
+    "Right to left": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Von rechts nach links"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Right to left"
+          }
+        }
+      }
+    },
+    "Right to left, soft": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Von rechts nach links, weich"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Right to left, soft"
+          }
+        }
+      }
+    },
+    "Up": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hoch"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Up"
+          }
+        }
+      }
+    },
+    "Up, soft": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hoch, weich"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Up, soft"
+          }
+        }
+      }
+    },
+    "Down": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Runter"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Down"
+          }
+        }
+      }
+    },
+    "Down, soft": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Runter, weich"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Down, soft"
+          }
+        }
+      }
+    },
+    "The active layer crosses the whole canvas over the existing frames – its own motion stays": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die aktive Ebene zieht über die vorhandenen Frames quer über die Leinwand – ihre eigene Bewegung bleibt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The active layer crosses the whole canvas over the existing frames – its own motion stays"
+          }
+        }
+      }
+    },
+    "Travel": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wandern"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Travel"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

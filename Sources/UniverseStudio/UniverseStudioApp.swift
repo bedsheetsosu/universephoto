@@ -341,6 +341,16 @@ struct StudioCommands: Commands {
                     Button(L("Rattling, with turn")) { studio.shakeLayer(amount: 8, turn: true) }
                 }.disabled(studio.frames.count < 2)
                     .help(L("Small random jolts of the active layer in every frame – fear, cold or an impact"))
+                Menu(L("Travel over the frames")) {
+                    ForEach([false, true], id: \.self) { eased in
+                        Button(L(eased ? "Left to right, soft" : "Left to right")) { studio.travelLayer(dx: Double(studio.width), dy: 0, eased: eased) }
+                        Button(L(eased ? "Right to left, soft" : "Right to left")) { studio.travelLayer(dx: -Double(studio.width), dy: 0, eased: eased) }
+                        Button(L(eased ? "Up, soft" : "Up")) { studio.travelLayer(dx: 0, dy: -Double(studio.height), eased: eased) }
+                        Button(L(eased ? "Down, soft" : "Down")) { studio.travelLayer(dx: 0, dy: Double(studio.height), eased: eased) }
+                        Divider()
+                    }
+                }.disabled(studio.frames.count < 2)
+                    .help(L("The active layer crosses the whole canvas over the existing frames – its own motion stays"))
                 Menu(L("Sway layer (rotate)")) {
                     Button(L("Gentle")) { studio.swayLayer(degrees: 6) }
                     Button(L("Strong")) { studio.swayLayer(degrees: 16) }
