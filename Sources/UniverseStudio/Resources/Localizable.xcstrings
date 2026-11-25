@@ -17766,6 +17766,42 @@
           }
         }
       }
+    },
+    "Remove layer from all frames": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ebene aus allen Frames entfernen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove layer from all frames"
+          }
+        }
+      }
+    },
+    "Deletes the active layer from every frame – e.g. a rotoscope or reference underlay": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Löscht die aktive Ebene aus jedem Frame – z. B. einen Rotoskopie- oder Referenz-Unterbau"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deletes the active layer from every frame – e.g. a rotoscope or reference underlay"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

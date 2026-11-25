@@ -282,6 +282,8 @@ struct StudioCommands: Commands {
                     .help(L("Blends brush strokes and shapes point by point when both frames have the same strokes"))
             }.disabled(studio.frames.count < 2)
                 .help(L("Inserts in-betweens between every pair of frames at once – a whole animation turns smooth"))
+            Button(L("Remove layer from all frames")) { studio.removeLayerFromAllFrames() }.disabled(studio.frames.count < 2)
+                .help(L("Deletes the active layer from every frame – e.g. a rotoscope or reference underlay"))
             Menu(L("Sway layer (rotate)")) {
                 Button(L("Gentle")) { studio.swayLayer(degrees: 6) }
                 Button(L("Strong")) { studio.swayLayer(degrees: 16) }
