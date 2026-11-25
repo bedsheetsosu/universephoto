@@ -1,6 +1,6 @@
 # UniverseStudio™ 0.126
 
-*Früher UniversePhoto.* Kostenlose, quelloffene macOS-Anwendung zum Zeichnen, zur Bildbearbeitung und für Frame-Animation. UniverseStudio läuft eigenständig und lokal; UniversePen ist optional. Dieser Entwicklungsstand liefert eine benutzbare Grundlage mit neuem UltraUI und klar begrenztem Funktionsumfang.
+*Früher UniversePhoto.* Kostenlose, quelloffen einsehbare (source-available) macOS-Anwendung zum Zeichnen, zur Bildbearbeitung und für Frame-Animation. UniverseStudio läuft eigenständig und lokal; UniversePen ist optional. Dieser Entwicklungsstand liefert eine benutzbare Grundlage mit neuem UltraUI und klar begrenztem Funktionsumfang.
 
 ## Start
 
@@ -202,4 +202,10 @@ Noch offen sind verschachtelte Gruppen, freies Transformieren einer schwebenden 
 
 ## Lizenz
 
-GPL-3.0-or-later, vollständiger Text in [LICENSE](LICENSE), Hinweise in [COPYING.md](COPYING.md). Das Projekt verwendet ausschließlich native Systemframeworks und keine externen Swift-Pakete, kostenpflichtigen APIs, Telemetrie oder Cloud-Dienste. UniversePen bleibt ein eigenständiges Projekt; dessen SDK-Dokumentation ist MIT-lizenziert.
+**UniverseStudio License 1.0** – source-available, nicht verkaufbar, Forks bleiben offen. Du darfst UniverseStudio nutzen, studieren, ändern und forken; jeder weitergegebene Fork muss seinen vollständigen Quelltext unter derselben Lizenz offenlegen; **verkaufen darf es niemand** (kein Preis, keine Paywall, kein kostenpflichtiges Bündel). Das ist bewusst **kein** OSI-„Open Source" (das verbietet Verkaufsbeschränkungen), sondern source-available mit Copyleft. Vollständiger Text in [LICENSE](LICENSE), Kurzfassung in [COPYING.md](COPYING.md).
+
+Das Projekt verwendet ausschließlich native Systemframeworks und keine externen Swift-Pakete, kostenpflichtigen APIs, Telemetrie oder Cloud-Dienste. UniversePen bleibt ein eigenständiges Projekt; dessen SDK-Dokumentation ist MIT-lizenziert.
+
+## Mitwirken
+
+Pull Requests werden **nur ohne KI-Beteiligung** angenommen – Details und das PR-Template in [CONTRIBUTING.md](CONTRIBUTING.md). (Die Maintainer-Commits auf `main` können KI-gestützt sein und sind entsprechend gekennzeichnet.)
