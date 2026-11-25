@@ -216,6 +216,8 @@ struct StudioCommands: Commands {
                 ForEach([1.0, 2.0, 4.0], id: \.self) { sec in Button(LF("%@ s, rainbow", String(Int(sec)))) { studio.colorCycle(count: max(2, Int((studio.fps * sec).rounded()))) } }
                 Divider()
                 ForEach([1.0, 2.0], id: \.self) { sec in Button(LF("%@ s, pulse to brush colour", String(Int(sec)))) { studio.colorCycle(count: max(2, Int((studio.fps * sec).rounded())), to: studio.color) } }
+                Divider()
+                Button(L("Rainbow over existing frames")) { studio.rainbowAllFrames() }.disabled(studio.frames.count < 2)
             }.disabled(studio.activeLayer?.strokes.isEmpty != false).help(L("Strokes, shapes and text change colour in a loop; pixels keep theirs"))
             Menu(L("Camera move")) {
                 ForEach(CameraMove.allCases) { c in

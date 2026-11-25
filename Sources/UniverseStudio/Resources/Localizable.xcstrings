@@ -17550,6 +17550,24 @@
           }
         }
       }
+    },
+    "Rainbow over existing frames": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Regenbogen über vorhandene Frames"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rainbow over existing frames"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
