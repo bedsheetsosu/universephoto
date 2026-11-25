@@ -16830,6 +16830,96 @@
           }
         }
       }
+    },
+    "Thin frames": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Frames ausdünnen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thin frames"
+          }
+        }
+      }
+    },
+    "On twos": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Auf Zweien"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On twos"
+          }
+        }
+      }
+    },
+    "On threes": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Auf Dreien"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On threes"
+          }
+        }
+      }
+    },
+    "On fours": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Auf Vieren"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On fours"
+          }
+        }
+      }
+    },
+    "Keeps every 2nd/3rd/4th drawing and holds it for the gap – same length, fewer frames": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Behält jede 2./3./4. Zeichnung und hält sie über die Lücke – gleiche Länge, weniger Frames"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keeps every 2nd/3rd/4th drawing and holds it for the gap – same length, fewer frames"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

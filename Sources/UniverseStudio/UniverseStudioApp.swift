@@ -280,6 +280,12 @@ struct StudioCommands: Commands {
                     .help(L("Blends brush strokes and shapes point by point when both frames have the same strokes"))
             }.disabled(studio.frames.count < 2)
                 .help(L("Inserts in-betweens between every pair of frames at once – a whole animation turns smooth"))
+            Menu(L("Thin frames")) {
+                Button(L("On twos")) { studio.thinFrames(every: 2) }
+                Button(L("On threes")) { studio.thinFrames(every: 3) }
+                Button(L("On fours")) { studio.thinFrames(every: 4) }
+            }.disabled(studio.frames.count < 2)
+                .help(L("Keeps every 2nd/3rd/4th drawing and holds it for the gap – same length, fewer frames"))
             Menu(L("Motion echo")) {
                 ForEach([2, 3, 4], id: \.self) { n in Button(LF("%d ghosts", n)) { studio.motionEcho(count: n) } }
                 Menu(L("Stronger")) { ForEach([2, 3, 4], id: \.self) { n in Button(LF("%d ghosts", n)) { studio.motionEcho(count: n, strong: true) } } }
