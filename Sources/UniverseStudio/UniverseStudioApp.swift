@@ -272,6 +272,8 @@ struct StudioCommands: Commands {
             Button(L("First frame")) { studio.firstFrame() }.keyboardShortcut(.leftArrow,modifiers:[.option,.shift])
             Button(L("Last frame")) { studio.lastFrame() }.keyboardShortcut(.rightArrow,modifiers:[.option,.shift])
             Button(L("Reverse frames")) { studio.reverseFrames() }.disabled(studio.frames.count < 2)
+            Button(L("Merge identical frames")) { studio.mergeIdenticalFrames() }.disabled(studio.frames.count < 2)
+                .help(L("Runs of frames with the same drawing become one held frame – same motion, fewer frames"))
             Button(L("Bake ping-pong into frames")) { studio.bakePingPong() }.disabled(studio.frames.count < 3)
             Button(L("Onion Skin")) { studio.onionSkin.toggle() }.keyboardShortcut("o",modifiers:.option)
             Button(L("Play / Pause")) { studio.togglePlayback() }.keyboardShortcut(.space,modifiers:[])

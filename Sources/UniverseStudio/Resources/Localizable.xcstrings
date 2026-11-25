@@ -16650,6 +16650,42 @@
           }
         }
       }
+    },
+    "Merge identical frames": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gleiche Frames zusammenfassen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Merge identical frames"
+          }
+        }
+      }
+    },
+    "Runs of frames with the same drawing become one held frame – same motion, fewer frames": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aufeinanderfolgende Frames mit gleicher Zeichnung werden zu einem gehaltenen Frame – gleiche Bewegung, weniger Frames"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Runs of frames with the same drawing become one held frame – same motion, fewer frames"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
