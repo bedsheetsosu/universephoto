@@ -420,6 +420,16 @@ struct StudioCommands: Commands {
                     Button(L("None")) { studio.clearSquashStretch() }
                 }.disabled(studio.frames.count < 3)
                     .help(L("Stretches the active layer while it moves fast and squashes it where it lands – pairs with Bounce"))
+                Menu(L("Breathe")) {
+                    Button(L("Calm")) { studio.stretchEffect(jelly: false, amount: 0.04) }
+                    Button(L("Deep")) { studio.stretchEffect(jelly: false, amount: 0.1) }
+                }.disabled(studio.frames.count < 2)
+                    .help(L("A calm stretch in and out as a loop – an idle character or a sleeping animal"))
+                Menu(L("Jelly")) {
+                    Button(L("Soft")) { studio.stretchEffect(jelly: true, amount: 0.2) }
+                    Button(L("Wobbly")) { studio.stretchEffect(jelly: true, amount: 0.4) }
+                }.disabled(studio.frames.count < 2)
+                    .help(L("A damped wobble that starts strong and settles – after a landing or a poke"))
                 Menu(L("Sway layer (rotate)")) {
                     Button(L("Gentle")) { studio.swayLayer(degrees: 6) }
                     Button(L("Strong")) { studio.swayLayer(degrees: 16) }

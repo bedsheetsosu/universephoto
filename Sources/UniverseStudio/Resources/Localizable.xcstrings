@@ -20412,6 +20412,114 @@
           }
         }
       }
+    },
+    "Breathe": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Atmen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Breathe"
+          }
+        }
+      }
+    },
+    "Deep": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tief"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deep"
+          }
+        }
+      }
+    },
+    "A calm stretch in and out as a loop – an idle character or a sleeping animal": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ruhiges Strecken und Stauchen als Schleife – eine wartende Figur oder ein schlafendes Tier"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A calm stretch in and out as a loop – an idle character or a sleeping animal"
+          }
+        }
+      }
+    },
+    "Jelly": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wackelpudding"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jelly"
+          }
+        }
+      }
+    },
+    "Wobbly": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wabbelig"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wobbly"
+          }
+        }
+      }
+    },
+    "A damped wobble that starts strong and settles – after a landing or a poke": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein gedämpftes Wabbeln, das stark beginnt und ausschwingt – nach einer Landung oder einem Stups"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A damped wobble that starts strong and settles – after a landing or a poke"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
