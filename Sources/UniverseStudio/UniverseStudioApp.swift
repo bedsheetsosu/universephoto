@@ -204,6 +204,12 @@ struct StudioCommands: Commands {
             Button(L("Next frame")) { studio.stepToFrame(min(studio.frames.count-1,studio.frameIndex+1)) }.keyboardShortcut(.rightArrow,modifiers:.option)
             Button(L("First frame")) { studio.firstFrame() }.keyboardShortcut(.leftArrow,modifiers:[.option,.shift])
             Button(L("Last frame")) { studio.lastFrame() }.keyboardShortcut(.rightArrow,modifiers:[.option,.shift])
+            Button(L("Move frame earlier")) { studio.moveFrame(from: studio.frameIndex, to: studio.frameIndex - 1) }
+                .keyboardShortcut(.leftArrow,modifiers:[.option,.command]).disabled(studio.frameIndex == 0)
+            Button(L("Move frame later")) { studio.moveFrame(from: studio.frameIndex, to: studio.frameIndex + 1) }
+                .keyboardShortcut(.rightArrow,modifiers:[.option,.command]).disabled(studio.frameIndex >= studio.frames.count - 1)
+            Button(L("Delete frame")) { studio.removeFrame() }
+                .keyboardShortcut(.delete,modifiers:[.option,.command]).disabled(studio.frames.count < 2)
             Button(L("Onion Skin")) { studio.onionSkin.toggle() }.keyboardShortcut("o",modifiers:.option)
             Button(L("Play / Pause")) { studio.togglePlayback() }.keyboardShortcut(.space,modifiers:[])
             AnimationPreviewButton()

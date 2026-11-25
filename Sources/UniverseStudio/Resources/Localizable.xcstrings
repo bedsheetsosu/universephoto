@@ -19260,6 +19260,42 @@
           }
         }
       }
+    },
+    "Move frame earlier": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Frame nach vorne"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Move frame earlier"
+          }
+        }
+      }
+    },
+    "Move frame later": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Frame nach hinten"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Move frame later"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
