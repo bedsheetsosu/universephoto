@@ -18378,6 +18378,114 @@
           }
         }
       }
+    },
+    "Motion strength": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bewegungsstärke"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Motion strength"
+          }
+        }
+      }
+    },
+    "Stronger (1.5×)": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stärker (1,5×)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stronger (1.5×)"
+          }
+        }
+      }
+    },
+    "Much stronger (2×)": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Viel stärker (2×)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Much stronger (2×)"
+          }
+        }
+      }
+    },
+    "Calmer (0.7×)": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ruhiger (0,7×)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Calmer (0.7×)"
+          }
+        }
+      }
+    },
+    "Half (0.5×)": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Halb (0,5×)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Half (0.5×)"
+          }
+        }
+      }
+    },
+    "Makes the active layer's movement bigger or smaller around its middle – same timing": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Macht die Bewegung der aktiven Ebene um ihre Mitte größer oder kleiner – gleiches Timing"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Makes the active layer's movement bigger or smaller around its middle – same timing"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

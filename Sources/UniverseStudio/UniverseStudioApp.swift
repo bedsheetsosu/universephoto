@@ -289,6 +289,14 @@ struct StudioCommands: Commands {
                     Button(L("1 frame later, hold the start")) { studio.delayLayer(by: 1, wrap: false) }
                 }.disabled(studio.frames.count < 2)
                     .help(L("The active layer runs a few frames behind the rest – hair or a tail that follows a moment later"))
+                Menu(L("Motion strength")) {
+                    Button(L("Stronger (1.5×)")) { studio.amplifyMotion(factor: 1.5) }
+                    Button(L("Much stronger (2×)")) { studio.amplifyMotion(factor: 2) }
+                    Divider()
+                    Button(L("Calmer (0.7×)")) { studio.amplifyMotion(factor: 0.7) }
+                    Button(L("Half (0.5×)")) { studio.amplifyMotion(factor: 0.5) }
+                }.disabled(studio.frames.count < 2)
+                    .help(L("Makes the active layer's movement bigger or smaller around its middle – same timing"))
                 Button(L("Remove layer from all frames")) { studio.removeLayerFromAllFrames() }.disabled(studio.frames.count < 2)
                     .help(L("Deletes the active layer from every frame – e.g. a rotoscope or reference underlay"))
                 Menu(L("Sway layer (rotate)")) {
