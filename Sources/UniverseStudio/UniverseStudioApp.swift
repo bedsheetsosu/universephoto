@@ -321,6 +321,8 @@ struct StudioCommands: Commands {
                     Button(L("Up ↕ down")) { studio.mirrorLayerMotion(horizontal: false) }
                 }.disabled(studio.frames.count < 2)
                     .help(L("The active layer's path is mirrored around its start – it moves the other way"))
+                Button(L("Remove drift")) { studio.removeDrift() }.disabled(studio.frames.count < 2)
+                    .help(L("Takes out the active layer's net travel – a walk cycle walks on the spot, wiggles stay"))
                 Button(L("Copy motion to selected layers")) { studio.copyMotionToSelected() }
                     .disabled(studio.frames.count < 2 || studio.selectedIDs.subtracting([studio.activeLayer?.id].compactMap { $0 }).isEmpty)
                     .help(L("The other selected layers move like the active one, each from its own starting point"))

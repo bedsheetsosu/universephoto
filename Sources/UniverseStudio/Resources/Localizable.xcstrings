@@ -19854,6 +19854,42 @@
           }
         }
       }
+    },
+    "Remove drift": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Drift entfernen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Remove drift"
+          }
+        }
+      }
+    },
+    "Takes out the active layer's net travel – a walk cycle walks on the spot, wiggles stay": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rechnet die Nettowanderung der aktiven Ebene heraus – ein Laufzyklus läuft auf der Stelle, Wackler bleiben"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Takes out the active layer's net travel – a walk cycle walks on the spot, wiggles stay"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
