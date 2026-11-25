@@ -19962,6 +19962,60 @@
           }
         }
       }
+    },
+    "Follow in a chain": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kette nachziehen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Follow in a chain"
+          }
+        }
+      }
+    },
+    "%d frames apart": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d Frames Abstand"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%d frames apart"
+          }
+        }
+      }
+    },
+    "The other selected layers repeat the active layer's movement one after another – a wave through a tail or chain": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die anderen ausgewählten Ebenen wiederholen die Bewegung der aktiven nacheinander – eine Welle durch Schwanz oder Kette"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The other selected layers repeat the active layer's movement one after another – a wave through a tail or chain"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
