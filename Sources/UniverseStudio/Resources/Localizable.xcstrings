@@ -23688,6 +23688,78 @@
           }
         }
       }
+    },
+    "Flicker": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Flackern"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Flicker"
+          }
+        }
+      }
+    },
+    "Now and then": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ab und zu"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Now and then"
+          }
+        }
+      }
+    },
+    "Broken neon": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kaputte Neonröhre"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Broken neon"
+          }
+        }
+      }
+    },
+    "The active layer flickers irregularly – a broken neon sign, a candle, a failing torch": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die aktive Ebene flackert unregelmäßig – kaputte Neonröhre, Kerze, schwache Taschenlampe"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The active layer flickers irregularly – a broken neon sign, a candle, a failing torch"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

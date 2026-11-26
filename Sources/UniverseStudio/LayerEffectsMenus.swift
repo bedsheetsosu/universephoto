@@ -172,6 +172,11 @@ struct LayerEffectsAppear: View {
             .help(L("The active layer rises out of the ground at its bottom edge – from behind a wall or a counter – or sinks back down"))
         }
         Group {
+        Menu(L("Flicker")) {
+            Button(L("Now and then")) { studio.onSelectedLayers { studio.flickerLayer(wild: false) } }
+            Button(L("Broken neon")) { studio.onSelectedLayers { studio.flickerLayer(wild: true) } }
+        }.disabled(studio.frames.count < 3)
+            .help(L("The active layer flickers irregularly – a broken neon sign, a candle, a failing torch"))
         Menu(L("Stamp")) {
             Button(L("Quick slam")) { studio.onSelectedLayers { studio.stampLayer(hitAfter: max(2, Int((studio.fps * 0.25).rounded()))) } }
             Button(L("Slow fall")) { studio.onSelectedLayers { studio.stampLayer(hitAfter: max(3, Int((studio.fps * 0.6).rounded()))) } }
