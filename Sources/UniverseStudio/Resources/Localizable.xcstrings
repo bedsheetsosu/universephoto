@@ -22068,6 +22068,78 @@
           }
         }
       }
+    },
+    "Smoke trail": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rauchspur"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Smoke trail"
+          }
+        }
+      }
+    },
+    "Thick": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dicht"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thick"
+          }
+        }
+      }
+    },
+    "Puffs": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wölkchen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Puffs"
+          }
+        }
+      }
+    },
+    "The moving active layer leaves puffs behind that grow, rise and fade – a rocket, a train, a car": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die bewegte aktive Ebene hinterlässt Wölkchen, die wachsen, aufsteigen und verblassen – Rakete, Zug, Auto"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The moving active layer leaves puffs behind that grow, rise and fade – a rocket, a train, a car"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
