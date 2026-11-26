@@ -320,6 +320,11 @@ struct StudioCommands: Commands {
                     ForEach(FloatingSymbol.allCases) { k in Button(L(k.title)) { studio.addFloatingSymbols(k) } }
                 }.disabled(studio.frames.count < 2)
                     .help(L("Little symbols drift up from the active layer and fade – hearts, music notes, sleepy Z's or question marks"))
+                Menu(L("Sweat drop")) {
+                    Button(L("One drop per loop")) { studio.addSweatDrop(drops: 1) }
+                    Button(L("Nervous (3 per loop)")) { studio.addSweatDrop(drops: 3) }
+                }.disabled(studio.frames.count < 2)
+                    .help(L("A cartoon sweat drop slides down the side of the active layer and drips off – nerves"))
                 Menu(L("Swarm")) {
                     Button(L("A few (3)")) { studio.addSwarm(count: 3) }
                     Button(L("Many (7)")) { studio.addSwarm(count: 7) }

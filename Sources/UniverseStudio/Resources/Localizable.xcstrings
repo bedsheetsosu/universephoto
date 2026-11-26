@@ -23364,6 +23364,78 @@
           }
         }
       }
+    },
+    "Sweat drop": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schweißtropfen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sweat drop"
+          }
+        }
+      }
+    },
+    "One drop per loop": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein Tropfen pro Schleife"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "One drop per loop"
+          }
+        }
+      }
+    },
+    "Nervous (3 per loop)": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nervös (3 pro Schleife)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nervous (3 per loop)"
+          }
+        }
+      }
+    },
+    "A cartoon sweat drop slides down the side of the active layer and drips off – nerves": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein Cartoon-Schweißtropfen rinnt an der Seite der aktiven Ebene herab und tropft ab – Nervosität"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A cartoon sweat drop slides down the side of the active layer and drips off – nerves"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
