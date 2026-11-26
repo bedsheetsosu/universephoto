@@ -22644,6 +22644,42 @@
           }
         }
       }
+    },
+    "Peek-a-boo": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kuckuck"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Peek-a-boo"
+          }
+        }
+      }
+    },
+    "Rises up from its bottom edge, looks around for a moment and ducks back down": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Taucht an der Unterkante auf, schaut sich kurz um und duckt sich wieder weg"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rises up from its bottom edge, looks around for a moment and ducks back down"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
