@@ -373,6 +373,12 @@ struct StudioCommands: Commands {
                 }.disabled(studio.frames.count < 2)
                     .help(L("The camera pans along with the active layer so it stays in view – the rest of the picture moves the other way"))
                 }
+                Section(L("Lighting")) {
+                Menu(L("Light mood")) {
+                    ForEach(LightMood.allCases) { m in Button(L(m.title)) { studio.addLightMood(m) } }
+                }.disabled(studio.frames.count < 2)
+                    .help(L("The light of the whole picture changes over the frames – day to night, night to day, a warm sunset"))
+                }
                 Section(L("Impacts")) {
                 Button(L("Landing dust")) { studio.addLandingDust() }.disabled(studio.frames.count < 3)
                     .help(L("A little dust cloud where the active layer touches down – pairs with Bounce"))

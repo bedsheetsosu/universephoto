@@ -24084,6 +24084,114 @@
           }
         }
       }
+    },
+    "Light mood": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lichtstimmung"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Light mood"
+          }
+        }
+      }
+    },
+    "Day to night": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tag zu Nacht"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Day to night"
+          }
+        }
+      }
+    },
+    "Night to day": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nacht zu Tag"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Night to day"
+          }
+        }
+      }
+    },
+    "Sunset glow": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abendrot"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sunset glow"
+          }
+        }
+      }
+    },
+    "The light of the whole picture changes over the frames – day to night, night to day, a warm sunset": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das Licht im ganzen Bild ändert sich über die Frames – Tag zu Nacht, Nacht zu Tag, warmes Abendrot"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The light of the whole picture changes over the frames – day to night, night to day, a warm sunset"
+          }
+        }
+      }
+    },
+    "Lighting": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Licht"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lighting"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
