@@ -496,6 +496,8 @@ struct StudioCommands: Commands {
                     Menu(L("Pulse size")) {
                         Button(L("Subtle")) { studio.onSelectedLayers { studio.scalePulseLayer(amount: 0.08) } }
                         Button(L("Strong")) { studio.onSelectedLayers { studio.scalePulseLayer(amount: 0.22) } }
+                        Divider()
+                        Button(L("Heartbeat")) { studio.onSelectedLayers { studio.scalePulseLayer(amount: 0.18, heartbeat: true) } }
                     }.disabled(studio.frames.count < 2)
                         .help(L("Grows and shrinks the active layer across the frames – a gentle breathing or heartbeat"))
                     Menu(L("Boil all frames")) {

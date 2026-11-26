@@ -4,6 +4,7 @@ import Foundation
 /// loop – a gentle breathing or a heartbeat on top of an existing animation. The size-sibling of
 /// Pulse layer (opacity) and Float layer (position). It scales the layer per frame (undo to remove;
 /// running again stacks). Works on the play range if one is set, otherwise all frames. One undo.
+/// `heartbeat` (0.209): two quick beats – lub-dub – then a rest, instead of the smooth swell.
 extension Studio {
     /// Scale factor for frame `k` of `count`: 1 at the ends, 1 + `amount` at the middle, smooth.
     static func scalePulseFactor(frameIndexInRange k: Int, count: Int, amount: Double) -> Double {
@@ -11,7 +12,15 @@ extension Studio {
         return 1 + amount * (0.5 - 0.5 * cos(2 * .pi * Double(k) / Double(count)))
     }
 
-    @discardableResult func scalePulseLayer(amount: Double) -> Int {
+    /// Lub-dub: a strong beat, a weaker one right after, then calm. 1 at the ends (seamless).
+    static func heartbeatFactor(frameIndexInRange k: Int, count: Int, amount: Double) -> Double {
+        guard count >= 2 else { return 1 }
+        let p = Double(k) / Double(count), w = max(0.12, 2.5 / Double(count))
+        func bump(_ start: Double) -> Double { p >= start && p < start + w ? sin(.pi * (p - start) / w) : 0 }
+        return 1 + amount * max(bump(0.02), 0.65 * bump(0.02 + w * 1.1))
+    }
+
+    @discardableResult func scalePulseLayer(amount: Double, heartbeat: Bool = false) -> Int {
         guard frames.count >= 2, amount != 0, let id = activeLayer?.id, activeLayer?.allFrames != true else { return 0 }
         stopPlayback()
         if frames.indices.contains(frameIndex) { frames[frameIndex] = layers }
@@ -19,7 +28,8 @@ extension Studio {
         let n = r.count
         var nf = frames, changedAny = false
         for (k, i) in r.enumerated() {
-            let f = Studio.scalePulseFactor(frameIndexInRange: k, count: n, amount: amount)
+            let f = heartbeat ? Studio.heartbeatFactor(frameIndexInRange: k, count: n, amount: amount)
+                              : Studio.scalePulseFactor(frameIndexInRange: k, count: n, amount: amount)
             guard abs(f - 1) > 1e-9 else { continue }
             for j in nf[i].indices where nf[i][j].id == id {
                 pivotEdit(&nf[i][j], .centre) { $0.scale *= f }

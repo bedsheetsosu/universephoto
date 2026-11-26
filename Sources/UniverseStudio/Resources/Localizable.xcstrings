@@ -21870,6 +21870,24 @@
           }
         }
       }
+    },
+    "Heartbeat": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Herzschlag"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Heartbeat"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
