@@ -362,6 +362,11 @@ struct StudioCommands: Commands {
                     Button(L("Shaky")) { studio.handheldCamera(amount: 12) }
                 }.disabled(studio.frames.count < 2)
                     .help(L("The whole picture sways softly as if filmed from the hand – a seamless drift over the existing frames"))
+                Menu(L("Parallax pan")) {
+                    Button(L("To the right")) { studio.parallaxPan(distance: Double(studio.width) * 0.3) }
+                    Button(L("To the left")) { studio.parallaxPan(distance: -Double(studio.width) * 0.3) }
+                }.disabled(studio.frames.count < 2)
+                    .help(L("The camera glides sideways; layers higher in the stack pass faster than the background – depth from a flat drawing"))
                 Menu(L("Follow the active layer")) {
                     Button(L("Tight")) { studio.cameraFollow(tight: true) }
                     Button(L("Loose")) { studio.cameraFollow(tight: false) }

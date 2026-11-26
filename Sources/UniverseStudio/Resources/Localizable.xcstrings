@@ -24012,6 +24012,78 @@
           }
         }
       }
+    },
+    "Parallax pan": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Parallax-Schwenk"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Parallax pan"
+          }
+        }
+      }
+    },
+    "To the right": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nach rechts"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "To the right"
+          }
+        }
+      }
+    },
+    "To the left": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nach links"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "To the left"
+          }
+        }
+      }
+    },
+    "The camera glides sideways; layers higher in the stack pass faster than the background – depth from a flat drawing": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Kamera gleitet zur Seite; höhere Ebenen ziehen schneller vorbei als der Hintergrund – Tiefe aus einer flachen Zeichnung"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The camera glides sideways; layers higher in the stack pass faster than the background – depth from a flat drawing"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
