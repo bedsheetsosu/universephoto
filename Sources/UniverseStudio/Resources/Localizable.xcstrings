@@ -25182,6 +25182,78 @@
           }
         }
       }
+    },
+    "Blush": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Erröten"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Blush"
+          }
+        }
+      }
+    },
+    "Pink cheeks with little hatch lines fade in on the active layer and glow gently – shy or in love": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rosa Wangen mit kleinen Schraffur-Strichen blenden auf der aktiven Ebene ein und glühen sanft – schüchtern oder verliebt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pink cheeks with little hatch lines fade in on the active layer and glow gently – shy or in love"
+          }
+        }
+      }
+    },
+    "Shy": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schüchtern"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shy"
+          }
+        }
+      }
+    },
+    "Sways bashfully from side to side while its cheeks blush": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wiegt sich verlegen hin und her, während die Wangen erröten"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sways bashfully from side to side while its cheeks blush"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

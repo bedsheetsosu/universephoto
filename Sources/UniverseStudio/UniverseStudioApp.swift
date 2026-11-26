@@ -355,6 +355,9 @@ struct StudioCommands: Commands {
                 Button(L("Tears")) { studio.addTears() }
                     .disabled(studio.frames.count < 2)
                     .help(L("Tears roll down from eye height on both sides of the active layer, one after another – crying"))
+                Button(L("Blush")) { studio.addBlush() }
+                    .disabled(studio.frames.count < 2)
+                    .help(L("Pink cheeks with little hatch lines fade in on the active layer and glow gently – shy or in love"))
                 Menu(L("Swarm")) {
                     Button(L("A few (3)")) { studio.addSwarm(count: 3) }
                     Button(L("Many (7)")) { studio.addSwarm(count: 7) }
