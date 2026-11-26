@@ -451,6 +451,13 @@ struct QuickMotionRow: View {
                         .buttonStyle(PhotoButtonStyle()).help(L(title)).accessibilityLabel(L(title))
                 }
             }
+            // 0.234: the last layer effect again, one click (same as Animation → Repeat, ⌘Y).
+            if let label = s.lastEffectLabel, s.lastEffect != nil, s.frames.count >= 2 {
+                Button { s.repeatLastEffect() } label: {
+                    Label(LF("Repeat: %@", L(label)), systemImage: "repeat").lineLimit(1).frame(maxWidth: .infinity)
+                }
+                .buttonStyle(PhotoButtonStyle()).help(L("Runs the last layer effect or layer motion again – on the layers selected now and the current play range"))
+            }
         }
     }
 }
