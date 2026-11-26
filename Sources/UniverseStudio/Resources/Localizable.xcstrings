@@ -22482,6 +22482,42 @@
           }
         }
       }
+    },
+    "Figure eight": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Acht"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Figure eight"
+          }
+        }
+      }
+    },
+    "The active layer runs on a circle or a figure eight that starts at its position – a seamless loop": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die aktive Ebene läuft auf einem Kreis oder einer Acht, die an ihrer Position beginnt – eine nahtlose Schleife"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The active layer runs on a circle or a figure eight that starts at its position – a seamless loop"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

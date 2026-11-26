@@ -429,7 +429,7 @@ struct StudioCommands: Commands {
                 }
             } }.help(L("Rework the movement the active layer already has, across all frames"))
             Menu(L("Layer effects")) { Group {
-                Section(L("Move")) {
+                Section(L("Move")) { Group {
                     Menu(L("Travel over the frames")) {
                         ForEach([false, true], id: \.self) { eased in
                             Button(L(eased ? "Left to right, soft" : "Left to right")) { studio.onSelectedLayers { studio.travelLayer(dx: Double(studio.width), dy: 0, eased: eased) } }
@@ -446,8 +446,10 @@ struct StudioCommands: Commands {
                         Button(L("Flat ellipse")) { studio.onSelectedLayers { studio.orbitLayer(radius: 80, squash: 0.35) } }
                         Divider()
                         Button(L("Small circle, other way")) { studio.onSelectedLayers { studio.orbitLayer(radius: 20, clockwise: false) } }
+                        Divider()
+                        Button(L("Figure eight")) { studio.onSelectedLayers { studio.orbitLayer(radius: 70, figureEight: true) } }
                     }.disabled(studio.frames.count < 2)
-                        .help(L("The active layer runs on a circle that starts at its position – a seamless loop"))
+                        .help(L("The active layer runs on a circle or a figure eight that starts at its position – a seamless loop"))
                     Menu(L("Spiral")) {
                         Button(L("Whirl in")) { studio.onSelectedLayers { studio.spiralLayer(radius: 120, turns: 1.5) } }
                         Button(L("Whirl out")) { studio.onSelectedLayers { studio.spiralLayer(radius: 120, turns: 1.5, out: true) } }
@@ -503,7 +505,7 @@ struct StudioCommands: Commands {
                         Button(L("Counter-clockwise, 1 turn")) { studio.onSelectedLayers { studio.spinLayerOverFrames(turns: -1) } }
                     }.disabled(studio.frames.count < 2)
                         .help(L("The active layer turns full circles across the existing frames – a seamless loop"))
-                }
+                } }
                 Section(L("Shape")) {
                     Menu(L("Squash & stretch")) {
                         Button(L("Normal")) { studio.onSelectedLayers { studio.squashStretch(amount: 1) } }
