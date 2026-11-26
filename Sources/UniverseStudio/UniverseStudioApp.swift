@@ -388,6 +388,11 @@ struct StudioCommands: Commands {
                     ForEach(StinkStyle.allCases) { k in Button(L(k.title)) { studio.addStinkLines(k) } }
                 }.disabled(studio.frames.count < 2)
                     .help(L("Three wavy lines rise and wobble above the active layer – a bad smell in green, or steam in white"))
+                Menu(L("Flies")) {
+                    Button(L("A few (3)")) { studio.addFlies(count: 3) }
+                    Button(L("Many (6)")) { studio.addFlies(count: 6) }
+                }.disabled(studio.frames.count < 2)
+                    .help(L("Little black flies with flapping wings buzz around the top of the active layer"))
                 }
                 }
                 Section(L("Camera")) {

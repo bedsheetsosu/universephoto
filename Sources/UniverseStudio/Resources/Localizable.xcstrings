@@ -25452,6 +25452,132 @@
           }
         }
       }
+    },
+    "Hot drink": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Heißes Getränk"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hot drink"
+          }
+        }
+      }
+    },
+    "Smelly": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stinkig"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Smelly"
+          }
+        }
+      }
+    },
+    "Steam curls up while it breathes gently – a loop": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dampf kräuselt sich nach oben, während es sanft atmet – eine Schleife"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Steam curls up while it breathes gently – a loop"
+          }
+        }
+      }
+    },
+    "Stink lines rise while flies buzz around it – a loop": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gestank steigt auf, während Fliegen darum herumschwirren – eine Schleife"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stink lines rise while flies buzz around it – a loop"
+          }
+        }
+      }
+    },
+    "Flies": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fliegen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Flies"
+          }
+        }
+      }
+    },
+    "Many (6)": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Viele (6)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Many (6)"
+          }
+        }
+      }
+    },
+    "Little black flies with flapping wings buzz around the top of the active layer": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kleine schwarze Fliegen mit flatternden Flügeln schwirren oben um die aktive Ebene herum"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Little black flies with flapping wings buzz around the top of the active layer"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

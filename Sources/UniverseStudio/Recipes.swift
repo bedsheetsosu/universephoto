@@ -4,12 +4,12 @@ import Foundation
 /// effects stacked on the active layer, as one undo step. From a single frame the frames are made
 /// first (2 s); on an animation they play over the play range (or all frames).
 enum Recipe: String, CaseIterable, Identifiable {
-    case bouncingEntrance, popTitle, windUpExit, happyIdle, dropAndShake, magicItem, hangingSign, walkBy, peekaboo, rocketLaunch, sleepy, inLove, nervous, angry, surprised, stormyNight, snowyEvening, bouncyTitle, partyTitle, titleInOut, pondering, greeting, callForHelp, dizzy, brightIdea, sad, shy, tadaTitle
+    case bouncingEntrance, popTitle, windUpExit, happyIdle, dropAndShake, magicItem, hangingSign, walkBy, peekaboo, rocketLaunch, sleepy, inLove, nervous, angry, surprised, stormyNight, snowyEvening, bouncyTitle, partyTitle, titleInOut, pondering, greeting, callForHelp, dizzy, brightIdea, sad, shy, tadaTitle, hotDrink, smelly
     var id: String { rawValue }
     /// Menu groups (0.239): ins and outs, loops, feelings.
     static let groups: [(title: String, recipes: [Recipe])] = [
         ("Ins & outs", [.bouncingEntrance, .popTitle, .walkBy, .peekaboo, .dropAndShake, .windUpExit, .rocketLaunch]),
-        ("Loops", [.happyIdle, .magicItem, .hangingSign, .sleepy]),
+        ("Loops", [.happyIdle, .magicItem, .hangingSign, .sleepy, .hotDrink, .smelly]),
         ("Feelings", [.inLove, .nervous, .angry, .surprised, .pondering, .dizzy, .brightIdea, .sad, .shy]),
         ("Talking", [.greeting, .callForHelp]),
         ("Text", [.bouncyTitle, .partyTitle, .titleInOut, .tadaTitle]),
@@ -23,6 +23,7 @@ enum Recipe: String, CaseIterable, Identifiable {
         case .angry: "Angry"; case .surprised: "Surprised"; case .pondering: "Pondering"; case .dizzy: "Dizzy"; case .brightIdea: "Bright idea"; case .sad: "Sad"; case .shy: "Shy"
         case .stormyNight: "Stormy night"; case .snowyEvening: "Snowy evening"
         case .bouncyTitle: "Bouncy title"; case .partyTitle: "Party title"; case .titleInOut: "Title in & out"; case .tadaTitle: "Ta-da title"
+        case .hotDrink: "Hot drink"; case .smelly: "Smelly"
         case .greeting: "Greeting"; case .callForHelp: "Call for help" } }
     var symbol: String { switch self {
         case .bouncingEntrance: "figure.run"; case .popTitle: "textformat.size.larger"; case .windUpExit: "arrow.right.to.line"
@@ -31,7 +32,7 @@ enum Recipe: String, CaseIterable, Identifiable {
         case .sleepy: "moon.zzz"; case .inLove: "heart"; case .nervous: "exclamationmark.bubble"
         case .angry: "flame"; case .surprised: "exclamationmark"; case .pondering: "bubble.left"; case .dizzy: "star.circle"; case .brightIdea: "lightbulb.max"; case .sad: "drop"; case .shy: "face.smiling.inverse"
         case .stormyNight: "cloud.bolt.rain"; case .snowyEvening: "cloud.snow"
-        case .bouncyTitle: "textformat"; case .partyTitle: "party.popper"; case .titleInOut: "arrow.up.and.down.text.horizontal"; case .tadaTitle: "sun.max"
+        case .bouncyTitle: "textformat"; case .partyTitle: "party.popper"; case .titleInOut: "arrow.up.and.down.text.horizontal"; case .tadaTitle: "sun.max"; case .hotDrink: "cup.and.saucer"; case .smelly: "aqi.medium"
         case .greeting: "hand.wave"; case .callForHelp: "megaphone" } }
     var hint: String { switch self {
         case .bouncingEntrance: "Hops in from the left with squash, stretch, dust and a shadow"
@@ -58,6 +59,8 @@ enum Recipe: String, CaseIterable, Identifiable {
         case .snowyEvening: "Snow falls in a warm evening light – the whole picture"
         case .bouncyTitle: "Pops in, then its letters hop one after another"
         case .partyTitle: "Letters wave in running rainbow colours while it bobs"
+        case .hotDrink: "Steam curls up while it breathes gently – a loop"
+        case .smelly: "Stink lines rise while flies buzz around it – a loop"
         case .tadaTitle: "Letters pop in one by one in front of turning rays, with sparkles"
         case .titleInOut: "Letters drop in one by one, the title stays, then they fly apart"
         case .greeting: "A little hop, then a speech bubble says the Text tool's text (or Hello!)"
@@ -112,6 +115,12 @@ extension Studio {
             if popEnd < all.upperBound { playRange = all.lowerBound...popEnd; growLayerOverFrames(grow: true, pop: true) }
             playRange = saved
             wavyText(hop: true)
+        case .hotDrink:
+            stretchEffect(jelly: false, amount: 0.02)
+            addStinkLines(.steam)
+        case .smelly:
+            addStinkLines(.stink)
+            addFlies(count: 3)
         case .tadaTitle:
             let saved = playRange, all = Playback.clamp(playRange, count: frames.count) ?? 0...(frames.count - 1)
             let popEnd = all.lowerBound + max(2, all.count / 2)
