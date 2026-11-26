@@ -362,6 +362,11 @@ struct StudioCommands: Commands {
                     Button(L("Shaky")) { studio.handheldCamera(amount: 12) }
                 }.disabled(studio.frames.count < 2)
                     .help(L("The whole picture sways softly as if filmed from the hand – a seamless drift over the existing frames"))
+                Menu(L("Follow the active layer")) {
+                    Button(L("Tight")) { studio.cameraFollow(tight: true) }
+                    Button(L("Loose")) { studio.cameraFollow(tight: false) }
+                }.disabled(studio.frames.count < 2)
+                    .help(L("The camera pans along with the active layer so it stays in view – the rest of the picture moves the other way"))
                 }
                 Section(L("Impacts")) {
                 Button(L("Landing dust")) { studio.addLandingDust() }.disabled(studio.frames.count < 3)

@@ -23940,6 +23940,78 @@
           }
         }
       }
+    },
+    "Follow the active layer": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der aktiven Ebene folgen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Follow the active layer"
+          }
+        }
+      }
+    },
+    "Tight": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eng"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tight"
+          }
+        }
+      }
+    },
+    "Loose": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Locker"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Loose"
+          }
+        }
+      }
+    },
+    "The camera pans along with the active layer so it stays in view – the rest of the picture moves the other way": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Kamera schwenkt mit der aktiven Ebene mit, damit sie im Bild bleibt – der Rest des Bildes bewegt sich gegenläufig"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The camera pans along with the active layer so it stays in view – the rest of the picture moves the other way"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
