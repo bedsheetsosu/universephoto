@@ -25956,6 +25956,42 @@
           }
         }
       }
+    },
+    "Party": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Party"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Party"
+          }
+        }
+      }
+    },
+    "Confetti rains while the picture pumps and flashes to a 120 BPM beat": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Konfetti regnet, während das Bild im 120er-Takt pumpt und aufblitzt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Confetti rains while the picture pumps and flashes to a 120 BPM beat"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
