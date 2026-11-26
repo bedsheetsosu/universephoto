@@ -4,13 +4,14 @@ import Foundation
 /// effects stacked on the active layer, as one undo step. From a single frame the frames are made
 /// first (2 s); on an animation they play over the play range (or all frames).
 enum Recipe: String, CaseIterable, Identifiable {
-    case bouncingEntrance, popTitle, windUpExit, happyIdle, dropAndShake, magicItem, hangingSign, walkBy, peekaboo, rocketLaunch, sleepy, inLove, nervous, angry, surprised, stormyNight, snowyEvening, bouncyTitle, partyTitle, titleInOut, pondering
+    case bouncingEntrance, popTitle, windUpExit, happyIdle, dropAndShake, magicItem, hangingSign, walkBy, peekaboo, rocketLaunch, sleepy, inLove, nervous, angry, surprised, stormyNight, snowyEvening, bouncyTitle, partyTitle, titleInOut, pondering, greeting, callForHelp
     var id: String { rawValue }
     /// Menu groups (0.239): ins and outs, loops, feelings.
     static let groups: [(title: String, recipes: [Recipe])] = [
         ("Ins & outs", [.bouncingEntrance, .popTitle, .walkBy, .peekaboo, .dropAndShake, .windUpExit, .rocketLaunch]),
         ("Loops", [.happyIdle, .magicItem, .hangingSign, .sleepy]),
         ("Feelings", [.inLove, .nervous, .angry, .surprised, .pondering]),
+        ("Talking", [.greeting, .callForHelp]),
         ("Text", [.bouncyTitle, .partyTitle, .titleInOut]),
         ("Scenes", [.stormyNight, .snowyEvening]),
     ]
@@ -21,7 +22,8 @@ enum Recipe: String, CaseIterable, Identifiable {
         case .sleepy: "Sleepy"; case .inLove: "In love"; case .nervous: "Nervous"
         case .angry: "Angry"; case .surprised: "Surprised"; case .pondering: "Pondering"
         case .stormyNight: "Stormy night"; case .snowyEvening: "Snowy evening"
-        case .bouncyTitle: "Bouncy title"; case .partyTitle: "Party title"; case .titleInOut: "Title in & out" } }
+        case .bouncyTitle: "Bouncy title"; case .partyTitle: "Party title"; case .titleInOut: "Title in & out"
+        case .greeting: "Greeting"; case .callForHelp: "Call for help" } }
     var symbol: String { switch self {
         case .bouncingEntrance: "figure.run"; case .popTitle: "textformat.size.larger"; case .windUpExit: "arrow.right.to.line"
         case .happyIdle: "face.smiling"; case .dropAndShake: "arrow.down.to.line"
@@ -29,7 +31,8 @@ enum Recipe: String, CaseIterable, Identifiable {
         case .sleepy: "moon.zzz"; case .inLove: "heart"; case .nervous: "exclamationmark.bubble"
         case .angry: "flame"; case .surprised: "exclamationmark"; case .pondering: "bubble.left"
         case .stormyNight: "cloud.bolt.rain"; case .snowyEvening: "cloud.snow"
-        case .bouncyTitle: "textformat"; case .partyTitle: "party.popper"; case .titleInOut: "arrow.up.and.down.text.horizontal" } }
+        case .bouncyTitle: "textformat"; case .partyTitle: "party.popper"; case .titleInOut: "arrow.up.and.down.text.horizontal"
+        case .greeting: "hand.wave"; case .callForHelp: "megaphone" } }
     var hint: String { switch self {
         case .bouncingEntrance: "Hops in from the left with squash, stretch, dust and a shadow"
         case .popTitle: "Pops up with an overshoot, fades in and wobbles"
@@ -51,7 +54,9 @@ enum Recipe: String, CaseIterable, Identifiable {
         case .snowyEvening: "Snow falls in a warm evening light – the whole picture"
         case .bouncyTitle: "Pops in, then its letters hop one after another"
         case .partyTitle: "Letters wave in running rainbow colours while it bobs"
-        case .titleInOut: "Letters drop in one by one, the title stays, then they fly apart" } }
+        case .titleInOut: "Letters drop in one by one, the title stays, then they fly apart"
+        case .greeting: "A little hop, then a speech bubble says the Text tool's text (or Hello!)"
+        case .callForHelp: "Trembles while a shout bubble yells the Text tool's text" } }
 }
 
 extension Studio {
@@ -125,6 +130,15 @@ extension Studio {
         case .snowyEvening:
             addLightMood(.sunset)
             addWeather(.snow, count: 0)
+        case .greeting:
+            let saved = playRange, all = Playback.clamp(playRange, count: frames.count) ?? 0...(frames.count - 1)
+            let hop = all.lowerBound + max(3, all.count / 3)
+            if hop <= all.upperBound { playRange = all.lowerBound...hop; jumpLayer(height: h * 0.06) }
+            playRange = saved
+            addSpeechBubble()
+        case .callForHelp:
+            shakeLayer(amount: 3)
+            addSpeechBubble(shout: true)
         case .pondering:
             swayLayer(degrees: 4)
             addThoughtBubble()

@@ -24840,6 +24840,96 @@
           }
         }
       }
+    },
+    "Talking": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reden"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Talking"
+          }
+        }
+      }
+    },
+    "Greeting": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Begrüßen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Greeting"
+          }
+        }
+      }
+    },
+    "Call for help": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hilferuf"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Call for help"
+          }
+        }
+      }
+    },
+    "A little hop, then a speech bubble says the Text tool's text (or Hello!)": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein kleiner Hüpfer, dann sagt eine Sprechblase den Text des Text-Werkzeugs (oder Hallo!)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A little hop, then a speech bubble says the Text tool's text (or Hello!)"
+          }
+        }
+      }
+    },
+    "Trembles while a shout bubble yells the Text tool's text": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zittert, während eine Schrei-Blase den Text des Text-Werkzeugs ruft"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trembles while a shout bubble yells the Text tool's text"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
