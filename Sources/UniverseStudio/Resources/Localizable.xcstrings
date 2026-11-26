@@ -21888,6 +21888,42 @@
           }
         }
       }
+    },
+    "Turn with the path": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In Bewegungsrichtung drehen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Turn with the path"
+          }
+        }
+      }
+    },
+    "The active layer turns to face where it is going – a paper plane or a fish. As drawn counts as straight ahead": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die aktive Ebene dreht sich in die Richtung, in die sie fliegt – Papierflieger oder Fisch. Wie gezeichnet gilt als geradeaus"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The active layer turns to face where it is going – a paper plane or a fish. As drawn counts as straight ahead"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

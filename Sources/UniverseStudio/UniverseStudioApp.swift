@@ -351,6 +351,8 @@ struct StudioCommands: Commands {
                         }
                     }.disabled(studio.frames.count < 2)
                         .help(L("Moves the active layer by the same amount in every frame – the movement stays"))
+                    Button(L("Turn with the path")) { studio.onSelectedLayers { studio.orientToPath() } }.disabled(studio.frames.count < 2)
+                        .help(L("The active layer turns to face where it is going – a paper plane or a fish. As drawn counts as straight ahead"))
                     Menu(L("Motion strength")) {
                         Button(L("Stronger (1.5×)")) { studio.onSelectedLayers { studio.amplifyMotion(factor: 1.5) } }
                         Button(L("Much stronger (2×)")) { studio.onSelectedLayers { studio.amplifyMotion(factor: 2) } }
