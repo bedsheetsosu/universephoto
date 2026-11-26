@@ -24930,6 +24930,78 @@
           }
         }
       }
+    },
+    "Dizzy stars": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sterne sehen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dizzy stars"
+          }
+        }
+      }
+    },
+    "3 stars": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "3 Sterne"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "3 stars"
+          }
+        }
+      }
+    },
+    "5 stars": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "5 Sterne"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "5 stars"
+          }
+        }
+      }
+    },
+    "A ring of little stars circles above the active layer – seeing stars after a knock": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein Kranz kleiner Sterne kreist über der aktiven Ebene – Sterne sehen nach einem Schlag"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A ring of little stars circles above the active layer – seeing stars after a knock"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

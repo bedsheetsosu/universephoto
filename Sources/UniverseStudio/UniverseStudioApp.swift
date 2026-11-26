@@ -337,6 +337,11 @@ struct StudioCommands: Commands {
                 Button(L("Thought bubble")) { studio.addThoughtBubble() }
                     .disabled(studio.frames.count < 2)
                     .help(L("Little bubbles rise above the active layer, then a thinking cloud pops up with dots appearing one by one"))
+                Menu(L("Dizzy stars")) {
+                    Button(L("3 stars")) { studio.addDizzyStars(count: 3) }
+                    Button(L("5 stars")) { studio.addDizzyStars(count: 5) }
+                }.disabled(studio.frames.count < 2)
+                    .help(L("A ring of little stars circles above the active layer – seeing stars after a knock"))
                 Menu(L("Speech bubble")) {
                     Button(L("Talk")) { studio.addSpeechBubble() }
                     Button(L("Shout")) { studio.addSpeechBubble(shout: true) }
