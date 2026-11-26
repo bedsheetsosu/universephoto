@@ -22680,6 +22680,96 @@
           }
         }
       }
+    },
+    "Eye blink": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lidschlag"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eye blink"
+          }
+        }
+      }
+    },
+    "Every 2 seconds": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alle 2 Sekunden"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Every 2 seconds"
+          }
+        }
+      }
+    },
+    "Every 4 seconds": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alle 4 Sekunden"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Every 4 seconds"
+          }
+        }
+      }
+    },
+    "Often (every second)": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oft (jede Sekunde)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Often (every second)"
+          }
+        }
+      }
+    },
+    "The active layer – eyes on their own layer – shuts for a moment now and then, like a real blink": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die aktive Ebene – Augen auf eigener Ebene – schließt sich ab und zu kurz, wie ein echter Lidschlag"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The active layer – eyes on their own layer – shuts for a moment now and then, like a real blink"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

@@ -92,6 +92,14 @@ struct LayerEffectsShape: View {
     @ObservedObject var studio: Studio
     var body: some View {
         Group {
+        Menu(L("Eye blink")) {
+            Button(L("Every 2 seconds")) { studio.onSelectedLayers { studio.eyeBlink(everySeconds: 2) } }
+            Button(L("Every 4 seconds")) { studio.onSelectedLayers { studio.eyeBlink(everySeconds: 4) } }
+            Button(L("Often (every second)")) { studio.onSelectedLayers { studio.eyeBlink(everySeconds: 1) } }
+        }.disabled(studio.frames.count < 5)
+            .help(L("The active layer – eyes on their own layer – shuts for a moment now and then, like a real blink"))
+        }
+        Group {
         Menu(L("Squash & stretch")) {
             Button(L("Normal")) { studio.onSelectedLayers { studio.squashStretch(amount: 1) } }
             Button(L("Cartoony")) { studio.onSelectedLayers { studio.squashStretch(amount: 1.8) } }
