@@ -384,6 +384,10 @@ struct StudioCommands: Commands {
                 Button(L("Blush")) { studio.addBlush() }
                     .disabled(studio.frames.count < 2)
                     .help(L("Pink cheeks with little hatch lines fade in on the active layer and glow gently – shy or in love"))
+                Menu(L("Stink & steam")) {
+                    ForEach(StinkStyle.allCases) { k in Button(L(k.title)) { studio.addStinkLines(k) } }
+                }.disabled(studio.frames.count < 2)
+                    .help(L("Three wavy lines rise and wobble above the active layer – a bad smell in green, or steam in white"))
                 }
                 }
                 Section(L("Camera")) {

@@ -25380,6 +25380,78 @@
           }
         }
       }
+    },
+    "Stink": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gestank"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stink"
+          }
+        }
+      }
+    },
+    "Steam": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dampf"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Steam"
+          }
+        }
+      }
+    },
+    "Stink & steam": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gestank & Dampf"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stink & steam"
+          }
+        }
+      }
+    },
+    "Three wavy lines rise and wobble above the active layer – a bad smell in green, or steam in white": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Drei Wellenlinien steigen über der aktiven Ebene auf und wabern – grüner Gestank oder weißer Dampf"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Three wavy lines rise and wobble above the active layer – a bad smell in green, or steam in white"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
