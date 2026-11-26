@@ -13,7 +13,7 @@ enum Recipe: String, CaseIterable, Identifiable {
         case .bouncingEntrance: "figure.run"; case .popTitle: "textformat.size.larger"; case .windUpExit: "arrow.right.to.line"
         case .happyIdle: "face.smiling"; case .dropAndShake: "arrow.down.to.line" } }
     var hint: String { switch self {
-        case .bouncingEntrance: "Hops in from the left with squash, stretch and dust"
+        case .bouncingEntrance: "Hops in from the left with squash, stretch, dust and a shadow"
         case .popTitle: "Pops up with an overshoot, fades in and wobbles"
         case .windUpExit: "Winds up, then shoots off to the right with speed lines"
         case .happyIdle: "Breathes and bobs gently as a loop"
@@ -33,6 +33,7 @@ extension Studio {
             shiftLayerAllFrames(dx: -w * 0.6, dy: 0)
             bounceWithSquash(height: h * 0.3, bounces: 3)
             addLandingDust()
+            addGroundShadow()
         case .popTitle:
             growLayerOverFrames(grow: true, pop: true)
             fadeLayerOverFrames(fadeIn: true)

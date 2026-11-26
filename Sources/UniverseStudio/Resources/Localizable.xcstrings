@@ -21474,6 +21474,60 @@
           }
         }
       }
+    },
+    "Ground shadow": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bodenschatten"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ground shadow"
+          }
+        }
+      }
+    },
+    "A soft shadow on the ground under the active layer – smaller and paler the higher it is": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein weicher Schatten am Boden unter der aktiven Ebene – je höher sie ist, desto kleiner und blasser"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A soft shadow on the ground under the active layer – smaller and paler the higher it is"
+          }
+        }
+      }
+    },
+    "Hops in from the left with squash, stretch, dust and a shadow": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hüpft von links herein – mit Stauchen, Strecken, Staub und Schatten"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hops in from the left with squash, stretch, dust and a shadow"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

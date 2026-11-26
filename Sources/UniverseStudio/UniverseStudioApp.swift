@@ -269,6 +269,8 @@ struct StudioCommands: Commands {
                     .help(L("Comic-style streaks behind the active layer, from how fast it actually moves – on a new layer below it"))
                 Button(L("Landing dust")) { studio.addLandingDust() }.disabled(studio.frames.count < 3)
                     .help(L("A little dust cloud where the active layer touches down – pairs with Bounce"))
+                Button(L("Ground shadow")) { studio.addGroundShadow() }.disabled(studio.activeLayer == nil)
+                    .help(L("A soft shadow on the ground under the active layer – smaller and paler the higher it is"))
                 Menu(L("Impact shake")) {
                     Button(L("Light")) { studio.impactShake(strength: 4) }
                     Button(L("Heavy")) { studio.impactShake(strength: 12) }
