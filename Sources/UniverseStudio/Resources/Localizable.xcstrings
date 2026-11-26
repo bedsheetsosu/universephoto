@@ -26460,6 +26460,42 @@
           }
         }
       }
+    },
+    "Opening": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eröffnungs-Blende"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Opening"
+          }
+        }
+      }
+    },
+    "The picture opens out of black as a growing circle or heart, around the active layer": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das Bild öffnet sich aus dem Schwarz als wachsender Kreis oder Herz, um die aktive Ebene herum"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The picture opens out of black as a growing circle or heart, around the active layer"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

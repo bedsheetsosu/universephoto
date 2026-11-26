@@ -4,9 +4,10 @@ import CoreGraphics
 /// Animation → Effects → Camera → Ending (0.293): the classic cartoon ending for the whole picture –
 /// black closes in as a shrinking circle or heart around the middle (or around the active layer, if
 /// it has a drawing) until the picture is black. One black layer on top whose mask keeps a hole open.
-/// Over the play range (or all frames); after it, the picture stays black. One undo step.
+/// Over the play range (or all frames); after it, the picture stays black. Opening (0.294) is the
+/// same backwards: black before the range, then the hole grows until the picture is clear. One undo step.
 extension Studio {
-    @discardableResult func addEndingIris(heart: Bool) -> Int {
+    @discardableResult func addEndingIris(heart: Bool, opening: Bool = false) -> Int {
         guard frames.count >= 2 else { return 0 }
         stopPlayback()
         if frames.indices.contains(frameIndex) { frames[frameIndex] = layers }
@@ -17,15 +18,16 @@ extension Studio {
         // Big enough to clear the farthest corner from the centre.
         let full = [CGPoint(x: 0, y: 0), CGPoint(x: w, y: 0), CGPoint(x: 0, y: h), CGPoint(x: w, y: h)].map { hypot($0.x - c.x, $0.y - c.y) }.max()!
         let factor = heart ? Studio.heartCoverFactor(width: 2 * max(c.x, w - c.x), height: 2 * max(c.y, h - c.y)) : 2
-        checkpoint("Ending")
+        checkpoint(opening ? "Opening" : "Ending")
         var black = InkStroke(points: [InkPoint(x: 0, y: 0, pressure: 1)], color: .maskBlack, width: 1); black.kind = "fill"
         var shown = InkStroke(points: [InkPoint(x: 0, y: 0, pressure: 1)], color: .white, width: 1); shown.kind = "fill"
-        let layer = { () -> ArtLayer in var l = ArtLayer(name: L("Ending")); l.strokes = [black]; return l }()
+        let layer = { () -> ArtLayer in var l = ArtLayer(name: L(opening ? "Opening" : "Ending")); l.strokes = [black]; return l }()
         for i in frames.indices {
             var l = layer
-            if i < r.lowerBound { l.visible = false }
+            if opening ? i > r.upperBound : i < r.lowerBound { l.visible = false }
             else if i <= r.upperBound {
-                let p = Studio.fadeRamp(i - r.lowerBound, of: r.count, fadeIn: true)
+                var p = Studio.fadeRamp(i - r.lowerBound, of: r.count, fadeIn: true)
+                if opening { p = 1 - p }
                 let rad = full * (1 - p)
                 if rad > 1e-9 {
                     var hole: InkStroke

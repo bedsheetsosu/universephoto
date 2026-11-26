@@ -29,3 +29,16 @@ struct EndingIrisTests {
         return (Double(p[0]) + Double(p[1]) + Double(p[2])) / 765
     }
 }
+
+@MainActor
+struct OpeningIrisTests {
+    @Test func opensFromBlack() {
+        let s = Studio(recoveryRoot: FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString))
+        s.newDocument(width: 160, height: 120, background: .white)
+        s.extendAnimation(by: 11)
+        #expect(s.addEndingIris(heart: false, opening: true) == 12)
+        let f = s.document().frames
+        #expect(f[0].last!.mask == nil && f[0].last!.visible)              // black at the start
+        #expect(EndingIrisTests.luma(ImageFiles.renderFrame(f.last!, 160, 120, 160, 120)!, 2, 2) > 0.9)
+    }
+}

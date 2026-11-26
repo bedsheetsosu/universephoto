@@ -419,6 +419,11 @@ struct StudioCommands: Commands {
                     Button(L("Heart")) { studio.addEndingIris(heart: true) }
                 }.disabled(studio.frames.count < 2)
                     .help(L("The classic cartoon ending – black closes in on the whole picture as a shrinking circle or heart, around the active layer"))
+                Menu(L("Opening")) {
+                    Button(L("Circle")) { studio.addEndingIris(heart: false, opening: true) }
+                    Button(L("Heart")) { studio.addEndingIris(heart: true, opening: true) }
+                }.disabled(studio.frames.count < 2)
+                    .help(L("The picture opens out of black as a growing circle or heart, around the active layer"))
                 Menu(L("Pump to the beat")) {
                     ForEach([90.0, 120.0, 140.0], id: \.self) { bpm in
                         Button(LF("%@ BPM", String(Int(bpm)))) { studio.cameraBeat(bpm: bpm) }
