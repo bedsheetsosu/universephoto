@@ -6,9 +6,9 @@ import Foundation
 struct LightningTests {
     @Test func doubleFlashesNowAndThen() {
         let l = Studio.lightningLevels(count: 72, gap: 24)
-        let strikes = l.indices.filter { l[$0] == 0.95 }
+        let strikes = l.indices.filter { l[$0] == 0.75 }
         #expect(strikes.count >= 2 && strikes.count <= 4)
-        #expect(l[strikes[0] + 2] == 0.8 && l[strikes[0] + 4] == 0)
+        #expect(l[strikes[0] + 2] == 0.6 && l[strikes[0] + 4] == 0)
         #expect(l.first == 0)
     }
 
@@ -21,6 +21,6 @@ struct LightningTests {
         #expect(s.addLightning(everySeconds: 1) >= 2)
         let f = s.document().frames
         #expect(f.allSatisfy { $0.last!.blend == .screen })
-        #expect(f.contains { $0.last!.opacity > 0.9 } && f.contains { $0.last!.opacity == 0 })
+        #expect(f.contains { $0.last!.opacity > 0.7 } && f.contains { $0.last!.opacity == 0 })
     }
 }

@@ -12,7 +12,7 @@ extension Studio {
         let jitter = shakeOffsets(count: n / gap + 2, seed: seed)
         var at = gap / 2, k = 0
         while at + 3 < n {
-            for (o, v) in [0.95, 0.3, 0.8, 0.15].enumerated() { out[at + o] = v }
+            for (o, v) in [0.75, 0.25, 0.6, 0.1].enumerated() { out[at + o] = v }
             at += max(6, gap + Int((jitter[k].0 * Double(gap) * 0.4).rounded())); k += 1
         }
         return out
@@ -24,7 +24,7 @@ extension Studio {
         if frames.indices.contains(frameIndex) { frames[frameIndex] = layers }
         let r = Playback.clamp(playRange, count: frames.count) ?? 0...(frames.count - 1)
         let levels = Studio.lightningLevels(count: r.count, gap: max(6, Int((fps * everySeconds).rounded())))
-        let strikes = levels.filter { $0 == 0.95 }.count
+        let strikes = levels.filter { $0 == 0.75 }.count
         guard strikes > 0 else { return 0 }
         checkpoint("Lightning")
         var fill = InkStroke(points: [InkPoint(x: 0, y: 0, pressure: 1)], color: CodableColor(red: 0.92, green: 0.95, blue: 1, alpha: 1), width: 1)

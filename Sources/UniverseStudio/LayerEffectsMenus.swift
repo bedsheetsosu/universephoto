@@ -111,6 +111,11 @@ struct LayerEffectsShape: View {
     @ObservedObject var studio: Studio
     var body: some View {
         Group {
+        Menu(L("Wavy text")) {
+            Button(L("Wave")) { studio.onSelectedLayers { studio.wavyText(hop: false) } }
+            Button(L("Letters hop in turn")) { studio.onSelectedLayers { studio.wavyText(hop: true) } }
+        }.disabled(studio.frames.count < 2)
+            .help(L("The letters of the text on the active layer move one by one – a wave, or each letter hopping in turn"))
         Menu(L("Eye blink")) {
             Button(L("Every 2 seconds")) { studio.onSelectedLayers { studio.eyeBlink(everySeconds: 2) } }
             Button(L("Every 4 seconds")) { studio.onSelectedLayers { studio.eyeBlink(everySeconds: 4) } }

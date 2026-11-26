@@ -4,26 +4,29 @@ import Foundation
 /// effects stacked on the active layer, as one undo step. From a single frame the frames are made
 /// first (2 s); on an animation they play over the play range (or all frames).
 enum Recipe: String, CaseIterable, Identifiable {
-    case bouncingEntrance, popTitle, windUpExit, happyIdle, dropAndShake, magicItem, hangingSign, walkBy, peekaboo, rocketLaunch, sleepy, inLove, nervous, angry, surprised
+    case bouncingEntrance, popTitle, windUpExit, happyIdle, dropAndShake, magicItem, hangingSign, walkBy, peekaboo, rocketLaunch, sleepy, inLove, nervous, angry, surprised, stormyNight, snowyEvening
     var id: String { rawValue }
     /// Menu groups (0.239): ins and outs, loops, feelings.
     static let groups: [(title: String, recipes: [Recipe])] = [
         ("Ins & outs", [.bouncingEntrance, .popTitle, .walkBy, .peekaboo, .dropAndShake, .windUpExit, .rocketLaunch]),
         ("Loops", [.happyIdle, .magicItem, .hangingSign, .sleepy]),
         ("Feelings", [.inLove, .nervous, .angry, .surprised]),
+        ("Scenes", [.stormyNight, .snowyEvening]),
     ]
     var title: String { switch self {
         case .bouncingEntrance: "Bouncing entrance"; case .popTitle: "Pop-in title"; case .windUpExit: "Wind-up exit"
         case .happyIdle: "Happy idle"; case .dropAndShake: "Heavy drop"
         case .magicItem: "Magic item"; case .hangingSign: "Hanging sign"; case .walkBy: "Walking by"; case .peekaboo: "Peek-a-boo"; case .rocketLaunch: "Rocket launch"
         case .sleepy: "Sleepy"; case .inLove: "In love"; case .nervous: "Nervous"
-        case .angry: "Angry"; case .surprised: "Surprised" } }
+        case .angry: "Angry"; case .surprised: "Surprised"
+        case .stormyNight: "Stormy night"; case .snowyEvening: "Snowy evening" } }
     var symbol: String { switch self {
         case .bouncingEntrance: "figure.run"; case .popTitle: "textformat.size.larger"; case .windUpExit: "arrow.right.to.line"
         case .happyIdle: "face.smiling"; case .dropAndShake: "arrow.down.to.line"
         case .magicItem: "sparkles"; case .hangingSign: "lightbulb"; case .walkBy: "figure.walk"; case .peekaboo: "eyes"; case .rocketLaunch: "airplane.departure"
         case .sleepy: "moon.zzz"; case .inLove: "heart"; case .nervous: "exclamationmark.bubble"
-        case .angry: "flame"; case .surprised: "exclamationmark" } }
+        case .angry: "flame"; case .surprised: "exclamationmark"
+        case .stormyNight: "cloud.bolt.rain"; case .snowyEvening: "cloud.snow" } }
     var hint: String { switch self {
         case .bouncingEntrance: "Hops in from the left with squash, stretch, dust and a shadow"
         case .popTitle: "Pops up with an overshoot, fades in and wobbles"
@@ -39,7 +42,9 @@ enum Recipe: String, CaseIterable, Identifiable {
         case .inLove: "Heart beating, little hearts rising – a loop"
         case .nervous: "Trembles a little while sweat drops run down – a loop"
         case .angry: "Shakes with rage, a throbbing vein beside it"
-        case .surprised: "Jumps with a start, a big ! pops up" } }
+        case .surprised: "Jumps with a start, a big ! pops up"
+        case .stormyNight: "Night falls, rain pours, lightning flashes – the whole picture"
+        case .snowyEvening: "Snow falls in a warm evening light – the whole picture" } }
 }
 
 extension Studio {
@@ -84,6 +89,13 @@ extension Studio {
         case .inLove:
             scalePulseLayer(amount: 0.12, heartbeat: true)
             addFloatingSymbols(.hearts, count: 3)
+        case .stormyNight:
+            addLightMood(.dayToNight)
+            addWeather(.rain, count: 0)
+            addLightning(everySeconds: 2)
+        case .snowyEvening:
+            addLightMood(.sunset)
+            addWeather(.snow, count: 0)
         case .angry:
             shakeLayer(amount: 5, turn: true)
             addEmotionMark(.anger)

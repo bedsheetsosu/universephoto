@@ -24264,6 +24264,150 @@
           }
         }
       }
+    },
+    "Scenes": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Szenen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scenes"
+          }
+        }
+      }
+    },
+    "Stormy night": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gewitternacht"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stormy night"
+          }
+        }
+      }
+    },
+    "Snowy evening": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verschneiter Abend"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Snowy evening"
+          }
+        }
+      }
+    },
+    "Night falls, rain pours, lightning flashes – the whole picture": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Es wird Nacht, Regen prasselt, Blitze zucken – das ganze Bild"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Night falls, rain pours, lightning flashes – the whole picture"
+          }
+        }
+      }
+    },
+    "Snow falls in a warm evening light – the whole picture": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schnee fällt im warmen Abendlicht – das ganze Bild"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Snow falls in a warm evening light – the whole picture"
+          }
+        }
+      }
+    },
+    "Wavy text": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wellentext"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wavy text"
+          }
+        }
+      }
+    },
+    "Letters hop in turn": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buchstaben hüpfen nacheinander"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Letters hop in turn"
+          }
+        }
+      }
+    },
+    "The letters of the text on the active layer move one by one – a wave, or each letter hopping in turn": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Buchstaben des Textes auf der aktiven Ebene bewegen sich einzeln – als Welle oder nacheinander hüpfend"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The letters of the text on the active layer move one by one – a wave, or each letter hopping in turn"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
