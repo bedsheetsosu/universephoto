@@ -414,6 +414,11 @@ struct StudioCommands: Commands {
                     Button(L("Loose")) { studio.cameraFollow(tight: false) }
                 }.disabled(studio.frames.count < 2)
                     .help(L("The camera pans along with the active layer so it stays in view – the rest of the picture moves the other way"))
+                Menu(L("Ending")) {
+                    Button(L("Circle")) { studio.addEndingIris(heart: false) }
+                    Button(L("Heart")) { studio.addEndingIris(heart: true) }
+                }.disabled(studio.frames.count < 2)
+                    .help(L("The classic cartoon ending – black closes in on the whole picture as a shrinking circle or heart, around the active layer"))
                 Menu(L("Pump to the beat")) {
                     ForEach([90.0, 120.0, 140.0], id: \.self) { bpm in
                         Button(LF("%@ BPM", String(Int(bpm)))) { studio.cameraBeat(bpm: bpm) }

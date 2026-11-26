@@ -26406,6 +26406,60 @@
           }
         }
       }
+    },
+    "Ending": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schluss-Blende"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ending"
+          }
+        }
+      }
+    },
+    "Heart": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Herz"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Heart"
+          }
+        }
+      }
+    },
+    "The classic cartoon ending – black closes in on the whole picture as a shrinking circle or heart, around the active layer": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das klassische Cartoon-Ende – Schwarz schließt sich über das ganze Bild als schrumpfender Kreis oder Herz, um die aktive Ebene herum"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The classic cartoon ending – black closes in on the whole picture as a shrinking circle or heart, around the active layer"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
