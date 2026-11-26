@@ -324,40 +324,8 @@ struct StudioCommands: Commands {
                     Button(L("Long")) { studio.addCometTail(length: 10) }
                 }.disabled(studio.frames.count < 2)
                     .help(L("A ribbon trails behind the active layer along the way it came – wide behind it, thin and pale further back, in the brush colour"))
-                Menu(L("Floating symbols")) {
-                    ForEach(FloatingSymbol.allCases) { k in Button(L(k.title)) { studio.addFloatingSymbols(k) } }
-                }.disabled(studio.frames.count < 2)
-                    .help(L("Little symbols drift up from the active layer and fade – hearts, music notes, sleepy Z's or question marks"))
                 }
                 Group {
-                Menu(L("Emotion mark")) {
-                    ForEach(EmotionMark.allCases) { m in Button(L(m.title)) { studio.addEmotionMark(m) } }
-                }.disabled(studio.frames.count < 2)
-                    .help(L("A cartoon mark pops up beside the active layer and throbs – surprise, confusion, anger or a bright idea"))
-                Button(L("Thought bubble")) { studio.addThoughtBubble() }
-                    .disabled(studio.frames.count < 2)
-                    .help(L("Little bubbles rise above the active layer, then a thinking cloud pops up with dots appearing one by one"))
-                Menu(L("Dizzy stars")) {
-                    Button(L("3 stars")) { studio.addDizzyStars(count: 3) }
-                    Button(L("5 stars")) { studio.addDizzyStars(count: 5) }
-                }.disabled(studio.frames.count < 2)
-                    .help(L("A ring of little stars circles above the active layer – seeing stars after a knock"))
-                Menu(L("Speech bubble")) {
-                    Button(L("Talk")) { studio.addSpeechBubble() }
-                    Button(L("Shout")) { studio.addSpeechBubble(shout: true) }
-                }.disabled(studio.frames.count < 2)
-                    .help(L("A comic speech bubble pops up beside the active layer and the Text tool's text is typed into it – calm, or shouted with jagged strokes"))
-                Menu(L("Sweat drop")) {
-                    Button(L("One drop per loop")) { studio.addSweatDrop(drops: 1) }
-                    Button(L("Nervous (3 per loop)")) { studio.addSweatDrop(drops: 3) }
-                }.disabled(studio.frames.count < 2)
-                    .help(L("A cartoon sweat drop slides down the side of the active layer and drips off – nerves"))
-                Button(L("Tears")) { studio.addTears() }
-                    .disabled(studio.frames.count < 2)
-                    .help(L("Tears roll down from eye height on both sides of the active layer, one after another – crying"))
-                Button(L("Blush")) { studio.addBlush() }
-                    .disabled(studio.frames.count < 2)
-                    .help(L("Pink cheeks with little hatch lines fade in on the active layer and glow gently – shy or in love"))
                 Menu(L("Swarm")) {
                     Button(L("A few (3)")) { studio.addSwarm(count: 3) }
                     Button(L("Many (7)")) { studio.addSwarm(count: 7) }
@@ -373,6 +341,44 @@ struct StudioCommands: Commands {
                     Button(L("On the ground")) { studio.addRipples(rings: 3, flat: true) }
                 }.disabled(studio.frames.count < 2)
                     .help(L("Rings spread out from the active layer and fade – a drop in water, a radio signal, a sonar ping"))
+                }
+                }
+                Section(L("Character")) {
+                Group {
+                Menu(L("Emotion mark")) {
+                    ForEach(EmotionMark.allCases) { m in Button(L(m.title)) { studio.addEmotionMark(m) } }
+                }.disabled(studio.frames.count < 2)
+                    .help(L("A cartoon mark pops up beside the active layer and throbs – surprise, confusion, anger or a bright idea"))
+                Button(L("Thought bubble")) { studio.addThoughtBubble() }
+                    .disabled(studio.frames.count < 2)
+                    .help(L("Little bubbles rise above the active layer, then a thinking cloud pops up with dots appearing one by one"))
+                Menu(L("Speech bubble")) {
+                    Button(L("Talk")) { studio.addSpeechBubble() }
+                    Button(L("Shout")) { studio.addSpeechBubble(shout: true) }
+                }.disabled(studio.frames.count < 2)
+                    .help(L("A comic speech bubble pops up beside the active layer and the Text tool's text is typed into it – calm, or shouted with jagged strokes"))
+                Menu(L("Dizzy stars")) {
+                    Button(L("3 stars")) { studio.addDizzyStars(count: 3) }
+                    Button(L("5 stars")) { studio.addDizzyStars(count: 5) }
+                }.disabled(studio.frames.count < 2)
+                    .help(L("A ring of little stars circles above the active layer – seeing stars after a knock"))
+                }
+                Group {
+                Menu(L("Floating symbols")) {
+                    ForEach(FloatingSymbol.allCases) { k in Button(L(k.title)) { studio.addFloatingSymbols(k) } }
+                }.disabled(studio.frames.count < 2)
+                    .help(L("Little symbols drift up from the active layer and fade – hearts, music notes, sleepy Z's or question marks"))
+                Menu(L("Sweat drop")) {
+                    Button(L("One drop per loop")) { studio.addSweatDrop(drops: 1) }
+                    Button(L("Nervous (3 per loop)")) { studio.addSweatDrop(drops: 3) }
+                }.disabled(studio.frames.count < 2)
+                    .help(L("A cartoon sweat drop slides down the side of the active layer and drips off – nerves"))
+                Button(L("Tears")) { studio.addTears() }
+                    .disabled(studio.frames.count < 2)
+                    .help(L("Tears roll down from eye height on both sides of the active layer, one after another – crying"))
+                Button(L("Blush")) { studio.addBlush() }
+                    .disabled(studio.frames.count < 2)
+                    .help(L("Pink cheeks with little hatch lines fade in on the active layer and glow gently – shy or in love"))
                 }
                 }
                 Section(L("Camera")) {
