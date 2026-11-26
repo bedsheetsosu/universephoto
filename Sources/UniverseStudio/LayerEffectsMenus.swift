@@ -155,6 +155,11 @@ struct LayerEffectsAppear: View {
     @ObservedObject var studio: Studio
     var body: some View {
         Group {
+        Menu(L("Burst like a balloon")) {
+            Button(L("With sparks")) { studio.popAway(.sparks) }
+            Button(L("With confetti")) { studio.popAway(.confetti) }
+        }.disabled(studio.frames.count < 2)
+            .help(L("The active layer swells and bursts like a balloon on the current frame – scrub to where it should pop first"))
         Menu(L("Rise up")) {
             Button(L("Rise up")) { studio.onSelectedLayers { studio.riseUp() } }
             Button(L("Sink down")) { studio.onSelectedLayers { studio.riseUp(sink: true) } }

@@ -22896,6 +22896,78 @@
           }
         }
       }
+    },
+    "With sparks": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mit Funken"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "With sparks"
+          }
+        }
+      }
+    },
+    "With confetti": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mit Konfetti"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "With confetti"
+          }
+        }
+      }
+    },
+    "The active layer swells and bursts like a balloon on the current frame – scrub to where it should pop first": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die aktive Ebene bläht sich auf und platzt wie ein Ballon im aktuellen Frame – vorher zum gewünschten Frame scrubben"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The active layer swells and bursts like a balloon on the current frame – scrub to where it should pop first"
+          }
+        }
+      }
+    },
+    "Burst like a balloon": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zerplatzen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Burst like a balloon"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
