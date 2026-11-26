@@ -114,8 +114,10 @@ struct LayerEffectsShape: View {
         Menu(L("Wavy text")) {
             Button(L("Wave")) { studio.onSelectedLayers { studio.wavyText(hop: false) } }
             Button(L("Letters hop in turn")) { studio.onSelectedLayers { studio.wavyText(hop: true) } }
+            Divider()
+            Button(L("Rainbow letters")) { studio.onSelectedLayers { studio.rainbowLetters() } }
         }.disabled(studio.frames.count < 2)
-            .help(L("The letters of the text on the active layer move one by one – a wave, or each letter hopping in turn"))
+            .help(L("The letters of the text on the active layer move one by one – a wave, letters hopping in turn, or running rainbow colours"))
         Menu(L("Eye blink")) {
             Button(L("Every 2 seconds")) { studio.onSelectedLayers { studio.eyeBlink(everySeconds: 2) } }
             Button(L("Every 4 seconds")) { studio.onSelectedLayers { studio.eyeBlink(everySeconds: 4) } }

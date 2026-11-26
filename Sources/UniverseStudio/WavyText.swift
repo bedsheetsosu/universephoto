@@ -44,6 +44,40 @@ extension Studio {
         return height * 0.5 * (1 - cos(2 * .pi * (t * 2 - Double(i) * 0.12)))
     }
 
+    /// Rainbow letters (0.252): each letter its own colour of the rainbow, the colours running along
+    /// the text over the frames – a seamless loop. Starts from pure red at full brightness, so it also
+    /// works on black or grey text.
+    static func rainbowColour(_ i: Int, of count: Int, frame k: Int, frames n: Int, alpha: Double) -> CodableColor {
+        let turn = Double(i) / Double(max(1, count)) - Double(k) / Double(max(1, n))
+        return ColorCycle.rotate(CodableColor(red: 1, green: 0.25, blue: 0.25, alpha: alpha), turn)
+    }
+
+    @discardableResult func rainbowLetters() -> Int {
+        guard frames.count >= 2, let src = activeLayer, src.allFrames != true,
+              src.strokes.contains(where: { $0.kind == "text" && !($0.text ?? "").isEmpty }) else { return 0 }
+        stopPlayback()
+        if frames.indices.contains(frameIndex) { frames[frameIndex] = layers }
+        let r = Playback.clamp(playRange, count: frames.count) ?? 0...(frames.count - 1)
+        var nf = frames, letters = 0
+        for (k, i) in r.enumerated() {
+            for j in nf[i].indices where nf[i][j].id == src.id && !nf[i][j].locked {
+                nf[i][j].strokes = nf[i][j].strokes.flatMap { s -> [InkStroke] in
+                    guard s.kind == "text" else { return [s] }
+                    let parts = Studio.letterStrokes(s)
+                    if k == 0 { letters += parts.count }
+                    return parts.enumerated().map { n, part in
+                        var q = part; q.color = Studio.rainbowColour(n, of: parts.count, frame: k, frames: r.count, alpha: part.color.alpha)
+                        return q
+                    }
+                }
+            }
+        }
+        guard letters > 0 else { return 0 }
+        checkpoint("Rainbow letters")
+        frames = nf; layers = frames[frameIndex]; changed()
+        return letters
+    }
+
     @discardableResult func wavyText(hop: Bool) -> Int {
         guard frames.count >= 2, let src = activeLayer, src.allFrames != true,
               src.strokes.contains(where: { $0.kind == "text" && !($0.text ?? "").isEmpty }) else { return 0 }

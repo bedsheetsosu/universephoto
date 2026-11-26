@@ -24408,6 +24408,42 @@
           }
         }
       }
+    },
+    "Rainbow letters": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Regenbogenbuchstaben"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rainbow letters"
+          }
+        }
+      }
+    },
+    "The letters of the text on the active layer move one by one – a wave, letters hopping in turn, or running rainbow colours": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Buchstaben des Textes auf der aktiven Ebene bewegen sich einzeln – als Welle, nacheinander hüpfend oder in wandernden Regenbogenfarben"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The letters of the text on the active layer move one by one – a wave, letters hopping in turn, or running rainbow colours"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

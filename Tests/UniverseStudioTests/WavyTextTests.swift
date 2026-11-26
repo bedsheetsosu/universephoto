@@ -40,4 +40,17 @@ struct WavyTextTests {
         s.undo()
         #expect(s.document().frames.allSatisfy { $0[1].strokes.count == 1 })
     }
+
+    @Test func rainbowLettersRunAlong() {
+        let a = Studio.rainbowColour(0, of: 4, frame: 0, frames: 8, alpha: 1), b = Studio.rainbowColour(1, of: 4, frame: 0, frames: 8, alpha: 1)
+        #expect(a != b)
+        let s = Studio(recoveryRoot: FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString))
+        s.newDocument(width: 200, height: 80, background: .white)
+        s.layers[1].strokes = [text("Hey")]; s.changed()
+        for _ in 0..<7 { s.addFrame() }
+        s.selectFrame(0); s.selectedLayer = 1
+        #expect(s.rainbowLetters() == 3)
+        let f = s.document().frames
+        #expect(f[0][1].strokes[0].color != f[2][1].strokes[0].color)       // colours run over time
+    }
 }
