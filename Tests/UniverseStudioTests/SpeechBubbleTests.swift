@@ -31,3 +31,27 @@ struct SpeechBubbleTests {
         #expect(pts.allSatisfy { $0.x >= -5 && $0.x <= 205 && $0.y >= -5 && $0.y <= 205 })
     }
 }
+
+@MainActor
+struct ShoutBubbleTests {
+    @Test func shoutHasJaggedStrokesAndRedLetters() {
+        let box = CGRect(x: 20, y: 20, width: 120, height: 50), tip = CGPoint(x: 30, y: 120)
+        let calm = Studio.speechBubbleStrokes(t: 1, text: "Hey", fontSize: 16, textWidth: 30, box: box, tip: tip)
+        let loud = Studio.speechBubbleStrokes(t: 1, text: "Hey", fontSize: 16, textWidth: 30, box: box, tip: tip, shout: true)
+        #expect(loud.count == calm.count + 14)
+        #expect(loud.first { $0.kind == "text" }!.color.red > 0.8)
+    }
+
+    @Test func shoutTremblesAndNamesItsLayer() {
+        let s = Studio(recoveryRoot: FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString))
+        s.newDocument(width: 300, height: 300, background: .white)
+        s.layers[1].strokes = [InkStroke(points: [InkPoint(x: 40, y: 200, pressure: 1), InkPoint(x: 90, y: 280, pressure: 1)], color: .black, width: 8)]
+        s.changed(); s.selectedLayer = 1
+        s.extendAnimation(by: 23)
+        #expect(s.addSpeechBubble(shout: true) == 24)
+        let f = s.document().frames
+        #expect(f[0][2].name == L("Shout bubble"))
+        let tops = Set(f.suffix(10).map { $0[2].strokes.first { $0.kind == "roundedRect" }!.points[0].x })
+        #expect(tops.count > 3)
+    }
+}

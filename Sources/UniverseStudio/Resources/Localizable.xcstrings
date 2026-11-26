@@ -24768,6 +24768,78 @@
           }
         }
       }
+    },
+    "Talk": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sprechen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Talk"
+          }
+        }
+      }
+    },
+    "Shout": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schreien"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shout"
+          }
+        }
+      }
+    },
+    "Shout bubble": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schrei-Blase"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shout bubble"
+          }
+        }
+      }
+    },
+    "A comic speech bubble pops up beside the active layer and the Text tool's text is typed into it – calm, or shouted with jagged strokes": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eine Comic-Sprechblase ploppt neben der aktiven Ebene auf und der Text des Text-Werkzeugs wird hineingetippt – ruhig oder geschrien mit Zacken"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A comic speech bubble pops up beside the active layer and the Text tool's text is typed into it – calm, or shouted with jagged strokes"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

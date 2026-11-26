@@ -6,7 +6,8 @@ import CoreGraphics
 /// with its tail pointing at it, then the text of the Text tool is typed into it letter by letter and
 /// stays. (With the Text tool's default text it says "Hello!".) The bubble is sized for the whole text
 /// from the start, follows the layer and stays inside the picture. On a new layer above it. Over the
-/// play range (or all frames). One undo step.
+/// play range (or all frames). One undo step. The shout bubble (0.262) is bigger, trembles, has red
+/// letters and jagged strokes all around.
 extension Studio {
     /// What the bubble says: the Text tool's text, or a friendly default.
     var speechBubbleText: String {
@@ -22,7 +23,7 @@ extension Studio {
     }
 
     /// Strokes of the bubble at time `t` (0…1): `box` is the bubble at full size, `tip` where the tail points.
-    static func speechBubbleStrokes(t: Double, text: String, fontSize: Double, textWidth: Double, box: CGRect, tip: CGPoint) -> [InkStroke] {
+    static func speechBubbleStrokes(t: Double, text: String, fontSize: Double, textWidth: Double, box: CGRect, tip: CGPoint, shout: Bool = false) -> [InkStroke] {
         guard t > 0 else { return [] }
         let ink = CodableColor.black, paper = CodableColor(red: 1, green: 1, blue: 1, alpha: 1)
         let line = max(1.5, fontSize * 0.09), pop = t < 0.12 ? backOut(t / 0.12) : 1
@@ -45,27 +46,39 @@ extension Studio {
             // Left-aligned at the final position, so typing doesn't shift the letters already there.
             let rows = Double(text.components(separatedBy: .newlines).count)
             var s = InkStroke(points: [InkPoint(x: b.midX - textWidth / 2, y: b.midY - fontSize * 0.6 * rows - fontSize * 0.1, pressure: 1)],
-                              color: ink, width: fontSize)
+                              color: shout ? CodableColor(red: 0.85, green: 0.1, blue: 0.12, alpha: 1) : ink, width: fontSize)
             s.kind = "text"; s.text = String(text.prefix(n)); s.fontName = "Helvetica-Bold"
             if !(s.text ?? "").isEmpty { out.append(s) }
+        }
+        if shout && pop >= 1 {
+            // Shout (0.262): short jagged strokes all around the bubble, flickering in length.
+            let flick = Int(t * 40) % 2 == 0 ? 1.0 : 0.75
+            for k in 0..<14 {
+                let a = Double(k) / 14 * 2 * .pi + 0.2
+                let edge = CGPoint(x: b.midX + cos(a) * (b.width / 2 + line * 3), y: b.midY + sin(a) * (b.height / 2 + line * 3))
+                let len = fontSize * (k % 2 == 0 ? 0.9 : 0.55) * flick
+                out.append(InkStroke(points: [InkPoint(x: edge.x, y: edge.y, pressure: 1),
+                                              InkPoint(x: edge.x + cos(a) * len, y: edge.y + sin(a) * len, pressure: 1)], color: ink, width: line * 1.2))
+            }
         }
         return out
     }
 
-    @discardableResult func addSpeechBubble() -> Int {
+    @discardableResult func addSpeechBubble(shout: Bool = false) -> Int {
         guard frames.count >= 2, let src = activeLayer, let local = contentBounds(src) else { return 0 }
         stopPlayback()
         if frames.indices.contains(frameIndex) { frames[frameIndex] = layers }
         let r = Playback.clamp(playRange, count: frames.count) ?? 0...(frames.count - 1)
         let w = Double(width), h = Double(height), text = speechBubbleText
-        let size = min(40, max(12, min(w, h) * 0.065))
+        let size = min(40, max(12, min(w, h) * 0.065)) * (shout ? 1.2 : 1)
         var probe = InkStroke(points: [InkPoint(x: 0, y: 0, pressure: 1)], color: .black, width: size)
         probe.kind = "text"; probe.text = text; probe.fontName = "Helvetica-Bold"
         let lines = Renderer.textLines(probe, at: .zero)
         let textW = lines.map { CTLineGetTypographicBounds($0.line, nil, nil, nil) }.max() ?? size
-        let bw = min(w * 0.9, textW + size * 1.6), bh = size * 1.2 * Double(max(1, lines.count)) + size * 1.0
-        checkpoint("Speech bubble")
-        let layer = ArtLayer(name: L("Speech bubble"))
+        let bw = min(w * 0.9, textW + size * 2.2), bh = size * 1.2 * Double(max(1, lines.count)) + size * 1.0
+        let shake = Studio.shakeOffsets(count: r.count, seed: 0x5407)
+        checkpoint(shout ? "Shout bubble" : "Speech bubble")
+        let layer = ArtLayer(name: L(shout ? "Shout bubble" : "Speech bubble"))
         for i in frames.indices {
             var l = layer
             if r.contains(i), let s = frames[i].first(where: { $0.id == src.id }) {
@@ -74,9 +87,10 @@ extension Studio {
                 var c = CGPoint(x: head.x + bw * 0.45, y: head.y - bh * 1.1)
                 c.x = min(max(c.x, bw / 2 + 4), w - bw / 2 - 4)
                 c.y = min(max(c.y, bh / 2 + 4), h - bh / 2 - 4)
+                if shout { c.x += shake[i - r.lowerBound].0 * size * 0.12; c.y += shake[i - r.lowerBound].1 * size * 0.12 }
                 let box = CGRect(x: c.x - bw / 2, y: c.y - bh / 2, width: bw, height: bh)
                 let t = r.count > 1 ? Double(i - r.lowerBound) / Double(r.count - 1) : 1
-                l.strokes = Studio.speechBubbleStrokes(t: max(t, 0.001), text: text, fontSize: size, textWidth: textW, box: box, tip: head)
+                l.strokes = Studio.speechBubbleStrokes(t: max(t, 0.001), text: text, fontSize: size, textWidth: textW, box: box, tip: head, shout: shout)
             }
             frames[i].insert(l, at: (frames[i].firstIndex { $0.id == src.id }).map { $0 + 1 } ?? frames[i].count)
         }
