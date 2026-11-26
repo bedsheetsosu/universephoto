@@ -314,6 +314,10 @@ struct StudioCommands: Commands {
                     Button(L("Long")) { studio.addCometTail(length: 10) }
                 }.disabled(studio.frames.count < 2)
                     .help(L("A ribbon trails behind the active layer along the way it came – wide behind it, thin and pale further back, in the brush colour"))
+                Menu(L("Floating symbols")) {
+                    ForEach(FloatingSymbol.allCases) { k in Button(L(k.title)) { studio.addFloatingSymbols(k) } }
+                }.disabled(studio.frames.count < 2)
+                    .help(L("Little symbols drift up from the active layer and fade – hearts, music notes, sleepy Z's or question marks"))
                 Menu(L("Swarm")) {
                     Button(L("A few (3)")) { studio.addSwarm(count: 3) }
                     Button(L("Many (7)")) { studio.addSwarm(count: 7) }
