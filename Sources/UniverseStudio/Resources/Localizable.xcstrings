@@ -24516,6 +24516,42 @@
           }
         }
       }
+    },
+    "Shaky letters": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zitterbuchstaben"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shaky letters"
+          }
+        }
+      }
+    },
+    "The letters of the text on the active layer move one by one – a wave, letters hopping in turn, running rainbow colours or trembling letters": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Buchstaben des Texts auf der aktiven Ebene bewegen sich einzeln – eine Welle, Buchstaben, die nacheinander hüpfen, wandernde Regenbogenfarben oder zitternde Buchstaben"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The letters of the text on the active layer move one by one – a wave, letters hopping in turn, running rainbow colours or trembling letters"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
