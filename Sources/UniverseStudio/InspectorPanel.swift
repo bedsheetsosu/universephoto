@@ -468,7 +468,9 @@ struct RecipeMenuButton: View {
     @EnvironmentObject var s: Studio
     var body: some View {
         Menu {
-            ForEach(Recipe.allCases) { r in Button { s.applyRecipe(r) } label: { Label(L(r.title), systemImage: r.symbol) } }
+            ForEach(Recipe.groups, id: \.title) { g in
+                Section(L(g.title)) { ForEach(g.recipes) { r in Button { s.applyRecipe(r) } label: { Label(L(r.title), systemImage: r.symbol) } } }
+            }
         } label: { Label(L("Animate with a recipe"), systemImage: "wand.and.stars").frame(maxWidth: .infinity) }
             .menuStyle(.button).menuIndicator(.hidden).buttonStyle(PhotoButtonStyle(prominent: true))
             .help(L("A whole little animation for the active layer in one click – from a single frame too"))

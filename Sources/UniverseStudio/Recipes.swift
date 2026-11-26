@@ -6,6 +6,12 @@ import Foundation
 enum Recipe: String, CaseIterable, Identifiable {
     case bouncingEntrance, popTitle, windUpExit, happyIdle, dropAndShake, magicItem, hangingSign, walkBy, peekaboo, rocketLaunch, sleepy, inLove, nervous, angry, surprised
     var id: String { rawValue }
+    /// Menu groups (0.239): ins and outs, loops, feelings.
+    static let groups: [(title: String, recipes: [Recipe])] = [
+        ("Ins & outs", [.bouncingEntrance, .popTitle, .walkBy, .peekaboo, .dropAndShake, .windUpExit, .rocketLaunch]),
+        ("Loops", [.happyIdle, .magicItem, .hangingSign, .sleepy]),
+        ("Feelings", [.inLove, .nervous, .angry, .surprised]),
+    ]
     var title: String { switch self {
         case .bouncingEntrance: "Bouncing entrance"; case .popTitle: "Pop-in title"; case .windUpExit: "Wind-up exit"
         case .happyIdle: "Happy idle"; case .dropAndShake: "Heavy drop"

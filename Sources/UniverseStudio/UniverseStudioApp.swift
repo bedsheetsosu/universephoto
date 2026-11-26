@@ -228,7 +228,9 @@ struct StudioCommands: Commands {
                 .help(L("Runs the last layer effect or layer motion again – on the layers selected now and the current play range"))
             Menu(L("Effects")) { Group {
                 Menu(L("Recipes")) {
-                    ForEach(Recipe.allCases) { r in Button { studio.applyRecipe(r) } label: { Label(L(r.title), systemImage: r.symbol) }.help(L(r.hint)) }
+                    ForEach(Recipe.groups, id: \.title) { g in
+                        Section(L(g.title)) { ForEach(g.recipes) { r in Button { studio.applyRecipe(r) } label: { Label(L(r.title), systemImage: r.symbol) }.help(L(r.hint)) } }
+                    }
                 }.disabled(studio.activeLayer == nil || studio.activeLayer?.allFrames == true)
                     .help(L("A whole little animation for the active layer in one click – from a single frame too"))
                 Section(L("New frames")) {
