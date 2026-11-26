@@ -25344,6 +25344,42 @@
           }
         }
       }
+    },
+    "Ta-da title": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ta-da-Titel"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ta-da title"
+          }
+        }
+      }
+    },
+    "Letters pop in one by one in front of turning rays, with sparkles": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buchstaben ploppen nacheinander vor sich drehenden Strahlen auf, mit Glitzer"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Letters pop in one by one in front of turning rays, with sparkles"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
