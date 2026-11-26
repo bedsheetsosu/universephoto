@@ -7,6 +7,11 @@ struct LayerEffectsMove: View {
     @ObservedObject var studio: Studio
     var body: some View {
         Group {
+        Menu(L("Arc across the sky")) {
+            Button(L("High arch")) { studio.onSelectedLayers { studio.skyArcLayer(rise: 0.4) } }
+            Button(L("Low arch")) { studio.onSelectedLayers { studio.skyArcLayer(rise: 0.15) } }
+        }.disabled(studio.frames.count < 2)
+            .help(L("The active layer travels in an arch from the left of the picture to the right – a sun or moon crossing the sky, a thrown ball"))
         Menu(L("Roll")) {
             Button(L("To the right")) { studio.onSelectedLayers { studio.rollLayer(distance: Double(studio.width) * 0.5) } }
             Button(L("To the left")) { studio.onSelectedLayers { studio.rollLayer(distance: -Double(studio.width) * 0.5) } }

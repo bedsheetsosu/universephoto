@@ -26244,6 +26244,78 @@
           }
         }
       }
+    },
+    "Arc across the sky": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bogen über den Himmel"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arc across the sky"
+          }
+        }
+      }
+    },
+    "High arch": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hoher Bogen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "High arch"
+          }
+        }
+      }
+    },
+    "Low arch": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Flacher Bogen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Low arch"
+          }
+        }
+      }
+    },
+    "The active layer travels in an arch from the left of the picture to the right – a sun or moon crossing the sky, a thrown ball": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die aktive Ebene wandert in einem Bogen von links nach rechts durchs Bild – Sonne oder Mond am Himmel, ein geworfener Ball"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The active layer travels in an arch from the left of the picture to the right – a sun or moon crossing the sky, a thrown ball"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
