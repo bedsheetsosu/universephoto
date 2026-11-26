@@ -26136,6 +26136,42 @@
           }
         }
       }
+    },
+    "Beam down": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Herunterbeamen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Beam down"
+          }
+        }
+      }
+    },
+    "Builds up out of a thin line of light, in a glow with sparkles": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Baut sich aus einem dünnen Lichtstrich auf, in einem Schein mit Glitzer"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Builds up out of a thin line of light, in a glow with sparkles"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

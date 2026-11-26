@@ -4,11 +4,11 @@ import Foundation
 /// effects stacked on the active layer, as one undo step. From a single frame the frames are made
 /// first (2 s); on an animation they play over the play range (or all frames).
 enum Recipe: String, CaseIterable, Identifiable {
-    case bouncingEntrance, popTitle, windUpExit, happyIdle, dropAndShake, magicItem, hangingSign, walkBy, peekaboo, rocketLaunch, sleepy, inLove, nervous, angry, surprised, stormyNight, snowyEvening, bouncyTitle, partyTitle, titleInOut, pondering, greeting, callForHelp, dizzy, brightIdea, sad, shy, tadaTitle, hotDrink, smelly, powerUp, smitten, dancing, partyScene, rollIn
+    case bouncingEntrance, popTitle, windUpExit, happyIdle, dropAndShake, magicItem, hangingSign, walkBy, peekaboo, rocketLaunch, sleepy, inLove, nervous, angry, surprised, stormyNight, snowyEvening, bouncyTitle, partyTitle, titleInOut, pondering, greeting, callForHelp, dizzy, brightIdea, sad, shy, tadaTitle, hotDrink, smelly, powerUp, smitten, dancing, partyScene, rollIn, beamDown
     var id: String { rawValue }
     /// Menu groups (0.239): ins and outs, loops, feelings (split into good and bad moods in 0.278).
     static let groups: [(title: String, recipes: [Recipe])] = [
-        ("Ins & outs", [.bouncingEntrance, .popTitle, .walkBy, .peekaboo, .dropAndShake, .windUpExit, .rocketLaunch, .rollIn]),
+        ("Ins & outs", [.bouncingEntrance, .popTitle, .walkBy, .peekaboo, .dropAndShake, .windUpExit, .rocketLaunch, .rollIn, .beamDown]),
         ("Loops", [.happyIdle, .magicItem, .hangingSign, .sleepy, .hotDrink, .smelly, .powerUp, .dancing]),
         ("Good moods", [.inLove, .smitten, .shy, .brightIdea, .surprised]),
         ("Bad moods", [.nervous, .angry, .sad, .dizzy, .pondering]),
@@ -22,7 +22,7 @@ enum Recipe: String, CaseIterable, Identifiable {
         case .magicItem: "Magic item"; case .hangingSign: "Hanging sign"; case .walkBy: "Walking by"; case .peekaboo: "Peek-a-boo"; case .rocketLaunch: "Rocket launch"
         case .sleepy: "Sleepy"; case .inLove: "In love"; case .nervous: "Nervous"
         case .angry: "Angry"; case .surprised: "Surprised"; case .pondering: "Pondering"; case .dizzy: "Dizzy"; case .brightIdea: "Bright idea"; case .sad: "Sad"; case .shy: "Shy"; case .smitten: "Smitten"
-        case .stormyNight: "Stormy night"; case .snowyEvening: "Snowy evening"; case .partyScene: "Party"; case .rollIn: "Roll in"
+        case .stormyNight: "Stormy night"; case .snowyEvening: "Snowy evening"; case .partyScene: "Party"; case .rollIn: "Roll in"; case .beamDown: "Beam down"
         case .bouncyTitle: "Bouncy title"; case .partyTitle: "Party title"; case .titleInOut: "Title in & out"; case .tadaTitle: "Ta-da title"
         case .hotDrink: "Hot drink"; case .smelly: "Smelly"; case .powerUp: "Power-up"; case .dancing: "Dancing"
         case .greeting: "Greeting"; case .callForHelp: "Call for help" } }
@@ -32,7 +32,7 @@ enum Recipe: String, CaseIterable, Identifiable {
         case .magicItem: "sparkles"; case .hangingSign: "lightbulb"; case .walkBy: "figure.walk"; case .peekaboo: "eyes"; case .rocketLaunch: "airplane.departure"
         case .sleepy: "moon.zzz"; case .inLove: "heart"; case .nervous: "exclamationmark.bubble"
         case .angry: "flame"; case .surprised: "exclamationmark"; case .pondering: "bubble.left"; case .dizzy: "star.circle"; case .brightIdea: "lightbulb.max"; case .sad: "drop"; case .shy: "face.smiling.inverse"; case .smitten: "heart.circle"
-        case .stormyNight: "cloud.bolt.rain"; case .snowyEvening: "cloud.snow"; case .partyScene: "balloon.2"; case .rollIn: "circle.circle"
+        case .stormyNight: "cloud.bolt.rain"; case .snowyEvening: "cloud.snow"; case .partyScene: "balloon.2"; case .rollIn: "circle.circle"; case .beamDown: "light.beacon.max"
         case .bouncyTitle: "textformat"; case .partyTitle: "party.popper"; case .titleInOut: "arrow.up.and.down.text.horizontal"; case .tadaTitle: "sun.max"; case .hotDrink: "cup.and.saucer"; case .smelly: "aqi.medium"; case .powerUp: "bolt.circle"; case .dancing: "music.note"
         case .greeting: "hand.wave"; case .callForHelp: "megaphone" } }
     var hint: String { switch self {
@@ -59,6 +59,7 @@ enum Recipe: String, CaseIterable, Identifiable {
         case .pondering: "Tilts slowly from side to side while a thought bubble fills with dots"
         case .stormyNight: "Night falls, rain pours, lightning flashes – the whole picture"
         case .snowyEvening: "Snow falls in a warm evening light – the whole picture"
+        case .beamDown: "Builds up out of a thin line of light, in a glow with sparkles"
         case .rollIn: "Rolls in from the left like a ball and comes to rest where it is, with a shadow"
         case .partyScene: "Confetti rains while the picture pumps and flashes to a 120 BPM beat"
         case .bouncyTitle: "Pops in, then its letters hop one after another"
@@ -169,6 +170,13 @@ extension Studio {
         case .snowyEvening:
             addLightMood(.sunset)
             addWeather(.snow, count: 0)
+        case .beamDown:
+            let saved = playRange, all = Playback.clamp(playRange, count: frames.count) ?? 0...(frames.count - 1)
+            let built = all.lowerBound + max(2, all.count * 2 / 5)
+            if built <= all.upperBound { playRange = all.lowerBound...built; beamLayer(out: false) }
+            playRange = saved
+            addAura()
+            addSparkles(count: 5)
         case .rollIn:
             shiftLayerAllFrames(dx: -w * 0.5, dy: 0)
             rollLayer(distance: w * 0.5)
