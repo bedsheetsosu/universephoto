@@ -26334,6 +26334,42 @@
           }
         }
       }
+    },
+    "Shooting star": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sternschnuppe"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shooting star"
+          }
+        }
+      }
+    },
+    "Streaks across the picture from the upper left with a long glowing tail and sparkles": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saust von oben links durchs Bild, mit langem leuchtendem Schweif und Funkeln"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Streaks across the picture from the upper left with a long glowing tail and sparkles"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

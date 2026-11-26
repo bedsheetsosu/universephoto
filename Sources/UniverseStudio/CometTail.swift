@@ -21,7 +21,7 @@ extension Studio {
         }
     }
 
-    @discardableResult func addCometTail(length: Int) -> Int {
+    @discardableResult func addCometTail(length: Int, colour: CodableColor? = nil) -> Int {
         guard frames.count >= 2, length >= 1, let src = activeLayer, let local = contentBounds(src) else { return 0 }
         stopPlayback()
         if frames.indices.contains(frameIndex) { frames[frameIndex] = layers }
@@ -33,7 +33,7 @@ extension Studio {
         for i in r {
             let from = max(r.lowerBound, i - length)
             let path = (from...i).compactMap { pts[$0] }
-            let strokes = Studio.tailStrokes(path, width: w, colour: color)
+            let strokes = Studio.tailStrokes(path, width: w, colour: colour ?? color)
             if !strokes.isEmpty { perFrame[i] = strokes }
         }
         guard !perFrame.isEmpty else { return 0 }
