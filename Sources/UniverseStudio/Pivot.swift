@@ -6,11 +6,15 @@ import CoreGraphics
 /// `pivotEdit` changes a transform and then moves the layer so the chosen point of its drawing –
 /// the middle, or the bottom middle so a figure stays on the ground – stays where it was on screen.
 extension Studio {
-    enum Pivot { case centre, bottom }
+    enum Pivot { case centre, bottom, top }
 
     func pivotPoint(_ layer: ArtLayer, _ p: Pivot) -> CGPoint? {
         guard let b = contentBounds(layer) else { return nil }
-        return p == .centre ? CGPoint(x: b.midX, y: b.midY) : CGPoint(x: b.midX, y: b.maxY)
+        switch p {
+        case .centre: return CGPoint(x: b.midX, y: b.midY)
+        case .bottom: return CGPoint(x: b.midX, y: b.maxY)
+        case .top: return CGPoint(x: b.midX, y: b.minY)
+        }
     }
 
     func pivotEdit(_ layer: inout ArtLayer, _ p: Pivot, _ edit: (inout LayerTransform) -> Void) {

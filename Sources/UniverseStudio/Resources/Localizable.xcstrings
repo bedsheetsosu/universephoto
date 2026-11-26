@@ -21528,6 +21528,60 @@
           }
         }
       }
+    },
+    "Hanging, gentle": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hängend, sanft"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hanging, gentle"
+          }
+        }
+      }
+    },
+    "Hanging, strong": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hängend, stark"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hanging, strong"
+          }
+        }
+      }
+    },
+    "Rocks the active layer back and forth across the frames – a gentle swing, or hanging from its top like a pendulum": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schaukelt die aktive Ebene über die Frames hin und her – sanft, oder oben aufgehängt wie ein Pendel"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rocks the active layer back and forth across the frames – a gentle swing, or hanging from its top like a pendulum"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

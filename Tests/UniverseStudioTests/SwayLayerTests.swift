@@ -1,5 +1,6 @@
 import Testing
 import Foundation
+import CoreGraphics
 @testable import UniverseStudio
 
 @MainActor
@@ -33,5 +34,25 @@ struct SwayLayerTests {
         s.swayLayer(degrees: 12)
         s.undo()
         #expect(s.document().frames.allSatisfy { $0[1].transform.rotation == 0 })
+    }
+}
+
+@MainActor
+struct PendulumTests {
+    @Test func topOfTheDrawingStaysPut() {
+        let s = Studio(recoveryRoot: FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString))
+        s.newDocument(width: 200, height: 200, background: .white)
+        s.layers[1].strokes = [InkStroke(points: [InkPoint(x: 100, y: 20, pressure: 1), InkPoint(x: 100, y: 120, pressure: 1)], color: .black, width: 4)]
+        s.changed()
+        for _ in 0..<7 { s.addFrame() }
+        s.selectFrame(0); s.selectedLayer = 1
+        #expect(s.swayLayer(degrees: 20, hanging: true) == 8)
+        let local = s.contentBounds(s.layers[1])!
+        let hook = CGPoint(x: local.midX, y: local.minY)
+        for f in s.document().frames {
+            let p = hook.applying(s.matrix(f[1].transform))
+            #expect(abs(p.x - hook.x) < 0.01 && abs(p.y - hook.y) < 0.01)
+        }
+        #expect(s.document().frames[2][1].transform.rotation != 0)
     }
 }
