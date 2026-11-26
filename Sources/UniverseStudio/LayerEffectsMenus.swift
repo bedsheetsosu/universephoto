@@ -7,6 +7,11 @@ struct LayerEffectsMove: View {
     @ObservedObject var studio: Studio
     var body: some View {
         Group {
+        Menu(L("Roll")) {
+            Button(L("To the right")) { studio.onSelectedLayers { studio.rollLayer(distance: Double(studio.width) * 0.5) } }
+            Button(L("To the left")) { studio.onSelectedLayers { studio.rollLayer(distance: -Double(studio.width) * 0.5) } }
+        }.disabled(studio.frames.count < 2)
+            .help(L("The active layer rolls along like a ball or a wheel – it turns exactly as far as it travels, never sliding"))
         Menu(L("Bounce to the beat")) {
             ForEach([90.0, 120.0, 140.0], id: \.self) { bpm in
                 Button(LF("%@ BPM", String(Int(bpm)))) { studio.onSelectedLayers { studio.beatBounce(bpm: bpm) } }

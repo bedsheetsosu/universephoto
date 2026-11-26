@@ -25992,6 +25992,42 @@
           }
         }
       }
+    },
+    "Roll": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rollen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Roll"
+          }
+        }
+      }
+    },
+    "The active layer rolls along like a ball or a wheel – it turns exactly as far as it travels, never sliding": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die aktive Ebene rollt wie ein Ball oder ein Rad – sie dreht sich genau so weit, wie sie fährt, ohne zu rutschen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The active layer rolls along like a ball or a wheel – it turns exactly as far as it travels, never sliding"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
