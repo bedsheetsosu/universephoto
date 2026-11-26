@@ -7,6 +7,14 @@ struct LayerEffectsMove: View {
     @ObservedObject var studio: Studio
     var body: some View {
         Group {
+        Menu(L("Bounce to the beat")) {
+            ForEach([90.0, 120.0, 140.0], id: \.self) { bpm in
+                Button(LF("%@ BPM", String(Int(bpm)))) { studio.onSelectedLayers { studio.beatBounce(bpm: bpm) } }
+            }
+        }.disabled(studio.frames.count < 2)
+            .help(L("The active layer squashes and springs up on every beat at the chosen tempo – timed by the real frame times"))
+        }
+        Group {
         Menu(L("Travel over the frames")) {
             ForEach([false, true], id: \.self) { eased in
                 Button(L(eased ? "Left to right, soft" : "Left to right")) { studio.onSelectedLayers { studio.travelLayer(dx: Double(studio.width), dy: 0, eased: eased) } }

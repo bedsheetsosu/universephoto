@@ -25794,6 +25794,60 @@
           }
         }
       }
+    },
+    "Bounce to the beat": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Im Takt wippen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bounce to the beat"
+          }
+        }
+      }
+    },
+    "%@ BPM": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ BPM"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ BPM"
+          }
+        }
+      }
+    },
+    "The active layer squashes and springs up on every beat at the chosen tempo – timed by the real frame times": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die aktive Ebene staucht sich auf jedem Schlag und federt hoch, im gewählten Tempo – nach den echten Frame-Zeiten"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The active layer squashes and springs up on every beat at the chosen tempo – timed by the real frame times"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
