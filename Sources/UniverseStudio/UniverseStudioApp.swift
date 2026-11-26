@@ -378,6 +378,8 @@ struct StudioCommands: Commands {
                     ForEach(LightMood.allCases) { m in Button(L(m.title)) { studio.addLightMood(m) } }
                 }.disabled(studio.frames.count < 2)
                     .help(L("The light of the whole picture changes over the frames – day to night, night to day, a warm sunset"))
+                Button(L("Spotlight")) { studio.addSpotlight() }.disabled(studio.activeLayer == nil)
+                    .help(L("Everything goes dark except a soft circle of light that follows the active layer – a stage, a torch"))
                 }
                 Section(L("Impacts")) {
                 Button(L("Landing dust")) { studio.addLandingDust() }.disabled(studio.frames.count < 3)

@@ -24192,6 +24192,42 @@
           }
         }
       }
+    },
+    "Spotlight": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scheinwerfer"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spotlight"
+          }
+        }
+      }
+    },
+    "Everything goes dark except a soft circle of light that follows the active layer – a stage, a torch": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alles wird dunkel bis auf einen weichen Lichtkreis, der der aktiven Ebene folgt – Bühne, Taschenlampe"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Everything goes dark except a soft circle of light that follows the active layer – a stage, a torch"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
