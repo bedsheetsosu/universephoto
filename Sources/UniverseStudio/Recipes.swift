@@ -4,13 +4,14 @@ import Foundation
 /// effects stacked on the active layer, as one undo step. From a single frame the frames are made
 /// first (2 s); on an animation they play over the play range (or all frames).
 enum Recipe: String, CaseIterable, Identifiable {
-    case bouncingEntrance, popTitle, windUpExit, happyIdle, dropAndShake, magicItem, hangingSign, walkBy, peekaboo, rocketLaunch, sleepy, inLove, nervous, angry, surprised, stormyNight, snowyEvening
+    case bouncingEntrance, popTitle, windUpExit, happyIdle, dropAndShake, magicItem, hangingSign, walkBy, peekaboo, rocketLaunch, sleepy, inLove, nervous, angry, surprised, stormyNight, snowyEvening, bouncyTitle, partyTitle
     var id: String { rawValue }
     /// Menu groups (0.239): ins and outs, loops, feelings.
     static let groups: [(title: String, recipes: [Recipe])] = [
         ("Ins & outs", [.bouncingEntrance, .popTitle, .walkBy, .peekaboo, .dropAndShake, .windUpExit, .rocketLaunch]),
         ("Loops", [.happyIdle, .magicItem, .hangingSign, .sleepy]),
         ("Feelings", [.inLove, .nervous, .angry, .surprised]),
+        ("Text", [.bouncyTitle, .partyTitle]),
         ("Scenes", [.stormyNight, .snowyEvening]),
     ]
     var title: String { switch self {
@@ -19,14 +20,16 @@ enum Recipe: String, CaseIterable, Identifiable {
         case .magicItem: "Magic item"; case .hangingSign: "Hanging sign"; case .walkBy: "Walking by"; case .peekaboo: "Peek-a-boo"; case .rocketLaunch: "Rocket launch"
         case .sleepy: "Sleepy"; case .inLove: "In love"; case .nervous: "Nervous"
         case .angry: "Angry"; case .surprised: "Surprised"
-        case .stormyNight: "Stormy night"; case .snowyEvening: "Snowy evening" } }
+        case .stormyNight: "Stormy night"; case .snowyEvening: "Snowy evening"
+        case .bouncyTitle: "Bouncy title"; case .partyTitle: "Party title" } }
     var symbol: String { switch self {
         case .bouncingEntrance: "figure.run"; case .popTitle: "textformat.size.larger"; case .windUpExit: "arrow.right.to.line"
         case .happyIdle: "face.smiling"; case .dropAndShake: "arrow.down.to.line"
         case .magicItem: "sparkles"; case .hangingSign: "lightbulb"; case .walkBy: "figure.walk"; case .peekaboo: "eyes"; case .rocketLaunch: "airplane.departure"
         case .sleepy: "moon.zzz"; case .inLove: "heart"; case .nervous: "exclamationmark.bubble"
         case .angry: "flame"; case .surprised: "exclamationmark"
-        case .stormyNight: "cloud.bolt.rain"; case .snowyEvening: "cloud.snow" } }
+        case .stormyNight: "cloud.bolt.rain"; case .snowyEvening: "cloud.snow"
+        case .bouncyTitle: "textformat"; case .partyTitle: "party.popper" } }
     var hint: String { switch self {
         case .bouncingEntrance: "Hops in from the left with squash, stretch, dust and a shadow"
         case .popTitle: "Pops up with an overshoot, fades in and wobbles"
@@ -44,7 +47,9 @@ enum Recipe: String, CaseIterable, Identifiable {
         case .angry: "Shakes with rage, a throbbing vein beside it"
         case .surprised: "Jumps with a start, a big ! pops up"
         case .stormyNight: "Night falls, rain pours, lightning flashes – the whole picture"
-        case .snowyEvening: "Snow falls in a warm evening light – the whole picture" } }
+        case .snowyEvening: "Snow falls in a warm evening light – the whole picture"
+        case .bouncyTitle: "Pops in, then its letters hop one after another"
+        case .partyTitle: "Letters wave in running rainbow colours while it bobs" } }
 }
 
 extension Studio {
@@ -89,6 +94,16 @@ extension Studio {
         case .inLove:
             scalePulseLayer(amount: 0.12, heartbeat: true)
             addFloatingSymbols(.hearts, count: 3)
+        case .bouncyTitle:
+            let saved = playRange, all = Playback.clamp(playRange, count: frames.count) ?? 0...(frames.count - 1)
+            let popEnd = all.lowerBound + max(2, all.count / 4)
+            if popEnd < all.upperBound { playRange = all.lowerBound...popEnd; growLayerOverFrames(grow: true, pop: true) }
+            playRange = saved
+            wavyText(hop: true)
+        case .partyTitle:
+            wavyText(hop: false)
+            rainbowLetters()
+            floatLayer(amplitude: 6, horizontal: false)
         case .stormyNight:
             addLightMood(.dayToNight)
             addWeather(.rain, count: 0)

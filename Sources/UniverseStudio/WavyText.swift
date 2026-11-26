@@ -61,15 +61,17 @@ extension Studio {
         var nf = frames, letters = 0
         for (k, i) in r.enumerated() {
             for j in nf[i].indices where nf[i][j].id == src.id && !nf[i][j].locked {
-                nf[i][j].strokes = nf[i][j].strokes.flatMap { s -> [InkStroke] in
-                    guard s.kind == "text" else { return [s] }
-                    let parts = Studio.letterStrokes(s)
-                    if k == 0 { letters += parts.count }
-                    return parts.enumerated().map { n, part in
-                        var q = part; q.color = Studio.rainbowColour(n, of: parts.count, frame: k, frames: r.count, alpha: part.color.alpha)
-                        return q
-                    }
+                // Letters are counted across the whole layer, so text already split by
+                // "Wavy text" (one stroke per letter) still gets one colour per letter.
+                let split = nf[i][j].strokes.map { $0.kind == "text" ? Studio.letterStrokes($0) : [$0] }
+                let total = split.joined().filter { $0.kind == "text" }.count
+                var n = 0
+                nf[i][j].strokes = split.joined().map { part in
+                    guard part.kind == "text" else { return part }
+                    var q = part; q.color = Studio.rainbowColour(n, of: total, frame: k, frames: r.count, alpha: part.color.alpha)
+                    n += 1; return q
                 }
+                if k == 0 { letters += total }
             }
         }
         guard letters > 0 else { return 0 }

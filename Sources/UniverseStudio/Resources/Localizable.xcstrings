@@ -24444,6 +24444,78 @@
           }
         }
       }
+    },
+    "Bouncy title": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hüpfender Titel"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bouncy title"
+          }
+        }
+      }
+    },
+    "Party title": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Party-Titel"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Party title"
+          }
+        }
+      }
+    },
+    "Pops in, then its letters hop one after another": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ploppt auf, dann hüpfen die Buchstaben nacheinander"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pops in, then its letters hop one after another"
+          }
+        }
+      }
+    },
+    "Letters wave in running rainbow colours while it bobs": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buchstaben wellen in wandernden Regenbogenfarben, das Ganze wippt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Letters wave in running rainbow colours while it bobs"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
