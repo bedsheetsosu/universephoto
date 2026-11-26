@@ -22518,6 +22518,78 @@
           }
         }
       }
+    },
+    "Quick slam": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schneller Knall"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quick slam"
+          }
+        }
+      }
+    },
+    "Slow fall": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Langsam herab"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Slow fall"
+          }
+        }
+      }
+    },
+    "Without shaking": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ohne Wackeln"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Without shaking"
+          }
+        }
+      }
+    },
+    "The active layer comes down like a rubber stamp – huge and faint, then slams onto its place and the picture jolts": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die aktive Ebene kommt herab wie ein Stempel – riesig und blass, dann knallt sie auf ihren Platz und das Bild ruckt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The active layer comes down like a rubber stamp – huge and faint, then slams onto its place and the picture jolts"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
