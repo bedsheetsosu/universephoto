@@ -21780,6 +21780,96 @@
           }
         }
       }
+    },
+    "Magic item": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Magischer Gegenstand"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Magic item"
+          }
+        }
+      }
+    },
+    "Hanging sign": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hängendes Schild"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hanging sign"
+          }
+        }
+      }
+    },
+    "Floats gently with twinkling sparkles around it": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schwebt sanft, umgeben von blitzendem Glitzer"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Floats gently with twinkling sparkles around it"
+          }
+        }
+      }
+    },
+    "Swings from its top like a sign or lamp in the wind": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schwingt oben aufgehängt wie ein Schild oder eine Lampe im Wind"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Swings from its top like a sign or lamp in the wind"
+          }
+        }
+      }
+    },
+    "Falls in from above, squashes, freezes for a beat and shakes the picture": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fällt von oben herein, staucht sich, hält kurz an und lässt das Bild wackeln"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Falls in from above, squashes, freezes for a beat and shakes the picture"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

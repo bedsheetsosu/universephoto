@@ -30,7 +30,9 @@ struct RecipesTests {
         let s = oneFrame()
         s.applyRecipe(.dropAndShake)
         let f = s.document().frames
-        #expect(f.contains { ($0[1].transform.stretch ?? 1) < 1 })                // squashed on landing
+        #expect(f.contains { ($0.last!.transform.stretch ?? 1) < 1 })                // squashed on landing
         #expect(f.contains { $0[0].transform.x != 0 || $0[0].transform.y != 0 }) // background jolted
+        #expect(f.allSatisfy { $0.count == 3 })                                    // + ground shadow
+        #expect((0..<s.frames.count).contains { s.hold($0) == 3 })                 // hit stop
     }
 }

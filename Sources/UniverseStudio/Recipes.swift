@@ -4,20 +4,24 @@ import Foundation
 /// effects stacked on the active layer, as one undo step. From a single frame the frames are made
 /// first (2 s); on an animation they play over the play range (or all frames).
 enum Recipe: String, CaseIterable, Identifiable {
-    case bouncingEntrance, popTitle, windUpExit, happyIdle, dropAndShake
+    case bouncingEntrance, popTitle, windUpExit, happyIdle, dropAndShake, magicItem, hangingSign
     var id: String { rawValue }
     var title: String { switch self {
         case .bouncingEntrance: "Bouncing entrance"; case .popTitle: "Pop-in title"; case .windUpExit: "Wind-up exit"
-        case .happyIdle: "Happy idle"; case .dropAndShake: "Heavy drop" } }
+        case .happyIdle: "Happy idle"; case .dropAndShake: "Heavy drop"
+        case .magicItem: "Magic item"; case .hangingSign: "Hanging sign" } }
     var symbol: String { switch self {
         case .bouncingEntrance: "figure.run"; case .popTitle: "textformat.size.larger"; case .windUpExit: "arrow.right.to.line"
-        case .happyIdle: "face.smiling"; case .dropAndShake: "arrow.down.to.line" } }
+        case .happyIdle: "face.smiling"; case .dropAndShake: "arrow.down.to.line"
+        case .magicItem: "sparkles"; case .hangingSign: "lightbulb" } }
     var hint: String { switch self {
         case .bouncingEntrance: "Hops in from the left with squash, stretch, dust and a shadow"
         case .popTitle: "Pops up with an overshoot, fades in and wobbles"
         case .windUpExit: "Winds up, then shoots off to the right with speed lines"
         case .happyIdle: "Breathes and bobs gently as a loop"
-        case .dropAndShake: "Falls in from above, squashes and shakes the picture" } }
+        case .dropAndShake: "Falls in from above, squashes, freezes for a beat and shakes the picture"
+        case .magicItem: "Floats gently with twinkling sparkles around it"
+        case .hangingSign: "Swings from its top like a sign or lamp in the wind" } }
 }
 
 extension Studio {
@@ -45,6 +49,11 @@ extension Studio {
         case .happyIdle:
             stretchEffect(jelly: false, amount: 0.05)
             floatLayer(amplitude: 8, horizontal: false)
+        case .magicItem:
+            floatLayer(amplitude: 10, horizontal: false)
+            addSparkles(count: 6)
+        case .hangingSign:
+            swayLayer(degrees: 14, hanging: true)
         case .dropAndShake:
             // The fall takes the first 60 %, so there are frames after the landing to squash and shake in.
             let saved = playRange, all = Playback.clamp(playRange, count: frames.count) ?? 0...(frames.count - 1)
@@ -54,7 +63,9 @@ extension Studio {
             easeLayerMotion(.slowIn)
             playRange = saved
             squashStretch(amount: 1.4)
+            addGroundShadow()
             impactShake(strength: 10)
+            hitStop(extra: 2)
         }
         selectedLayer = layers.firstIndex { $0.id == id } ?? selectedLayer
         guard undoStack.count > start else { return false }
