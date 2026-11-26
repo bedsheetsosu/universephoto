@@ -24678,6 +24678,42 @@
           }
         }
       }
+    },
+    "Pondering": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Grübeln"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pondering"
+          }
+        }
+      }
+    },
+    "Tilts slowly from side to side while a thought bubble fills with dots": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Neigt sich langsam hin und her, während sich eine Denkblase mit Punkten füllt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tilts slowly from side to side while a thought bubble fills with dots"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
