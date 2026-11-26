@@ -334,6 +334,9 @@ struct StudioCommands: Commands {
                     ForEach(EmotionMark.allCases) { m in Button(L(m.title)) { studio.addEmotionMark(m) } }
                 }.disabled(studio.frames.count < 2)
                     .help(L("A cartoon mark pops up beside the active layer and throbs – surprise, confusion or anger"))
+                Button(L("Thought bubble")) { studio.addThoughtBubble() }
+                    .disabled(studio.frames.count < 2)
+                    .help(L("Little bubbles rise above the active layer, then a thinking cloud pops up with dots appearing one by one"))
                 Menu(L("Sweat drop")) {
                     Button(L("One drop per loop")) { studio.addSweatDrop(drops: 1) }
                     Button(L("Nervous (3 per loop)")) { studio.addSweatDrop(drops: 3) }

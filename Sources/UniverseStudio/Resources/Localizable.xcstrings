@@ -24642,6 +24642,42 @@
           }
         }
       }
+    },
+    "Thought bubble": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Denkblase"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thought bubble"
+          }
+        }
+      }
+    },
+    "Little bubbles rise above the active layer, then a thinking cloud pops up with dots appearing one by one": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kleine Bläschen steigen über der aktiven Ebene auf, dann ploppt eine Denkwolke auf, in der Punkte nacheinander erscheinen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Little bubbles rise above the active layer, then a thinking cloud pops up with dots appearing one by one"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
