@@ -281,6 +281,11 @@ struct StudioCommands: Commands {
                     Button(L("Long")) { studio.hitStop(extra: 5) }
                 }.disabled(studio.frames.count < 3)
                     .help(L("The picture freezes for a beat where the active layer lands – holds the landing frame longer"))
+                Menu(L("Swarm")) {
+                    Button(L("A few (3)")) { studio.addSwarm(count: 3) }
+                    Button(L("Many (7)")) { studio.addSwarm(count: 7) }
+                }.disabled(studio.frames.count < 2)
+                    .help(L("Smaller copies of the active layer buzz around it on their own loops – bees, birds, fireflies"))
                 Menu(L("One after another")) {
                     ForEach(Stagger.styles) { p in
                         Menu { ForEach([("Quick", 0.15), ("Calm", 0.35)], id: \.0) { name, sec in

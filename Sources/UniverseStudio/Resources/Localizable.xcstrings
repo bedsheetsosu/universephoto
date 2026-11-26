@@ -21654,6 +21654,78 @@
           }
         }
       }
+    },
+    "Swarm": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schwarm"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Swarm"
+          }
+        }
+      }
+    },
+    "A few (3)": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein paar (3)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A few (3)"
+          }
+        }
+      }
+    },
+    "Many (7)": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Viele (7)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Many (7)"
+          }
+        }
+      }
+    },
+    "Smaller copies of the active layer buzz around it on their own loops – bees, birds, fireflies": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kleinere Kopien der aktiven Ebene schwirren auf eigenen Schleifen um sie herum – Bienen, Vögel, Glühwürmchen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Smaller copies of the active layer buzz around it on their own loops – bees, birds, fireflies"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
