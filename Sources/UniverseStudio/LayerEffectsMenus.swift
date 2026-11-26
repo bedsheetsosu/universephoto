@@ -85,6 +85,14 @@ struct LayerEffectsMove: View {
         }.disabled(studio.frames.count < 2)
             .help(L("The active layer turns full circles across the existing frames – a seamless loop"))
         }
+        Group {
+        Menu(L("Wander")) {
+            Button(L("Small")) { studio.onSelectedLayers { studio.wanderLayer(radius: 12) } }
+            Button(L("Wide")) { studio.onSelectedLayers { studio.wanderLayer(radius: 40) } }
+            Button(L("Another path")) { studio.onSelectedLayers { studio.wanderLayer(radius: 25, seed: UInt64.random(in: 1...UInt64.max)) } }
+        }.disabled(studio.frames.count < 2)
+            .help(L("The active layer drifts around on a soft, random path that closes into a loop – a fly, a firefly, a balloon"))
+        }
     }
 }
 

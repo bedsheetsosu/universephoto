@@ -6,7 +6,7 @@
 <key>CFBundleIconFile</key><string>UniverseStudio</string>
 <key>CFBundleExecutable</key><string>UniverseStudio</string>
 <key>CFBundlePackageType</key><string>APPL</string>
-<key>CFBundleShortVersionString</key><string>0.224.0</string>
+<key>CFBundleShortVersionString</key><string>0.225.0</string>
 <key>CFBundleVersion</key><string>3</string>
 <key>CFBundleDevelopmentRegion</key><string>en</string>
 <key>CFBundleLocalizations</key><array><string>en</string><string>de</string></array>
