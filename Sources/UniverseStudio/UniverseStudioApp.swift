@@ -414,6 +414,12 @@ struct StudioCommands: Commands {
                     Button(L("Loose")) { studio.cameraFollow(tight: false) }
                 }.disabled(studio.frames.count < 2)
                     .help(L("The camera pans along with the active layer so it stays in view – the rest of the picture moves the other way"))
+                Menu(L("Pump to the beat")) {
+                    ForEach([90.0, 120.0, 140.0], id: \.self) { bpm in
+                        Button(LF("%@ BPM", String(Int(bpm)))) { studio.cameraBeat(bpm: bpm) }
+                    }
+                }.disabled(studio.frames.count < 2)
+                    .help(L("On every beat the whole picture zooms in a little and eases back out – the music-video punch"))
                 }
                 Section(L("Lighting")) {
                 Menu(L("Light mood")) {

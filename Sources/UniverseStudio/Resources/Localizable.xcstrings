@@ -25884,6 +25884,42 @@
           }
         }
       }
+    },
+    "Pump to the beat": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Im Takt pumpen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pump to the beat"
+          }
+        }
+      }
+    },
+    "On every beat the whole picture zooms in a little and eases back out – the music-video punch": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Auf jedem Schlag zoomt das ganze Bild kurz hinein und gleitet zurück – der Musikvideo-Effekt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On every beat the whole picture zooms in a little and eases back out – the music-video punch"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
