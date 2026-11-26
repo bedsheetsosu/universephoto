@@ -23112,6 +23112,60 @@
           }
         }
       }
+    },
+    "Repeat: %@": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wiederholen: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Repeat: %@"
+          }
+        }
+      }
+    },
+    "Repeat last effect": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Letzten Effekt wiederholen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Repeat last effect"
+          }
+        }
+      }
+    },
+    "Runs the last layer effect or layer motion again – on the layers selected now and the current play range": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Führt den letzten Ebenen-Effekt oder die letzte Ebenenbewegung erneut aus – auf den jetzt ausgewählten Ebenen und im aktuellen Abspielbereich"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Runs the last layer effect or layer motion again – on the layers selected now and the current play range"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

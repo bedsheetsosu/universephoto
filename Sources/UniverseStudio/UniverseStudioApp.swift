@@ -222,6 +222,10 @@ struct StudioCommands: Commands {
             AnimationPreviewButton()
             MotionPathToggle()
             Divider()
+            Button(studio.lastEffectLabel.map { LF("Repeat: %@", L($0)) } ?? L("Repeat last effect")) { studio.repeatLastEffect() }
+                .keyboardShortcut("y", modifiers: .command)
+                .disabled(studio.lastEffect == nil || studio.frames.count < 2)
+                .help(L("Runs the last layer effect or layer motion again – on the layers selected now and the current play range"))
             Menu(L("Effects")) { Group {
                 Menu(L("Recipes")) {
                     ForEach(Recipe.allCases) { r in Button { studio.applyRecipe(r) } label: { Label(L(r.title), systemImage: r.symbol) }.help(L(r.hint)) }

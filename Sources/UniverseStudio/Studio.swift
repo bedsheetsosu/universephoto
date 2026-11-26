@@ -126,6 +126,9 @@ struct BrushPreset: Codable, Identifiable {
     @Published var height = 800
     @Published var dirty = false
     @Published var undoStack: [HistoryEntry] = []
+    /// The last layer effect / layer motion run (0.230), for Animation → Repeat last effect (⌘Y).
+    @Published var lastEffectLabel: String? = nil
+    var lastEffect: (() -> Int)? = nil
     @Published var redoStack: [HistoryEntry] = []
     @Published var tabs: [OpenArtwork] = []
     /// The document last shown in Photo (false) and Animate (true), to come back to it.

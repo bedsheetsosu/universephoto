@@ -5,7 +5,20 @@ import Foundation
 /// selected – or when the active layer isn't part of the selection – it just runs on the active
 /// layer as before. The active layer stays active afterwards.
 extension Studio {
-    @discardableResult func onSelectedLayers(_ effect: () -> Int) -> Int {
+    @discardableResult func onSelectedLayers(_ effect: @escaping () -> Int) -> Int {
+        let total = runOnSelectedLayers(effect)
+        if total > 0 { lastEffect = effect; lastEffectLabel = undoStack.last?.label }
+        return total
+    }
+
+    /// Animation → Repeat last effect (0.230): the last layer effect or layer motion again – on the
+    /// layers selected now and the current play range, so it can be stacked or moved on quickly.
+    @discardableResult func repeatLastEffect() -> Int {
+        guard let effect = lastEffect else { return 0 }
+        return onSelectedLayers(effect)
+    }
+
+    private func runOnSelectedLayers(_ effect: () -> Int) -> Int {
         // Layers marked "Same in all frames" are one drawing for every frame: a per-frame effect
         // would collapse to the current frame's version, so they are left out (0.198).
         guard let active = activeLayer?.id else { return 0 }

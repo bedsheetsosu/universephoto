@@ -19,7 +19,7 @@ struct ShortcutsSheet: View {
                     ("Free transform", "⌘T"), ("Distort", "⌥⌘T"), ("Group layers", "⌘G"), ("Ungroup", "⇧⌘G"), ("Clipping mask", "⌥⌘G"),
                     ("Merge down", "⌘E"), ("Merge visible", "⇧⌘E"), ("Stamp visible", "⌥⇧⌘E"), ("Delete layer", "⇧⌘⌫"), ("Visibility", "⌥H")]),
         ("View", [("Fit canvas", "⌘0"), ("Zoom in", "⌘+"), ("Zoom out", "⌘−"), ("Mirror canvas", "⇧H")]),
-        ("Animation", [("Play / Pause", "Space"), ("Duplicate frame", "⇧F"), ("Previous frame", "⌥←"), ("Next frame", "⌥→"), ("Onion Skin", "⌥O"), ("First frame", "⌥⇧←"), ("Last frame", "⌥⇧→"), ("Hold frame longer", "⌥↑"), ("Hold frame shorter", "⌥↓"), ("Move frame earlier", "⌥⌘←"), ("Move frame later", "⌥⌘→"), ("Delete frame", "⌥⌘⌫"), ("Play from here", "⌥["), ("Play up to here", "⌥]"), ("Play all frames", "⌥\\")]),
+        ("Animation", [("Play / Pause", "Space"), ("Duplicate frame", "⇧F"), ("Previous frame", "⌥←"), ("Next frame", "⌥→"), ("Onion Skin", "⌥O"), ("First frame", "⌥⇧←"), ("Last frame", "⌥⇧→"), ("Hold frame longer", "⌥↑"), ("Hold frame shorter", "⌥↓"), ("Move frame earlier", "⌥⌘←"), ("Move frame later", "⌥⌘→"), ("Delete frame", "⌥⌘⌫"), ("Play from here", "⌥["), ("Play up to here", "⌥]"), ("Play all frames", "⌥\\"), ("Repeat last effect", "⌘Y")]),
         ("Canvas", [("Pan", "Scroll"), ("Zoom", "⌘ Scroll"), ("Deselect", "Esc")]),
     ]
 
