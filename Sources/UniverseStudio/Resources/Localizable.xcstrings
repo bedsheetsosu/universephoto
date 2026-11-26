@@ -23760,6 +23760,60 @@
           }
         }
       }
+    },
+    "Gust of wind": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Windstoß"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gust of wind"
+          }
+        }
+      }
+    },
+    "Storm": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sturm"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Storm"
+          }
+        }
+      }
+    },
+    "A gust bends the active layer over on its foot; it holds against the wind, then springs back": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein Windstoß biegt die aktive Ebene auf ihrem Fuß um; sie hält dagegen und federt dann zurück"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A gust bends the active layer over on its foot; it holds against the wind, then springs back"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

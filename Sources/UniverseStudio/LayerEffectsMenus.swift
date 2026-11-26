@@ -86,6 +86,12 @@ struct LayerEffectsMove: View {
             .help(L("The active layer turns full circles across the existing frames – a seamless loop"))
         }
         Group {
+        Menu(L("Gust of wind")) {
+            Button(L("From the left")) { studio.onSelectedLayers { studio.gustLayer(degrees: 18) } }
+            Button(L("From the right")) { studio.onSelectedLayers { studio.gustLayer(degrees: -18) } }
+            Button(L("Storm")) { studio.onSelectedLayers { studio.gustLayer(degrees: 35) } }
+        }.disabled(studio.frames.count < 4)
+            .help(L("A gust bends the active layer over on its foot; it holds against the wind, then springs back"))
         Menu(L("Jump")) {
             Button(L("Small hop")) { studio.onSelectedLayers { studio.jumpLayer(height: Double(studio.height) * 0.12) } }
             Button(L("Big jump")) { studio.onSelectedLayers { studio.jumpLayer(height: Double(studio.height) * 0.35) } }
