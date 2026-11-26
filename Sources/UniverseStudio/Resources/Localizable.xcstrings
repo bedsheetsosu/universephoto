@@ -23814,6 +23814,60 @@
           }
         }
       }
+    },
+    "Footprints": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fußspuren"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Footprints"
+          }
+        }
+      }
+    },
+    "Every 4 frames": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alle 4 Frames"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Every 4 frames"
+          }
+        }
+      }
+    },
+    "Prints stay behind at the feet of the walking active layer – left, right, left – slowly fading": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "An den Füßen der gehenden aktiven Ebene bleiben Abdrücke zurück – links, rechts, links – und verblassen langsam"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prints stay behind at the feet of the walking active layer – left, right, left – slowly fading"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

@@ -77,6 +77,7 @@ extension Studio {
             shiftLayerAllFrames(dx: -w * 0.6, dy: 0)
             walkBob(steps: 6, height: max(3, h * 0.02), tilt: 4)
             addGroundShadow()
+            addFootprints(every: max(2, (Playback.clamp(playRange, count: frames.count)?.count ?? frames.count) / 6))
         case .sleepy:
             stretchEffect(jelly: false, amount: 0.06)
             addFloatingSymbols(.sleep, count: 3)

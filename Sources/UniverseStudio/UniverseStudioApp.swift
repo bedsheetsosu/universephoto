@@ -309,6 +309,11 @@ struct StudioCommands: Commands {
                     .help(L("A soft shadow on the ground under the active layer – smaller and paler the higher it is"))
                 Button(L("Speed lines")) { studio.addSpeedLines() }.disabled(studio.frames.count < 2)
                     .help(L("Comic-style streaks behind the active layer, from how fast it actually moves – on a new layer below it"))
+                Menu(L("Footprints")) {
+                    Button(L("Every 2 frames")) { studio.addFootprints(every: 2) }
+                    Button(L("Every 4 frames")) { studio.addFootprints(every: 4) }
+                }.disabled(studio.frames.count < 2)
+                    .help(L("Prints stay behind at the feet of the walking active layer – left, right, left – slowly fading"))
                 Menu(L("Smoke trail")) {
                     Button(L("Thick")) { studio.addSmokeTrail(every: 1) }
                     Button(L("Puffs")) { studio.addSmokeTrail(every: 3) }
