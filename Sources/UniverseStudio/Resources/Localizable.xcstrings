@@ -21582,6 +21582,78 @@
           }
         }
       }
+    },
+    "Hit stop": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Treffer-Stopp"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hit stop"
+          }
+        }
+      }
+    },
+    "Short": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kurz"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Short"
+          }
+        }
+      }
+    },
+    "Long": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lang"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Long"
+          }
+        }
+      }
+    },
+    "The picture freezes for a beat where the active layer lands – holds the landing frame longer": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das Bild hält beim Aufprall der aktiven Ebene kurz an – der Lande-Frame bleibt länger stehen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The picture freezes for a beat where the active layer lands – holds the landing frame longer"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

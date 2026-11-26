@@ -276,6 +276,11 @@ struct StudioCommands: Commands {
                     Button(L("Heavy")) { studio.impactShake(strength: 12) }
                 }.disabled(studio.frames.count < 3)
                     .help(L("The whole picture jolts where the active layer lands – a heavy landing or a stomp"))
+                Menu(L("Hit stop")) {
+                    Button(L("Short")) { studio.hitStop(extra: 2) }
+                    Button(L("Long")) { studio.hitStop(extra: 5) }
+                }.disabled(studio.frames.count < 3)
+                    .help(L("The picture freezes for a beat where the active layer lands – holds the landing frame longer"))
                 Menu(L("One after another")) {
                     ForEach(Stagger.styles) { p in
                         Menu { ForEach([("Quick", 0.15), ("Calm", 0.35)], id: \.0) { name, sec in
