@@ -378,6 +378,11 @@ struct StudioCommands: Commands {
                     ForEach(LightMood.allCases) { m in Button(L(m.title)) { studio.addLightMood(m) } }
                 }.disabled(studio.frames.count < 2)
                     .help(L("The light of the whole picture changes over the frames – day to night, night to day, a warm sunset"))
+                Menu(L("Lightning")) {
+                    Button(L("Every 2 seconds")) { studio.addLightning(everySeconds: 2) }
+                    Button(L("Every 4 seconds")) { studio.addLightning(everySeconds: 4) }
+                }.disabled(studio.frames.count < 6)
+                    .help(L("Now and then the picture lights up in a stormy double flash – pairs with Day to night"))
                 Button(L("Spotlight")) { studio.addSpotlight() }.disabled(studio.activeLayer == nil)
                     .help(L("Everything goes dark except a soft circle of light that follows the active layer – a stage, a torch"))
                 }

@@ -24228,6 +24228,42 @@
           }
         }
       }
+    },
+    "Lightning": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gewitterblitz"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lightning"
+          }
+        }
+      }
+    },
+    "Now and then the picture lights up in a stormy double flash – pairs with Day to night": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ab und zu leuchtet das Bild im Doppelblitz eines Gewitters auf – passt zu Tag zu Nacht"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Now and then the picture lights up in a stormy double flash – pairs with Day to night"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
