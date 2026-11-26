@@ -25,4 +25,21 @@ struct MaskRenderTests {
         #expect(alpha(img, x: 5, yDown: 3) == 255)
         #expect(alpha(img, x: 5, yDown: 16) == 0)
     }
+
+    @Test func defaultBrushBlackHidesFullyOnAMask() {
+        var l = ArtLayer(name: "x")
+        var b = InkStroke(points: [InkPoint(x: 0, y: 0, pressure: 1), InkPoint(x: 20, y: 20, pressure: 1)], color: .white, width: 1)
+        b.kind = "rectangle"; b.filled = true
+        l.strokes = [b]
+        var c = InkStroke(points: [InkPoint(x: -5, y: 10, pressure: 1), InkPoint(x: 30, y: 30, pressure: 1)], color: .black, width: 1)
+        c.kind = "rectangle"; c.filled = true
+        var grey = InkStroke(points: [InkPoint(x: -5, y: -5, pressure: 1), InkPoint(x: 10, y: 9, pressure: 1)], color: CodableColor(red: 0.5, green: 0.5, blue: 0.5, alpha: 1), width: 1)
+        grey.kind = "rectangle"; grey.filled = true
+        l.mask = [c, grey]
+        let img = Renderer.render(layers: [l], width: 20, height: 20)!
+        #expect(alpha(img, x: 15, yDown: 16) == 0)                 // soft ink black: hidden completely
+        #expect(alpha(img, x: 15, yDown: 3) == 255)
+        let half = Int(alpha(img, x: 5, yDown: 3))                  // grey stays partial
+        #expect(half > 60 && half < 200)
+    }
 }

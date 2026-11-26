@@ -151,7 +151,7 @@ enum Renderer {
         if o < 1 { s = d.applyingFilter("CIDissolveTransition", parameters: [kCIInputTargetImageKey: s, kCIInputTimeKey: o]) }
         if let strokes = layer.mask, let matte = context(width: width, height: height) {
             matte.setFillColor(CGColor(gray: 1, alpha: 1)); matte.fill(CGRect(x: 0, y: 0, width: width, height: height))
-            for stroke in strokes { drawStroke(stroke, in: matte) }
+            for stroke in strokes { drawStroke(maskStroke(stroke), in: matte) }
             if let m = matte.makeImage() {
                 s = s.applyingFilter("CIBlendWithMask", parameters: [kCIInputBackgroundImageKey: d, kCIInputMaskImageKey: CIImage(cgImage: m)])
             }
@@ -454,6 +454,14 @@ enum Renderer {
         }
         return silhouette
     }
+    /// The default brush black is a soft ink black (~9 % grey); on a mask "black hides" should mean all
+    /// of it, so there it counts as pure black (0.221). Other greys stay as painted.
+    static func maskStroke(_ stroke: InkStroke) -> InkStroke {
+        let c = stroke.color, k = CodableColor.black
+        guard c.red == k.red, c.green == k.green, c.blue == k.blue else { return stroke }
+        var s = stroke; s.color = CodableColor(red: 0, green: 0, blue: 0, alpha: c.alpha)
+        return s
+    }
     /// Applies a layer mask (white reveals, black hides, greys in between), as a grey clip mask in
     /// Core Graphics (0.220) – exact and without a Core Image round trip.
     private static func applyMask(_ strokes: [InkStroke], image: CGImage, width: Int, height: Int) -> CGImage? {
@@ -464,7 +472,7 @@ enum Renderer {
         else { return nil }
         mask.translateBy(x: 0, y: CGFloat(height)); mask.scaleBy(x: 1, y: -1)     // same y-down space as the layer
         mask.setFillColor(gray: 1, alpha: 1); mask.fill(CGRect(x: 0, y: 0, width: width, height: height))
-        for stroke in strokes { drawStroke(stroke, in: mask) }
+        for stroke in strokes { drawStroke(maskStroke(stroke), in: mask) }
         guard let matte = mask.makeImage() else { return nil }
         let all = CGRect(x: 0, y: 0, width: width, height: height)
         out.clip(to: all, mask: matte)
