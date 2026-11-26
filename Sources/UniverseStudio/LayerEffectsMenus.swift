@@ -235,6 +235,8 @@ struct LayerEffectsAppear: View {
             Section(L("Circle")) {
                 Button(L("Iris open")) { studio.onSelectedLayers { studio.irisLayer(open: true) } }
                 Button(L("Iris close")) { studio.onSelectedLayers { studio.irisLayer(open: false) } }
+                Button(L("Heart open")) { studio.onSelectedLayers { studio.irisLayer(open: true, heart: true) } }
+                Button(L("Heart close")) { studio.onSelectedLayers { studio.irisLayer(open: false, heart: true) } }
             }
             Divider()
             Button(L("Remove mask in all frames")) { studio.onSelectedLayers { studio.clearMaskAllFrames() } }
