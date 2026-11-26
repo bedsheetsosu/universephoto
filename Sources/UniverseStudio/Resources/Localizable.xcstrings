@@ -26028,6 +26028,42 @@
           }
         }
       }
+    },
+    "Roll in": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hereinrollen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Roll in"
+          }
+        }
+      }
+    },
+    "Rolls in from the left like a ball and comes to rest where it is, with a shadow": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rollt wie ein Ball von links herein und kommt an seinem Platz zur Ruhe, mit Schatten"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rolls in from the left like a ball and comes to rest where it is, with a shadow"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
