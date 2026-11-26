@@ -25002,6 +25002,42 @@
           }
         }
       }
+    },
+    "Dizzy": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Benommen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dizzy"
+          }
+        }
+      }
+    },
+    "Wobbles in a little circle while stars circle above its head": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schwankt in einem kleinen Kreis, während Sterne über dem Kopf kreisen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wobbles in a little circle while stars circle above its head"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
