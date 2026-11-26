@@ -431,6 +431,12 @@ struct StudioCommands: Commands {
                     Button(L("Every 4 seconds")) { studio.addLightning(everySeconds: 4) }
                 }.disabled(studio.frames.count < 6)
                     .help(L("Now and then the picture lights up in a stormy double flash – pairs with Day to night"))
+                Menu(L("Flash to the beat")) {
+                    ForEach([90.0, 120.0, 140.0], id: \.self) { bpm in
+                        Button(LF("%@ BPM", String(Int(bpm)))) { studio.addBeatFlash(bpm: bpm) }
+                    }
+                }.disabled(studio.frames.count < 2)
+                    .help(L("On every beat the picture lights up white and fades out quickly – a club light; pairs with Pump to the beat"))
                 Button(L("Spotlight")) { studio.addSpotlight() }.disabled(studio.activeLayer == nil)
                     .help(L("Everything goes dark except a soft circle of light that follows the active layer – a stage, a torch"))
                 }

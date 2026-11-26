@@ -25920,6 +25920,42 @@
           }
         }
       }
+    },
+    "Flash to the beat": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lichtblitz im Takt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Flash to the beat"
+          }
+        }
+      }
+    },
+    "On every beat the picture lights up white and fades out quickly – a club light; pairs with Pump to the beat": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Auf jedem Schlag leuchtet das Bild weiß auf und verblasst schnell – Clublicht; passt zu „Im Takt pumpen“"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On every beat the picture lights up white and fades out quickly – a club light; pairs with Pump to the beat"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
