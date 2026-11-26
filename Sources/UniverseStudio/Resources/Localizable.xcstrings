@@ -22320,6 +22320,96 @@
           }
         }
       }
+    },
+    "Spiral": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spirale"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spiral"
+          }
+        }
+      }
+    },
+    "Whirl in": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hineinwirbeln"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Whirl in"
+          }
+        }
+      }
+    },
+    "Whirl out": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hinauswirbeln"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Whirl out"
+          }
+        }
+      }
+    },
+    "Big whirl in": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Groß hineinwirbeln"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Big whirl in"
+          }
+        }
+      }
+    },
+    "The active layer whirls in on a narrowing spiral and lands on its place – or whirls out from it": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die aktive Ebene wirbelt auf einer enger werdenden Spirale herein und landet auf ihrem Platz – oder wirbelt davon"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The active layer whirls in on a narrowing spiral and lands on its place – or whirls out from it"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

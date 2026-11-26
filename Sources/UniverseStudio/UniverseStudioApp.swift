@@ -448,6 +448,12 @@ struct StudioCommands: Commands {
                         Button(L("Small circle, other way")) { studio.onSelectedLayers { studio.orbitLayer(radius: 20, clockwise: false) } }
                     }.disabled(studio.frames.count < 2)
                         .help(L("The active layer runs on a circle that starts at its position – a seamless loop"))
+                    Menu(L("Spiral")) {
+                        Button(L("Whirl in")) { studio.onSelectedLayers { studio.spiralLayer(radius: 120, turns: 1.5) } }
+                        Button(L("Whirl out")) { studio.onSelectedLayers { studio.spiralLayer(radius: 120, turns: 1.5, out: true) } }
+                        Button(L("Big whirl in")) { studio.onSelectedLayers { studio.spiralLayer(radius: 260, turns: 2.5) } }
+                    }.disabled(studio.frames.count < 2)
+                        .help(L("The active layer whirls in on a narrowing spiral and lands on its place – or whirls out from it"))
                     Menu(L("Bounce over the frames")) {
                         Button(L("One big jump")) { studio.onSelectedLayers { studio.bounceLayer(height: Double(studio.height) * 0.3, bounces: 1) } }
                         Button(L("Ball, 3 hops")) { studio.onSelectedLayers { studio.bounceLayer(height: Double(studio.height) * 0.3, bounces: 3) } }
