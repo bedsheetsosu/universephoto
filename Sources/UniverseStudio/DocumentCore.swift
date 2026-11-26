@@ -11,6 +11,8 @@ struct CodableColor: Codable, Hashable, Sendable {
     var cgColor: CGColor { CGColor(srgbRed: red, green: green, blue: blue, alpha: alpha) }
     static let black = CodableColor(red: 0.08, green: 0.09, blue: 0.12, alpha: 1)
     static let white = CodableColor(red: 1, green: 1, blue: 1, alpha: 1)
+    /// Pure black for layer masks that must hide completely (`black` is a soft ink black, ~9 % grey).
+    static let maskBlack = CodableColor(red: 0, green: 0, blue: 0, alpha: 1)
     init(red: Double, green: Double, blue: Double, alpha: Double) { self.red = red; self.green = green; self.blue = blue; self.alpha = alpha }
     init(_ color: Color) { let c = NSColor(color).usingColorSpace(.sRGB) ?? .black; self.init(red: c.redComponent, green: c.greenComponent, blue: c.blueComponent, alpha: c.alphaComponent) }
 }

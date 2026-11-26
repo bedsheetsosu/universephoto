@@ -22590,6 +22590,60 @@
           }
         }
       }
+    },
+    "Rise up": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Auftauchen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rise up"
+          }
+        }
+      }
+    },
+    "Sink down": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abtauchen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sink down"
+          }
+        }
+      }
+    },
+    "The active layer rises out of the ground at its bottom edge – from behind a wall or a counter – or sinks back down": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die aktive Ebene taucht an ihrer Unterkante aus dem Boden auf – hinter einer Mauer oder Theke hervor – oder taucht wieder ab"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The active layer rises out of the ground at its bottom edge – from behind a wall or a counter – or sinks back down"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

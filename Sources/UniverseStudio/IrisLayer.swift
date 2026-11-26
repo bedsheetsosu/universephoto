@@ -22,7 +22,7 @@ extension Studio {
         for (k, i) in r.enumerated() {
             let rad = Studio.irisRadius(progress: Studio.fadeRamp(k, of: r.count, fadeIn: true), open: open, width: w, height: h)
             guard rad < full - 1e-9 else { continue }
-            var black = InkStroke(points: [InkPoint(x: 0, y: 0, pressure: 1)], color: .black, width: 1); black.kind = "fill"
+            var black = InkStroke(points: [InkPoint(x: 0, y: 0, pressure: 1)], color: .maskBlack, width: 1); black.kind = "fill"
             var hole = InkStroke(points: [InkPoint(x: cx - rad, y: cy - rad, pressure: 1), InkPoint(x: cx + rad, y: cy + rad, pressure: 1)], color: .white, width: 1)
             hole.kind = "ellipse"; hole.filled = true
             let add = rad > 1e-9 ? [black, hole] : [black]

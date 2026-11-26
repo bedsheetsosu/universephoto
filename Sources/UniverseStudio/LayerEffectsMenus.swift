@@ -139,6 +139,13 @@ struct LayerEffectsAppear: View {
     @ObservedObject var studio: Studio
     var body: some View {
         Group {
+        Menu(L("Rise up")) {
+            Button(L("Rise up")) { studio.onSelectedLayers { studio.riseUp() } }
+            Button(L("Sink down")) { studio.onSelectedLayers { studio.riseUp(sink: true) } }
+        }.disabled(studio.frames.count < 2)
+            .help(L("The active layer rises out of the ground at its bottom edge – from behind a wall or a counter – or sinks back down"))
+        }
+        Group {
         Menu(L("Stamp")) {
             Button(L("Quick slam")) { studio.onSelectedLayers { studio.stampLayer(hitAfter: max(2, Int((studio.fps * 0.25).rounded()))) } }
             Button(L("Slow fall")) { studio.onSelectedLayers { studio.stampLayer(hitAfter: max(3, Int((studio.fps * 0.6).rounded()))) } }

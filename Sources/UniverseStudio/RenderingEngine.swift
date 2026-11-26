@@ -454,15 +454,22 @@ enum Renderer {
         }
         return silhouette
     }
+    /// Applies a layer mask (white reveals, black hides, greys in between), as a grey clip mask in
+    /// Core Graphics (0.220) – exact and without a Core Image round trip.
     private static func applyMask(_ strokes: [InkStroke], image: CGImage, width: Int, height: Int) -> CGImage? {
-        guard let mask = context(width: width, height: height) else { return nil }
-        mask.setFillColor(CGColor(gray: 1, alpha: 1)); mask.fill(CGRect(x: 0, y: 0, width: width, height: height))
+        guard let mask = CGContext(data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: width,
+                                   space: CGColorSpaceCreateDeviceGray(), bitmapInfo: CGImageAlphaInfo.none.rawValue),
+              let out = CGContext(data: nil, width: width, height: height, bitsPerComponent: 8, bytesPerRow: width * 4,
+                                  space: CGColorSpace(name: CGColorSpace.sRGB)!, bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue)
+        else { return nil }
+        mask.translateBy(x: 0, y: CGFloat(height)); mask.scaleBy(x: 1, y: -1)     // same y-down space as the layer
+        mask.setFillColor(gray: 1, alpha: 1); mask.fill(CGRect(x: 0, y: 0, width: width, height: height))
         for stroke in strokes { drawStroke(stroke, in: mask) }
-        guard let maskImage = mask.makeImage() else { return nil }
-        let input = CIImage(cgImage: image), matte = CIImage(cgImage: maskImage)
-        let transparent = CIImage(color: .clear).cropped(to: input.extent)
-        let output = input.applyingFilter("CIBlendWithMask", parameters: [kCIInputBackgroundImageKey: transparent, kCIInputMaskImageKey: matte])
-        return filters.createCGImage(output, from: input.extent)
+        guard let matte = mask.makeImage() else { return nil }
+        let all = CGRect(x: 0, y: 0, width: width, height: height)
+        out.clip(to: all, mask: matte)
+        out.draw(image, in: all)
+        return out.makeImage()
     }
     static func adjusted(_ image: CGImage, adjustment a: LayerAdjustment) -> CGImage? {
         guard a != LayerAdjustment() else { return image }

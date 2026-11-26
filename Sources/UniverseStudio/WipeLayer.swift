@@ -36,7 +36,7 @@ extension Studio {
         for (k, i) in r.enumerated() {
             let p = Studio.fadeRamp(k, of: r.count, fadeIn: true)
             guard let (a, b) = Studio.wipeHidden(d, progress: p, reveal: reveal, width: Double(width), height: Double(height)) else { continue }
-            var cover = InkStroke(points: [a, b], color: .black, width: 1)
+            var cover = InkStroke(points: [a, b], color: .maskBlack, width: 1)
             cover.kind = "rectangle"; cover.filled = true
             for j in nf[i].indices where nf[i][j].id == id && !nf[i][j].locked {
                 nf[i][j].mask = (nf[i][j].mask ?? []) + [cover]; touched += 1
