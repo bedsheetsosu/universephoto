@@ -302,6 +302,7 @@ struct StudioCommands: Commands {
                 }
                 }
                 Section(L("Around the layer")) {
+                Group {
                 Button(L("Ground shadow")) { studio.addGroundShadow() }.disabled(studio.activeLayer == nil)
                     .help(L("A soft shadow on the ground under the active layer – smaller and paler the higher it is"))
                 Button(L("Speed lines")) { studio.addSpeedLines() }.disabled(studio.frames.count < 2)
@@ -320,6 +321,8 @@ struct StudioCommands: Commands {
                     ForEach(FloatingSymbol.allCases) { k in Button(L(k.title)) { studio.addFloatingSymbols(k) } }
                 }.disabled(studio.frames.count < 2)
                     .help(L("Little symbols drift up from the active layer and fade – hearts, music notes, sleepy Z's or question marks"))
+                }
+                Group {
                 Menu(L("Sweat drop")) {
                     Button(L("One drop per loop")) { studio.addSweatDrop(drops: 1) }
                     Button(L("Nervous (3 per loop)")) { studio.addSweatDrop(drops: 3) }
@@ -340,6 +343,7 @@ struct StudioCommands: Commands {
                     Button(L("On the ground")) { studio.addRipples(rings: 3, flat: true) }
                 }.disabled(studio.frames.count < 2)
                     .help(L("Rings spread out from the active layer and fade – a drop in water, a radio signal, a sonar ping"))
+                }
                 }
                 Section(L("Impacts")) {
                 Button(L("Landing dust")) { studio.addLandingDust() }.disabled(studio.frames.count < 3)

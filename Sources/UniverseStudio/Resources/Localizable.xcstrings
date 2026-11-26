@@ -23436,6 +23436,42 @@
           }
         }
       }
+    },
+    "Nervous": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nervös"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nervous"
+          }
+        }
+      }
+    },
+    "Trembles a little while sweat drops run down – a loop": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zittert leicht, während Schweißtropfen herabrinnen – als Schleife"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trembles a little while sweat drops run down – a loop"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
