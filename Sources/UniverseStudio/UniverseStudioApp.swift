@@ -227,7 +227,7 @@ struct StudioCommands: Commands {
                     ForEach(Recipe.allCases) { r in Button { studio.applyRecipe(r) } label: { Label(L(r.title), systemImage: r.symbol) }.help(L(r.hint)) }
                 }.disabled(studio.activeLayer == nil || studio.activeLayer?.allFrames == true)
                     .help(L("A whole little animation for the active layer in one click – from a single frame too"))
-                Divider()
+                Section(L("New frames")) {
                 Menu(L("Typewriter")) {
                     Button(L("Letter by letter")) { studio.typewriter(byWord: false, restTicks: Int(studio.fps)) }
                     Button(L("Two letters at a time")) { studio.typewriter(byWord: false, perStep: 2, restTicks: Int(studio.fps)) }
@@ -265,37 +265,6 @@ struct StudioCommands: Commands {
                         label: { Label(L(b.title), systemImage: b.symbol) }
                     }
                 }.help(L("A one-off pop of confetti or sparks from the middle of the active layer, on a new layer"))
-                Button(L("Speed lines")) { studio.addSpeedLines() }.disabled(studio.frames.count < 2)
-                    .help(L("Comic-style streaks behind the active layer, from how fast it actually moves – on a new layer below it"))
-                Button(L("Landing dust")) { studio.addLandingDust() }.disabled(studio.frames.count < 3)
-                    .help(L("A little dust cloud where the active layer touches down – pairs with Bounce"))
-                Button(L("Ground shadow")) { studio.addGroundShadow() }.disabled(studio.activeLayer == nil)
-                    .help(L("A soft shadow on the ground under the active layer – smaller and paler the higher it is"))
-                Menu(L("Impact shake")) {
-                    Button(L("Light")) { studio.impactShake(strength: 4) }
-                    Button(L("Heavy")) { studio.impactShake(strength: 12) }
-                }.disabled(studio.frames.count < 3)
-                    .help(L("The whole picture jolts where the active layer lands – a heavy landing or a stomp"))
-                Menu(L("Hit stop")) {
-                    Button(L("Short")) { studio.hitStop(extra: 2) }
-                    Button(L("Long")) { studio.hitStop(extra: 5) }
-                }.disabled(studio.frames.count < 3)
-                    .help(L("The picture freezes for a beat where the active layer lands – holds the landing frame longer"))
-                Menu(L("Swarm")) {
-                    Button(L("A few (3)")) { studio.addSwarm(count: 3) }
-                    Button(L("Many (7)")) { studio.addSwarm(count: 7) }
-                }.disabled(studio.frames.count < 2)
-                    .help(L("Smaller copies of the active layer buzz around it on their own loops – bees, birds, fireflies"))
-                Menu(L("Sparkles")) {
-                    Button(L("A few (4)")) { studio.addSparkles(count: 4) }
-                    Button(L("Lots (9)")) { studio.addSparkles(count: 9) }
-                }.disabled(studio.frames.count < 2)
-                    .help(L("Little stars twinkle around the active layer at different moments – new, shiny or magic"))
-                Menu(L("Ripples")) {
-                    Button(L("Rings")) { studio.addRipples(rings: 3) }
-                    Button(L("On the ground")) { studio.addRipples(rings: 3, flat: true) }
-                }.disabled(studio.frames.count < 2)
-                    .help(L("Rings spread out from the active layer and fade – a drop in water, a radio signal, a sonar ping"))
                 Menu(L("One after another")) {
                     ForEach(Stagger.styles) { p in
                         Menu { ForEach([("Quick", 0.15), ("Calm", 0.35)], id: \.0) { name, sec in
@@ -322,7 +291,43 @@ struct StudioCommands: Commands {
                         label: { Label(L(p.title), systemImage: p.symbol) }
                     }
                 }
-            } }.help(L("Ready-made animations that create new frames"))
+                }
+                Section(L("Around the layer")) {
+                Button(L("Ground shadow")) { studio.addGroundShadow() }.disabled(studio.activeLayer == nil)
+                    .help(L("A soft shadow on the ground under the active layer – smaller and paler the higher it is"))
+                Button(L("Speed lines")) { studio.addSpeedLines() }.disabled(studio.frames.count < 2)
+                    .help(L("Comic-style streaks behind the active layer, from how fast it actually moves – on a new layer below it"))
+                Menu(L("Swarm")) {
+                    Button(L("A few (3)")) { studio.addSwarm(count: 3) }
+                    Button(L("Many (7)")) { studio.addSwarm(count: 7) }
+                }.disabled(studio.frames.count < 2)
+                    .help(L("Smaller copies of the active layer buzz around it on their own loops – bees, birds, fireflies"))
+                Menu(L("Sparkles")) {
+                    Button(L("A few (4)")) { studio.addSparkles(count: 4) }
+                    Button(L("Lots (9)")) { studio.addSparkles(count: 9) }
+                }.disabled(studio.frames.count < 2)
+                    .help(L("Little stars twinkle around the active layer at different moments – new, shiny or magic"))
+                Menu(L("Ripples")) {
+                    Button(L("Rings")) { studio.addRipples(rings: 3) }
+                    Button(L("On the ground")) { studio.addRipples(rings: 3, flat: true) }
+                }.disabled(studio.frames.count < 2)
+                    .help(L("Rings spread out from the active layer and fade – a drop in water, a radio signal, a sonar ping"))
+                }
+                Section(L("Impacts")) {
+                Button(L("Landing dust")) { studio.addLandingDust() }.disabled(studio.frames.count < 3)
+                    .help(L("A little dust cloud where the active layer touches down – pairs with Bounce"))
+                Menu(L("Impact shake")) {
+                    Button(L("Light")) { studio.impactShake(strength: 4) }
+                    Button(L("Heavy")) { studio.impactShake(strength: 12) }
+                }.disabled(studio.frames.count < 3)
+                    .help(L("The whole picture jolts where the active layer lands – a heavy landing or a stomp"))
+                Menu(L("Hit stop")) {
+                    Button(L("Short")) { studio.hitStop(extra: 2) }
+                    Button(L("Long")) { studio.hitStop(extra: 5) }
+                }.disabled(studio.frames.count < 3)
+                    .help(L("The picture freezes for a beat where the active layer lands – holds the landing frame longer"))
+                }
+            } }.help(L("Ready-made animations, and extras around the active layer"))
             Menu(L("Layer motion")) { Group {
                 Section(L("Timing")) {
                     Menu(L("Delay layer")) {

@@ -17,11 +17,22 @@ swift "$project_dir/scripts/create-icon.swift" "$icon_dir"
 /usr/bin/iconutil --convert icns --output "$app_dir/Contents/Resources/UniverseStudio.icns" "$icon_dir"
 # A stable signature keeps keychain access (UniversePen's device keys) across rebuilds; an ad-hoc
 # signature changes with every build, so macOS would ask for the keychain password each time.
-# SIGN_IDENTITY overrides; otherwise the first valid "Apple Development" identity, else ad hoc.
-identity="${SIGN_IDENTITY:-$(/usr/bin/security find-identity -v -p codesigning 2>/dev/null | /usr/bin/awk '/Apple Development/ && !/REVOKED/ { print $2; exit }')}"
-if [[ -n "$identity" ]] && /usr/bin/codesign --force --sign "$identity" "$app_dir" 2>/dev/null; then
-  :
-else
-  /usr/bin/codesign --force --sign - "$app_dir"
-fi
+# SIGN_IDENTITY overrides, then scripts/sign-identity.local (one SHA-1, gitignored), then every valid
+# "Apple Development" identity in turn. The keychain can still list a certificate Apple has revoked;
+# macOS then kills the app at launch, so a signature that spctl reports as revoked is skipped.
+candidates=()
+[[ -n "${SIGN_IDENTITY:-}" ]] && candidates+=("$SIGN_IDENTITY")
+[[ -f "$project_dir/scripts/sign-identity.local" ]] && candidates+=("$(head -1 "$project_dir/scripts/sign-identity.local" | tr -d '[:space:]')")
+candidates+=(${(f)"$(/usr/bin/security find-identity -v -p codesigning 2>/dev/null | /usr/bin/awk '/Apple Development/ && !/REVOKED/ { print $2 }')"})
+signed=""
+for identity in $candidates; do
+  [[ -n "$identity" ]] || continue
+  /usr/bin/codesign --force --sign "$identity" "$app_dir" 2>/dev/null || continue
+  if /usr/sbin/spctl -a -vv "$app_dir" 2>&1 | /usr/bin/grep -q REVOKED; then
+    print -u2 -- "Signing identity $identity is revoked – trying the next one"
+    continue
+  fi
+  signed=1; break
+done
+[[ -n "$signed" ]] || /usr/bin/codesign --force --sign - "$app_dir"
 print -r -- "$app_dir"
