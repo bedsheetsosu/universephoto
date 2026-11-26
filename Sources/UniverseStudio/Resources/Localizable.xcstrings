@@ -23868,6 +23868,78 @@
           }
         }
       }
+    },
+    "Camera": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kamera"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Camera"
+          }
+        }
+      }
+    },
+    "Handheld camera": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Handkamera"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Handheld camera"
+          }
+        }
+      }
+    },
+    "Shaky": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wackelig"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shaky"
+          }
+        }
+      }
+    },
+    "The whole picture sways softly as if filmed from the hand – a seamless drift over the existing frames": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das ganze Bild schwankt sanft wie aus der Hand gefilmt – nahtlos über die vorhandenen Frames"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The whole picture sways softly as if filmed from the hand – a seamless drift over the existing frames"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

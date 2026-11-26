@@ -356,6 +356,13 @@ struct StudioCommands: Commands {
                     .help(L("Rings spread out from the active layer and fade – a drop in water, a radio signal, a sonar ping"))
                 }
                 }
+                Section(L("Camera")) {
+                Menu(L("Handheld camera")) {
+                    Button(L("Gentle")) { studio.handheldCamera(amount: 4) }
+                    Button(L("Shaky")) { studio.handheldCamera(amount: 12) }
+                }.disabled(studio.frames.count < 2)
+                    .help(L("The whole picture sways softly as if filmed from the hand – a seamless drift over the existing frames"))
+                }
                 Section(L("Impacts")) {
                 Button(L("Landing dust")) { studio.addLandingDust() }.disabled(studio.frames.count < 3)
                     .help(L("A little dust cloud where the active layer touches down – pairs with Bounce"))
