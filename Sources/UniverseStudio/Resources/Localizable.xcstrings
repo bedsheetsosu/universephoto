@@ -26064,6 +26064,78 @@
           }
         }
       }
+    },
+    "Beam": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Beamen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Beam"
+          }
+        }
+      }
+    },
+    "Beam in": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hereinbeamen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Beam in"
+          }
+        }
+      }
+    },
+    "Beam out": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wegbeamen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Beam out"
+          }
+        }
+      }
+    },
+    "Sci-fi teleport – the active layer squeezes into a thin line of light and vanishes, or grows back out of it": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sci-Fi-Teleport – die aktive Ebene zieht sich zu einem dünnen Lichtstrich zusammen und verschwindet, oder baut sich daraus wieder auf"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sci-fi teleport – the active layer squeezes into a thin line of light and vanishes, or grows back out of it"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

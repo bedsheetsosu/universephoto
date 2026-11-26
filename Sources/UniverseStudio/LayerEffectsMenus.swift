@@ -201,6 +201,11 @@ struct LayerEffectsAppear: View {
             Button(L("Sink down")) { studio.onSelectedLayers { studio.riseUp(sink: true) } }
         }.disabled(studio.frames.count < 2)
             .help(L("The active layer rises out of the ground at its bottom edge – from behind a wall or a counter – or sinks back down"))
+        Menu(L("Beam")) {
+            Button(L("Beam in")) { studio.onSelectedLayers { studio.beamLayer(out: false) } }
+            Button(L("Beam out")) { studio.onSelectedLayers { studio.beamLayer(out: true) } }
+        }.disabled(studio.frames.count < 2)
+            .help(L("Sci-fi teleport – the active layer squeezes into a thin line of light and vanishes, or grows back out of it"))
         }
         Group {
         Menu(L("Flicker")) {
