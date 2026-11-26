@@ -346,6 +346,9 @@ struct StudioCommands: Commands {
                     Button(L("20 rays")) { studio.addRayBurst(rays: 20) }
                 }.disabled(studio.frames.count < 2)
                     .help(L("Rays of light in the brush colour fan out behind the active layer and turn slowly – ta-da!"))
+                Button(L("Aura")) { studio.addAura() }
+                    .disabled(studio.frames.count < 2)
+                    .help(L("A soft glow in the brush colour breathes in and out behind the active layer – magic, holy, charged up"))
                 }
                 }
                 Section(L("Character")) {

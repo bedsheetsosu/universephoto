@@ -23,7 +23,7 @@ extension Studio {
         let r = Playback.clamp(playRange, count: frames.count) ?? 0...(frames.count - 1)
         let reach = Double(width + height)
         // Very dark brush colours would make grey rays – those get warm gold instead.
-        var colour = color.red * 0.3 + color.green * 0.59 + color.blue * 0.11 < 0.2 ? CodableColor(red: 1, green: 0.8, blue: 0.25, alpha: 1) : color
+        var colour = Studio.glowColour(color)
         colour.alpha = 0.35
         checkpoint("Ray burst")
         let layer = ArtLayer(name: L("Ray burst"))

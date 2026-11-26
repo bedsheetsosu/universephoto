@@ -25578,6 +25578,42 @@
           }
         }
       }
+    },
+    "Aura": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aura"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aura"
+          }
+        }
+      }
+    },
+    "A soft glow in the brush colour breathes in and out behind the active layer – magic, holy, charged up": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein weicher Schein in der Pinselfarbe pulsiert hinter der aktiven Ebene – magisch, heilig, aufgeladen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A soft glow in the brush colour breathes in and out behind the active layer – magic, holy, charged up"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
