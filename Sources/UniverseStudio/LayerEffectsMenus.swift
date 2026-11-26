@@ -118,6 +118,7 @@ struct LayerEffectsShape: View {
             Button(L("Rainbow letters")) { studio.onSelectedLayers { studio.rainbowLetters() } }
             Button(L("Shaky letters")) { studio.onSelectedLayers { studio.shakyLetters() } }
             Button(L("Letters drop in")) { studio.onSelectedLayers { studio.lettersDropIn() } }
+            Button(L("Letters fly apart")) { studio.onSelectedLayers { studio.lettersScatter() } }
         }.disabled(studio.frames.count < 2)
             .help(L("The letters of the text on the active layer move one by one – a wave, letters hopping in turn, running rainbow colours or trembling letters"))
         Menu(L("Eye blink")) {

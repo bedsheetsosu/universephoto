@@ -24570,6 +24570,24 @@
           }
         }
       }
+    },
+    "Letters fly apart": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buchstaben fliegen davon"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Letters fly apart"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
