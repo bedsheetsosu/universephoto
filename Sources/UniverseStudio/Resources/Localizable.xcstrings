@@ -22266,6 +22266,60 @@
           }
         }
       }
+    },
+    "Countdown": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Countdown"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Countdown"
+          }
+        }
+      }
+    },
+    "From %d": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ab %d"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "From %d"
+          }
+        }
+      }
+    },
+    "A big countdown in the middle of the picture, one number per second, in the brush colour": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein großer Countdown in der Bildmitte, eine Zahl pro Sekunde, in der Pinselfarbe"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A big countdown in the middle of the picture, one number per second, in the brush colour"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
