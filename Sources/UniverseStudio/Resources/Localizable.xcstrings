@@ -23562,6 +23562,78 @@
           }
         }
       }
+    },
+    "Angry": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wütend"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Angry"
+          }
+        }
+      }
+    },
+    "Surprised": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Überrascht"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Surprised"
+          }
+        }
+      }
+    },
+    "Shakes with rage, a throbbing vein beside it": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bebt vor Wut, daneben pocht eine Zornesader"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shakes with rage, a throbbing vein beside it"
+          }
+        }
+      }
+    },
+    "Jumps with a start, a big ! pops up": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zuckt hoch, ein großes ! ploppt auf"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jumps with a start, a big ! pops up"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
