@@ -26,9 +26,10 @@ extension Studio {
         var zoom: [Int: Double] = [:]
         for h in hits { for age in 0..<5 where h + age < idx.count { zoom[idx[h + age], default: 0] += Studio.impactZoom(age: age, amount: amount) } }
         checkpoint("Impact zoom")
+        frames = Studio.unsharedForCamera(frames)          // backgrounds zoom too (0.246)
         for (i, z) in zoom where z > 1e-9 {
             let f = 1 + z
-            for j in frames[i].indices where !frames[i][j].locked && frames[i][j].allFrames != true {
+            for j in frames[i].indices where !frames[i][j].locked {
                 // Scaling around the canvas middle: the offset from the middle grows by the same factor.
                 frames[i][j].transform.scale *= f
                 frames[i][j].transform.x *= f; frames[i][j].transform.y *= f

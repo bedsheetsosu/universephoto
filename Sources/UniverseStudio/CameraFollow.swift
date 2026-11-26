@@ -4,8 +4,8 @@ import CoreGraphics
 /// Animation → Effects → Camera → Follow the active layer (0.244): the camera pans along with the
 /// active layer so it stays in view – the whole picture moves the other way. `tight` keeps it
 /// almost exactly where it was in the first frame; loose lets it drift a little before the camera
-/// catches up. Smoothed, so the pan never jerks. Locked layers and layers that are the same in all
-/// frames stay put. Works on the play range if set. One undo step.
+/// catches up. Smoothed, so the pan never jerks. Locked layers stay put; layers that were the same in
+/// all frames get a copy per frame (0.246). Works on the play range if set. One undo step.
 extension Studio {
     /// Camera offsets per frame to keep `centres` near the first one: a smoothed, scaled pull back.
     static func followOffsets(_ centres: [CGPoint], strength: Double, smooth: Int) -> [CGPoint] {
@@ -30,8 +30,9 @@ extension Studio {
         let offs = Studio.followOffsets(pts.map { $0! }, strength: tight ? 1 : 0.75, smooth: tight ? 1 : 3)
         guard offs.contains(where: { abs($0.x) > 0.5 || abs($0.y) > 0.5 }) else { return 0 }
         checkpoint("Camera follow")
+        frames = Studio.unsharedForCamera(frames)
         for (k, i) in r.enumerated() {
-            for j in frames[i].indices where !frames[i][j].locked && frames[i][j].allFrames != true {
+            for j in frames[i].indices where !frames[i][j].locked {
                 frames[i][j].transform.x += offs[k].x; frames[i][j].transform.y += offs[k].y
             }
         }

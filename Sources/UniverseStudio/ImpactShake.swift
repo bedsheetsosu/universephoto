@@ -26,8 +26,9 @@ extension Studio {
             }
         }
         checkpoint("Impact shake")
+        frames = Studio.unsharedForCamera(frames)          // a jolt moves backgrounds too (0.246)
         for (i, o) in offset {
-            for j in frames[i].indices where !frames[i][j].locked && frames[i][j].allFrames != true {   // shared layers stay one drawing
+            for j in frames[i].indices where !frames[i][j].locked {
                 frames[i][j].transform.x += o.0; frames[i][j].transform.y += o.1
             }
         }

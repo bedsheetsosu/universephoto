@@ -18,7 +18,7 @@ extension Studio {
         if frames.indices.contains(frameIndex) { frames[frameIndex] = layers }
         let r = Playback.clamp(playRange, count: frames.count) ?? 0...(frames.count - 1)
         let hit = min(max(1, hitAfter), r.count - 1)
-        var nf = frames
+        var nf = shake > 0 ? Studio.unsharedForCamera(frames) : frames     // the jolt moves backgrounds too
         for (k, i) in r.enumerated() where k < hit {
             let look = Studio.stampLook(k, hit: hit)
             for j in nf[i].indices where nf[i][j].id == id && !nf[i][j].locked {
@@ -30,7 +30,7 @@ extension Studio {
         let jolts = Studio.shakeOffsets(count: 4, seed: 0x57A3)
         for age in 0..<4 where hit + age < r.count {
             let i = r.lowerBound + hit + age, fade = shake * (1 - Double(age) / 4)
-            for j in nf[i].indices where !nf[i][j].locked && nf[i][j].allFrames != true {
+            for j in nf[i].indices where !nf[i][j].locked {
                 nf[i][j].transform.x += jolts[age].0 * fade; nf[i][j].transform.y += jolts[age].1 * fade
             }
         }

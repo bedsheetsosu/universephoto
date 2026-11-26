@@ -17,6 +17,12 @@ extension Studio {
         }
     }
 
+    /// Camera effects (0.246): a camera moves *everything*, backgrounds included – so shared layers
+    /// (unless locked) become per-frame copies, otherwise they would stand still while the rest moves.
+    static func unsharedForCamera(_ frames: [[ArtLayer]]) -> [[ArtLayer]] {
+        frames.map { $0.map { var l = $0; if l.allFrames == true && !l.locked { l.allFrames = nil }; return l } }
+    }
+
     func toggleAllFrames() {
         guard layers.indices.contains(selectedLayer) else { return }
         mutateLayer("Same in all frames") { $0.allFrames = $0.allFrames == true ? nil : true }
