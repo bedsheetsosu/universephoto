@@ -25272,6 +25272,78 @@
           }
         }
       }
+    },
+    "Ray burst": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Strahlenkranz"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ray burst"
+          }
+        }
+      }
+    },
+    "12 rays": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "12 Strahlen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "12 rays"
+          }
+        }
+      }
+    },
+    "20 rays": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "20 Strahlen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "20 rays"
+          }
+        }
+      }
+    },
+    "Rays of light in the brush colour fan out behind the active layer and turn slowly – ta-da!": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lichtstrahlen in der Pinselfarbe fächern sich hinter der aktiven Ebene auf und drehen sich langsam – Tada!"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rays of light in the brush colour fan out behind the active layer and turn slowly – ta-da!"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

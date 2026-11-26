@@ -341,6 +341,11 @@ struct StudioCommands: Commands {
                     Button(L("On the ground")) { studio.addRipples(rings: 3, flat: true) }
                 }.disabled(studio.frames.count < 2)
                     .help(L("Rings spread out from the active layer and fade – a drop in water, a radio signal, a sonar ping"))
+                Menu(L("Ray burst")) {
+                    Button(L("12 rays")) { studio.addRayBurst(rays: 12) }
+                    Button(L("20 rays")) { studio.addRayBurst(rays: 20) }
+                }.disabled(studio.frames.count < 2)
+                    .help(L("Rays of light in the brush colour fan out behind the active layer and turn slowly – ta-da!"))
                 }
                 }
                 Section(L("Character")) {
