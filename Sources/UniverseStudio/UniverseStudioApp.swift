@@ -291,6 +291,11 @@ struct StudioCommands: Commands {
                     Button(L("Lots (9)")) { studio.addSparkles(count: 9) }
                 }.disabled(studio.frames.count < 2)
                     .help(L("Little stars twinkle around the active layer at different moments – new, shiny or magic"))
+                Menu(L("Ripples")) {
+                    Button(L("Rings")) { studio.addRipples(rings: 3) }
+                    Button(L("On the ground")) { studio.addRipples(rings: 3, flat: true) }
+                }.disabled(studio.frames.count < 2)
+                    .help(L("Rings spread out from the active layer and fade – a drop in water, a radio signal, a sonar ping"))
                 Menu(L("One after another")) {
                     ForEach(Stagger.styles) { p in
                         Menu { ForEach([("Quick", 0.15), ("Calm", 0.35)], id: \.0) { name, sec in

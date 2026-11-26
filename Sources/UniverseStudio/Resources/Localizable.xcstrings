@@ -21924,6 +21924,78 @@
           }
         }
       }
+    },
+    "Ripples": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wellenringe"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ripples"
+          }
+        }
+      }
+    },
+    "Rings": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ringe"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rings"
+          }
+        }
+      }
+    },
+    "On the ground": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Am Boden"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On the ground"
+          }
+        }
+      }
+    },
+    "Rings spread out from the active layer and fade – a drop in water, a radio signal, a sonar ping": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ringe breiten sich von der aktiven Ebene aus und verblassen – ein Tropfen im Wasser, ein Funksignal, ein Sonar-Ping"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rings spread out from the active layer and fade – a drop in water, a radio signal, a sonar ping"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
