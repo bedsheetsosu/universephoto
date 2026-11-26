@@ -6,17 +6,19 @@ import CoreGraphics
 /// new layer on top; one undo step. From a single frame it makes the frames first (`count`);
 /// on an animation it plays over the frames already there (or the play range).
 enum BurstStyle: String, CaseIterable, Identifiable {
-    case confetti, sparks
+    case confetti, sparks, hearts
     var id: String { rawValue }
-    var title: String { switch self { case .confetti: "Confetti burst"; case .sparks: "Spark burst" } }
-    var symbol: String { switch self { case .confetti: "party.popper"; case .sparks: "sparkles" } }
+    var title: String { switch self { case .confetti: "Confetti burst"; case .sparks: "Spark burst"; case .hearts: "Heart burst" } }
+    var symbol: String { switch self { case .confetti: "party.popper"; case .sparks: "sparkles"; case .hearts: "heart" } }
 }
 
 extension Studio {
     /// Strokes of the burst at progress `t` (0…1) around `c`, for a canvas `size` across.
     static func burstStrokes(_ style: BurstStyle, t: Double, centre c: CGPoint, size: Double, seed: UInt64 = 11) -> [InkStroke] {
         var g = Weather.SplitMix(seed)
-        let n = style == .confetti ? 70 : 50, reach = size * 0.45, gravity = size * 0.5
+        // Hearts (0.276): fewer, bigger, and they float up instead of falling.
+        let n = style == .confetti ? 70 : style == .hearts ? 18 : 50, reach = size * (style == .hearts ? 0.3 : 0.45)
+        let gravity = size * (style == .hearts ? -0.25 : 0.5)
         let fade = t < 0.7 ? 1 : max(0, 1 - (t - 0.7) / 0.3)
         guard t > 0, fade > 0 else { return [] }
         return (0..<n).map { k in
@@ -30,6 +32,12 @@ extension Studio {
                 let tumble = (t * 4 + spin) * 2 * .pi, len = 7 * (0.35 + 0.65 * abs(cos(tumble)))
                 return InkStroke(points: [pt(x - len / 2, y), pt(x + len / 2, y + sin(tumble) * 2)],
                                  color: CodableColor(red: base.red, green: base.green, blue: base.blue, alpha: fade), width: 3.5)
+            case .hearts:
+                let pinks = [CodableColor(red: 0.93, green: 0.25, blue: 0.4, alpha: fade), CodableColor(red: 1, green: 0.5, blue: 0.65, alpha: fade),
+                             CodableColor(red: 0.85, green: 0.1, blue: 0.25, alpha: fade)]
+                var h = InkStroke(points: [pt(x - 6, y - 8)], color: pinks[k % 3], width: size * 0.04 * (0.7 + 0.6 * spin))
+                h.kind = "text"; h.text = "♥"
+                return h
             case .sparks:
                 let tail = 10 * (1 - t)
                 return InkStroke(points: [pt(x - cos(a) * tail, y - sin(a) * tail), pt(x, y)],

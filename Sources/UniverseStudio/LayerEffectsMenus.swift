@@ -180,6 +180,7 @@ struct LayerEffectsAppear: View {
         Menu(L("Burst like a balloon")) {
             Button(L("With sparks")) { studio.popAway(.sparks) }
             Button(L("With confetti")) { studio.popAway(.confetti) }
+            Button(L("With hearts")) { studio.popAway(.hearts) }
         }.disabled(studio.frames.count < 2)
             .help(L("The active layer swells and bursts like a balloon on the current frame – scrub to where it should pop first"))
         Menu(L("Rise up")) {

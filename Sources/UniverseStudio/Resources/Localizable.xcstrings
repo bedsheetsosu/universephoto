@@ -25668,6 +25668,60 @@
           }
         }
       }
+    },
+    "Heart burst": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Herzen-Explosion"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Heart burst"
+          }
+        }
+      }
+    },
+    "With hearts": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mit Herzen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "With hearts"
+          }
+        }
+      }
+    },
+    "A one-off pop of confetti, sparks or hearts from the middle of the active layer, on a new layer": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein einmaliger Knall aus Konfetti, Funken oder Herzen aus der Mitte der aktiven Ebene, auf einer neuen Ebene"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A one-off pop of confetti, sparks or hearts from the middle of the active layer, on a new layer"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

@@ -22,3 +22,15 @@ struct ConfettiBurstTests {
         #expect(s.document().frames.count <= 1 && s.layers.count == 2)
     }
 }
+
+@MainActor
+struct HeartBurstTests {
+    @Test func heartsFlyOutAndRise() {
+        let c = CGPoint(x: 100, y: 100)
+        let mid = Studio.burstStrokes(.hearts, t: 0.8, centre: c, size: 200)
+        #expect(mid.count == 18 && mid.allSatisfy { $0.text == "♥" })
+        let avgY = mid.map(\.points[0].y).reduce(0, +) / Double(mid.count)
+        #expect(avgY < 100)                                               // floated up on average
+        #expect(Studio.burstStrokes(.hearts, t: 1, centre: c, size: 200).isEmpty)
+    }
+}

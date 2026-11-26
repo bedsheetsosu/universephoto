@@ -275,7 +275,7 @@ struct StudioCommands: Commands {
                         Menu { if studio.frames.count > 1 { Button(L("Over all frames")) { studio.addBurst(b, count: 0) } } else { ForEach([1.0, 2.0], id: \.self) { sec in Button(LF("%@ s", String(Int(sec)))) { studio.addBurst(b, count: max(2, Int((studio.fps * sec).rounded()))) } } } }
                         label: { Label(L(b.title), systemImage: b.symbol) }
                     }
-                }.help(L("A one-off pop of confetti or sparks from the middle of the active layer, on a new layer"))
+                }.help(L("A one-off pop of confetti, sparks or hearts from the middle of the active layer, on a new layer"))
                 Menu(L("One after another")) {
                     ForEach(Stagger.styles) { p in
                         Menu { ForEach([("Quick", 0.15), ("Calm", 0.35)], id: \.0) { name, sec in
