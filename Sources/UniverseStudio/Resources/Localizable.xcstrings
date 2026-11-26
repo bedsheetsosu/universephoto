@@ -21726,6 +21726,60 @@
           }
         }
       }
+    },
+    "A few (4)": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein paar (4)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A few (4)"
+          }
+        }
+      }
+    },
+    "Lots (9)": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Viele (9)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lots (9)"
+          }
+        }
+      }
+    },
+    "Little stars twinkle around the active layer at different moments – new, shiny or magic": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kleine Sterne blitzen nacheinander um die aktive Ebene auf – neu, glänzend oder magisch"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Little stars twinkle around the active layer at different moments – new, shiny or magic"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
