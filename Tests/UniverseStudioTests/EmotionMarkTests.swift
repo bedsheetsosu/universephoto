@@ -30,3 +30,14 @@ struct EmotionMarkTests {
         #expect(s.document().frames.allSatisfy { $0.count == 2 })
     }
 }
+
+@MainActor
+struct IdeaMarkTests {
+    @Test func lightBulbHasGlassBaseAndRays() {
+        let s = Studio.markStrokes(.idea, at: .zero, size: 40)
+        #expect(s.filter { $0.kind == "ellipse" }.count == 2)
+        #expect(s.contains { $0.kind == "roundedRect" })
+        #expect(s.filter { $0.kind == nil }.count == 6)          // screw line + 5 rays
+        #expect(s.allSatisfy { $0.points.allSatisfy { $0.y < 60 } })
+    }
+}

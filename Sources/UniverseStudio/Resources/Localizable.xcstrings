@@ -25038,6 +25038,78 @@
           }
         }
       }
+    },
+    "Idea (light bulb)": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Idee (Glühbirne)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Idea (light bulb)"
+          }
+        }
+      }
+    },
+    "A cartoon mark pops up beside the active layer and throbs – surprise, confusion, anger or a bright idea": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein Comic-Zeichen ploppt neben der aktiven Ebene auf und pocht – Überraschung, Verwirrung, Wut oder eine zündende Idee"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A cartoon mark pops up beside the active layer and throbs – surprise, confusion, anger or a bright idea"
+          }
+        }
+      }
+    },
+    "Bright idea": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Geistesblitz"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bright idea"
+          }
+        }
+      }
+    },
+    "Perks up with a little hop as a light bulb pops on above it": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hüpft kurz auf, während über ihr eine Glühbirne aufploppt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Perks up with a little hop as a light bulb pops on above it"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

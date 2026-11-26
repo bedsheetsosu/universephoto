@@ -333,7 +333,7 @@ struct StudioCommands: Commands {
                 Menu(L("Emotion mark")) {
                     ForEach(EmotionMark.allCases) { m in Button(L(m.title)) { studio.addEmotionMark(m) } }
                 }.disabled(studio.frames.count < 2)
-                    .help(L("A cartoon mark pops up beside the active layer and throbs – surprise, confusion or anger"))
+                    .help(L("A cartoon mark pops up beside the active layer and throbs – surprise, confusion, anger or a bright idea"))
                 Button(L("Thought bubble")) { studio.addThoughtBubble() }
                     .disabled(studio.frames.count < 2)
                     .help(L("Little bubbles rise above the active layer, then a thinking cloud pops up with dots appearing one by one"))

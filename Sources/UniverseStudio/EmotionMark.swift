@@ -6,9 +6,9 @@ import CoreGraphics
 /// active layer with a little overshoot and then throbs, following the layer if it moves. On a new
 /// layer above it. Over the play range (or all frames). One undo step.
 enum EmotionMark: String, CaseIterable, Identifiable {
-    case surprise, confusion, anger
+    case surprise, confusion, anger, idea
     var id: String { rawValue }
-    var title: String { switch self { case .surprise: "Surprise (!)"; case .confusion: "Confusion (?)"; case .anger: "Anger (vein)" } }
+    var title: String { switch self { case .surprise: "Surprise (!)"; case .confusion: "Confusion (?)"; case .anger: "Anger (vein)"; case .idea: "Idea (light bulb)" } }
 }
 
 extension Studio {
@@ -31,6 +31,23 @@ extension Studio {
                               width: size * 1.4)
             t.kind = "text"; t.text = mark == .surprise ? "!" : "?"; t.fontName = "Helvetica-Bold"; t.textAlign = "center"
             return [t]
+        case .idea:
+            // A light bulb (0.266): yellow glass with a dark rim, grey screw base, short rays above.
+            let size = size * 1.4, c = CGPoint(x: c.x, y: c.y - size * 0.2)
+            let ink = CodableColor.black, line = max(1.5, size * 0.07)
+            let g = CGPoint(x: c.x, y: c.y - size * 0.15), gr = size * 0.4
+            var out = [oval(g, rx: gr + line, ry: gr + line, ink), oval(g, rx: gr, ry: gr, CodableColor(red: 1, green: 0.88, blue: 0.3, alpha: 1))]
+            var base = InkStroke(points: [InkPoint(x: c.x - size * 0.18, y: c.y + size * 0.2, pressure: 1), InkPoint(x: c.x + size * 0.18, y: c.y + size * 0.48, pressure: 1)],
+                                 color: CodableColor(red: 0.55, green: 0.57, blue: 0.62, alpha: 1), width: 1)
+            base.kind = "roundedRect"; base.filled = true; base.strength = size * 0.06
+            out.append(base)
+            out.append(InkStroke(points: [InkPoint(x: c.x - size * 0.15, y: c.y + size * 0.34, pressure: 1), InkPoint(x: c.x + size * 0.15, y: c.y + size * 0.34, pressure: 1)], color: ink, width: line * 0.7))
+            for k in 0..<5 {
+                let a = -Double.pi / 2 + (Double(k) - 2) * 0.55
+                out.append(InkStroke(points: [InkPoint(x: g.x + cos(a) * gr * 1.35, y: g.y + sin(a) * gr * 1.35, pressure: 1),
+                                              InkPoint(x: g.x + cos(a) * gr * 1.8, y: g.y + sin(a) * gr * 1.8, pressure: 1)], color: ink, width: line))
+            }
+            return out
         case .anger:
             // Four bent strokes around a gap – the classic cross-shaped vein.
             let red = CodableColor(red: 0.88, green: 0.1, blue: 0.12, alpha: 1), w = max(2, size * 0.16), g = size * 0.14, a = size * 0.5

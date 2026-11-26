@@ -4,13 +4,13 @@ import Foundation
 /// effects stacked on the active layer, as one undo step. From a single frame the frames are made
 /// first (2 s); on an animation they play over the play range (or all frames).
 enum Recipe: String, CaseIterable, Identifiable {
-    case bouncingEntrance, popTitle, windUpExit, happyIdle, dropAndShake, magicItem, hangingSign, walkBy, peekaboo, rocketLaunch, sleepy, inLove, nervous, angry, surprised, stormyNight, snowyEvening, bouncyTitle, partyTitle, titleInOut, pondering, greeting, callForHelp, dizzy
+    case bouncingEntrance, popTitle, windUpExit, happyIdle, dropAndShake, magicItem, hangingSign, walkBy, peekaboo, rocketLaunch, sleepy, inLove, nervous, angry, surprised, stormyNight, snowyEvening, bouncyTitle, partyTitle, titleInOut, pondering, greeting, callForHelp, dizzy, brightIdea
     var id: String { rawValue }
     /// Menu groups (0.239): ins and outs, loops, feelings.
     static let groups: [(title: String, recipes: [Recipe])] = [
         ("Ins & outs", [.bouncingEntrance, .popTitle, .walkBy, .peekaboo, .dropAndShake, .windUpExit, .rocketLaunch]),
         ("Loops", [.happyIdle, .magicItem, .hangingSign, .sleepy]),
-        ("Feelings", [.inLove, .nervous, .angry, .surprised, .pondering, .dizzy]),
+        ("Feelings", [.inLove, .nervous, .angry, .surprised, .pondering, .dizzy, .brightIdea]),
         ("Talking", [.greeting, .callForHelp]),
         ("Text", [.bouncyTitle, .partyTitle, .titleInOut]),
         ("Scenes", [.stormyNight, .snowyEvening]),
@@ -20,7 +20,7 @@ enum Recipe: String, CaseIterable, Identifiable {
         case .happyIdle: "Happy idle"; case .dropAndShake: "Heavy drop"
         case .magicItem: "Magic item"; case .hangingSign: "Hanging sign"; case .walkBy: "Walking by"; case .peekaboo: "Peek-a-boo"; case .rocketLaunch: "Rocket launch"
         case .sleepy: "Sleepy"; case .inLove: "In love"; case .nervous: "Nervous"
-        case .angry: "Angry"; case .surprised: "Surprised"; case .pondering: "Pondering"; case .dizzy: "Dizzy"
+        case .angry: "Angry"; case .surprised: "Surprised"; case .pondering: "Pondering"; case .dizzy: "Dizzy"; case .brightIdea: "Bright idea"
         case .stormyNight: "Stormy night"; case .snowyEvening: "Snowy evening"
         case .bouncyTitle: "Bouncy title"; case .partyTitle: "Party title"; case .titleInOut: "Title in & out"
         case .greeting: "Greeting"; case .callForHelp: "Call for help" } }
@@ -29,7 +29,7 @@ enum Recipe: String, CaseIterable, Identifiable {
         case .happyIdle: "face.smiling"; case .dropAndShake: "arrow.down.to.line"
         case .magicItem: "sparkles"; case .hangingSign: "lightbulb"; case .walkBy: "figure.walk"; case .peekaboo: "eyes"; case .rocketLaunch: "airplane.departure"
         case .sleepy: "moon.zzz"; case .inLove: "heart"; case .nervous: "exclamationmark.bubble"
-        case .angry: "flame"; case .surprised: "exclamationmark"; case .pondering: "bubble.left"; case .dizzy: "star.circle"
+        case .angry: "flame"; case .surprised: "exclamationmark"; case .pondering: "bubble.left"; case .dizzy: "star.circle"; case .brightIdea: "lightbulb.max"
         case .stormyNight: "cloud.bolt.rain"; case .snowyEvening: "cloud.snow"
         case .bouncyTitle: "textformat"; case .partyTitle: "party.popper"; case .titleInOut: "arrow.up.and.down.text.horizontal"
         case .greeting: "hand.wave"; case .callForHelp: "megaphone" } }
@@ -49,6 +49,7 @@ enum Recipe: String, CaseIterable, Identifiable {
         case .nervous: "Trembles a little while sweat drops run down – a loop"
         case .angry: "Shakes with rage, a throbbing vein beside it"
         case .surprised: "Jumps with a start, a big ! pops up"
+        case .brightIdea: "Perks up with a little hop as a light bulb pops on above it"
         case .dizzy: "Wobbles in a little circle while stars circle above its head"
         case .pondering: "Tilts slowly from side to side while a thought bubble fills with dots"
         case .stormyNight: "Night falls, rain pours, lightning flashes – the whole picture"
@@ -140,6 +141,12 @@ extension Studio {
         case .callForHelp:
             shakeLayer(amount: 3)
             addSpeechBubble(shout: true)
+        case .brightIdea:
+            let saved = playRange, all = Playback.clamp(playRange, count: frames.count) ?? 0...(frames.count - 1)
+            let hop = all.lowerBound + max(3, all.count / 3)
+            if hop <= all.upperBound { playRange = all.lowerBound...hop; jumpLayer(height: h * 0.05) }
+            playRange = saved
+            addEmotionMark(.idea)
         case .dizzy:
             orbitLayer(radius: max(3, Double(min(width, height)) * 0.015))
             swayLayer(degrees: 5)
