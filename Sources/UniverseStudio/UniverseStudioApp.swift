@@ -305,6 +305,11 @@ struct StudioCommands: Commands {
                     Button(L("Puffs")) { studio.addSmokeTrail(every: 3) }
                 }.disabled(studio.frames.count < 2)
                     .help(L("The moving active layer leaves puffs behind that grow, rise and fade – a rocket, a train, a car"))
+                Menu(L("Comet tail")) {
+                    Button(L("Short")) { studio.addCometTail(length: 4) }
+                    Button(L("Long")) { studio.addCometTail(length: 10) }
+                }.disabled(studio.frames.count < 2)
+                    .help(L("A ribbon trails behind the active layer along the way it came – wide behind it, thin and pale further back, in the brush colour"))
                 Menu(L("Swarm")) {
                     Button(L("A few (3)")) { studio.addSwarm(count: 3) }
                     Button(L("Many (7)")) { studio.addSwarm(count: 7) }

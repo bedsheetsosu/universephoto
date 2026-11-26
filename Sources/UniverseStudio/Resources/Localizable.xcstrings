@@ -23040,6 +23040,42 @@
           }
         }
       }
+    },
+    "Comet tail": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kometenschweif"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comet tail"
+          }
+        }
+      }
+    },
+    "A ribbon trails behind the active layer along the way it came – wide behind it, thin and pale further back, in the brush colour": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein Band zieht hinter der aktiven Ebene auf ihrem Weg her – breit direkt dahinter, weiter hinten dünn und blass, in der Pinselfarbe"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A ribbon trails behind the active layer along the way it came – wide behind it, thin and pale further back, in the brush colour"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
