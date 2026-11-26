@@ -25848,6 +25848,42 @@
           }
         }
       }
+    },
+    "Dancing": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tanzen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dancing"
+          }
+        }
+      }
+    },
+    "Bounces to a 120 BPM beat and sways while music notes float up – a loop": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wippt im 120er-Takt und wiegt sich, während Musiknoten aufsteigen – eine Schleife"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bounces to a 120 BPM beat and sways while music notes float up – a loop"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

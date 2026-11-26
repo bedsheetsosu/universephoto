@@ -4,12 +4,12 @@ import Foundation
 /// effects stacked on the active layer, as one undo step. From a single frame the frames are made
 /// first (2 s); on an animation they play over the play range (or all frames).
 enum Recipe: String, CaseIterable, Identifiable {
-    case bouncingEntrance, popTitle, windUpExit, happyIdle, dropAndShake, magicItem, hangingSign, walkBy, peekaboo, rocketLaunch, sleepy, inLove, nervous, angry, surprised, stormyNight, snowyEvening, bouncyTitle, partyTitle, titleInOut, pondering, greeting, callForHelp, dizzy, brightIdea, sad, shy, tadaTitle, hotDrink, smelly, powerUp, smitten
+    case bouncingEntrance, popTitle, windUpExit, happyIdle, dropAndShake, magicItem, hangingSign, walkBy, peekaboo, rocketLaunch, sleepy, inLove, nervous, angry, surprised, stormyNight, snowyEvening, bouncyTitle, partyTitle, titleInOut, pondering, greeting, callForHelp, dizzy, brightIdea, sad, shy, tadaTitle, hotDrink, smelly, powerUp, smitten, dancing
     var id: String { rawValue }
     /// Menu groups (0.239): ins and outs, loops, feelings (split into good and bad moods in 0.278).
     static let groups: [(title: String, recipes: [Recipe])] = [
         ("Ins & outs", [.bouncingEntrance, .popTitle, .walkBy, .peekaboo, .dropAndShake, .windUpExit, .rocketLaunch]),
-        ("Loops", [.happyIdle, .magicItem, .hangingSign, .sleepy, .hotDrink, .smelly, .powerUp]),
+        ("Loops", [.happyIdle, .magicItem, .hangingSign, .sleepy, .hotDrink, .smelly, .powerUp, .dancing]),
         ("Good moods", [.inLove, .smitten, .shy, .brightIdea, .surprised]),
         ("Bad moods", [.nervous, .angry, .sad, .dizzy, .pondering]),
         ("Talking", [.greeting, .callForHelp]),
@@ -24,7 +24,7 @@ enum Recipe: String, CaseIterable, Identifiable {
         case .angry: "Angry"; case .surprised: "Surprised"; case .pondering: "Pondering"; case .dizzy: "Dizzy"; case .brightIdea: "Bright idea"; case .sad: "Sad"; case .shy: "Shy"; case .smitten: "Smitten"
         case .stormyNight: "Stormy night"; case .snowyEvening: "Snowy evening"
         case .bouncyTitle: "Bouncy title"; case .partyTitle: "Party title"; case .titleInOut: "Title in & out"; case .tadaTitle: "Ta-da title"
-        case .hotDrink: "Hot drink"; case .smelly: "Smelly"; case .powerUp: "Power-up"
+        case .hotDrink: "Hot drink"; case .smelly: "Smelly"; case .powerUp: "Power-up"; case .dancing: "Dancing"
         case .greeting: "Greeting"; case .callForHelp: "Call for help" } }
     var symbol: String { switch self {
         case .bouncingEntrance: "figure.run"; case .popTitle: "textformat.size.larger"; case .windUpExit: "arrow.right.to.line"
@@ -33,7 +33,7 @@ enum Recipe: String, CaseIterable, Identifiable {
         case .sleepy: "moon.zzz"; case .inLove: "heart"; case .nervous: "exclamationmark.bubble"
         case .angry: "flame"; case .surprised: "exclamationmark"; case .pondering: "bubble.left"; case .dizzy: "star.circle"; case .brightIdea: "lightbulb.max"; case .sad: "drop"; case .shy: "face.smiling.inverse"; case .smitten: "heart.circle"
         case .stormyNight: "cloud.bolt.rain"; case .snowyEvening: "cloud.snow"
-        case .bouncyTitle: "textformat"; case .partyTitle: "party.popper"; case .titleInOut: "arrow.up.and.down.text.horizontal"; case .tadaTitle: "sun.max"; case .hotDrink: "cup.and.saucer"; case .smelly: "aqi.medium"; case .powerUp: "bolt.circle"
+        case .bouncyTitle: "textformat"; case .partyTitle: "party.popper"; case .titleInOut: "arrow.up.and.down.text.horizontal"; case .tadaTitle: "sun.max"; case .hotDrink: "cup.and.saucer"; case .smelly: "aqi.medium"; case .powerUp: "bolt.circle"; case .dancing: "music.note"
         case .greeting: "hand.wave"; case .callForHelp: "megaphone" } }
     var hint: String { switch self {
         case .bouncingEntrance: "Hops in from the left with squash, stretch, dust and a shadow"
@@ -62,6 +62,7 @@ enum Recipe: String, CaseIterable, Identifiable {
         case .bouncyTitle: "Pops in, then its letters hop one after another"
         case .partyTitle: "Letters wave in running rainbow colours while it bobs"
         case .hotDrink: "Steam curls up while it breathes gently – a loop"
+        case .dancing: "Bounces to a 120 BPM beat and sways while music notes float up – a loop"
         case .powerUp: "Vibrates with energy in a pulsing glow, rays turning behind it – a loop"
         case .smelly: "Stink lines rise while flies buzz around it – a loop"
         case .tadaTitle: "Letters pop in one by one in front of turning rays, with sparkles"
@@ -122,6 +123,10 @@ extension Studio {
         case .hotDrink:
             stretchEffect(jelly: false, amount: 0.02)
             addStinkLines(.steam)
+        case .dancing:
+            beatBounce(bpm: 120)
+            swayLayer(degrees: 6)
+            addFloatingSymbols(.notes, count: 3)
         case .powerUp:
             shakeLayer(amount: 1.5)
             addAura()
