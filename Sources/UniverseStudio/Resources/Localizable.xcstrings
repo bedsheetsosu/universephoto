@@ -23274,6 +23274,78 @@
           }
         }
       }
+    },
+    "Sleepy": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schläfrig"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sleepy"
+          }
+        }
+      }
+    },
+    "In love": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verliebt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In love"
+          }
+        }
+      }
+    },
+    "Breathes slowly while Z's float up – a loop": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Atmet langsam, während Zs aufsteigen – als Schleife"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Breathes slowly while Z's float up – a loop"
+          }
+        }
+      }
+    },
+    "Heart beating, little hearts rising – a loop": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Herzschlag, kleine Herzen steigen auf – als Schleife"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Heart beating, little hearts rising – a loop"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
