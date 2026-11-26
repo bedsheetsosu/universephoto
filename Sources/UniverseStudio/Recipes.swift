@@ -83,6 +83,7 @@ extension Studio {
             squashStretch(amount: 1.4)
             addGroundShadow()
             impactShake(strength: 10)
+            impactZoom(amount: 0.06)
             hitStop(extra: 2)
         }
         selectedLayer = layers.firstIndex { $0.id == id } ?? selectedLayer

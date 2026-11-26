@@ -329,6 +329,11 @@ struct StudioCommands: Commands {
                     Button(L("Heavy")) { studio.impactShake(strength: 12) }
                 }.disabled(studio.frames.count < 3)
                     .help(L("The whole picture jolts where the active layer lands – a heavy landing or a stomp"))
+                Menu(L("Impact zoom")) {
+                    Button(L("Light")) { studio.impactZoom(amount: 0.05) }
+                    Button(L("Heavy")) { studio.impactZoom(amount: 0.12) }
+                }.disabled(studio.frames.count < 3)
+                    .help(L("The whole picture punches in a little where the active layer lands and eases back out"))
                 Menu(L("Hit stop")) {
                     Button(L("Short")) { studio.hitStop(extra: 2) }
                     Button(L("Long")) { studio.hitStop(extra: 5) }

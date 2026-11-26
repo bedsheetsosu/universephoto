@@ -22770,6 +22770,42 @@
           }
         }
       }
+    },
+    "Impact zoom": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aufprall-Zoom"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Impact zoom"
+          }
+        }
+      }
+    },
+    "The whole picture punches in a little where the active layer lands and eases back out": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das ganze Bild zoomt beim Aufprall der aktiven Ebene kurz hinein und federt zurück"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The whole picture punches in a little where the active layer lands and eases back out"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
