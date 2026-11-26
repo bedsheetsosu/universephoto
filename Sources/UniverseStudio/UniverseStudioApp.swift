@@ -352,6 +352,9 @@ struct StudioCommands: Commands {
                     Button(L("Nervous (3 per loop)")) { studio.addSweatDrop(drops: 3) }
                 }.disabled(studio.frames.count < 2)
                     .help(L("A cartoon sweat drop slides down the side of the active layer and drips off – nerves"))
+                Button(L("Tears")) { studio.addTears() }
+                    .disabled(studio.frames.count < 2)
+                    .help(L("Tears roll down from eye height on both sides of the active layer, one after another – crying"))
                 Menu(L("Swarm")) {
                     Button(L("A few (3)")) { studio.addSwarm(count: 3) }
                     Button(L("Many (7)")) { studio.addSwarm(count: 7) }

@@ -25110,6 +25110,78 @@
           }
         }
       }
+    },
+    "Tears": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tränen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tears"
+          }
+        }
+      }
+    },
+    "Tears roll down from eye height on both sides of the active layer, one after another – crying": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tränen kullern auf beiden Seiten der aktiven Ebene aus Augenhöhe herunter, eine nach der anderen – Weinen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tears roll down from eye height on both sides of the active layer, one after another – crying"
+          }
+        }
+      }
+    },
+    "Sad": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Traurig"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sad"
+          }
+        }
+      }
+    },
+    "Sinks a little and breathes slowly while tears roll down": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sinkt etwas ein und atmet langsam, während Tränen herunterkullern"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sinks a little and breathes slowly while tears roll down"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
