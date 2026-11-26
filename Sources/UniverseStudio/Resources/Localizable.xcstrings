@@ -25722,6 +25722,42 @@
           }
         }
       }
+    },
+    "Smitten": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hin und weg"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Smitten"
+          }
+        }
+      }
+    },
+    "Hearts burst out, then its heart beats while its cheeks glow pink": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Herzen sprühen heraus, dann schlägt das Herz, während die Wangen rosa glühen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hearts burst out, then its heart beats while its cheeks glow pink"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

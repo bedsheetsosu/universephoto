@@ -4,13 +4,13 @@ import Foundation
 /// effects stacked on the active layer, as one undo step. From a single frame the frames are made
 /// first (2 s); on an animation they play over the play range (or all frames).
 enum Recipe: String, CaseIterable, Identifiable {
-    case bouncingEntrance, popTitle, windUpExit, happyIdle, dropAndShake, magicItem, hangingSign, walkBy, peekaboo, rocketLaunch, sleepy, inLove, nervous, angry, surprised, stormyNight, snowyEvening, bouncyTitle, partyTitle, titleInOut, pondering, greeting, callForHelp, dizzy, brightIdea, sad, shy, tadaTitle, hotDrink, smelly, powerUp
+    case bouncingEntrance, popTitle, windUpExit, happyIdle, dropAndShake, magicItem, hangingSign, walkBy, peekaboo, rocketLaunch, sleepy, inLove, nervous, angry, surprised, stormyNight, snowyEvening, bouncyTitle, partyTitle, titleInOut, pondering, greeting, callForHelp, dizzy, brightIdea, sad, shy, tadaTitle, hotDrink, smelly, powerUp, smitten
     var id: String { rawValue }
     /// Menu groups (0.239): ins and outs, loops, feelings.
     static let groups: [(title: String, recipes: [Recipe])] = [
         ("Ins & outs", [.bouncingEntrance, .popTitle, .walkBy, .peekaboo, .dropAndShake, .windUpExit, .rocketLaunch]),
         ("Loops", [.happyIdle, .magicItem, .hangingSign, .sleepy, .hotDrink, .smelly, .powerUp]),
-        ("Feelings", [.inLove, .nervous, .angry, .surprised, .pondering, .dizzy, .brightIdea, .sad, .shy]),
+        ("Feelings", [.inLove, .nervous, .angry, .surprised, .pondering, .dizzy, .brightIdea, .sad, .shy, .smitten]),
         ("Talking", [.greeting, .callForHelp]),
         ("Text", [.bouncyTitle, .partyTitle, .titleInOut, .tadaTitle]),
         ("Scenes", [.stormyNight, .snowyEvening]),
@@ -20,7 +20,7 @@ enum Recipe: String, CaseIterable, Identifiable {
         case .happyIdle: "Happy idle"; case .dropAndShake: "Heavy drop"
         case .magicItem: "Magic item"; case .hangingSign: "Hanging sign"; case .walkBy: "Walking by"; case .peekaboo: "Peek-a-boo"; case .rocketLaunch: "Rocket launch"
         case .sleepy: "Sleepy"; case .inLove: "In love"; case .nervous: "Nervous"
-        case .angry: "Angry"; case .surprised: "Surprised"; case .pondering: "Pondering"; case .dizzy: "Dizzy"; case .brightIdea: "Bright idea"; case .sad: "Sad"; case .shy: "Shy"
+        case .angry: "Angry"; case .surprised: "Surprised"; case .pondering: "Pondering"; case .dizzy: "Dizzy"; case .brightIdea: "Bright idea"; case .sad: "Sad"; case .shy: "Shy"; case .smitten: "Smitten"
         case .stormyNight: "Stormy night"; case .snowyEvening: "Snowy evening"
         case .bouncyTitle: "Bouncy title"; case .partyTitle: "Party title"; case .titleInOut: "Title in & out"; case .tadaTitle: "Ta-da title"
         case .hotDrink: "Hot drink"; case .smelly: "Smelly"; case .powerUp: "Power-up"
@@ -30,7 +30,7 @@ enum Recipe: String, CaseIterable, Identifiable {
         case .happyIdle: "face.smiling"; case .dropAndShake: "arrow.down.to.line"
         case .magicItem: "sparkles"; case .hangingSign: "lightbulb"; case .walkBy: "figure.walk"; case .peekaboo: "eyes"; case .rocketLaunch: "airplane.departure"
         case .sleepy: "moon.zzz"; case .inLove: "heart"; case .nervous: "exclamationmark.bubble"
-        case .angry: "flame"; case .surprised: "exclamationmark"; case .pondering: "bubble.left"; case .dizzy: "star.circle"; case .brightIdea: "lightbulb.max"; case .sad: "drop"; case .shy: "face.smiling.inverse"
+        case .angry: "flame"; case .surprised: "exclamationmark"; case .pondering: "bubble.left"; case .dizzy: "star.circle"; case .brightIdea: "lightbulb.max"; case .sad: "drop"; case .shy: "face.smiling.inverse"; case .smitten: "heart.circle"
         case .stormyNight: "cloud.bolt.rain"; case .snowyEvening: "cloud.snow"
         case .bouncyTitle: "textformat"; case .partyTitle: "party.popper"; case .titleInOut: "arrow.up.and.down.text.horizontal"; case .tadaTitle: "sun.max"; case .hotDrink: "cup.and.saucer"; case .smelly: "aqi.medium"; case .powerUp: "bolt.circle"
         case .greeting: "hand.wave"; case .callForHelp: "megaphone" } }
@@ -50,6 +50,7 @@ enum Recipe: String, CaseIterable, Identifiable {
         case .nervous: "Trembles a little while sweat drops run down – a loop"
         case .angry: "Shakes with rage, a throbbing vein beside it"
         case .surprised: "Jumps with a start, a big ! pops up"
+        case .smitten: "Hearts burst out, then its heart beats while its cheeks glow pink"
         case .shy: "Sways bashfully from side to side while its cheeks blush"
         case .sad: "Sinks a little and breathes slowly while tears roll down"
         case .brightIdea: "Perks up with a little hop as a light bulb pops on above it"
@@ -169,6 +170,14 @@ extension Studio {
         case .callForHelp:
             shakeLayer(amount: 3)
             addSpeechBubble(shout: true)
+        case .smitten:
+            scalePulseLayer(amount: 0.1, heartbeat: true)
+            addBlush()
+            let saved = playRange, all = Playback.clamp(playRange, count: frames.count) ?? 0...(frames.count - 1)
+            let burstEnd = all.lowerBound + max(2, all.count * 2 / 3)
+            if burstEnd <= all.upperBound { playRange = all.lowerBound...burstEnd; addBurst(.hearts, count: 0) }
+            playRange = saved
+            selectedLayer = layers.firstIndex { $0.id == id } ?? selectedLayer
         case .shy:
             swayLayer(degrees: 3)
             addBlush()
