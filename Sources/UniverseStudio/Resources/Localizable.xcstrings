@@ -22410,6 +22410,78 @@
           }
         }
       }
+    },
+    "Swing to rest": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ausschwingen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Swing to rest"
+          }
+        }
+      }
+    },
+    "Hanging, hit": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hängend, angestoßen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hanging, hit"
+          }
+        }
+      }
+    },
+    "Standing, knocked": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stehend, angestoßen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Standing, knocked"
+          }
+        }
+      }
+    },
+    "The active layer was just knocked – it swings hard, then less and less until it is still": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die aktive Ebene wurde gerade angestoßen – sie schwingt kräftig, dann immer weniger, bis sie still steht"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The active layer was just knocked – it swings hard, then less and less until it is still"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

@@ -483,6 +483,11 @@ struct StudioCommands: Commands {
                         Button(L("Hanging, strong")) { studio.onSelectedLayers { studio.swayLayer(degrees: 25, hanging: true) } }
                     }.disabled(studio.frames.count < 2)
                         .help(L("Rocks the active layer back and forth across the frames – a gentle swing, or hanging from its top like a pendulum"))
+                    Menu(L("Swing to rest")) {
+                        Button(L("Hanging, hit")) { studio.onSelectedLayers { studio.swingToRest(degrees: 25, hanging: true) } }
+                        Button(L("Standing, knocked")) { studio.onSelectedLayers { studio.swingToRest(degrees: 15, hanging: false) } }
+                    }.disabled(studio.frames.count < 2)
+                        .help(L("The active layer was just knocked – it swings hard, then less and less until it is still"))
                     Menu(L("Float layer (drift)")) {
                         Button(L("Up and down, gentle")) { studio.onSelectedLayers { studio.floatLayer(amplitude: 18, horizontal: false) } }
                         Button(L("Up and down, strong")) { studio.onSelectedLayers { studio.floatLayer(amplitude: 44, horizontal: false) } }
