@@ -26316,6 +26316,24 @@
           }
         }
       }
+    },
+    "The active layer crosses the sky like a glowing sun while the light turns to evening": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die aktive Ebene zieht wie eine leuchtende Sonne über den Himmel, während das Licht abendlich wird"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The active layer crosses the sky like a glowing sun while the light turns to evening"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
