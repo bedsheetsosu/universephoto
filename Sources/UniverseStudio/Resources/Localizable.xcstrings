@@ -24624,6 +24624,24 @@
           }
         }
       }
+    },
+    "Letters pop in": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buchstaben ploppen auf"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Letters pop in"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
