@@ -4,14 +4,14 @@ import Foundation
 /// effects stacked on the active layer, as one undo step. From a single frame the frames are made
 /// first (2 s); on an animation they play over the play range (or all frames).
 enum Recipe: String, CaseIterable, Identifiable {
-    case bouncingEntrance, popTitle, windUpExit, happyIdle, dropAndShake, magicItem, hangingSign, walkBy, peekaboo, rocketLaunch, sleepy, inLove, nervous, angry, surprised, stormyNight, snowyEvening, bouncyTitle, partyTitle
+    case bouncingEntrance, popTitle, windUpExit, happyIdle, dropAndShake, magicItem, hangingSign, walkBy, peekaboo, rocketLaunch, sleepy, inLove, nervous, angry, surprised, stormyNight, snowyEvening, bouncyTitle, partyTitle, titleInOut
     var id: String { rawValue }
     /// Menu groups (0.239): ins and outs, loops, feelings.
     static let groups: [(title: String, recipes: [Recipe])] = [
         ("Ins & outs", [.bouncingEntrance, .popTitle, .walkBy, .peekaboo, .dropAndShake, .windUpExit, .rocketLaunch]),
         ("Loops", [.happyIdle, .magicItem, .hangingSign, .sleepy]),
         ("Feelings", [.inLove, .nervous, .angry, .surprised]),
-        ("Text", [.bouncyTitle, .partyTitle]),
+        ("Text", [.bouncyTitle, .partyTitle, .titleInOut]),
         ("Scenes", [.stormyNight, .snowyEvening]),
     ]
     var title: String { switch self {
@@ -21,7 +21,7 @@ enum Recipe: String, CaseIterable, Identifiable {
         case .sleepy: "Sleepy"; case .inLove: "In love"; case .nervous: "Nervous"
         case .angry: "Angry"; case .surprised: "Surprised"
         case .stormyNight: "Stormy night"; case .snowyEvening: "Snowy evening"
-        case .bouncyTitle: "Bouncy title"; case .partyTitle: "Party title" } }
+        case .bouncyTitle: "Bouncy title"; case .partyTitle: "Party title"; case .titleInOut: "Title in & out" } }
     var symbol: String { switch self {
         case .bouncingEntrance: "figure.run"; case .popTitle: "textformat.size.larger"; case .windUpExit: "arrow.right.to.line"
         case .happyIdle: "face.smiling"; case .dropAndShake: "arrow.down.to.line"
@@ -29,7 +29,7 @@ enum Recipe: String, CaseIterable, Identifiable {
         case .sleepy: "moon.zzz"; case .inLove: "heart"; case .nervous: "exclamationmark.bubble"
         case .angry: "flame"; case .surprised: "exclamationmark"
         case .stormyNight: "cloud.bolt.rain"; case .snowyEvening: "cloud.snow"
-        case .bouncyTitle: "textformat"; case .partyTitle: "party.popper" } }
+        case .bouncyTitle: "textformat"; case .partyTitle: "party.popper"; case .titleInOut: "arrow.up.and.down.text.horizontal" } }
     var hint: String { switch self {
         case .bouncingEntrance: "Hops in from the left with squash, stretch, dust and a shadow"
         case .popTitle: "Pops up with an overshoot, fades in and wobbles"
@@ -49,7 +49,8 @@ enum Recipe: String, CaseIterable, Identifiable {
         case .stormyNight: "Night falls, rain pours, lightning flashes – the whole picture"
         case .snowyEvening: "Snow falls in a warm evening light – the whole picture"
         case .bouncyTitle: "Pops in, then its letters hop one after another"
-        case .partyTitle: "Letters wave in running rainbow colours while it bobs" } }
+        case .partyTitle: "Letters wave in running rainbow colours while it bobs"
+        case .titleInOut: "Letters drop in one by one, the title stays, then they fly apart" } }
 }
 
 extension Studio {
@@ -100,6 +101,18 @@ extension Studio {
             if popEnd < all.upperBound { playRange = all.lowerBound...popEnd; growLayerOverFrames(grow: true, pop: true) }
             playRange = saved
             wavyText(hop: true)
+        case .titleInOut:
+            let saved = playRange, all = Playback.clamp(playRange, count: frames.count) ?? 0...(frames.count - 1)
+            let mid = all.lowerBound + max(2, all.count * 2 / 5)
+            let hasText = activeLayer?.strokes.contains { $0.kind == "text" } == true
+            if mid < all.upperBound - 1 {
+                // Without text the layer as a whole pops in and bursts at the end.
+                playRange = all.lowerBound...mid
+                if hasText { lettersDropIn() } else { growLayerOverFrames(grow: true, pop: true) }
+                playRange = mid...all.upperBound
+                if hasText { lettersScatter() } else { popAway(.confetti) }
+            } else if hasText { lettersDropIn() } else { growLayerOverFrames(grow: true, pop: true) }
+            playRange = saved
         case .partyTitle:
             wavyText(hop: false)
             rainbowLetters()

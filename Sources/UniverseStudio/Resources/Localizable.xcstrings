@@ -24588,6 +24588,42 @@
           }
         }
       }
+    },
+    "Title in & out": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Titel rein & raus"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Title in & out"
+          }
+        }
+      }
+    },
+    "Letters drop in one by one, the title stays, then they fly apart": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buchstaben fallen nacheinander herein, der Titel bleibt stehen, dann fliegen sie davon"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Letters drop in one by one, the title stays, then they fly apart"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
