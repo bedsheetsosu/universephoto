@@ -6,11 +6,12 @@ import Foundation
 enum Recipe: String, CaseIterable, Identifiable {
     case bouncingEntrance, popTitle, windUpExit, happyIdle, dropAndShake, magicItem, hangingSign, walkBy, peekaboo, rocketLaunch, sleepy, inLove, nervous, angry, surprised, stormyNight, snowyEvening, bouncyTitle, partyTitle, titleInOut, pondering, greeting, callForHelp, dizzy, brightIdea, sad, shy, tadaTitle, hotDrink, smelly, powerUp, smitten
     var id: String { rawValue }
-    /// Menu groups (0.239): ins and outs, loops, feelings.
+    /// Menu groups (0.239): ins and outs, loops, feelings (split into good and bad moods in 0.278).
     static let groups: [(title: String, recipes: [Recipe])] = [
         ("Ins & outs", [.bouncingEntrance, .popTitle, .walkBy, .peekaboo, .dropAndShake, .windUpExit, .rocketLaunch]),
         ("Loops", [.happyIdle, .magicItem, .hangingSign, .sleepy, .hotDrink, .smelly, .powerUp]),
-        ("Feelings", [.inLove, .nervous, .angry, .surprised, .pondering, .dizzy, .brightIdea, .sad, .shy, .smitten]),
+        ("Good moods", [.inLove, .smitten, .shy, .brightIdea, .surprised]),
+        ("Bad moods", [.nervous, .angry, .sad, .dizzy, .pondering]),
         ("Talking", [.greeting, .callForHelp]),
         ("Text", [.bouncyTitle, .partyTitle, .titleInOut, .tadaTitle]),
         ("Scenes", [.stormyNight, .snowyEvening]),
