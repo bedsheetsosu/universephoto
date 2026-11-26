@@ -23076,6 +23076,42 @@
           }
         }
       }
+    },
+    "Rocket launch": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Raketenstart"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rocket launch"
+          }
+        }
+      }
+    },
+    "Rumbles, then shoots up and out of the picture faster and faster, trailing smoke": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rüttelt, dann schießt sie immer schneller nach oben aus dem Bild und zieht Rauch hinter sich her"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rumbles, then shoots up and out of the picture faster and faster, trailing smoke"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
