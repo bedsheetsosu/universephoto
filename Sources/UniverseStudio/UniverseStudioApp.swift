@@ -453,6 +453,8 @@ struct StudioCommands: Commands {
                 Section(L("Impacts")) {
                 Button(L("Landing dust")) { studio.addLandingDust() }.disabled(studio.frames.count < 3)
                     .help(L("A little dust cloud where the active layer touches down – pairs with Bounce"))
+                Button(L("Focus lines")) { studio.addFocusLines() }.disabled(studio.frames.count < 2)
+                    .help(L("Manga-style lines shoot in from the edges towards the active layer and flicker – look here!"))
                 Menu(L("Impact shake")) {
                     Button(L("Light")) { studio.impactShake(strength: 4) }
                     Button(L("Heavy")) { studio.impactShake(strength: 12) }

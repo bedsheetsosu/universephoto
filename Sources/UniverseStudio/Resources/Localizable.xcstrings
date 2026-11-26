@@ -26496,6 +26496,42 @@
           }
         }
       }
+    },
+    "Focus lines": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fokus-Linien"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Focus lines"
+          }
+        }
+      }
+    },
+    "Manga-style lines shoot in from the edges towards the active layer and flicker – look here!": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Linien im Manga-Stil schießen vom Rand auf die aktive Ebene zu und flackern – hier hinschauen!"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Manga-style lines shoot in from the edges towards the active layer and flicker – look here!"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
