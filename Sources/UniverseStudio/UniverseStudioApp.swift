@@ -236,6 +236,8 @@ struct StudioCommands: Commands {
                     Button(L("Letter by letter")) { studio.typewriter(byWord: false, restTicks: Int(studio.fps)) }
                     Button(L("Two letters at a time")) { studio.typewriter(byWord: false, perStep: 2, restTicks: Int(studio.fps)) }
                     Button(L("Word by word")) { studio.typewriter(byWord: true, restTicks: Int(studio.fps)) }
+                    Divider()
+                    Button(L("Letter by letter, with cursor")) { studio.typewriter(byWord: false, restTicks: Int(studio.fps), cursor: true) }
                 }.disabled(studio.activeLayer?.strokes.contains { $0.kind == "text" } != true).help(L("The text on the active layer appears bit by bit"))
                 Menu(L("Countdown")) {
                     ForEach([3, 5, 10], id: \.self) { n in Button(LF("From %d", n)) { studio.countdown(from: n) } }

@@ -22,4 +22,15 @@ struct TypewriterTests {
         #expect(s.typewriter(byWord: false) == 5)
         #expect(s.document().frames[0][1].strokes[0].text == "H")
     }
+
+    @Test func cursorWhileTypingOnly() {
+        let s = Studio(recoveryRoot: FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString))
+        s.newDocument(width: 100, height: 50)
+        var t = InkStroke(points: [InkPoint(x: 5, y: 5, pressure: 1)], color: .black, width: 12)
+        t.kind = "text"; t.text = "Hi!"
+        s.layers[0].strokes = [t]; s.changed(); s.selectedLayer = 0
+        #expect(s.typewriter(byWord: false, cursor: true) == 3)
+        let texts = s.document().frames.map { $0[0].strokes.first?.text ?? "" }
+        #expect(texts == ["H|", "Hi|", "Hi!"])
+    }
 }

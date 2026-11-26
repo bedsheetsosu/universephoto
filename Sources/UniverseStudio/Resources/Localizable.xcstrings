@@ -23346,6 +23346,24 @@
           }
         }
       }
+    },
+    "Letter by letter, with cursor": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buchstabe für Buchstabe, mit Cursor"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Letter by letter, with cursor"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

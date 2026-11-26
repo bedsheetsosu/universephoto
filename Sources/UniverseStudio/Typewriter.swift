@@ -18,7 +18,9 @@ enum Typewriter {
 
 extension Studio {
     /// Replaces the current frame with the typing frames (last one held for `restTicks`).
-    @discardableResult func typewriter(byWord: Bool, perStep: Int = 1, restTicks: Int = 12) -> Int {
+    /// `cursor` (0.233) shows a typing cursor "|" after the last letter while it types; it is gone
+    /// once the text is complete.
+    @discardableResult func typewriter(byWord: Bool, perStep: Int = 1, restTicks: Int = 12, cursor: Bool = false) -> Int {
         guard let layer = activeLayer else { return 0 }
         let texts = layer.strokes.indices.filter { layer.strokes[$0].kind == "text" && !(layer.strokes[$0].text ?? "").isEmpty }
         guard !texts.isEmpty else { return 0 }
@@ -30,13 +32,14 @@ extension Studio {
         if frames.isEmpty { frames = [layers] }
         frames[frameIndex] = layers
         let source = frames[frameIndex], id = layer.id
-        let made: [[ArtLayer]] = plan.map { box, n in
-            source.map { l in
+        let made: [[ArtLayer]] = plan.enumerated().map { step, entry in
+            let (box, n) = entry, typing = cursor && step < plan.count - 1
+            return source.map { l in
                 guard l.id == id else { return l }
                 var m = l
                 for i in texts {
                     let full = l.strokes[i].text ?? ""
-                    m.strokes[i].text = i < box ? full : i == box ? String(full.prefix(n)) : ""
+                    m.strokes[i].text = i < box ? full : i == box ? String(full.prefix(n)) + (typing ? "|" : "") : ""
                 }
                 m.strokes = m.strokes.filter { $0.kind != "text" || !($0.text ?? "").isEmpty }
                 return m
