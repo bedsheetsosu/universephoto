@@ -23472,6 +23472,96 @@
           }
         }
       }
+    },
+    "Emotion mark": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gefühls-Zeichen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Emotion mark"
+          }
+        }
+      }
+    },
+    "Surprise (!)": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Überraschung (!)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Surprise (!)"
+          }
+        }
+      }
+    },
+    "Confusion (?)": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verwirrung (?)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Confusion (?)"
+          }
+        }
+      }
+    },
+    "Anger (vein)": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wut (Zornesader)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anger (vein)"
+          }
+        }
+      }
+    },
+    "A cartoon mark pops up beside the active layer and throbs – surprise, confusion or anger": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein Cartoon-Zeichen ploppt neben der aktiven Ebene auf und pulsiert – Überraschung, Verwirrung oder Wut"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A cartoon mark pops up beside the active layer and throbs – surprise, confusion or anger"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

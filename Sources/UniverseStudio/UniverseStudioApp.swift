@@ -323,6 +323,10 @@ struct StudioCommands: Commands {
                     .help(L("Little symbols drift up from the active layer and fade – hearts, music notes, sleepy Z's or question marks"))
                 }
                 Group {
+                Menu(L("Emotion mark")) {
+                    ForEach(EmotionMark.allCases) { m in Button(L(m.title)) { studio.addEmotionMark(m) } }
+                }.disabled(studio.frames.count < 2)
+                    .help(L("A cartoon mark pops up beside the active layer and throbs – surprise, confusion or anger"))
                 Menu(L("Sweat drop")) {
                     Button(L("One drop per loop")) { studio.addSweatDrop(drops: 1) }
                     Button(L("Nervous (3 per loop)")) { studio.addSweatDrop(drops: 3) }
