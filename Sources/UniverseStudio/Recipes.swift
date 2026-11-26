@@ -4,16 +4,16 @@ import Foundation
 /// effects stacked on the active layer, as one undo step. From a single frame the frames are made
 /// first (2 s); on an animation they play over the play range (or all frames).
 enum Recipe: String, CaseIterable, Identifiable {
-    case bouncingEntrance, popTitle, windUpExit, happyIdle, dropAndShake, magicItem, hangingSign
+    case bouncingEntrance, popTitle, windUpExit, happyIdle, dropAndShake, magicItem, hangingSign, walkBy
     var id: String { rawValue }
     var title: String { switch self {
         case .bouncingEntrance: "Bouncing entrance"; case .popTitle: "Pop-in title"; case .windUpExit: "Wind-up exit"
         case .happyIdle: "Happy idle"; case .dropAndShake: "Heavy drop"
-        case .magicItem: "Magic item"; case .hangingSign: "Hanging sign" } }
+        case .magicItem: "Magic item"; case .hangingSign: "Hanging sign"; case .walkBy: "Walking by" } }
     var symbol: String { switch self {
         case .bouncingEntrance: "figure.run"; case .popTitle: "textformat.size.larger"; case .windUpExit: "arrow.right.to.line"
         case .happyIdle: "face.smiling"; case .dropAndShake: "arrow.down.to.line"
-        case .magicItem: "sparkles"; case .hangingSign: "lightbulb" } }
+        case .magicItem: "sparkles"; case .hangingSign: "lightbulb"; case .walkBy: "figure.walk" } }
     var hint: String { switch self {
         case .bouncingEntrance: "Hops in from the left with squash, stretch, dust and a shadow"
         case .popTitle: "Pops up with an overshoot, fades in and wobbles"
@@ -21,7 +21,8 @@ enum Recipe: String, CaseIterable, Identifiable {
         case .happyIdle: "Breathes and bobs gently as a loop"
         case .dropAndShake: "Falls in from above, squashes, freezes for a beat and shakes the picture"
         case .magicItem: "Floats gently with twinkling sparkles around it"
-        case .hangingSign: "Swings from its top like a sign or lamp in the wind" } }
+        case .hangingSign: "Swings from its top like a sign or lamp in the wind"
+        case .walkBy: "Walks across the picture from left to right, bobbing with every step" } }
 }
 
 extension Studio {
@@ -54,6 +55,11 @@ extension Studio {
             addSparkles(count: 6)
         case .hangingSign:
             swayLayer(degrees: 14, hanging: true)
+        case .walkBy:
+            travelLayer(dx: w * 1.2, dy: 0, eased: false)
+            shiftLayerAllFrames(dx: -w * 0.6, dy: 0)
+            walkBob(steps: 6, height: max(3, h * 0.02), tilt: 4)
+            addGroundShadow()
         case .dropAndShake:
             // The fall takes the first 60 %, so there are frames after the landing to squash and shake in.
             let saved = playRange, all = Playback.clamp(playRange, count: frames.count) ?? 0...(frames.count - 1)

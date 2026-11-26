@@ -22140,6 +22140,132 @@
           }
         }
       }
+    },
+    "Walk bob": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gehen-Wippen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Walk bob"
+          }
+        }
+      }
+    },
+    "Calm walk (4 steps)": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ruhig gehen (4 Schritte)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Calm walk (4 steps)"
+          }
+        }
+      }
+    },
+    "Quick walk (8 steps)": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schnell gehen (8 Schritte)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quick walk (8 steps)"
+          }
+        }
+      }
+    },
+    "Waddle": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Watscheln"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Waddle"
+          }
+        }
+      }
+    },
+    "The active layer bobs up with every step and tips from foot to foot – pair it with Travel": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die aktive Ebene wippt bei jedem Schritt hoch und kippt von Fuß zu Fuß – passt zu Wandern"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The active layer bobs up with every step and tips from foot to foot – pair it with Travel"
+          }
+        }
+      }
+    },
+    "Walking by": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vorbeigehen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Walking by"
+          }
+        }
+      }
+    },
+    "Walks across the picture from left to right, bobbing with every step": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Geht von links nach rechts durchs Bild und wippt bei jedem Schritt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Walks across the picture from left to right, bobbing with every step"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

@@ -454,6 +454,12 @@ struct StudioCommands: Commands {
                         Button(L("One big jump, squashy")) { studio.onSelectedLayers { studio.bounceWithSquash(height: Double(studio.height) * 0.3, bounces: 1) } }
                     }.disabled(studio.frames.count < 2)
                         .help(L("The active layer hops across the frames, each hop lower, and lands where it started"))
+                    Menu(L("Walk bob")) {
+                        Button(L("Calm walk (4 steps)")) { studio.onSelectedLayers { studio.walkBob(steps: 4, height: 5, tilt: 3) } }
+                        Button(L("Quick walk (8 steps)")) { studio.onSelectedLayers { studio.walkBob(steps: 8, height: 6, tilt: 4) } }
+                        Button(L("Waddle")) { studio.onSelectedLayers { studio.walkBob(steps: 4, height: 3, tilt: 10) } }
+                    }.disabled(studio.frames.count < 2)
+                        .help(L("The active layer bobs up with every step and tips from foot to foot – pair it with Travel"))
                     Menu(L("Shake layer")) {
                         Button(L("Trembling")) { studio.onSelectedLayers { studio.shakeLayer(amount: 3) } }
                         Button(L("Shaking")) { studio.onSelectedLayers { studio.shakeLayer(amount: 10) } }
