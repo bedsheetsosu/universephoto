@@ -26532,6 +26532,42 @@
           }
         }
       }
+    },
+    "Big entrance": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Großer Auftritt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Big entrance"
+          }
+        }
+      }
+    },
+    "Slams in like a stamp, the picture shakes and manga focus lines flicker around it": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Knallt wie ein Stempel ins Bild, das Bild wackelt und Manga-Fokus-Linien zucken drumherum"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Slams in like a stamp, the picture shakes and manga focus lines flicker around it"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
