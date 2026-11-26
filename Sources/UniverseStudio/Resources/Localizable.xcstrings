@@ -24714,6 +24714,60 @@
           }
         }
       }
+    },
+    "Speech bubble": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sprechblase"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Speech bubble"
+          }
+        }
+      }
+    },
+    "Hello!": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hallo!"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hello!"
+          }
+        }
+      }
+    },
+    "A comic speech bubble pops up beside the active layer and the Text tool's text is typed into it": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eine Comic-Sprechblase ploppt neben der aktiven Ebene auf und der Text des Text-Werkzeugs wird hineingetippt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A comic speech bubble pops up beside the active layer and the Text tool's text is typed into it"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

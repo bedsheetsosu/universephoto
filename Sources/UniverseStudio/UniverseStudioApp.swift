@@ -337,6 +337,9 @@ struct StudioCommands: Commands {
                 Button(L("Thought bubble")) { studio.addThoughtBubble() }
                     .disabled(studio.frames.count < 2)
                     .help(L("Little bubbles rise above the active layer, then a thinking cloud pops up with dots appearing one by one"))
+                Button(L("Speech bubble")) { studio.addSpeechBubble() }
+                    .disabled(studio.frames.count < 2)
+                    .help(L("A comic speech bubble pops up beside the active layer and the Text tool's text is typed into it"))
                 Menu(L("Sweat drop")) {
                     Button(L("One drop per loop")) { studio.addSweatDrop(drops: 1) }
                     Button(L("Nervous (3 per loop)")) { studio.addSweatDrop(drops: 3) }
