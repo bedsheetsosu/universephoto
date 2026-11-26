@@ -24552,6 +24552,24 @@
           }
         }
       }
+    },
+    "Letters drop in": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buchstaben fallen herein"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Letters drop in"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
