@@ -26172,6 +26172,78 @@
           }
         }
       }
+    },
+    "Ghost": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Geist"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ghost"
+          }
+        }
+      }
+    },
+    "Spooky night": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gruselnacht"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spooky night"
+          }
+        }
+      }
+    },
+    "Floats and sways, fading in and out like a ghost – a loop": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schwebt und schwankt, blendet wie ein Geist ein und aus – eine Schleife"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Floats and sways, fading in and out like a ghost – a loop"
+          }
+        }
+      }
+    },
+    "Night falls and fireflies drift through the dark – the whole picture": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Es wird Nacht und Glühwürmchen ziehen durchs Dunkel – das ganze Bild"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Night falls and fireflies drift through the dark – the whole picture"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
