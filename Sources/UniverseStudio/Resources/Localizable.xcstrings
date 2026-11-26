@@ -25614,6 +25614,60 @@
           }
         }
       }
+    },
+    "Power-up": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aufladen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Power-up"
+          }
+        }
+      }
+    },
+    "Vibrates with energy in a pulsing glow, rays turning behind it – a loop": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vibriert vor Energie in einem pulsierenden Schein, dahinter drehen sich Strahlen – eine Schleife"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vibrates with energy in a pulsing glow, rays turning behind it – a loop"
+          }
+        }
+      }
+    },
+    "Floats gently in a soft glow with twinkling sparkles around it": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schwebt sanft in einem weichen Schein, umgeben von funkelndem Glitzer"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Floats gently in a soft glow with twinkling sparkles around it"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
