@@ -86,6 +86,11 @@ struct LayerEffectsMove: View {
             .help(L("The active layer turns full circles across the existing frames – a seamless loop"))
         }
         Group {
+        Menu(L("Jump")) {
+            Button(L("Small hop")) { studio.onSelectedLayers { studio.jumpLayer(height: Double(studio.height) * 0.12) } }
+            Button(L("Big jump")) { studio.onSelectedLayers { studio.jumpLayer(height: Double(studio.height) * 0.35) } }
+        }.disabled(studio.frames.count < 4)
+            .help(L("One cartoon jump in place – crouch, take off stretched, land squashed and spring back"))
         Menu(L("Wander")) {
             Button(L("Small")) { studio.onSelectedLayers { studio.wanderLayer(radius: 12) } }
             Button(L("Wide")) { studio.onSelectedLayers { studio.wanderLayer(radius: 40) } }

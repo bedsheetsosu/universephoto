@@ -22968,6 +22968,78 @@
           }
         }
       }
+    },
+    "Jump": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sprung"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jump"
+          }
+        }
+      }
+    },
+    "Small hop": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kleiner Hüpfer"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Small hop"
+          }
+        }
+      }
+    },
+    "Big jump": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Großer Sprung"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Big jump"
+          }
+        }
+      }
+    },
+    "One cartoon jump in place – crouch, take off stretched, land squashed and spring back": {
+      "extractionState": "manual",
+      "generatesSymbol": false,
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein Cartoon-Sprung auf der Stelle – in die Hocke, gestreckt abspringen, gestaucht landen, zurückfedern"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "One cartoon jump in place – crouch, take off stretched, land squashed and spring back"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
